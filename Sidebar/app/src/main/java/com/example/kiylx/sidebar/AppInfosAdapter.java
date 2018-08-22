@@ -71,8 +71,8 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
 
     }
 
-    //private List<AppInfo> Datas;
-    //Adapter数据源
+    
+    //数据源是上面的appInfos.
     private final Object mLock = new Object();
     /*
     * This lock is also used by the filter
@@ -80,7 +80,7 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
     * the original array of data.
     * 过滤器上的锁可以同步复制原始数据。
     */
-    private ArrayList<AppInfo> mOriginal;
+    private ArrayList<AppInfo> firstBackup_appInfos;
     //对象数组的备份，当调用ArrayFilter的时候初始化和使用。此时，对象数组只包含已经过滤的数据。
     private ArrayFilter mFilter;
 
@@ -97,16 +97,16 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
             FilterResults results = new FilterResults();
             // 过滤的结果
 
-            if(mOriginal == null){
+            if(firstBackup_appInfos == null){
                 synchronized (mLock) {
-                    mOriginal = new ArrayList<AppInfo>(appInfos);
+                    firstBackup_appInfos = new ArrayList<AppInfo>(appInfos);
                 }// 原始数据备份为空时，上锁，同步复制原始数据
             }
 
             if(prefix == null || prefix.length()==0){
                 ArrayList<AppInfo> list;
                 synchronized (mLock){
-                    list = new ArrayList<AppInfo>(mOriginal);
+                    list = new ArrayList<AppInfo>(firstBackup_appInfos);
                 }
                 results.values = list;
                 results.count = list.size();
@@ -114,37 +114,39 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
             }else{
                 String prefixString = prefix.toString().toLowerCase();
                 //将首字母转换成字符并且小写。
-                ArrayList<AppInfo> values;
+                ArrayList<AppInfo> backUp_appinfos;
                 synchronized (mLock){
-                    values = new ArrayList<AppInfo>(mOriginal);
-                //此时，values是原始数据备份}
+                    backUp_appinfos = new ArrayList<AppInfo>(firstBackup_appInfos);
+                //此时，backUp_appinfos是原始数据备份,是list<appinfo>类型}
             }
-            final  int count = values.size();
+            final  int count = backUp_appinfos.size();
                 //count是values的条数
-            final ArrayList<AppInfo> newValues = new ArrayList<AppInfo>();
+            final ArrayList<AppInfo> finallyResults = new ArrayList<AppInfo>();
 
             for(int i=0; i< count;i++)
             {
-                final AppInfo value = values.get(i);
+                final AppInfo value = backUp_appinfos.get(i);
                 final String valueText = value.getAppName().toString().toLowerCase();
 
                 if (valueText.indexOf(prefixString.toString()) !=-1){
-                    newValues.add(value);
+                    //prefixString与valueText匹配，有一个字符相同就添加进结果。
+                    //调用的indexOf方法，其中，返回值是-1就表示没有相同字符，所以，这里的“!=-1”就代表着只要有一个字符相同。
+                    finallyResults.add(value);
                 }else{
                     final String[] words = valueText.split(" ");
                     final int wordCount = words.length;
 
                     for(int k=0;k< wordCount; k++){
                         if(words[k].indexOf(prefixString)!=-1){
-                            newValues.add(value);
+                            finallyResults.add(value);
                             break;
                         }
                     }
                 }
 
             }
-            results.values = newValues;
-            results.count = newValues.size();
+            results.values = finallyResults;
+            results.count = finallyResults.size();
             }
             return results;
         }
