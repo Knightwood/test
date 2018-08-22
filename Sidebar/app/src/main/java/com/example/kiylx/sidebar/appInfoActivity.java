@@ -5,8 +5,11 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +18,7 @@ public class appInfoActivity extends AppCompatActivity {
     ListView appInfoListView = null;
     List<AppInfo> appInfos = null;
     AppInfosAdapter infosAdapter = null;
-    SearchView searchview;
-    nameAdapter name_1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +29,23 @@ public class appInfoActivity extends AppCompatActivity {
         //获取应用信息
         updateUI(appInfos);
         //把数据用适配器更新视图
-        searchview = findViewById(R.id.search_1);
-        searchview.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+         EditText editText= findViewById(R.id.search_1);
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
+            public void beforeTextChanged(CharSequence name, int i, int i1, int i2) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
-                updateUI_1(s);
+            public void onTextChanged(CharSequence name, int i, int i1, int i2) {
+
+                infosAdapter.getFilter().filter(name);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -59,13 +68,7 @@ public class appInfoActivity extends AppCompatActivity {
             return appInfos;
 
         }
-        public void updateUI_1(String name){
-        if(name != null){
-            name_1 = new nameAdapter(appInfos, name );
-            appInfoListView.setAdapter(name_1);
-        }
 
-        }
 
 
     }
