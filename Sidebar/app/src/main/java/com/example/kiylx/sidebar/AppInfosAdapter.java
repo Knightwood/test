@@ -126,9 +126,9 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
             for(int i=0; i< count;i++)
             {
                 final AppInfo value = backUp_appinfos.get(i);
-                final String valueText = value.getAppName().toString().toLowerCase();
+                final String valueText = value.getAppName().toLowerCase();
 
-                if (valueText.indexOf(prefixString.toString()) !=-1){
+                if (valueText.contains(prefixString.toString())){
                     //prefixString与valueText匹配，有一个字符相同就添加进结果。
                     //调用的indexOf方法，其中，返回值是-1就表示没有相同字符，所以，这里的“!=-1”就代表着只要有一个字符相同。
                     finallyResults.add(value);
@@ -137,7 +137,7 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
                     final int wordCount = words.length;
 
                     for(int k=0;k< wordCount; k++){
-                        if(words[k].indexOf(prefixString)!=-1){
+                        if(words[k].contains(prefixString)){
                             finallyResults.add(value);
                             break;
                         }
