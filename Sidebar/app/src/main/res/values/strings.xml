@@ -3,4 +3,9 @@
     <string name="title_activity_main">侧边栏</string>
     <string name="button_click">添加</string>
     <string name="edit_string">搜索应用</string>
+    <string name="click"> start floating button </string>
+    <string name="Window">Floating Window</string>
+    <string name="view_1">start floating image display</string>
+    <item name="button_11" type="id"/>
+
 </resources>
