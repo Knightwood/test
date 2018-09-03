@@ -19,7 +19,7 @@ import android.widget.Toast;
 public class FloatingService extends Service {
     WindowManager windowManager;
     WindowManager.LayoutParams params;
-        //Button buttonOn;
+        Button button;
     public FloatingService() {
     }
 
@@ -39,15 +39,15 @@ public class FloatingService extends Service {
     private void showFloatingWindow(){
         if(Settings. canDrawOverlays(this)){
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            Button button = new Button(getApplicationContext());
+            button = new Button(getApplicationContext());
             button.setText("@string/Window");
             button.setBackgroundColor(Color.BLUE);
             button.setWidth(100);
             button.setHeight(100);
             button.setId(R.id.button_11);
-            //buttonOn = (Button)View.findViewById(R.id.button_11);
+            
             Log.d("mainActivity","on_2");
-            //windowManager.removeView(button);
+
 
             params = new WindowManager.LayoutParams();
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -85,9 +85,9 @@ public class FloatingService extends Service {
         }
     @Override
     public void onDestroy(){
-        /*if(button !=null){
+        if(button !=null){
             windowManager.removeView(button);
-        }*/
+        }
         super.onDestroy();
         Log.d("mainActivity","jj");
 
