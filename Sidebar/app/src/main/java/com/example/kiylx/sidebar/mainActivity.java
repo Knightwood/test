@@ -39,4 +39,9 @@ public class mainActivity extends AppCompatActivity {
                 Log.d("mainActivity","on_4");
             }
         }
-    }}
+    }
+    public void start_selte(View view){
+        Intent intent = new Intent(mainActivity.this,appInfoActivity.class);
+        startActivity(intent);
+    }
+}

@@ -12,17 +12,14 @@
             android:onClick="startFloatingService" />
 
        <Button
-           android:id="@+id/view_11"
+            android:id="@+id/view_11"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/view_1"
+            android:onClick="start_selte"
 
         />
 
-        <!--<Button
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="start floating video player"
-           android:onClick="startFloatingVideoService"/>-->
+
 
 </LinearLayout>

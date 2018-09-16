@@ -6,6 +6,7 @@
     <string name="click"> start floating button </string>
     <string name="Window">Floating Window</string>
     <string name="view_1">start floating image display</string>
-    <item name="button_11" type="id"/>
+    <item name="button_11" type="id" />
+
 
 </resources>

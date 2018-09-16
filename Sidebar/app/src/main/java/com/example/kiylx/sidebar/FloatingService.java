@@ -9,17 +9,25 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
+import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.zip.Inflater;
 
 public class FloatingService extends Service {
     WindowManager windowManager;
     WindowManager.LayoutParams params;
-        Button button;
+        //Button button;
+        LinearLayout app_list;
     public FloatingService() {
     }
 
@@ -33,18 +41,23 @@ public class FloatingService extends Service {
         showFloatingWindow();
         return super.onStartCommand(intent,flags,startId);
     }
+    /*public void start_Apps(){
+
+    }*/
 
 
 
     private void showFloatingWindow(){
         if(Settings. canDrawOverlays(this)){
             windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-            button = new Button(getApplicationContext());
-            button.setText("@string/Window");
-            button.setBackgroundColor(Color.BLUE);
+            LayoutInflater inflater1 = LayoutInflater.from(getApplicationContext());
+            app_list = (LinearLayout) inflater1.inflate(R.layout.sidebar, null);
+            /*button = new Button(getApplicationContext());
+            button.setText("Window");
+            button.setBackgroundColor(Color.WHITE);
             button.setWidth(100);
             button.setHeight(100);
-            button.setId(R.id.button_11);
+            button.setId(R.id.button_11);*/
             
             Log.d("mainActivity","on_2");
 
@@ -58,12 +71,12 @@ public class FloatingService extends Service {
             }
             params.gravity = Gravity.LEFT | Gravity.TOP;
             params.format = PixelFormat.RGBA_8888;
-            params.width = 500;
-            params.height = 100;
+            params.width = 100;
+            params.height= WindowManager.LayoutParams.MATCH_PARENT;
             params.x = 300;
             params.y = 300;
-            windowManager.addView(button,params);
-            button.setOnClickListener(new View.OnClickListener() {
+            windowManager.addView(app_list,params);
+            app_list.setOnClickListener(new View.OnClickListener() {
                 long[] hints = new long[2];
                 @Override
                 public void onClick(View view) {
@@ -85,8 +98,8 @@ public class FloatingService extends Service {
         }
     @Override
     public void onDestroy(){
-        if(button !=null){
-            windowManager.removeView(button);
+        if(app_list !=null){
+            windowManager.removeView(app_list);
         }
         super.onDestroy();
         Log.d("mainActivity","jj");

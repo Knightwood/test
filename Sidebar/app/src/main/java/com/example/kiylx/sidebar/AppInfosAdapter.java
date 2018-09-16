@@ -70,6 +70,11 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
 
 
     }
+    private class ViewHolder{
+        ImageView imageView;
+        TextView textView;
+        Button button;
+    }
 
     
     //数据源是上面的appInfos.
@@ -163,9 +168,5 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
     }
 
 
-    private class ViewHolder{
-        ImageView imageView;
-        TextView textView;
-        Button button;
-    }
+
 }

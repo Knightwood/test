@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -29,6 +31,15 @@ public class appInfoActivity extends AppCompatActivity {
         //获取应用信息
         updateUI(appInfos);
         //把数据用适配器更新视图
+        Button button_2 = findViewById(R.id.button_1);
+        button_2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                
+            }
+        });
          EditText editText= findViewById(R.id.search_1);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
