@@ -10,7 +10,7 @@
     <EditText
         android:id="@+id/search_1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
         android:hint="@string/edit_string"
         android:inputType="" />
 

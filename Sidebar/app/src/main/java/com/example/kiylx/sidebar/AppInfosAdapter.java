@@ -15,32 +15,43 @@ import android.widget.TextView;
 import android.widget.Filterable;
 import android.widget.Filter;
 
-public class AppInfosAdapter extends BaseAdapter implements Filterable {
+public class AppInfosAdapter extends BaseAdapter implements Filterable, View.OnClickListener {
      private Context context;
      private List<AppInfo> appInfos;
-    public AppInfosAdapter(Context context, List<AppInfo> appInfos){
+     private mClick mClick_2;
+     public AppInfosAdapter(Context context, List<AppInfo> appInfos, mClick listener){
     super();
     this.context = context;
     this.appInfos =appInfos;
+    this.mClick_2 = listener;
     }
-    @Override
+
+
+
+        @Override
     public int getCount(){
         int count =0;
         if(appInfos!= null){
             return appInfos.size();
         }
         return count;
+        }
+
+
+        @Override
+    public Object getItem(int position){
+    return appInfos.get(position);
+
 
     }
-    @Override
-    public Object getItem(int position){
-    return null;
-    }
-    @Override
+        @Override
     public long getItemId(int position){
-        return 0;
+        return position;
     }
-    @Override
+
+
+
+        @Override
     public View getView(int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = LayoutInflater.from(context);
         ViewHolder holder;
@@ -58,25 +69,33 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
 
             holder.imageView.setBackground(appInfos.get(position).getDrawable());
             holder.textView.setText(appInfos.get(position).getAppName());
-            holder.button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("appInfoActivity", "click");
-                }
-            });
+            holder.button.setOnClickListener(this);
+            holder.button.setTag(position);
+
+            return convertView;
+        }
 
 
-        return convertView;
-
-
-    }
     private class ViewHolder{
         ImageView imageView;
         TextView textView;
         Button button;
     }
 
+
+    public interface mClick{
+        public void mClick_1(View v);
+    }//定义一个interface 的mClick类，声明一个方法：mClick_1
+
+
+    @Override
+    public void onClick(View v){
+        mClick_2.mClick_1(v);
+
+    }//在adapter中重写onClick方法，在onClick中调用自己定义的mClick_1,还要在activity中实现mClick方法
+//=======================================================
     
+
     //数据源是上面的appInfos.
     private final Object mLock = new Object();
     /*
@@ -95,6 +114,7 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable {
         }
     return mFilter;
     }
+
 
     public class ArrayFilter extends Filter{
         @Override
