@@ -4,6 +4,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,7 +25,7 @@ public class appInfoActivity extends AppCompatActivity implements mClick {
     ListView appInfoListView = null;
     List<AppInfo> appInfos = null;
     AppInfosAdapter infosAdapter = null;
-    List<AppInfo> apps_pre = null;
+    List<AppInfo> apps_list = null;
 
 
     @Override
@@ -68,11 +70,30 @@ public class appInfoActivity extends AppCompatActivity implements mClick {
     }
         @Override
         public void mClick_1 (View v){
-        Log.d("appInfoActivity","kkkkk");
+
+           // AppInfo name =infosAdapter.getItem(i);
+        Log.d("appInfoActivity","kkkk");
+
+
 
           }
+    public static final int text = 1;
+    private Handler handler = new Handler()
+    {
+        public void handleMessage(Message msg){
 
 
+        }
+    };
+    new Thread(new Runnable(){
+        @Override
+        public void run(){
+            Message message= new Message();
+            message.what= text;
+            handler.sendMessage(message);
+        }
+
+    }).start();
 
         public void updateUI(List<AppInfo> appinfos){
             if(null != appInfos){
