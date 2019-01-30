@@ -82,7 +82,7 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable, View.OnC
         Button button;
     }
 
-
+    //搞一个回调
     public interface mClick{
         public void mClick_1(View v);
     }//定义一个interface 的mClick类，声明一个方法：mClick_1
@@ -93,6 +93,11 @@ public class AppInfosAdapter extends BaseAdapter implements Filterable, View.OnC
         mClick_2.mClick_1(v);
 
     }//在adapter中重写onClick方法，在onClick中调用自己定义的mClick_1,还要在activity中实现mClick方法
+     /*public void setmLock(mClick mClick){
+         if (mClick_2 != null)
+             this.mClick_2 = mClick;
+
+     }*/
 //=======================================================
     
 

@@ -71,33 +71,19 @@ public class appInfoActivity extends AppCompatActivity implements mClick {
         @Override
         public void mClick_1 (View v){
 
-           // AppInfo name =infosAdapter.getItem(i);
-        Log.d("appInfoActivity","kkkk");
+
+
+        Log.i("appInfoActivity",v.toString());
 
 
 
           }
-    public static final int text = 1;
-    private Handler handler = new Handler()
-    {
-        public void handleMessage(Message msg){
 
 
-        }
-    };
-    new Thread(new Runnable(){
-        @Override
-        public void run(){
-            Message message= new Message();
-            message.what= text;
-            handler.sendMessage(message);
-        }
-
-    }).start();
 
         public void updateUI(List<AppInfo> appinfos){
             if(null != appInfos){
-                infosAdapter = new AppInfosAdapter(getApplication(), appInfos,this);
+                infosAdapter = new AppInfosAdapter(getApplication(), appInfos, this);
                 appInfoListView.setAdapter(infosAdapter);
             }
         }
