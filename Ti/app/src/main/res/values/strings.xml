@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ti</string>
+    <string name="back">返回</string>
+    <string name="searchbar">开始搜索</string>
+    <string name="duochuangkou">0</string>
+    <string name="web_text">网页标题</string>
+    <string name="one">第一个选项</string>
+    <string name="two">第二个选项</string>
+</resources>
