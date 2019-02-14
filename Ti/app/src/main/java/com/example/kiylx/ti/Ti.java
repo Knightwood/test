@@ -3,7 +3,6 @@ package com.example.kiylx.ti;
 import android.content.Context;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 public class Ti extends WebView {
     Ti next=null;
@@ -43,17 +42,17 @@ public class Ti extends WebView {
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
         //设置WebView的访问UserAgent
-       // settings.setUserAgentString(String string);
+        //settings.setUserAgentString(String string);
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能
         settings.setAppCacheEnabled(true);
         // 设置编码格式
         settings.setDefaultTextEncodingName("utf-8");
-    }
-        //*****************************
+        // 开启数据库缓存
+        settings.setDatabaseEnabled(true);
 
-        public Boolean should
+    }
 
 
 

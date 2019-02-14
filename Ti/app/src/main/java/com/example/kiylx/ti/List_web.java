@@ -22,21 +22,43 @@ public class List_web {
        return;
 
    }
-   public void delete(int i){
-
-       Ti temp1=get(i-1);
-       temp1.next=get(i+1);
+   void delete(int i){
+       Ti current=get(i);
+       if(i==0){
+           Ti tmp1=current.next;
+           current=null;
+           //+此处应该调用删除
+           changeNum(tmp1);
+       }else if(current.next==null){
+           current=null;
+           //+此处应该调用删除
+           Ti temp=get(i-1);
+           temp.next=null;
+       }else{
+       Ti temp=get(i-1);
+       temp.next=get(i+1);
+       current=null;
+       //+此处应该调用删除
+           }
+           return;
 
    }
-   public void delete1(){
 
-   }
    Ti get(int i){
        Ti temp=Root;
        for(;index!=i;index++){
            temp=temp.next;
        }
+       index=0;
        return temp;
 
+   }
+   private void changeNum(Ti tmp){
+       //保持webview的下标不会因为删除一个而断开
+       tmp.ii-=1;
+       if(tmp.next!=null){
+           changeNum(tmp.next);
+       }
+       return;
    }
 }
