@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     List_web group = new List_web();
-    int i=0;
+    //int i=0;//标记网页数
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,30 +26,35 @@ public class MainActivity extends AppCompatActivity {
         //执行搜索
 
     }
-	
+
 
     public Ti addWebview(String string){
         //new出一个webview，添加到相应的视图组，并且载入
-		LinearLayout temp = findViewById(R.id.fragment_group);
+        LinearLayout view_group = findViewById(R.id.fragment_group);
         Ti web = new Ti(this);
         web.setting(web);
         //给new出来的webview执行设置
-        group.add(i,web);
+         //group.add(i,web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
-        i=i+1;
-		temp.addView(web);
+
+		view_group.addView(web);
 		web.setWebViewClient(new CustomWebviewClient());
 		web.setWebChromeClient(new CustomWebchromeClient());
 		web.loadUrl(string);
         return web;
     }
 
-
+    int flsgs;
+    String sharchin="https://www.baidu.com/s?wd=";
+    EditText search;
+    String text;//搜索框里的内容
+    int page_flags;
 
     public void search(){
-        int flsgs;//表示这是网址，还是普通字符串
-    final EditText search =findViewById(R.id.edit);
-        search.addTextChangedListener(new TextWatcher() {
+        page_flags=0;//标记在同一个搜索框里搜索，这里为0，当第一次用这个搜索框搜索，标记为1。
+         search=findViewById(R.id.edit);
+         //search.set
+         search.addTextChangedListener(new TextWatcher() {
             //搜索框输入完成，后判断字符串，当按下回车键，开始搜索
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -56,25 +62,28 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                String temp = search.getText().toString();
+                //表示这是网址，还是普通字符串
+                text = search.getText().toString();
+                //Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
                 //文字键入完成后
-                if(temp.isEmpty()){
+                if(text.isEmpty()){
                     return;
-                }else if(temp.startsWith("http://")||temp.startsWith("https://"));{
+                }else if(text.startsWith("http://")||text.startsWith("https://")){
                     flsgs=0;
                 }else{
-
+                    flsgs=1;
                 }
                 search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if(actionId==EditorInfo.IME_ACTION_DONE){
-                            //+调用一个函数，判断是网址还是普通文字
-                            addWebview(temp);
+                            page_flags=1;
+                            if(flsgs==0){
+                                //+调用一个函数，判断是网址还是普通文字
+                                addWebview(text);
+                            }else {
+                                addWebview(sharchin+text);
+                            }
                             Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
 
                         }
@@ -83,9 +92,13 @@ public class MainActivity extends AppCompatActivity {
                 });//setOnEditorActionListener结束处
 
             }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
-    }
+    }/*
     @Override
     protected void onResume() {
         Ti t = group.get(i);
