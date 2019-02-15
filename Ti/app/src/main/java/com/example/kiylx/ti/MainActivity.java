@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
     public void search(){
         page_flags=0;//标记在同一个搜索框里搜索，这里为0，当第一次用这个搜索框搜索，标记为1。
          search=findViewById(R.id.edit);
-         //search.set
          search.addTextChangedListener(new TextWatcher() {
             //搜索框输入完成，后判断字符串，当按下回车键，开始搜索
             @Override
