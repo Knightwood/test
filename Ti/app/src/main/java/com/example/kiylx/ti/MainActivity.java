@@ -22,38 +22,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);//申请网络权限
-
-        search();
-        //执行搜索
+        addWebview();
+        searchbar();
+        //监听搜索框
 
     }
 
 
-    public Ti addWebview(String string){
+    public Ti addWebview(){
         //new出一个webview，添加到相应的视图组，并且载入
         LinearLayout view_group = findViewById(R.id.fragment_group);
         Ti web = new Ti(this);
         web.setting(web);
-        page=web.ii;
         //给new出来的webview执行设置
         group.add(i,web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
-
 		view_group.addView(web);
 		web.setWebViewClient(new CustomWebviewClient());
 		web.setWebChromeClient(new CustomWebchromeClient());
-		web.loadUrl(string);
         return web;
     }
 
-    int flsgs;
+    int flsgs;//表实是网址还是字符
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
     String text;//搜索框里的内容
-    //int page_flags;
 
-    public void search(){
-        //page_flags=0;//标记在同一个搜索框里搜索，这里为0，当第一次用这个搜索框搜索，标记为1。
+
+    public void searchbar(){
          search=findViewById(R.id.edit);
          search.addTextChangedListener(new TextWatcher() {
             //搜索框输入完成，后判断字符串，当按下回车键，开始搜索
@@ -86,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
                             if(flsgs==0){
                                 //+调用一个函数，判断是网址还是普通文字
-                                addWebview(text);
+                               search(text);
                             }else {
-                                addWebview(sharchin+text);
+                               search(sharchin+text);
                             }
                             Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
 
@@ -100,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    void search(String string){
+        addWebview().loadUrl(string);
     }
     public void dochuangkou(){
         //点击多窗口的加号，增加一个webview
