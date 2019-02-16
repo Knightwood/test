@@ -6,7 +6,7 @@ import android.webkit.WebView;
 
 public class Ti extends WebView {
     Ti next=null;
-    int ii=0;
+    int index;
     String url;
     String title;
     String search_text;
@@ -56,10 +56,5 @@ public class Ti extends WebView {
         settings.setDatabaseEnabled(true);
 
     }
-
-
-
-
-
 
 }

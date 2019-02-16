@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    WebStack webStack = new WebStack();
+    WebList webList = new WebList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         // 申请网络权限
 
         addWebview();
-        searchbar();
+        searchBar();
         //监听搜索框
 
     }
@@ -37,12 +38,18 @@ public class MainActivity extends AppCompatActivity {
         web.setting(web);
         //给new出来的webview执行设置
 
-        webStack.push(web);
+        webList.push(web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
 
 		view_group.addView(web);
 		web.setWebViewClient(new CustomWebviewClient());
 		web.setWebChromeClient(new CustomWebchromeClient());
+
+        TextView multPage = findViewById(R.id.multpage);
+        String cao = String.valueOf(webList.getAllnum());
+        multPage.setText(cao);
+        //给多窗口加上数字
+
         return web;
     }
 
@@ -51,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     String text;//搜索框里的内容
 
 
-    public void searchbar(){
+    public void searchBar(){
          search=findViewById(R.id.edit);
 
          search.addTextChangedListener(new TextWatcher() {
@@ -99,16 +106,16 @@ public class MainActivity extends AppCompatActivity {
     }
     void search(String string){
 
-        webStack.getTop().loadUrl(string);
+        webList.getTop().loadUrl(string);
     }
-    public void dochuangkou(){
-        //点击多窗口的加号，增加一个webview
 
+    public void multiplePage(View v){
+        Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
     }
     /*
     @Override
     protected void onResume() {
-        Ti t = webStack.get(i);
+        Ti t = WebList.get(i);
 
         super.onResume();
         t.onResume();
@@ -117,16 +124,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        webStack.get(i).onPause();
-        webStack.get(i).pauseTimers();
+        WebList.get(i).onPause();
+        WebList.get(i).pauseTimers();
     }
 /*
     @Override
     protected void onDestroy() {
-        Ti t = webStack.get(i);
+        Ti t = WebList.get(i);
         super.onDestroy();
         if (mRoot != null) {
-            mRoot.removeView(webStack.get(i));
+            mRoot.removeView(WebList.get(i));
         }
         if (t != null) {
             t.stopLoading();

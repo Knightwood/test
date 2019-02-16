@@ -61,6 +61,20 @@
         app:layout_constraintTop_toTopOf="@+id/toolbar"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/multpage"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="multiplePage"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edit"
+        app:layout_constraintEnd_toStartOf="@+id/settingButton"
+        app:layout_constraintTop_toTopOf="@+id/edit" />
+
     <ImageButton
         android:id="@+id/settingButton"
         android:layout_width="37dp"

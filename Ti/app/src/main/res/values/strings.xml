@@ -6,4 +6,5 @@
     <string name="web_text">网页标题</string>
     <string name="one">第一个选项</string>
     <string name="two">第二个选项</string>
+    <string name="multpage">99</string>
 </resources>
