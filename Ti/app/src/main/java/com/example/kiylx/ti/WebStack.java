@@ -1,27 +1,31 @@
 package com.example.kiylx.ti;
 
 
-public class List_web {
-   Ti Root;
+public class WebStack {
+   Ti Top;
    int index=0;
    //索引
-   List_web(){
+
+   WebStack(){
        this.index =0;
-       this.Root=null;
+       this.Top=null;
    }
-   void add(int i, Ti web){
-       if(index==i){
-           Root=web;
-           Root.ii=i;
-           index=0;
+
+   Ti getTop(){
+       return Top;
+   }
+
+   void push(Ti web){
+       if(Top==null){
+           Top=web;
            return;
-       }else {
-           index++;
-           add(i,web.next);
+       }else{
+           web.next=Top;
+           Top=web;
        }
        return;
-
    }
+
    void delete(int i){
        Ti current=get(i);
        if(i==0){
@@ -45,7 +49,7 @@ public class List_web {
    }
 
    Ti get(int i){
-       Ti temp=Root;
+       Ti temp=Top;
        for(;index!=i;index++){
            temp=temp.next;
        }
@@ -53,6 +57,7 @@ public class List_web {
        return temp;
 
    }
+
    private void changeNum(Ti tmp){
        //保持webview的下标不会因为删除一个而断开
        tmp.ii-=1;

@@ -6,14 +6,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    List_web group = new List_web();
+    WebStack webStack = new WebStack();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         web.setting(web);
         //给new出来的webview执行设置
 
-        group.add(0,web);
+        webStack.push(web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
 
 		view_group.addView(web);
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     }
     void search(String string){
 
-        addWebview().loadUrl(string);
+        webStack.getTop().loadUrl(string);
     }
     public void dochuangkou(){
         //点击多窗口的加号，增加一个webview
@@ -109,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     @Override
     protected void onResume() {
-        Ti t = group.get(i);
+        Ti t = webStack.get(i);
 
         super.onResume();
         t.onResume();
@@ -118,16 +117,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        group.get(i).onPause();
-        group.get(i).pauseTimers();
+        webStack.get(i).onPause();
+        webStack.get(i).pauseTimers();
     }
 /*
     @Override
     protected void onDestroy() {
-        Ti t = group.get(i);
+        Ti t = webStack.get(i);
         super.onDestroy();
         if (mRoot != null) {
-            mRoot.removeView(group.get(i));
+            mRoot.removeView(webStack.get(i));
         }
         if (t != null) {
             t.stopLoading();
