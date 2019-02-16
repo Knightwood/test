@@ -7,6 +7,9 @@ import android.webkit.WebView;
 public class Ti extends WebView {
     Ti next=null;
     int ii=0;
+    String url;
+    String title;
+    String search_text;
     public Ti(Context context){
         super (context);
     }
