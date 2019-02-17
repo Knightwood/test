@@ -105,12 +105,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
     void search(String string){
-
+        Ti temp;
         webList.getTop().loadUrl(string);
+        getInfromation(webList.getTop());//载入后获取url和标题
     }
 
     public void multiplePage(View v){
         Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
+        viewControl();
+    }
+    void viewControl(){
+        //控制使徒的显示和隐藏，code不同，就要有不同的处理方式
+        int code;
+    }
+
+    void getInfromation(Ti v){
+        v.url=v.getUrl();
+        //v.title=v.getTitle();
+        TextView url=findViewById(R.id.url);
+        //TextView title=findViewById(R.id.title);
+        url.setText(v.url);
+        //title.setText(v.title);
     }
     /*
     @Override
