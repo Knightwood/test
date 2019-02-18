@@ -113,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public void multiplePage(View v){
         Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
         viewControl();
+
     }
     void viewControl(){
         //控制使徒的显示和隐藏，code不同，就要有不同的处理方式
