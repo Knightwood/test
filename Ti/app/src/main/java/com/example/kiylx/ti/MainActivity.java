@@ -1,5 +1,6 @@
 package com.example.kiylx.ti;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -127,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
         //TextView title=findViewById(R.id.title);
         url.setText(v.url);
         //title.setText(v.title);
+    }
+    public void fuck() {
+
     }
     /*
     @Override
