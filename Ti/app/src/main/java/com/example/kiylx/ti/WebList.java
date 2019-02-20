@@ -61,4 +61,13 @@ public class WebList {
        }
    }
 
+    public Object get(int position) {
+       int i=0;
+       Ti temp=Top;
+       while(i!=position){
+           temp=temp.next;
+           i++;
+       }
+       return temp;
+    }
 }

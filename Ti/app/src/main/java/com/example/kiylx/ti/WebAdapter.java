@@ -21,12 +21,14 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public int getCount() {
-        return 0;
+
+        return list.allnum;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+
+        return list.get(position);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
         mshow.show();
     }
 
@@ -63,6 +66,6 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         ImageButton imageButton;
     }
     public interface showView{
-        public void show();
+        public void show(View v);
     }
 }

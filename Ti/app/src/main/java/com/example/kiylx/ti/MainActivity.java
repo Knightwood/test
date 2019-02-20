@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
 
+        WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
         addWebview();
         searchBar();
         //监听搜索框
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
     public void fuck() {
 
     }
-    public void show(){
+    public void show(View v){
 
     }
     /*
