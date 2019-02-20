@@ -12,7 +12,7 @@
         android:layout_height="35dp"
         android:text="TextView"
         android:textAlignment="viewStart"
-        android:textSize="24sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toStartOf="@+id/imageButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -30,12 +30,16 @@
         app:layout_constraintTop_toBottomOf="@+id/url"
         app:layout_constraintVertical_bias="0.0">
 
-        <ListView
-            android:id="@+id/pagelist"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
     </LinearLayout>
+
+    <ListView
+        android:id="@+id/pagelist"
+        android:layout_width="match_parent"
+        android:layout_height="684dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/url" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

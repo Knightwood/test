@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         //把new出来的webview放进List_web中，以供以后控制webview视图用
 
 		view_group.addView(web);
+		//addview(view,index),index控制显示的层级，index一共有0，1，2三层。
 		web.setWebViewClient(new CustomWebviewClient());
 		web.setWebChromeClient(new CustomWebchromeClient());
 
@@ -68,48 +69,29 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
 
     public void searchBar(){
          search=findViewById(R.id.edit);
+        //Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
+        //文字键入完成后
 
-         search.addTextChangedListener(new TextWatcher() {
-            //搜索框输入完成，后判断字符串，当按下回车键，开始搜索
-
+        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                //表示这是网址，还是普通字符串
-
-                text = search.getText().toString();
-                Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
-                //文字键入完成后
-
-                search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                        if(actionId==EditorInfo.IME_ACTION_DONE){
-                            if(text.isEmpty()){
-                                return false;
-                            }else if(text.startsWith("http://")||text.startsWith("https://")){
-                                search(text);
-                            }else{
-                                search(sharchin+text);
-                            }
-
-                            Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
-
-                        }
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId==EditorInfo.IME_ACTION_DONE){
+                    text = search.getText().toString();
+                    if(text.isEmpty()){
                         return false;
-
+                    }else if(text.startsWith("http://")||text.startsWith("https://")){
+                        search(text);
+                    }else{
+                        search(sharchin+text);
                     }
-                });//setOnEditorActionListener结束处
+
+                    Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
+
+                }
+                return false;
 
             }
-        });
+        });//setOnEditorActionListener结束处
 
     }
     void search(String string){
@@ -120,13 +102,15 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
 
     public void multiplePage(View v){
         Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
-        //viewControl();
+        //得调用viewControl();
 
         ListView viewk = findViewById(R.id.pagelist);
         //viewk是显示打开过网页的listview
+        TextView urlview = findViewById(R.id.url);
 
-        //webList.Top.setVisibility(View.GONE);//这条是设置现在显示的网页的可见性
-        viewk.setVisibility(View.GONE);
+        webList.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
+        viewk.setVisibility(View.VISIBLE);
+        urlview.setVisibility(View.INVISIBLE);
 
 
     }
