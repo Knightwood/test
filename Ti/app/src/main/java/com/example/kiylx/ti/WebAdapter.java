@@ -12,6 +12,7 @@ import android.content.Context;
 public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
     private WebList list;
+    private showView mshow;
 
     public WebAdapter(Context context,WebList list){
         this.context=context;
@@ -30,7 +31,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -54,11 +55,14 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-
+        mshow.show();
     }
 
     public class ViewHolder{
         TextView textView;
         ImageButton imageButton;
+    }
+    public interface showView{
+        public void show();
     }
 }

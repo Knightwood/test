@@ -3,9 +3,15 @@ package com.example.kiylx.ti;
 
 public class WebList {
    Ti Top;
-   int allnum=0;
-   //元素的个数，也是最顶部的元素
+    int allnum=0;
+    //元素的个数，也是最顶部的元素
     int yongyushanchu =0;
+
+    /*String url;
+    String title;
+    String search_text;*/
+
+
 
    WebList(){
        this.Top=null;

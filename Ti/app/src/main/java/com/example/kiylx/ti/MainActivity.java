@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements WebAdapter.showView {
     WebList webList = new WebList();
 
     @Override
@@ -130,6 +130,9 @@ public class MainActivity extends AppCompatActivity {
         //title.setText(v.title);
     }
     public void fuck() {
+
+    }
+    public void show(){
 
     }
     /*
