@@ -4,12 +4,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.LoginFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +26,8 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
 
-        WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
+
+
         addWebview();
         searchBar();
         //监听搜索框
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         String cao = String.valueOf(webList.getAllnum());
         multPage.setText(cao);
         //给多窗口加上数字
+
+        adapter();
 
         return web;
     }
@@ -113,8 +119,15 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
     }
 
     public void multiplePage(View v){
-        Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
-        viewControl();
+        Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
+        //viewControl();
+
+        ListView viewk = findViewById(R.id.pagelist);
+        //viewk是显示打开过网页的listview
+
+        //webList.Top.setVisibility(View.GONE);//这条是设置现在显示的网页的可见性
+        viewk.setVisibility(View.GONE);
+
 
     }
     void viewControl(){
@@ -133,8 +146,13 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
     public void fuck() {
 
     }
-    public void show(View v){
-
+    public void show(){
+        Log.d("回调","work well");
+    }
+    public void adapter(){
+        WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
+        ListView listView = findViewById(R.id.pagelist);
+        listView.setAdapter(adapter);
     }
     /*
     @Override

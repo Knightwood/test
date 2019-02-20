@@ -8,6 +8,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.content.Context;
 
+import java.util.List;
+
 
 public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
@@ -15,6 +17,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     private showView mshow;
 
     public WebAdapter(Context context,WebList list){
+        super();
         this.context=context;
         this.list=list;
     }
@@ -66,6 +69,6 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         ImageButton imageButton;
     }
     public interface showView{
-        public void show(View v);
+        public void show();
     }
 }
