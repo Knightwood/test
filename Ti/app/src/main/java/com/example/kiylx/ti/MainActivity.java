@@ -6,13 +6,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements WebAdapter.showView {
+public class MainActivity extends AppCompatActivity  {
     WebList webList = new WebList();
 
     @Override
@@ -21,12 +23,12 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         setContentView(R.layout.activity_main);
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
-
-
-
         addWebview();
         searchBar();
         //监听搜索框
+        back();
+        home();
+        show();
 
     }
 
@@ -122,16 +124,42 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
         url.setText(v.url);
         //title.setText(v.title);
     }
-    public void fuck() {
+    private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+           Ti web =webList.get(position);
+           web.setVisibility(View.INVISIBLE);
+        }
+    };//设置点击事件
 
-    }
     public void show(){
+        //多窗口页面的点击事件，用来显示点击到的网页
+        ListView listView = findViewById(R.id.pagelist);
+        listView.setOnItemClickListener(clickListener);
         Log.d("回调","work well");
     }
     public void adapter(){
         WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
         ListView listView = findViewById(R.id.pagelist);
         listView.setAdapter(adapter);
+    }
+    public void back(){
+        ImageButton imageButton=findViewById(R.id.backButton);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webList.Top.goBack();
+            }
+        });
+    }
+    public void home(){
+        ImageButton home=findViewById(R.id.homebutton);
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webList.Top.loadUrl("http://www.baidu.com");
+            }
+        });
     }
     /*
     @Override
