@@ -1,11 +1,7 @@
 package com.example.kiylx.ti;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.LoginFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -95,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements WebAdapter.showVi
 
     }
     void search(String string){
-        Ti temp;
         webList.getTop().loadUrl(string);
         getInfromation(webList.getTop());//载入后获取url和标题
     }
