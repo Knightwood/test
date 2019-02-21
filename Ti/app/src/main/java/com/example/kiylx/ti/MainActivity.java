@@ -103,11 +103,11 @@ public class MainActivity extends AppCompatActivity  {
 
         ListView viewk = findViewById(R.id.pagelist);
         //viewk是显示打开过网页的listview
-        TextView urlview = findViewById(R.id.url);
+        //TextView urlview = findViewById(R.id.url);
 
         webList.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
         viewk.setVisibility(View.VISIBLE);
-        urlview.setVisibility(View.INVISIBLE);
+        //urlview.setVisibility(View.INVISIBLE);
 
 
     }
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity  {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
            Ti web =webList.get(position);
            web.setVisibility(View.INVISIBLE);
+            Toast.makeText(MainActivity.this,"fuck you",Toast.LENGTH_SHORT).show();
         }
     };//设置点击事件
 
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity  {
         //多窗口页面的点击事件，用来显示点击到的网页
         ListView listView = findViewById(R.id.pagelist);
         listView.setOnItemClickListener(clickListener);
-        Log.d("回调","work well");
+
     }
     public void adapter(){
         WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
