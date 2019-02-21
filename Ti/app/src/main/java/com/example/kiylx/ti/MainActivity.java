@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity  {
         back();
         home();
         show();
-
     }
 
 
@@ -127,9 +126,13 @@ public class MainActivity extends AppCompatActivity  {
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            ListView pagelist = findViewById(R.id.pagelist);
+            pagelist.setVisibility(View.GONE);
            Ti web =webList.get(position);
-           web.setVisibility(View.INVISIBLE);
-            Toast.makeText(MainActivity.this,"fuck you",Toast.LENGTH_SHORT).show();
+           web.setVisibility(View.VISIBLE);
+
+
+           Toast.makeText(MainActivity.this,"fuck you",Toast.LENGTH_SHORT).show();
         }
     };//设置点击事件
 

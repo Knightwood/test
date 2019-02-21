@@ -10,7 +10,6 @@
         android:id="@+id/url"
         android:layout_width="413dp"
         android:layout_height="25dp"
-        android:layout_marginStart="2dp"
         android:singleLine="true"
         android:textAlignment="textStart"
         android:visibility="visible"
@@ -23,12 +22,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/url"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/url">
 
         <ListView
             android:id="@+id/pagelist"
@@ -40,24 +38,29 @@
             app:layout_constraintTop_toTopOf="@+id/url" />
     </LinearLayout>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="45dp" />
+
+    <ImageButton
+        android:id="@+id/homebutton"
+        android:layout_width="37dp"
         android:layout_height="45dp"
+        android:layout_marginStart="8dp"
         android:background="@color/cardview_shadow_end_color"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:srcCompat="?android:attr/listChoiceIndicatorSingle" />
 
     <EditText
         android:id="@+id/edit"
         style="@style/Widget.AppCompat.SearchView.ActionBar"
         android:layout_width="199dp"
         android:layout_height="45dp"
-        android:layout_marginStart="52dp"
+        android:layout_marginStart="8dp"
         android:autoLink="web"
         android:ems="10"
         android:hint="@string/searchbar"
@@ -67,46 +70,9 @@
         android:singleLine="true"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintStart_toEndOf="@+id/homebutton"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
         app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/multpage"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="12dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:onClick="multiplePage"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/edit"
-        app:layout_constraintEnd_toStartOf="@+id/settingButton"
-        app:layout_constraintTop_toTopOf="@+id/edit" />
-
-    <ImageButton
-        android:id="@+id/settingButton"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginEnd="16dp"
-        android:background="@color/cardview_shadow_end_color"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
-
-    <ImageButton
-        android:id="@+id/homebutton"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="7dp"
-        android:background="@color/cardview_shadow_end_color"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintStart_toStartOf="@+id/toolbar"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
-        app:srcCompat="?android:attr/listChoiceIndicatorSingle" />
 
     <ImageButton
         android:id="@+id/backButton"
@@ -117,7 +83,35 @@
         android:contentDescription="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/edit"
-        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
         app:srcCompat="?attr/actionModeCloseDrawable" />
+
+    <TextView
+        android:id="@+id/multpage"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="multiplePage"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/edit"
+        app:layout_constraintStart_toEndOf="@+id/backButton"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+    <ImageButton
+        android:id="@+id/settingButton"
+        android:layout_width="37dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="15dp"
+        android:background="@color/cardview_shadow_end_color"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/multpage"
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
 </android.support.constraint.ConstraintLayout>
