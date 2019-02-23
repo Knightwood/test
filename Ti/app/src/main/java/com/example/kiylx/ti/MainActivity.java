@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     public void multiplePage(View v){
+        //已经在layout里设置了click属性，所以这里是点击时调用的函数
         Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
         //得调用viewControl();
 
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity  {
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             ListView pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
            Ti web =webList.get(position);
@@ -138,13 +140,13 @@ public class MainActivity extends AppCompatActivity  {
 
     public void show(){
         //多窗口页面的点击事件，用来显示点击到的网页
-        ListView listView = findViewById(R.id.pagelist);
+        ListView listView = findViewById(R.id.list_web);
         listView.setOnItemClickListener(clickListener);
 
     }
     public void adapter(){
         WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
-        ListView listView = findViewById(R.id.pagelist);
+        ListView listView = findViewById(R.id.list_web);
         listView.setAdapter(adapter);
     }
     public void back(){
