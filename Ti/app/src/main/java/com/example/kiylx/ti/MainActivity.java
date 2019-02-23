@@ -2,8 +2,8 @@ package com.example.kiylx.ti;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity  {
-    WebList webList = new WebList();
+    WebList webList_data = new WebList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity  {
         web.setting(web);
         //给new出来的webview执行设置
 
-        webList.push(web);
+        webList_data.push(web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
 
 		view_group.addView(web);
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity  {
 		web.setWebChromeClient(new CustomWebchromeClient());
 
         TextView multPage = findViewById(R.id.multpage);
-        String cao = String.valueOf(webList.getAllnum());
+        String cao = String.valueOf(webList_data.getAllnum());
         multPage.setText(cao);
         //给多窗口加上数字
 
@@ -92,22 +92,22 @@ public class MainActivity extends AppCompatActivity  {
 
     }
     void search(String string){
-        webList.getTop().loadUrl(string);
-        getInfromation(webList.getTop());//载入后获取url和标题
+        webList_data.getTop().loadUrl(string);
+        getInfromation(webList_data.getTop());//载入后获取url和标题
     }
 
     public void multiplePage(View v){
         //已经在layout里设置了click属性，所以这里是点击时调用的函数
         Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
         //得调用viewControl();
-
         ListView viewk = findViewById(R.id.pagelist);
         //viewk是显示打开过网页的listview
         //TextView urlview = findViewById(R.id.url);
 
-        webList.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
+        webList_data.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
         viewk.setVisibility(View.VISIBLE);
         //urlview.setVisibility(View.INVISIBLE);
+
 
 
     }
@@ -123,16 +123,15 @@ public class MainActivity extends AppCompatActivity  {
         //TextView title=findViewById(R.id.title);
         url.setText(v.url);
         //title.setText(v.title);
-    }
+    }////////////////
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
             ListView pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
-           Ti web =webList.get(position);
-           web.setVisibility(View.VISIBLE);
 
+           Ti web = webList_data.get(position);
+           web.setVisibility(View.VISIBLE);
 
            Toast.makeText(MainActivity.this,"fuck you",Toast.LENGTH_SHORT).show();
         }
@@ -140,21 +139,22 @@ public class MainActivity extends AppCompatActivity  {
 
     public void show(){
         //多窗口页面的点击事件，用来显示点击到的网页
-        ListView listView = findViewById(R.id.list_web);
+        ListView listView = findViewById(R.id.pagelist);
         listView.setOnItemClickListener(clickListener);
 
-    }
+    }///////////////////
     public void adapter(){
-        WebAdapter adapter = new WebAdapter(MainActivity.this,webList);
-        ListView listView = findViewById(R.id.list_web);
+        WebAdapter adapter = new WebAdapter(MainActivity.this, webList_data);
+        ListView listView = findViewById(R.id.pagelist);
         listView.setAdapter(adapter);
+
     }
     public void back(){
         ImageButton imageButton=findViewById(R.id.backButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webList.Top.goBack();
+                webList_data.Top.goBack();
             }
         });
     }
@@ -163,9 +163,19 @@ public class MainActivity extends AppCompatActivity  {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                webList.Top.loadUrl("http://www.baidu.com");
+                webList_data.Top.loadUrl("http://www.baidu.com");
+                //addview1();//此行为测试加载特定layout用
             }
         });
+
+    }
+    public void addview1(){
+        //测试把另外的layout加载进特定位置
+        LinearLayout fragment_group=findViewById(R.id.fragment_group);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
+        View view=inflater.inflate(R.layout.pagelist,null,false);
+        fragment_group.addView(view,1);
     }
     /*
     @Override
