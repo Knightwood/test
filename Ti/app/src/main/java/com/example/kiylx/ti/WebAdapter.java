@@ -51,7 +51,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(list.Top.url);
+        holder.textView.setText(list.get(position).title);
         holder.imageButton.setOnClickListener(this);
         holder.imageButton.setTag(position);
         return convertView;

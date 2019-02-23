@@ -16,6 +16,11 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity  {
     WebList webList_data = new WebList();
+    String sharchin="https://www.baidu.com/s?wd=";
+    EditText search;
+    String text;//搜索框里的内容
+    Boolean multflag=true;//multflag决定多标签页的显示和隐藏
+    ListView pagelist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,10 +64,6 @@ public class MainActivity extends AppCompatActivity  {
         return web;
     }
 
-    String sharchin="https://www.baidu.com/s?wd=";
-    EditText search;
-    String text;//搜索框里的内容
-
 
     public void searchBar(){
          search=findViewById(R.id.edit);
@@ -96,21 +97,43 @@ public class MainActivity extends AppCompatActivity  {
         getInfromation(webList_data.getTop());//载入后获取url和标题
     }
 
+
     public void multiplePage(View v){
         //已经在layout里设置了click属性，所以这里是点击时调用的函数
         Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
         //得调用viewControl();
-        ListView viewk = findViewById(R.id.pagelist);
-        //viewk是显示打开过网页的listview
-        //TextView urlview = findViewById(R.id.url);
+        pagelist = findViewById(R.id.pagelist);
+        //multflag的真触发显示和假来触发隐藏
+        if(multflag){
+            //pagelist是显示打开过网页的listview
+            //TextView urlview = findViewById(R.id.url);
 
-        webList_data.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
-        viewk.setVisibility(View.VISIBLE);
-        //urlview.setVisibility(View.INVISIBLE);
+            webList_data.Top.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
+            pagelist.setVisibility(View.VISIBLE);
+            //urlview.setVisibility(View.INVISIBLE);
+            multflag=false;
 
+        }else{
+            pagelist.setVisibility(View.GONE);
+            webList_data.Top.setVisibility(View.VISIBLE);
+            multflag=true;
 
+        }
+    }//这里还缺一个在打开多窗口页面时处理返回键的方法，可以用multflag来做点事情
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //return super.onKeyDown(keyCode, event);
+        if(keyCode==KeyEvent.KEYCODE_BACK&!multflag){
+            pagelist = findViewById(R.id.pagelist);
+            pagelist.setVisibility(View.GONE);
+            webList_data.Top.setVisibility(View.VISIBLE);
+            multflag=true;
+        }
+        //这里还要处理其他的返回事件
+        return false;
     }
+
     void viewControl(){
         //控制使徒的显示和隐藏，code不同，就要有不同的处理方式
         int code;
@@ -127,7 +150,7 @@ public class MainActivity extends AppCompatActivity  {
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            ListView pagelist = findViewById(R.id.pagelist);
+            pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
 
            Ti web = webList_data.get(position);
@@ -139,14 +162,14 @@ public class MainActivity extends AppCompatActivity  {
 
     public void show(){
         //多窗口页面的点击事件，用来显示点击到的网页
-        ListView listView = findViewById(R.id.pagelist);
-        listView.setOnItemClickListener(clickListener);
+        pagelist = findViewById(R.id.pagelist);
+        pagelist.setOnItemClickListener(clickListener);
 
     }///////////////////
     public void adapter(){
         WebAdapter adapter = new WebAdapter(MainActivity.this, webList_data);
-        ListView listView = findViewById(R.id.pagelist);
-        listView.setAdapter(adapter);
+        pagelist = findViewById(R.id.pagelist);
+        pagelist.setAdapter(adapter);
 
     }
     public void back(){
