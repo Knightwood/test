@@ -123,15 +123,15 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        //return super.onKeyDown(keyCode, event);
         if(keyCode==KeyEvent.KEYCODE_BACK&!multflag){
             pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
             webList_data.Top.setVisibility(View.VISIBLE);
             multflag=true;
+            return false;
         }
-        //这里还要处理其他的返回事件
-        return false;
+        //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
+        return super.onKeyDown(keyCode, event);
     }
 
     void viewControl(){
