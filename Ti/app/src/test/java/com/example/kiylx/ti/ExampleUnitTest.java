@@ -31,15 +31,7 @@ public class ExampleUnitTest {
 　　切换页面：按到相应的webview，就要隐藏多窗口页面，展示按到的webview.
              且，要根据保存起来的信息，把网址，当时的搜索框内容重新填充。
 
-　　Ti extends webview：
-
-　　　　int　index   ：代表这是第几个网页
-
-　　　　Srting search text :保存搜索框内容
-
-　　　　Srting wangzhi：保存网址
-
-　　　　Srting biaoti：保存标题
+　　
 
 　　最顶部展示网页网址或者标题，按下时复制到剪贴板
 */

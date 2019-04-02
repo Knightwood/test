@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity  {
     /*
     @Override
     protected void onResume() {
-        Ti t = WebList.get(i);
+        WebView t = WebList.get(i).t;
 
         super.onResume();
         t.onResume();
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity  {
 /*
     @Override
     protected void onDestroy() {
-        Ti t = WebList.get(i);
+        WebView t = WebList.get(i).t;
         super.onDestroy();
         if (mRoot != null) {
             mRoot.removeView(WebList.get(i));
