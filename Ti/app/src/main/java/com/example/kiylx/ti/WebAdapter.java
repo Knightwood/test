@@ -24,7 +24,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     @Override
     public int getCount() {
 
-        return list.allnum;
+        return list.num;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         }else{
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(list.get(position).title);
+        holder.textView.setText(list.get(position).getTitle());
         holder.imageButton.setOnClickListener(this);
         holder.imageButton.setTag(position);
         return convertView;

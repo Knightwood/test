@@ -1,6 +1,8 @@
 package com.example.kiylx.ti;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
@@ -10,14 +12,28 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import static android.support.v4.content.ContextCompat.startActivity;
+
 public class CustomWebviewClient extends WebViewClient {
     /**
      * 是否在 WebView 内加载页面
      *
      */
     @Override
-    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request){
-        return false;
+    public boolean shouldOverrideUrlLoading(WebView view, String url){
+        //WebResourceRequest request
+        //return false;
+        try {
+            if (url.startsWith("http:") || url.startsWith("https:")) {
+                view.loadUrl(url);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                //startActivity(intent);
+            }
+            return true;
+        } catch (Exception e){
+            return false;
+        }
     }
     /**
      * 当WebView得页面Scale值发生改变时回调
@@ -36,6 +52,7 @@ public class CustomWebviewClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         super.onPageStarted(view, url, favicon);
+
     }
 
     /**
