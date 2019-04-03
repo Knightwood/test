@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.content.Context;
 
@@ -14,6 +15,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     private Context context;
     private WebList list;
     //private showView mshow;
+    private ListView listview;
 
     public WebAdapter(Context context,WebList list){
         super();
@@ -66,6 +68,19 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
     public class ViewHolder{
         TextView textView;
         ImageButton imageButton;
+    }
+
+    public void updatelist(int position){
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        listview=(ListView) layoutInflater.inflate(R.id.pagelist,null);
+        int firstvisable = listview.getFirstVisiblePosition();
+        int lestvisable = listview.getLastVisiblePosition();
+        if(position>=firstvisable && position<=lestvisable){
+            /*
+            * position如果在手机屏幕上可显示范围内(firstvisable-lestvisable)调用getview触发数据更新.*/
+            View view = listview.getChildAt(position-firstvisable);
+            getView(position,view,listview);
+        }
     }
     /*public interface showView{
         void show();

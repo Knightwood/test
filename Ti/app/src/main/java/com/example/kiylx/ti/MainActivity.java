@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity  {
         TextView title=findViewById(R.id.title);
         //url.setText(v.getUrl());
         title.setText(v.getTitle());
+        adapter();
     }
 
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
