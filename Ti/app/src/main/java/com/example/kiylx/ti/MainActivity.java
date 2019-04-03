@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -47,14 +48,20 @@ public class MainActivity extends AppCompatActivity  {
 
         set1(web);
         //给new出来的webview执行设置
+        //web.setWebViewClient(new CustomWebviewClient());
+        web.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url){
+                getInfromation(webList_data.getTop());
+            }
+        });
+        web.setWebChromeClient(new CustomWebchromeClient());
 
         webList_data.push(web);
         //把new出来的webview放进List_web中，以供以后控制webview视图用
 
 		view_group.addView(web);
 		//addview(view,index),index控制显示的层级，index一共有0，1，2三层。
-		web.setWebViewClient(new CustomWebviewClient());
-		web.setWebChromeClient(new CustomWebchromeClient());
 
         TextView multPage = findViewById(R.id.multpage);
         String cao = String.valueOf(webList_data.getAllnum());
@@ -142,13 +149,12 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     void getInfromation(WebView v){
-        // v.url=v.getUrl();
-        //v.title=v.getTitle();
-        TextView url=findViewById(R.id.url);
-        //TextView title=findViewById(R.id.title);
-        url.setText(v.getUrl());
-        //title.setText(v.title);
-    }////////////////
+        //TextView url=findViewById(R.id.url);
+        TextView title=findViewById(R.id.title);
+        //url.setText(v.getUrl());
+        title.setText(v.getTitle());
+    }
+
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
