@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity  {
         LinearLayout fragment_group=findViewById(R.id.fragment_group);
         LayoutInflater inflater = LayoutInflater.from(this);
         //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
-        View view=inflater.inflate(R.layout.pagelist,null,false);
+        View view=inflater.inflate(R.layout.fragment_window,null,false);
         fragment_group.addView(view,1);
     }
 
