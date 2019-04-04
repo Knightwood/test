@@ -1,5 +1,7 @@
 package com.example.kiylx.ti;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -200,6 +202,13 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+    }
+    public void windowclick(){
+        FragmentManager fragmentManager= getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        Fragment_Wondow fragment_wondow= new Fragment_Wondow();
+        fragmentTransaction.add(R.id.fragment_group,fragment_wondow);
+        fragmentTransaction.commit();
     }
     public void addview1(){
         //测试把另外的layout加载进特定位置
