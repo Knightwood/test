@@ -5,6 +5,11 @@ import android.webkit.WebView;
 
 public class WebList {
 
+    /*public boolean isEmpty() {
+        if(Top==null)
+            return true;
+    }*/
+
     class node{
         WebView t;
         node next;
@@ -68,6 +73,20 @@ public class WebList {
            getI(j).next=getI(i+1);
            getI(i).t.destroy();
        }
+   }
+
+   public int getpos(WebView web){
+        int i=0;
+        node temp=Top;
+           while (i<=num){
+               if(web==Top.t){
+                   return i;
+               }else {
+                   temp=Top.next;
+                   i++;
+               }
+           }
+           return i;
    }
 
      public WebView get(int position) {

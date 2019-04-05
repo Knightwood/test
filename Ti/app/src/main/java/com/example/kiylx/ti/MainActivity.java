@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity  {
     String text;//搜索框里的内容
     Boolean multflag=true;//multflag决定多标签页的显示和隐藏
     ListView pagelist;
+    WebAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onPageFinished(WebView view, String url){
                 getInfromation(webList_data.getTop());
+                //adapter.updatelist();
             }
         });
         web.setWebChromeClient(new CustomWebchromeClient());
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK&!multflag){
+        if(keyCode==KeyEvent.KEYCODE_BACK&&multflag){
             pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
             webList_data.Top.t.setVisibility(View.VISIBLE);
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity  {
         TextView title=findViewById(R.id.title);
         //url.setText(v.getUrl());
         title.setText(v.getTitle());
-        adapter();
+       //adapter.updatelist();
     }
 
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity  {
 
     }///////////////////
     public void adapter(){
-        WebAdapter adapter = new WebAdapter(MainActivity.this, webList_data);
+        adapter = new WebAdapter(MainActivity.this, webList_data);
         pagelist = findViewById(R.id.pagelist);
         pagelist.setAdapter(adapter);
 

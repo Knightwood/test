@@ -3,6 +3,7 @@ package com.example.kiylx.ti;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -40,6 +41,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         return position;
     }
 
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater layoutInflater =LayoutInflater.from(context);
@@ -70,7 +72,10 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         ImageButton imageButton;
     }
 
-    public void updatelist(int position){
+    public void updatelist(){
+        updatee(list.getpos(list.Top.t));
+    }
+    private void updatee(int position){
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         listview=(ListView) layoutInflater.inflate(R.id.pagelist,null);
         int firstvisable = listview.getFirstVisiblePosition();
