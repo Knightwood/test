@@ -51,14 +51,8 @@ public class MainActivity extends AppCompatActivity  {
 
         set1(web);
         //给new出来的webview执行设置
-        //web.setWebViewClient(new CustomWebviewClient());
-        web.setWebViewClient(new WebViewClient(){
-            @Override
-            public void onPageFinished(WebView view, String url){
-                getInfromation(webList_data.getTop());
-                //adapter.updatelist();
-            }
-        });
+        web.setWebViewClient(new CustomWebviewClient());
+
         web.setWebChromeClient(new CustomWebchromeClient());
 
         webList_data.push(web);
@@ -106,8 +100,16 @@ public class MainActivity extends AppCompatActivity  {
 
     }
     void search(String string){
-        webList_data.getTop().loadUrl(string);
-        getInfromation(webList_data.getTop());//载入后获取url和标题
+        WebView temp=webList_data.getTop();
+        temp.loadUrl(string);
+        //getInfromation(webList_data.getTop());//载入后获取url和标题
+        temp.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url){
+                getInfromation(webList_data.getTop());
+
+            }
+        });
     }
 
 
@@ -125,6 +127,9 @@ public class MainActivity extends AppCompatActivity  {
             pagelist.setVisibility(View.VISIBLE);
             //urlview.setVisibility(View.INVISIBLE);
             multflag=false;
+
+            adapter.notifyDataSetChanged();
+            //要保持list和adapter的数据同步
 
         }else{
             pagelist.setVisibility(View.GONE);
@@ -157,7 +162,7 @@ public class MainActivity extends AppCompatActivity  {
         TextView title=findViewById(R.id.title);
         //url.setText(v.getUrl());
         title.setText(v.getTitle());
-       //adapter.updatelist();
+
     }
 
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
@@ -166,15 +171,17 @@ public class MainActivity extends AppCompatActivity  {
             pagelist = findViewById(R.id.pagelist);
             pagelist.setVisibility(View.GONE);
 
-           WebView web = webList_data.get(position);
+           WebView web = webList_data.get(position);//listview单个条目
            web.setVisibility(View.VISIBLE);
 
-           Toast.makeText(MainActivity.this,"fuck you",Toast.LENGTH_SHORT).show();
+
+
+           Toast.makeText(MainActivity.this,"fuck off",Toast.LENGTH_SHORT).show();
         }
-    };//设置点击事件
+    };//设置多窗口页面中单个条目的点击事件
 
     public void show(){
-        //多窗口页面的点击事件，用来显示点击到的网页
+        //多窗口页面中单个条目的点击事件，用来显示点击到的网页
         pagelist = findViewById(R.id.pagelist);
         pagelist.setOnItemClickListener(clickListener);
 
