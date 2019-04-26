@@ -24,6 +24,7 @@ public class WebList {
     int num=0;
     //元素的个数，也是最顶部的元素
     int yongyushanchu =0;
+
     WebList(){
        this.Top=null;
        this.num=0;

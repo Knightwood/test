@@ -18,8 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.kiylx.ti.Fragment_Wondow.getdataInterface;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements getdataInterface {
     WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-    public void multiplePage(View v){
+    /*public void multiplePage(View v){
         //已经在layout里设置了click属性，所以这里是点击时调用的函数
         Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
         //得调用viewControl();
@@ -138,6 +139,10 @@ public class MainActivity extends AppCompatActivity  {
 
         }
     }//这里还缺一个在打开多窗口页面时处理返回键的方法，可以用multflag来做点事情
+    */
+    public void multiplePage(View v){
+        windowclick();
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -226,6 +231,11 @@ public class MainActivity extends AppCompatActivity  {
         //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
         View view=inflater.inflate(R.layout.fragment_window,null,false);
         fragment_group.addView(view,1);
+    }
+
+    @Override
+    public WebList getWebList_data(){
+        return webList_data;
     }
 
     //webview的设置
