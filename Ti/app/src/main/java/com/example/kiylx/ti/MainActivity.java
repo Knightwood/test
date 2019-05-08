@@ -1,5 +1,6 @@
 package com.example.kiylx.ti;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +15,7 @@ import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,19 +36,22 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
         setContentView(R.layout.activity_main);
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
+        windowclick();
         addWebview();
         searchBar();
         //监听搜索框
         back();
         home();
         show();
+
+
     }
 
 
     public WebView addWebview(){
         //new出一个webview，添加到相应的视图组，并且载入
 
-        LinearLayout view_group = findViewById(R.id.fragment_group);
+        FrameLayout view_group = findViewById(R.id.fragment_group);
         WebView web = new WebView(this);
 
         set1(web);
@@ -121,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
         pagelist = findViewById(R.id.pagelist);
         //multflag的真触发显示和假来触发隐藏
         if(multflag){
+        //multflag是真则隐藏网页，显示多窗口
             //pagelist是显示打开过网页的listview
             //TextView urlview = findViewById(R.id.url);
 
@@ -141,7 +146,14 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
     }//这里还缺一个在打开多窗口页面时处理返回键的方法，可以用multflag来做点事情
     */
     public void multiplePage(View v){
-        windowclick();
+        if(multflag){
+
+            multflag=false;
+        }else{
+
+            multflag=true;
+        }
+
     }
 
     @Override
@@ -226,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
     }
     public void addview1(){
         //测试把另外的layout加载进特定位置
-        LinearLayout fragment_group=findViewById(R.id.fragment_group);
+        FrameLayout fragment_group=findViewById(R.id.fragment_group);
         LayoutInflater inflater = LayoutInflater.from(this);
         //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
         View view=inflater.inflate(R.layout.fragment_window,null,false);
