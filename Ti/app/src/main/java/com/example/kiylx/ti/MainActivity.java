@@ -1,6 +1,5 @@
 package com.example.kiylx.ti;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,9 +18,10 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.kiylx.ti.Fragment_Wondow.getdataInterface;
+//import com.example.kiylx.ti.Fragment_web.getdataInterface;
+import com.example.kiylx.ti.Fragment_web.webSet;
 
-public class MainActivity extends AppCompatActivity implements getdataInterface {
+public class MainActivity extends AppCompatActivity implements webSet {
     WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
         setContentView(R.layout.activity_main);
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
-        windowclick();
-        addWebview();
+        addwebpage();
+        //addWebview();
         searchBar();
         //监听搜索框
         back();
@@ -46,7 +46,10 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
 
 
     }
-
+    @Override
+    public void setting(WebView vi){
+        //setWebViewClient(vi);
+    }
 
     public WebView addWebview(){
         //new出一个webview，添加到相应的视图组，并且载入
@@ -229,11 +232,11 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
         });
 
     }
-    public void windowclick(){
+    public void addwebpage(){
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        Fragment_Wondow fragment_wondow= new Fragment_Wondow();
-        fragmentTransaction.add(R.id.fragment_group,fragment_wondow);
+        Fragment_web fragment_web = new Fragment_web();
+        fragmentTransaction.add(R.id.fragment_group, fragment_web);
         fragmentTransaction.commit();
     }
     public void addview1(){
@@ -245,10 +248,10 @@ public class MainActivity extends AppCompatActivity implements getdataInterface 
         fragment_group.addView(view,1);
     }
 
-    @Override
+    /*@Override
     public WebList getWebList_data(){
         return webList_data;
-    }
+    }*/
 
     //webview的设置
     void set1(WebView ti){

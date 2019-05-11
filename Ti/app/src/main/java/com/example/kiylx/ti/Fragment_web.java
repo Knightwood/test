@@ -6,22 +6,40 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
-public class Fragment_Wondow extends Fragment {
+public class Fragment_web extends Fragment {
     WebAdapter adapter;
     WebList listData= new WebList();
-    private getdataInterface gett;
+    //private getdataInterface gett;
+    private webSet set1;
+    public WebView webView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_window,container,false);
-        ListView listView = view.findViewById(R.id.list_item);
 
-
-        adapter = new WebAdapter(getActivity(),listData);
-        //listView.setAdapter(adapter);
+        webView = new WebView(getActivity());
+        FrameLayout webgroup = view.findViewById(R.id.webview_page);
+        webgroup.addView(webView);
+        webView.loadUrl("http://www.baidu.com");
         return view;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        set1 = (webSet) context;
+        set1.setting(webView);
+    }
+
+    public interface webSet{
+        public void setting(WebView vi);
+    }
+    /*
     @Override
     public void onAttach(Context context){
         super.onAttach(context);
@@ -31,6 +49,7 @@ public class Fragment_Wondow extends Fragment {
     public interface getdataInterface {
         public WebList getWebList_data();
     }
+*/
 
 
 
