@@ -18,10 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-//import com.example.kiylx.ti.Fragment_web.getdataInterface;
-import com.example.kiylx.ti.Fragment_web.webSet;
 
-public class MainActivity extends AppCompatActivity implements webSet {
+public class MainActivity extends AppCompatActivity {
     WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
@@ -46,10 +44,7 @@ public class MainActivity extends AppCompatActivity implements webSet {
 
 
     }
-    @Override
-    public void setting(WebView vi){
-        //setWebViewClient(vi);
-    }
+
 
     public WebView addWebview(){
         //new出一个webview，添加到相应的视图组，并且载入
@@ -254,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements webSet {
     }*/
 
     //webview的设置
-    void set1(WebView ti){
+    WebView set1(WebView ti){
 
         ti.canGoBack();
         ti.canGoForward();
@@ -293,6 +288,7 @@ public class MainActivity extends AppCompatActivity implements webSet {
         settings.setDefaultTextEncodingName("utf-8");
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
+        return ti;
 
     }
     /*
