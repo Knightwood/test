@@ -1,5 +1,6 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.activity;
 
+import android.databinding.DataBindingUtil;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.WebList;
+import com.example.kiylx.ti.adapter.WebAdapter;
+import com.example.kiylx.ti.bean.UserBean;
+import com.example.kiylx.ti.databinding.ActivityMainBinding;
+import com.example.kiylx.ti.fragment.Fragment_web;
+import com.example.kiylx.ti.webClient.CustomWebchromeClient;
+import com.example.kiylx.ti.webClient.CustomWebviewClient;
+
 public class MainActivity extends AppCompatActivity {
     WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
@@ -31,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        UserBean userBean = new UserBean("whye",7);
+        binding.setUser(userBean);
+
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
         addwebpage();
@@ -40,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         //监听搜索框
         back();
         home();
-        show();
+
 
 
     }
@@ -64,14 +77,19 @@ public class MainActivity extends AppCompatActivity {
 		view_group.addView(web);
 		//addview(view,index),index控制显示的层级，index一共有0，1，2三层。
 
-        TextView multPage = findViewById(R.id.multpage);
+        TextView multPage = findViewById(R.id.pagecount);
         String cao = String.valueOf(webList_data.getAllnum());
         multPage.setText(cao);
         //给多窗口加上数字
 
-        adapter();
-
         return web;
+    }
+    public void addwebpage(){
+        FragmentManager fragmentManager= getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        Fragment_web fragment_web = new Fragment_web();
+        fragmentTransaction.add(R.id.fragment_group, fragment_web);
+        fragmentTransaction.commit();
     }
 
 
@@ -167,10 +185,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    void viewControl(){
-        //控制使徒的显示和隐藏，code不同，就要有不同的处理方式
-        int code;
-    }
 
     void getInfromation(WebView v){
         //TextView url=findViewById(R.id.url);
@@ -179,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         title.setText(v.getTitle());
 
     }
-
+/*
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -195,18 +209,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };//设置多窗口页面中单个条目的点击事件
 
-    public void show(){
-        //多窗口页面中单个条目的点击事件，用来显示点击到的网页
-        pagelist = findViewById(R.id.pagelist);
-        pagelist.setOnItemClickListener(clickListener);
 
-    }///////////////////
     public void adapter(){
         adapter = new WebAdapter(MainActivity.this, webList_data);
         pagelist = findViewById(R.id.pagelist);
         pagelist.setAdapter(adapter);
 
     }
+    public void show(){
+        //多窗口页面中单个条目的点击事件，用来显示点击到的网页
+        pagelist = findViewById(R.id.pagelist);
+        pagelist.setOnItemClickListener(clickListener);
+
+    }*/
     public void back(){
         ImageButton imageButton=findViewById(R.id.backButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -227,26 +242,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-    public void addwebpage(){
-        FragmentManager fragmentManager= getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        Fragment_web fragment_web = new Fragment_web();
-        fragmentTransaction.add(R.id.fragment_group, fragment_web);
-        fragmentTransaction.commit();
-    }
-    public void addview1(){
-        //测试把另外的layout加载进特定位置
-        FrameLayout fragment_group=findViewById(R.id.fragment_group);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
-        View view=inflater.inflate(R.layout.fragment_window,null,false);
-        fragment_group.addView(view,1);
-    }
-
-    /*@Override
-    public WebList getWebList_data(){
-        return webList_data;
-    }*/
 
     //webview的设置
     WebView set1(WebView ti){
@@ -291,6 +286,22 @@ public class MainActivity extends AppCompatActivity {
         return ti;
 
     }
+    /*
+    public void addview1(){
+        //测试把另外的layout加载进特定位置
+        FrameLayout fragment_group=findViewById(R.id.fragment_group);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
+        View view=inflater.inflate(R.layout.fragment_window,null,false);
+        fragment_group.addView(view,1);
+    }
+
+    @Override
+    public WebList getWebList_data(){
+        return webList_data;
+    }*/
+
+
     /*
     @Override
     protected void onResume() {

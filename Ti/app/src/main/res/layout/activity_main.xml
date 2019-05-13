@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+    <data>
+        <variable
+        name="user"
+        type="com.example.kiylx.ti.bean.UserBean" />
+    </data>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        android:singleLine="true"
-        android:textAlignment="textStart"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/fragment_group"
@@ -26,8 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ListView
             android:id="@+id/pagelist"
@@ -89,7 +84,7 @@
         app:srcCompat="?attr/actionModeCloseDrawable" />
 
     <TextView
-        android:id="@+id/multpage"
+        android:id="@+id/pagecount"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_marginStart="10dp"
@@ -98,6 +93,7 @@
         android:onClick="multiplePage"
         android:textAlignment="center"
         android:textSize="24sp"
+        android:text="@{String.valueOf(user.cint)}"
         app:layout_constraintBottom_toBottomOf="@+id/edit"
         app:layout_constraintStart_toEndOf="@+id/backButton"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
@@ -112,8 +108,9 @@
         android:background="@color/cardview_shadow_end_color"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/multpage"
+        app:layout_constraintStart_toEndOf="@+id/pagecount"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
         app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
 
 </android.support.constraint.ConstraintLayout>
+</layout>

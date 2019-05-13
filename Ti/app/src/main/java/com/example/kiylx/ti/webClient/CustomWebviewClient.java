@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.webClient;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

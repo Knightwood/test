@@ -10,34 +10,34 @@ public class WebList {
             return true;
     }*/
 
-    class node{
-        WebView t;
-        node next;
+    public class node{
+        public WebView t;
+        public node next;
         int id;
-        node(WebView v){
+        public node(WebView v){
             this.t=v;
             this.next=null;
         }
     }
 
-    node Top;
-    int num=0;
+    public node Top;
+    public int num=0;
     //元素的个数，也是最顶部的元素
     int yongyushanchu =0;
 
-    WebList(){
+    public WebList(){
        this.Top=null;
        this.num=0;
    }
 
-    WebView getTop(){
+    public WebView getTop(){
        return this.Top.t;
    }
-    int getAllnum(){
+    public int getAllnum(){
         return num;
     }
 
-    void push(WebView web){
+    public void push(WebView web){
         this.Top=add(this.Top,web);
     }
 
@@ -55,7 +55,7 @@ public class WebList {
        return ro;
    }
 
-    node getI(int i){
+    public node getI(int i){
        node current=Top;
        node perient;
        while (i!=yongyushanchu){
@@ -68,7 +68,7 @@ public class WebList {
        return current;
    }
 
-    void delete(int i){
+    public void delete(int i){
        int j=0;
        while(i-1==j){
            getI(j).next=getI(i+1);

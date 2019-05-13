@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.content.Context;
 
+import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.WebList;
 
 
 public class WebAdapter extends BaseAdapter implements View.OnClickListener {
