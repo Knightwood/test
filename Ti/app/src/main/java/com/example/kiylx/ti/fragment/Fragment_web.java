@@ -1,7 +1,11 @@
 package com.example.kiylx.ti.fragment;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.model.CuViewModel;
 
 public class Fragment_web extends Fragment {
 
@@ -18,13 +23,21 @@ public class Fragment_web extends Fragment {
     //private getdataInterface gett;
     private create createweb;
     WebView ff;
+    private CuViewModel vmodel;
 
+    @Override
+    public void onCreate(@Nullable Bundle saveInstanceState){
+        super.onCreate(saveInstanceState);
+        vmodel = ViewModelProviders.of(getActivity()).get(CuViewModel.class);
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_window,container,false);
         FrameLayout frameLayout = view.findViewById(R.id.webview_page);
         ff.loadUrl("http://www.baidu.com");
         frameLayout.addView(ff);
+        //vmodel.getWebViewlist().observe(this,ArrayList<View>);
 
         return view;
     }

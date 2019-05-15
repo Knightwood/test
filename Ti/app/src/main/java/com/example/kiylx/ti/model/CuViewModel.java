@@ -11,18 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CuViewModel extends ViewModel {
-    private MutableLiveData<ArrayList<View>> WebViewlist;
-    private LiveData<Integer> WebViewCount = null;
+    private MutableLiveData<ArrayList<View>> webViewlist;
+    private LiveData<Integer> webViewCount = null;
 
-    public CuViewModel(){
-
-    }
 
     public MutableLiveData<ArrayList<View>> getWebViewlist(){
-        if(WebViewlist==null){
-             WebViewlist= new MutableLiveData<>();
+        if(webViewlist==null){
+             webViewlist= new MutableLiveData<>();
         }
-        return WebViewlist;
+        return webViewlist;
     }
 
 
