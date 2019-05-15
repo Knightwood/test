@@ -29,7 +29,7 @@ import com.example.kiylx.ti.fragment.Fragment_web;
 import com.example.kiylx.ti.webClient.CustomWebchromeClient;
 import com.example.kiylx.ti.webClient.CustomWebviewClient;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Fragment_web.create {
     WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
         addwebpage();
-        //addWebview();
         searchBar();
         //监听搜索框
         back();
@@ -58,38 +57,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
     public WebView addWebview(){
-        //new出一个webview，添加到相应的视图组，并且载入
-
-        FrameLayout view_group = findViewById(R.id.fragment_group);
         WebView web = new WebView(this);
-
         set1(web);
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient());
-
         web.setWebChromeClient(new CustomWebchromeClient());
-
-        webList_data.push(web);
-        //把new出来的webview放进List_web中，以供以后控制webview视图用
-
-		view_group.addView(web);
-		//addview(view,index),index控制显示的层级，index一共有0，1，2三层。
-
-        TextView multPage = findViewById(R.id.pagecount);
-        String cao = String.valueOf(webList_data.getAllnum());
-        multPage.setText(cao);
-        //给多窗口加上数字
-
         return web;
     }
+
     public void addwebpage(){
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
         Fragment_web fragment_web = new Fragment_web();
         fragmentTransaction.add(R.id.fragment_group, fragment_web);
         fragmentTransaction.commit();
+
     }
 
 

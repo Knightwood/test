@@ -16,11 +16,15 @@ public class Fragment_web extends Fragment {
 
 
     //private getdataInterface gett;
-
+    private create createweb;
+    WebView ff;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_window,container,false);
+        FrameLayout frameLayout = view.findViewById(R.id.webview_page);
+        ff.loadUrl("http://www.baidu.com");
+        frameLayout.addView(ff);
 
         return view;
     }
@@ -28,9 +32,13 @@ public class Fragment_web extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        createweb = (create) context;
+        ff =createweb.addWebview();
 
     }
-
+    public interface create{
+        public WebView addWebview();
+    }
 
     /*
     @Override
