@@ -1,23 +1,16 @@
 package com.example.kiylx.ti.activity;
 
-import android.databinding.DataBindingUtil;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,11 +19,11 @@ import android.support.v7.widget.Toolbar;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.WebList;
 import com.example.kiylx.ti.adapter.WebAdapter;
-import com.example.kiylx.ti.bean.UserBean;
-import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.fragment.Fragment_web;
 import com.example.kiylx.ti.webClient.CustomWebchromeClient;
 import com.example.kiylx.ti.webClient.CustomWebviewClient;
+
+import java.security.PublicKey;
 
 public class MainActivity extends AppCompatActivity implements Fragment_web.create {
     WebList webList_data = new WebList();
@@ -44,9 +37,10 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-        UserBean userBean = new UserBean("whye",7);
-        binding.setUser(userBean);
+        setContentView(R.layout.activity_main);
+        //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        //UserBean userBean = new UserBean("whye",7);
+        //binding.setUser(userBean);
 
         toolbaract();
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
@@ -94,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });
 
+
         //设置移除图片  如果不设置会默认使用系统灰色的图标
         bar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_action));
 //填充menu
@@ -103,16 +98,16 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
-                    case R.id.action_settings:
+                    case R.id.action_mult:
                         Toast.makeText(MainActivity.this,"action_settings",Toast.LENGTH_SHORT).show();
 
                         break;
-                    case R.id.action_share:
+                    case R.id.action_star:
                         Toast.makeText(MainActivity.this,"action_share",Toast.LENGTH_SHORT).show();
 
                         break;
-                    case R.id.action_search:
-                        Toast.makeText(MainActivity.this,"action_search",Toast.LENGTH_SHORT).show();
+                    case R.id.action_setting:
+                        Toast.makeText(MainActivity.this,"action_setting_set",Toast.LENGTH_SHORT).show();
 
                         break;
                     default:

@@ -3,24 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_mult"
         android:orderInCategory="100"
-        android:title="测试1"
-        android:icon="@drawable/icon_search"
+        android:title="多窗口"
+        android:icon="@drawable/mult"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/action_share"
+        android:id="@+id/action_star"
         android:orderInCategory="100"
-        android:title="测试2"
+        android:title="收藏"
         android:icon="@drawable/icon_notify"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_setting"
         android:orderInCategory="100"
         android:title="设置"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_search2"
+        android:id="@+id/action_setting2"
         android:orderInCategory="100"
         android:title="关于"
         app:showAsAction="never"/>
