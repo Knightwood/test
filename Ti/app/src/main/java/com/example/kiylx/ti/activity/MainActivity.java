@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
@@ -19,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.WebList;
@@ -45,17 +48,20 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         UserBean userBean = new UserBean("whye",7);
         binding.setUser(userBean);
 
+        toolbaract();
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
         // 申请网络权限
         addwebpage();
-        searchBar();
+        //searchBar();
         //监听搜索框
-        back();
-        home();
+        //back();
+        //home();
 
 
 
     }
+
+
 
     @Override
     public WebView addWebview(){
@@ -75,10 +81,55 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         fragmentTransaction.commit();
 
     }
+    public void toolbaract(){
+        Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
+        setSupportActionBar(bar);
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,"dmji",Toast.LENGTH_SHORT).show();
 
+            }
+        });
 
+        //设置移除图片  如果不设置会默认使用系统灰色的图标
+        bar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_action));
+//填充menu
+        bar.inflateMenu(R.menu.toolbar_menu);
+//设置点击事件
+        bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.action_settings:
+                        Toast.makeText(MainActivity.this,"action_settings",Toast.LENGTH_SHORT).show();
+
+                        break;
+                    case R.id.action_share:
+                        Toast.makeText(MainActivity.this,"action_share",Toast.LENGTH_SHORT).show();
+
+                        break;
+                    case R.id.action_search:
+                        Toast.makeText(MainActivity.this,"action_search",Toast.LENGTH_SHORT).show();
+
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        return true;
+    }
+
+/*
     public void searchBar(){
-         search=findViewById(R.id.edit);
+         //search=findViewById(R.id.edit);
         //Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
         //文字键入完成后
 
@@ -103,7 +154,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });//setOnEditorActionListener结束处
 
-    }
+    }*/
+    /*
     void search(String string){
         WebView temp=webList_data.getTop();
         temp.loadUrl(string);
@@ -116,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });
     }
-
+*/
 
     /*public void multiplePage(View v){
         //已经在layout里设置了click属性，所以这里是点击时调用的函数
@@ -158,13 +210,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK&&multflag){
-            pagelist = findViewById(R.id.pagelist);
-            pagelist.setVisibility(View.GONE);
-            webList_data.Top.t.setVisibility(View.VISIBLE);
-            multflag=true;
-            return false;
-        }
+
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
         return super.onKeyDown(keyCode, event);
     }
@@ -177,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         title.setText(v.getTitle());
 
     }
+
 /*
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
         @Override
@@ -206,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         pagelist.setOnItemClickListener(clickListener);
 
     }*/
+/*
     public void back(){
         ImageButton imageButton=findViewById(R.id.backButton);
         imageButton.setOnClickListener(new View.OnClickListener() {
@@ -225,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });
 
-    }
+    }*/
 
     //webview的设置
     WebView set1(WebView ti){

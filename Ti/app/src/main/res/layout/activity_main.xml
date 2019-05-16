@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
         name="user"
         type="com.example.kiylx.ti.bean.UserBean" />
     </data>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
@@ -22,18 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ListView
-            android:id="@+id/pagelist"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/toolbar_f"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/title" />
-
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
@@ -42,75 +30,35 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="45dp" />
 
-    <ImageButton
-        android:id="@+id/homebutton"
-        android:layout_width="37dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
-        android:background="@color/cardview_shadow_end_color"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:srcCompat="?android:attr/listChoiceIndicatorSingle" />
-
-    <EditText
-        android:id="@+id/edit"
-        style="@style/Widget.AppCompat.SearchView.ActionBar"
-        android:layout_width="199dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="8dp"
-        android:autoLink="web"
-        android:ems="10"
-        android:hint="@string/searchbar"
-        android:imeOptions="actionDone"
-        android:inputType="text|textUri"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/homebutton"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageButton
-        android:id="@+id/backButton"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="10dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/back"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/edit"
-        app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:srcCompat="?attr/actionModeCloseDrawable" />
-
     <TextView
         android:id="@+id/pagecount"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:clickable="true"
         android:focusable="true"
         android:onClick="multiplePage"
+        android:text="@{String.valueOf(user.cint)}"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:text="@{String.valueOf(user.cint)}"
-        app:layout_constraintBottom_toBottomOf="@+id/edit"
-        app:layout_constraintStart_toEndOf="@+id/backButton"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintEnd_toEndOf="@+id/fragment_group"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/settingButton"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="15dp"
-        android:background="@color/cardview_shadow_end_color"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/pagecount"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#FF5722"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/fragment_group"
         app:layout_constraintTop_toTopOf="@+id/guideline3"
-        app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
+        app:layout_constraintVertical_bias="0.727"
+        app:navigationIcon="@drawable/ic_menu"
+
+        app:popupTheme="@style/Widget.AppCompat.Light.PopupMenu" />
 
 </android.support.constraint.ConstraintLayout>
 </layout>
