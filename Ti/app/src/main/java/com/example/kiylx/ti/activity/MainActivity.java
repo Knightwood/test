@@ -8,8 +8,10 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -124,16 +126,16 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         return true;
     }
 
-/*
+
     public void searchBar(){
-         //search=findViewById(R.id.edit);
+         search=findViewById(R.id.edit);
         //Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
         //文字键入完成后
 
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId==EditorInfo.IME_ACTION_DONE){
+                if(actionId== EditorInfo.IME_ACTION_DONE){
                     text = search.getText().toString();
                     if(text.isEmpty()){
                         return false;
@@ -151,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });//setOnEditorActionListener结束处
 
-    }*/
-    /*
+    }
+
     void search(String string){
         WebView temp=webList_data.getTop();
         temp.loadUrl(string);
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });
     }
-*/
+
 
     /*public void multiplePage(View v){
         //已经在layout里设置了click属性，所以这里是点击时调用的函数
