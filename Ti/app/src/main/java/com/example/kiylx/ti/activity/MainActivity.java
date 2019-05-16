@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     public void toolbaract(){
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
+
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

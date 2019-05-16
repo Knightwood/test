@@ -49,7 +49,7 @@
         android:id="@+id/toolbar1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#FF5722"
+        android:background="#000000"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintBottom_toBottomOf="parent"
