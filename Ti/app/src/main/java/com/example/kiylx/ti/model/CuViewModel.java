@@ -13,6 +13,8 @@ import java.util.List;
 public class CuViewModel extends ViewModel {
     private MutableLiveData<ArrayList<View>> webViewlist;
     private LiveData<Integer> webViewCount = null;
+    private MutableLiveData<ArrayList<View>> webpage;
+
 
 
     public MutableLiveData<ArrayList<View>> getWebViewlist(){
@@ -21,11 +23,12 @@ public class CuViewModel extends ViewModel {
         }
         return webViewlist;
     }
-
-
-
-
-
+    public MutableLiveData<ArrayList<View>> getWebpage(){
+        if(webpage==null){
+            webpage=new MutableLiveData<>();
+        }
+        return webpage;
+    }
 
 
 }

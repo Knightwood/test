@@ -1,5 +1,10 @@
 package com.example.kiylx.ti.activity;
 
+import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -22,10 +27,12 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.WebList;
 import com.example.kiylx.ti.adapter.WebAdapter;
 import com.example.kiylx.ti.fragment.Fragment_web;
+import com.example.kiylx.ti.model.CuViewModel;
 import com.example.kiylx.ti.webClient.CustomWebchromeClient;
 import com.example.kiylx.ti.webClient.CustomWebviewClient;
 
 import java.security.PublicKey;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Fragment_web.create {
     WebList webList_data = new WebList();
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     Boolean multflag=true;//multflag决定多标签页的显示和隐藏
     ListView pagelist;
     WebAdapter adapter;
+    private CuViewModel viewmodel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,16 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //UserBean userBean = new UserBean("whye",7);
         //binding.setUser(userBean);
+        viewmodel = ViewModelProviders.of(this).get(CuViewModel.class);
+        viewmodel.getWebViewlist().observe(this, new Observer<ArrayList<View>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<View> list) {
+                for (View item : list) {
+                    list.add(new WebView(MainActivity.this));
+                }
+            }
+        });
+
 
         toolbaract();
         //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
