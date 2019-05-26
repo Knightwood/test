@@ -1,19 +1,18 @@
 package com.example.kiylx.ti.model;
 
-import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.support.v4.app.Fragment;
 import android.view.View;
-import android.webkit.WebView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CuViewModel extends ViewModel {
     private MutableLiveData<ArrayList<View>> webViewlist;
     private LiveData<Integer> webViewCount = null;
-    private MutableLiveData<ArrayList<View>> webpage;
+    private MutableLiveData<ArrayList<Fragment>> fm_page;
+
 
 
 
@@ -23,11 +22,11 @@ public class CuViewModel extends ViewModel {
         }
         return webViewlist;
     }
-    public MutableLiveData<ArrayList<View>> getWebpage(){
-        if(webpage==null){
-            webpage=new MutableLiveData<>();
+    public MutableLiveData<ArrayList<Fragment>> getFm_page(){
+        if(fm_page ==null){
+            fm_page =new MutableLiveData<>();
         }
-        return webpage;
+        return fm_page;
     }
 
 

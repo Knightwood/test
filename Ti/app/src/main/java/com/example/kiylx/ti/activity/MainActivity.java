@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,10 +49,15 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //LayoutInflater inflater
+
         //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //UserBean userBean = new UserBean("whye",7);
         //binding.setUser(userBean);
-        viewmodel = ViewModelProviders.of(this).get(CuViewModel.class);
+
+
+        /*viewmodel = ViewModelProviders.of(this).get(CuViewModel.class);
         viewmodel.getWebViewlist().observe(this, new Observer<ArrayList<View>>() {
             @Override
             public void onChanged(@Nullable ArrayList<View> list) {
@@ -59,12 +65,10 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                     list.add(new WebView(MainActivity.this));
                 }
             }
-        });
+        });*/
 
 
         toolbaract();
-        //ActivityCompat.requestPermissions(this, Manifest.permission.INTERNET,REQUEST_STATUS_CODE);
-        // 申请网络权限
         addwebpage();
         //searchBar();
         //监听搜索框
@@ -93,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         Fragment_web fragment_web = new Fragment_web();
         fragmentTransaction.add(R.id.fragment_group, fragment_web);
         fragmentTransaction.commit();
+        //fragmentManager.findFragmentByTag();
+
 
     }
     public void toolbaract(){
@@ -120,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                 switch (item.getItemId()){
                     case R.id.action_mult:
                         Toast.makeText(MainActivity.this,"action_settings",Toast.LENGTH_SHORT).show();
+                        addwebpage();
 
                         break;
                     case R.id.action_star:

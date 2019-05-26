@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.fragment;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -17,6 +18,8 @@ import android.widget.ListView;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.CuViewModel;
 
+import java.util.ArrayList;
+
 public class Fragment_web extends Fragment {
 
 
@@ -26,29 +29,38 @@ public class Fragment_web extends Fragment {
     private CuViewModel vmodel;
 
     @Override
-    public void onCreate(@Nullable Bundle saveInstanceState){
-        super.onCreate(saveInstanceState);
-        vmodel = ViewModelProviders.of(getActivity()).get(CuViewModel.class);
-
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_window,container,false);
-        FrameLayout frameLayout = view.findViewById(R.id.webview_page);
-        ff.loadUrl("http://www.baidu.com");
-        frameLayout.addView(ff);
-        //vmodel.getWebViewlist().observe(this,ArrayList<View>);
-
-        return view;
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         createweb = (create) context;
         ff =createweb.addWebview();
 
     }
+
+    @Override
+    public void onCreate(@Nullable Bundle saveInstanceState){
+        super.onCreate(saveInstanceState);
+        vmodel = ViewModelProviders.of(getActivity()).get(CuViewModel.class);
+        vmodel.getWebViewlist().observe(this, new Observer<ArrayList<View>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<View> views) {
+
+            }
+        });
+
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        final View view = inflater.inflate(R.layout.fragment_window,container,false);
+        FrameLayout frameLayout = view.findViewById(R.id.webview_page);
+        ff.loadUrl("http://www.baidu.com");
+        frameLayout.addView(ff);
+
+
+
+        return view;
+    }
+
+
     public interface create{
         public WebView addWebview();
     }

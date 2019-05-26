@@ -9,4 +9,5 @@
     <string name="two">第二个选项</string>
     <string name="multpage">99</string>
     <string name="action_back">back</string>
+    <string name="newpage">新标签页</string>
 </resources>
