@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,11 +20,13 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
+import com.example.kiylx.ti.Clist;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.WebList;
 import com.example.kiylx.ti.adapter.WebAdapter;
@@ -44,13 +47,15 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     ListView pagelist;
     WebAdapter adapter;
     private CuViewModel viewmodel;
+    Clist list1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //LayoutInflater inflater
+        //LayoutInflater inflater =getLayoutInflater();
+        //Layout vi=inflater.inflate(R.layout.mult_root);
 
         //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //UserBean userBean = new UserBean("whye",7);
@@ -67,9 +72,9 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             }
         });*/
 
-
+        addhome();
         toolbaract();
-        addwebpage();
+
         //searchBar();
         //监听搜索框
         //back();
@@ -89,6 +94,24 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         web.setWebViewClient(new CustomWebviewClient());
         web.setWebChromeClient(new CustomWebchromeClient());
         return web;
+    }
+    public void addhome(){
+        FrameLayout f1=findViewById(R.id.fragment_group);
+        LayoutInflater inflater=getLayoutInflater();
+        View view = inflater.inflate(R.layout.home,null);
+        f1.addView(view);
+        newWeb();//准备好webview
+    }
+
+    private void newWeb() {
+        //新建webview并放进数组
+        WebView web = new WebView(this);
+        set1(web);
+        //给new出来的webview执行设置
+        web.setWebViewClient(new CustomWebviewClient());
+        web.setWebChromeClient(new CustomWebchromeClient());
+        list1.add1(web);
+
     }
 
     public void addwebpage(){
@@ -154,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
     public void searchBar(){
          search=findViewById(R.id.edit);
-        //Toast.makeText(MainActivity.this,text,Toast.LENGTH_SHORT).show();
+
         //文字键入完成后
 
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -181,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }
 
     void search(String string){
-        WebView temp=webList_data.getTop();
+        WebView temp=list1.getTop();
         temp.loadUrl(string);
         //getInfromation(webList_data.getTop());//载入后获取url和标题
         temp.setWebViewClient(new WebViewClient(){
             @Override
             public void onPageFinished(WebView view, String url){
-                getInfromation(webList_data.getTop());
+                //getInfromation(webList_data.getTop());
 
             }
         });

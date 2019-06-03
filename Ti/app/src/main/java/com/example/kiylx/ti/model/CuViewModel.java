@@ -6,12 +6,15 @@ import android.arch.lifecycle.ViewModel;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.example.kiylx.ti.Clist;
+
 import java.util.ArrayList;
 
 public class CuViewModel extends ViewModel {
     private MutableLiveData<ArrayList<View>> webViewlist;
     private LiveData<Integer> webViewCount = null;
     private MutableLiveData<ArrayList<Fragment>> fm_page;
+    private MutableLiveData<Clist> list_r;
 
 
 
