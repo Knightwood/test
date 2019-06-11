@@ -1,5 +1,6 @@
 package android.bignerdranch.com;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -90,6 +91,8 @@ public class CrimeListFragment extends Fragment {
             mDateTextView = (TextView) il.findViewById(R.id.crime_date);
         }*/
 
+        //构造函数
+
             public CrimeHolder(LayoutInflater inflater, ViewGroup parent) {
                 super(inflater.inflate(R.layout.list_item_crime, parent, false));
                 mTitleTextView = (TextView) itemView.findViewById(R.id.crime_title);
@@ -104,6 +107,8 @@ public class CrimeListFragment extends Fragment {
             Toast.makeText(getActivity(),
                     mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
                     .show();
+			Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId());
+			startActivity(intent);
         }
     }
 }
