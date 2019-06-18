@@ -42,6 +42,7 @@ public class CrimeFragment extends Fragment {
         mDateButton = (Button) v.findViewById(R.id.crime_date);
         mDateButton.setText(mCrime.getDate().toString());
         mDateButton.setEnabled(false);
+        //罪恶时间
 
         mSolvedCheckBox = (CheckBox)v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mCrime.isSolved());
@@ -52,6 +53,7 @@ public class CrimeFragment extends Fragment {
                 mCrime.setSolved(isChecked);
             }
         });
+        //是否解决选项框
 
         mTitleField=v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
@@ -65,6 +67,7 @@ public class CrimeFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 mCrime.setTitle(s.toString());
+                //罪恶内容
 
             }
 
@@ -88,3 +91,6 @@ public class CrimeFragment extends Fragment {
         return fragment;
     }
 }
+/*由CrimeListFragment调用CrimeActivity中自己写的方法“newIntent()”把条目信息中的第几项传给CrimeActivity，并启动CrimeActivity,
+* CrimeActivity又调用CrimeFragment中的newInstance()方法把上面的第几项传给CrimeFragment，并启动CrimeFragment，CrimeFragment
+* 又根据第几项查找到具体的罪恶信息展示在fragment上*/
