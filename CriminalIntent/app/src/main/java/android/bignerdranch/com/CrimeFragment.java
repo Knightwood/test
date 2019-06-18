@@ -67,7 +67,8 @@ public class CrimeFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 mCrime.setTitle(s.toString());
-                //罪恶内容
+                /*罪恶内容,这里把输入的内容保存到mCrime中，
+                以便在CrimeFragment按下返回键回退到CrimeListFragment时，因调用onResume()刷新视图。*/
 
             }
 
