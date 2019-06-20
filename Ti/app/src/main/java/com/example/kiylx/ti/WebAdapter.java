@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.adapter;
+package com.example.kiylx.ti;
 
 import android.view.LayoutInflater;
 import android.view.View;

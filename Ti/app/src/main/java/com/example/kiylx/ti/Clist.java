@@ -1,16 +1,15 @@
 package com.example.kiylx.ti;
 
-import android.view.View;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
 
 public class Clist {
-    private ArrayList<View> r;
+    private ArrayList<WebView> r;
 
     public Clist(){
         if(r==null){
-            r= new ArrayList<View>();
+            r= new ArrayList<WebView>();
         }
     }
     public void add1(WebView v){
@@ -23,14 +22,15 @@ public class Clist {
         remove1(r,i);
     }
 
-    private void remove1(ArrayList<View> r, int i) {
+    private void remove1(ArrayList<WebView> r, int i) {
         this.r.remove(i);
     }
     public int size(){
         return this.r.size();
     }
+
     public WebView getTop(){
-        return ;
+        return r.get(r.size()-1);
     }
 
 

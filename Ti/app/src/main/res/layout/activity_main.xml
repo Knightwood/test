@@ -11,7 +11,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.MainActivity">
+        tools:context=".MainActivity">
 
 
         <FrameLayout
@@ -58,9 +58,9 @@
                     android:id="@+id/edit"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:drawableLeft="@drawable/icon_search"
                     android:hint="@string/searchbar"
                     android:onClick="searchBar"
-                    android:drawableLeft="@drawable/icon_search"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

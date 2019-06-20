@@ -1,15 +1,9 @@
-package com.example.kiylx.ti.activity;
+package com.example.kiylx.ti;
 
-import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,17 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kiylx.ti.Clist;
-import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.WebList;
-import com.example.kiylx.ti.adapter.WebAdapter;
 import com.example.kiylx.ti.fragment.Fragment_web;
 import com.example.kiylx.ti.model.CuViewModel;
-import com.example.kiylx.ti.webClient.CustomWebchromeClient;
-import com.example.kiylx.ti.webClient.CustomWebviewClient;
-
-import java.security.PublicKey;
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Fragment_web.create {
     WebList webList_data = new WebList();
@@ -47,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     ListView pagelist;
     WebAdapter adapter;
     private CuViewModel viewmodel;
-    Clist list1;
+    Clist list1= new Clist();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         FrameLayout f1=findViewById(R.id.fragment_group);
         LayoutInflater inflater=getLayoutInflater();
         View view = inflater.inflate(R.layout.home,null);
-        f1.addView(view);
+        //f1.addView(view);
         newWeb();//准备好webview
     }
 
@@ -175,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }
 
 
-    public void searchBar(){
+    public void searchBar(View v){
          search=findViewById(R.id.edit);
 
         //文字键入完成后
@@ -214,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
             }
         });
+        FrameLayout window1 =findViewById(R.id.fragment_group);
+        window1.addView(temp);
     }
 
 
