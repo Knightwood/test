@@ -13,13 +13,14 @@ public class CrimeLab {
     private CrimeLab(Context context){
 //context参数在第14章用到
         mCrimes = new ArrayList<>();
-
+        /*
         for (int i = 0; i < 100; i++) {
             Crime crime = new Crime();
             crime.setTitle("Crime #" + i);
             crime.setSolved(i % 2 == 0); // Every other one
             mCrimes.add(crime);
         }
+        */
     }
 
     public static CrimeLab get(Context context){
@@ -40,5 +41,8 @@ public class CrimeLab {
             }
         }
         return null;
+    }
+    public void addCrime(Crime c){
+        mCrimes.add(c);
     }
 }
