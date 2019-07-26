@@ -11,8 +11,14 @@ public class Crime {
     private  boolean mSolved;
 
     public Crime() {
-        mId = UUID.randomUUID();
-        mDate = new Date();
+        this(UUID.randomUUID());
+        //this会调用有相同参数的本类的构造函数
+        //mId = UUID.randomUUID();
+        //mDate = new Date();
+    }
+    public Crime(UUID id){
+        mId=id;
+        mDate=new Date();
     }
 
     public UUID getId() {
