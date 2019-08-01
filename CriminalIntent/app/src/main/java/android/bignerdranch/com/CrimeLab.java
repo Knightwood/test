@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class CrimeLab {
         }
         return crimes;
     }
+
     public Crime getCrime(UUID id){
         /*for(Crime crime:mCrimes){
             if(crime.getId().equals(id)){
@@ -85,12 +87,18 @@ public class CrimeLab {
         mDatabase.insert(CrimeTable.NAME,null,values);
         //mCrimes.add(c);
     }
+    public void deleteCrime(Crime c){
+        String s=c.getId().toString();
+        mDatabase.delete(CrimeTable.NAME,CrimeTable.Cols.UUID+"=?",new String[]{s});
+
+    }
     private static ContentValues getContentValues(Crime crime){
         ContentValues values = new ContentValues();
         values.put(CrimeTable.Cols.UUID,crime.getId().toString());
         values.put(CrimeTable.Cols.TITLE, crime.getTitle());
         values.put(CrimeTable.Cols.DATE, crime.getDate().getTime());
         values.put(CrimeTable.Cols.SOLVED,crime.isSolved()? 1:0);
+        values.put(CrimeTable.Cols.SUSPECT,crime.getSuspect());
         return values;
     }
     public void updateCrime(Crime crime){

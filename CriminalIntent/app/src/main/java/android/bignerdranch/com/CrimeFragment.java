@@ -103,7 +103,9 @@ public class CrimeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+
         CrimeLab.get(getActivity()).updateCrime(mCrime);
+        //在详细的页面更改文字后返回上一层时会被调用，这样被修改的数据就会被保存下来，回到上一层，相应的调用onresume里的语句
     }
 
     @Override

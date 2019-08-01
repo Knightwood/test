@@ -15,7 +15,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table " + CrimeTable.NAME + "(" + " _id integer primary key autoincrement, " + CrimeTable.Cols.UUID + ", " + CrimeTable.Cols.TITLE + ", " + CrimeTable.Cols.DATE + ", " + CrimeTable.Cols.SOLVED + ")");
+            db.execSQL("create table " + CrimeTable.NAME
+                    + "("
+                    + " _id integer primary key autoincrement, "
+                    + CrimeTable.Cols.UUID + ", "
+                    + CrimeTable.Cols.TITLE + ", "
+                    + CrimeTable.Cols.DATE + ", "
+                    + CrimeTable.Cols.SOLVED + ","
+                    + CrimeTable.Cols.SUSPECT+")");
     /*CREATE TABLE database_name.table_name(
       column1 datatype  PRIMARY KEY(one or more columns),
       column2 datatype,

@@ -24,8 +24,11 @@ import java.util.List;
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+
     private boolean mSubtitleVisible=true;
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+
+    private boolean deleteFlags=false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,16 +45,21 @@ public class CrimeListFragment extends Fragment {
         updateUI();
         return view;
     }
-    @Override public void onResume() { super.onResume(); updateUI();
+    @Override public void onResume() {
+        super.onResume();
+        updateUI();
+        //在crimefragment页面返回后，因为crimelistfragment会调用onresume方法，因此刷新页面
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE,mSubtitleVisible);
+
     }
 
     private void updateUI() {
+        //执行更新list操作
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
         if(mAdapter==null){
@@ -77,6 +85,7 @@ public class CrimeListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //工具栏代码
 
         switch (item.getItemId()){
             case R.id.new_crime:
@@ -90,11 +99,22 @@ public class CrimeListFragment extends Fragment {
                 mSubtitleVisible = !mSubtitleVisible;
                 getActivity().invalidateOptionsMenu();
                 return true;
+            case R.id.delete:
+                //与删除有关的部分
+                if(!deleteFlags){
+                    deleteFlags=true;
+                }else{
+                    deleteFlags=false;
+                }
+
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
     private void updateSubtitle(){
+        //工具栏上的显示
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
         String subtitle = getString(R.string.subtitle_format,crimeCount);
@@ -109,7 +129,7 @@ public class CrimeListFragment extends Fragment {
     }
 
 
-
+//下面是适配器代码
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
         private List<Crime> mCrimes;
         public CrimeAdapter(List<Crime> crimes) {
@@ -179,6 +199,13 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
+            if(deleteFlags){
+                Toast.makeText(getActivity(),mCrime.getTitle()+"delete",Toast.LENGTH_SHORT).show();
+                CrimeLab crimeLab1=CrimeLab.get(getActivity());
+                crimeLab1.deleteCrime(mCrime);
+                updateUI();
+
+            }
             Toast.makeText(getActivity(),
                     mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
                     .show();

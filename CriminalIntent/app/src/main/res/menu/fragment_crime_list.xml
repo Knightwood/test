@@ -9,4 +9,8 @@
         android:id="@+id/show_subtitle"
         android:title="@string/show_subtitle"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete_crime"
+        app:showAsAction="ifRoom"/>
 </menu>
