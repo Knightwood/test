@@ -75,7 +75,7 @@ public class CrimeLab {
             if(cursor.getCount()==0){
                 return null;
             }
-            cursor.moveToFirst();
+            cursor.moveToFirst();//移动游标至第一行
             return cursor.getCrime();
         }finally {
             cursor.close();
@@ -123,6 +123,7 @@ public class CrimeLab {
     }
     //private Cursor queryCrimes(String whereClause,String[] whereArgs){
       private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
+        /*query进行查找操作，column：列，rows：行，wheleClause：选择器，查找哪些行，whereargs：选择器的参数*/
         Cursor cursor = mDatabase.query(
                 CrimeTable.NAME,
                 null,
