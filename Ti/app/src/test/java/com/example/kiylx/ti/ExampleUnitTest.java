@@ -16,7 +16,7 @@ public class ExampleUnitTest {
     }
     /* 三个函数：
 
-　　push webview：进入应用后首先执行的操作，初始化一个webview铺到页面上，根据偏好设定，
+　　push mWeb：进入应用后首先执行的操作，初始化一个webview铺到页面上，根据偏好设定，
                   载入网址或是铺展一个空的webview。
 
 　　search bar：监听搜索框输入内容，当按下回车键后调用search执行搜索，还要记录下当前搜索框内容。

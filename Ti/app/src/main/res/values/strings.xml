@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Ti</string>
     <string name="back">返回</string>
-    <string name="searchbar">开始搜索</string>
+    <string name="searchbar"> 开始搜索</string>
     <string name="duochuangkou">0</string>
     <string name="title">网页标题</string>
     <string name="url">网址</string>
@@ -10,4 +10,9 @@
     <string name="multpage">99</string>
     <string name="action_back">back</string>
     <string name="newpage">新标签页</string>
+    <string name="title_activity_srarch">srarchActivity</string>
+    <string name="flash">刷新</string>
+    <string name="star">收藏</string>
+    <string name="mult">多窗口</string>
+    <string name="menu">设置</string>
 </resources>

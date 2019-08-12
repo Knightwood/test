@@ -35,6 +35,7 @@ public class CustomWebviewClient extends WebViewClient {
             return false;
         }
     }
+
     /**
      * 当WebView得页面Scale值发生改变时回调
      */

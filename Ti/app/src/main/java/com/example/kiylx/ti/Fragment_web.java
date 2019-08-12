@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.fragment;
+package com.example.kiylx.ti;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;

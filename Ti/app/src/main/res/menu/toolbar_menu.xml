@@ -3,26 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_mult"
+        android:id="@+id/action_flash"
+        android:icon="@drawable/ic_cached_black_24dp"
         android:orderInCategory="100"
-        android:title="多窗口"
-        android:icon="@drawable/mult"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/flash"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_star"
+        android:icon="@drawable/ic_bookmark_border_black_24dp"
         android:orderInCategory="100"
-        android:title="收藏"
-        android:icon="@drawable/icon_notify"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/star"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/action_setting"
+        android:id="@+id/action_mult"
+        android:icon="@drawable/ic_flip_to_front_black_24dp"
         android:orderInCategory="100"
-        android:title="设置"
-        app:showAsAction="never"/>
+        android:title="@string/mult"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/action_setting2"
+        android:id="@+id/action_menu"
+        android:icon="@drawable/ic_view_headline_black_24dp"
         android:orderInCategory="100"
-        android:title="关于"
-        app:showAsAction="never"/>
+        android:title="@string/menu"
+        app:showAsAction="always" />
+
 
 </menu>

@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kiylx.ti.fragment.Fragment_web;
 import com.example.kiylx.ti.model.CuViewModel;
 
 public class MainActivity extends AppCompatActivity implements Fragment_web.create {
@@ -30,14 +28,15 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     String text;//搜索框里的内容
     Boolean multflag=true;//multflag决定多标签页的显示和隐藏
     ListView pagelist;
-    WebAdapter adapter;
     private CuViewModel viewmodel;
-    Clist list1= new Clist();
+    Clist mClist= new Clist();
+    FrameLayout f1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        f1=findViewById(R.id.Webview_group);
 
         //LayoutInflater inflater =getLayoutInflater();
         //Layout vi=inflater.inflate(R.layout.mult_root);
@@ -56,22 +55,21 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                 }
             }
         });*/
-
-        addhome();
+        addWebviewtohome();
         toolbaract();
-
-        //searchBar();
-        //监听搜索框
-        //back();
-        //home();
-
-
 
     }
 
+    private void addWebviewtohome() {
+        //作用是把数组第一个webview对象展示在面前
+        newWebView(0);
+        f1.addView(mClist.getTop(0));
+    }
 
 
     @Override
+    //Fragment_web调用
+    //废弃
     public WebView addWebview(){
         WebView web = new WebView(this);
         set1(web);
@@ -80,40 +78,64 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         web.setWebChromeClient(new CustomWebchromeClient());
         return web;
     }
+    /*废弃
     public void addhome(){
-        FrameLayout f1=findViewById(R.id.fragment_group);
+        FrameLayout f1=findViewById(R.id.Webview_group);
         LayoutInflater inflater=getLayoutInflater();
         View view = inflater.inflate(R.layout.home,null);
         //f1.addView(view);
-        newWeb();//准备好webview
-    }
+        newWebView();//准备好webview
+    }*/
 
-    private void newWeb() {
+    private void newWebView(int i) {
         //新建webview并放进数组
         WebView web = new WebView(this);
         set1(web);
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient());
         web.setWebChromeClient(new CustomWebchromeClient());
-        list1.add1(web);
-
+        mClist.addToFirst(web,i);
+        //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
     }
-
+    public void newTab(){
+        //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
+        f1.removeView(mClist.getTop(0));
+        addWebviewtohome();
+    }
+    //把有webview的fragment放进webview_group这个视图里
+    //废弃
     public void addwebpage(){
         FragmentManager fragmentManager= getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
         Fragment_web fragment_web = new Fragment_web();
-        fragmentTransaction.add(R.id.fragment_group, fragment_web);
+        fragmentTransaction.add(R.id.Webview_group, fragment_web);
         fragmentTransaction.commit();
         //fragmentManager.findFragmentByTag();
 
 
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        // Check if the key event was the Back button and if there's history
+        //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
+        if((keyCode==KeyEvent.KEYCODE_BACK)&&mClist.getTop(0).canGoBack()){
+            mClist.getTop(0).goBack();
+            return true;
+        }
+        // If it wasn't the Back key or there's no web page history, bubble up to the default
+        // system behavior (probably exit the activity)
+        return super.onKeyDown(keyCode, event);
+    }
+
+//工具栏设置
     public void toolbaract(){
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //禁止显示标题
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,18 +155,23 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_mult:
-                        Toast.makeText(MainActivity.this,"action_settings",Toast.LENGTH_SHORT).show();
-                        addwebpage();
+                        Toast.makeText(MainActivity.this,"多窗口",Toast.LENGTH_SHORT).show();
+                        //newTab();
+                        FragmentManager fm = getSupportFragmentManager();
+                        BottomDialogFragment bottomDialogFragment = new BottomDialogFragment();
+                        bottomDialogFragment.show(fm,"fragment_bottom_dialog");
 
                         break;
                     case R.id.action_star:
-                        Toast.makeText(MainActivity.this,"action_share",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"收藏",Toast.LENGTH_SHORT).show();
 
                         break;
-                    case R.id.action_setting:
-                        Toast.makeText(MainActivity.this,"action_setting_set",Toast.LENGTH_SHORT).show();
+                    case R.id.action_flash:
+                        Toast.makeText(MainActivity.this,"刷新",Toast.LENGTH_SHORT).show();
 
                         break;
+                    case R.id.action_menu:
+                        Toast.makeText(MainActivity.this,"菜单",Toast.LENGTH_SHORT).show();
                     default:
                         break;
                 }
@@ -160,11 +187,10 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }
 
 
+//搜索框代码
     public void searchBar(View v){
-         search=findViewById(R.id.edit);
-
+         search=findViewById(R.id.search_edittext);
         //文字键入完成后
-
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -173,23 +199,28 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                     if(text.isEmpty()){
                         return false;
                     }else if(text.startsWith("http://")||text.startsWith("https://")){
-                        search(text);
+                        mClist.getTop(0).loadUrl("https://www.bilibili.com");
+                        return false;
                     }else{
-                        search(sharchin+text);
-                    }
+                        mClist.getTop(0).loadUrl("https://www.bilibili.com");
+                        Toast.makeText(MainActivity.this,"成功",Toast.LENGTH_SHORT).show();
 
-                    Toast.makeText(MainActivity.this,"ok",Toast.LENGTH_SHORT).show();
+                        return false;
+                    }
 
                 }
                 return false;
 
             }
         });//setOnEditorActionListener结束处
+        //search.setOnClickListener(new );
+        Toast.makeText(MainActivity.this,"展示网址",Toast.LENGTH_SHORT).show();
 
     }
-
+//搜索逻辑
+    //废弃
     void search(String string){
-        WebView temp=list1.getTop();
+        WebView temp= mClist.getTop(0);
         temp.loadUrl(string);
         //getInfromation(webList_data.getTop());//载入后获取url和标题
         temp.setWebViewClient(new WebViewClient(){
@@ -199,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
             }
         });
-        FrameLayout window1 =findViewById(R.id.fragment_group);
+        FrameLayout window1 =findViewById(R.id.Webview_group);
         window1.addView(temp);
     }
 
@@ -231,32 +262,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         }
     }//这里还缺一个在打开多窗口页面时处理返回键的方法，可以用multflag来做点事情
     */
-    public void multiplePage(View v){
-        if(multflag){
-
-            multflag=false;
-        }else{
-
-            multflag=true;
-        }
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
-        return super.onKeyDown(keyCode, event);
-    }
-
-
-    void getInfromation(WebView v){
-        //TextView url=findViewById(R.id.url);
-        TextView title=findViewById(R.id.title);
-        //url.setText(v.getUrl());
-        title.setText(v.getTitle());
-
-    }
 
 /*
     private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {

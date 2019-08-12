@@ -5,33 +5,36 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 
 public class Clist {
-    private ArrayList<WebView> r;
+    private ArrayList<WebView> mArrayList;
 
     public Clist(){
-        if(r==null){
-            r= new ArrayList<WebView>();
+        if(mArrayList ==null){
+            mArrayList = new ArrayList<WebView>();
         }
     }
-    public void add1(WebView v){
-        insert(v);
+
+
+    public void addToFirst(WebView v,int i){
+        //添加到第一个位置，但是也可以指定i的值添加到其他位置
+        insertToFirst(v,i);
     }
-    private void insert(WebView vi){
-        r.add(vi);
-    }
-    public void delete1(int i){
-        remove1(r,i);
+    private void insertToFirst(WebView v,int i){
+        mArrayList.add(i,v);
     }
 
+    public void delete(int i){
+        remove1(mArrayList,i);
+    }
     private void remove1(ArrayList<WebView> r, int i) {
-        this.r.remove(i);
+        this.mArrayList.remove(i);
     }
+
     public int size(){
-        return this.r.size();
+        return this.mArrayList.size();
     }
-
-    public WebView getTop(){
-        return r.get(r.size()-1);
+    public WebView getTop(int i){
+        //返回第一个元素，但是也可以指定i的值获取其他位置的元素
+        return mArrayList.get(i);
     }
-
 
 }
