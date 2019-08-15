@@ -8,14 +8,12 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -31,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     private CuViewModel viewmodel;
     Clist mClist= new Clist();
     FrameLayout f1;
+    CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +95,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         web.setWebChromeClient(new CustomWebchromeClient());
         mClist.addToFirst(web,i);
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
+        sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
+        //把网页信息保存进去，flags记为1，表示是一个newTab，不计入历史记录
     }
     public void newTab(){
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }
 
 //工具栏设置
-    public void toolbaract(){
+    private void toolbaract(){
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
 
@@ -156,11 +157,8 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                 switch (item.getItemId()){
                     case R.id.action_mult:
                         Toast.makeText(MainActivity.this,"多窗口",Toast.LENGTH_SHORT).show();
-                        //newTab();
-                        FragmentManager fm = getSupportFragmentManager();
-                        BottomDialogFragment bottomDialogFragment = new BottomDialogFragment();
-                        bottomDialogFragment.show(fm,"fragment_bottom_dialog");
 
+                        mult_dialog();
                         break;
                     case R.id.action_star:
                         Toast.makeText(MainActivity.this,"收藏",Toast.LENGTH_SHORT).show();
@@ -189,33 +187,23 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
 //搜索框代码
     public void searchBar(View v){
-         search=findViewById(R.id.search_edittext);
-        //文字键入完成后
-        search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
-                    text = search.getText().toString();
-                    if(text.isEmpty()){
-                        return false;
-                    }else if(text.startsWith("http://")||text.startsWith("https://")){
-                        mClist.getTop(0).loadUrl("https://www.bilibili.com");
-                        return false;
-                    }else{
-                        mClist.getTop(0).loadUrl("https://www.bilibili.com");
-                        Toast.makeText(MainActivity.this,"成功",Toast.LENGTH_SHORT).show();
+         search_dialog();
+    }
+    private void search_dialog(){
+        //展示搜索框
+        FragmentManager fm = getSupportFragmentManager();
+        BottomDialogFragment bottomDialogFragment = new BottomDialogFragment();
+        bottomDialogFragment.show(fm,"fragment_bottom_dialog");
+    }
 
-                        return false;
-                    }
-
-                }
-                return false;
-
-            }
-        });//setOnEditorActionListener结束处
-        //search.setOnClickListener(new );
-        Toast.makeText(MainActivity.this,"展示网址",Toast.LENGTH_SHORT).show();
-
+    public void mult_bottom(View v){
+        mult_dialog();
+    }
+    private void mult_dialog(){
+        //展示多窗口
+        FragmentManager fm = getSupportFragmentManager();
+        MultPage_DialogFragment md=new MultPage_DialogFragment();
+        md.show(fm,"fragment_multPage_dialog");
     }
 //搜索逻辑
     //废弃
@@ -315,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }*/
 
     //webview的设置
-    WebView set1(WebView ti){
+    void set1(WebView ti){
 
         ti.canGoBack();
         ti.canGoForward();
@@ -354,7 +342,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         settings.setDefaultTextEncodingName("utf-8");
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
-        return ti;
 
     }
     /*

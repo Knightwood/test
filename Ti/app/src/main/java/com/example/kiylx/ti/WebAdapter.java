@@ -3,15 +3,11 @@ package com.example.kiylx.ti;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.content.Context;
-
-import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.WebList;
 
 
 public class WebAdapter extends BaseAdapter implements View.OnClickListener {
@@ -51,8 +47,8 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         if(convertView==null){
             convertView=layoutInflater.inflate(R.layout.item,null);
             holder= new ViewHolder();
-            holder.imageButton= convertView.findViewById(R.id.imageButton);
-            holder.textView=convertView.findViewById(R.id.webtext);
+            holder.imageButton= convertView.findViewById(R.id.close_button);
+            holder.textView=convertView.findViewById(R.id.website_item);
             convertView.setTag(holder);
         }else{
             holder = (ViewHolder) convertView.getTag();

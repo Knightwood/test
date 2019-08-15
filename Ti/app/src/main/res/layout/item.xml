@@ -7,21 +7,21 @@
     android:descendantFocusability="blocksDescendants">
 
     <TextView
-        android:id="@+id/webtext"
+        android:id="@+id/website_item"
         android:layout_width="0dp"
-        android:layout_height="35dp"
+        android:layout_height="40dp"
         android:text="TextView"
         android:textAlignment="textStart"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/close_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:id="@+id/close_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        app:srcCompat="@drawable/ic_highlight_off_black_24dp" />
 </android.support.constraint.ConstraintLayout>
