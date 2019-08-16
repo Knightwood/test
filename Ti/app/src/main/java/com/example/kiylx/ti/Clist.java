@@ -23,9 +23,9 @@ public class Clist {
     }
 
     public void delete(int i){
-        remove1(mArrayList,i);
+        remove1(i);
     }
-    private void remove1(ArrayList<WebView> r, int i) {
+    private void remove1(int i) {
         this.mArrayList.remove(i);
     }
 
@@ -35,6 +35,25 @@ public class Clist {
     public WebView getTop(int i){
         //返回第一个元素，但是也可以指定i的值获取其他位置的元素
         return mArrayList.get(i);
+    }
+    public void destroy(int pos){
+        removeWeb(pos);
+
+    }
+    private void removeWeb(int pos){
+        WebView tmp=mArrayList.get(pos);
+        if(tmp!=null){
+            //先加载空内容
+            tmp.setWebViewClient(null);
+            tmp.setWebChromeClient(null);
+            tmp.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            //清空历史
+            tmp.clearHistory();
+            //然后销毁
+            tmp.destroy();
+            //然后置为空
+            mArrayList.remove(pos);
+        }
     }
 
 }

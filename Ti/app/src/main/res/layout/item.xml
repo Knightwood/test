@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00D0CCCC"
     android:descendantFocusability="blocksDescendants">
 
     <TextView
         android:id="@+id/website_item"
         android:layout_width="0dp"
         android:layout_height="40dp"
-        android:text="TextView"
+        android:background="#00B0ACAC"
         android:textAlignment="textStart"
+        android:textColor="@android:color/white"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/close_button"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,6 +23,8 @@
         android:id="@+id/close_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:background="@null"
+        android:contentDescription="@string/multpage_cloas"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_highlight_off_black_24dp" />

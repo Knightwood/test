@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,17 +20,21 @@ import android.support.v7.widget.Toolbar;
 
 import com.example.kiylx.ti.model.CuViewModel;
 
-public class MainActivity extends AppCompatActivity implements Fragment_web.create {
-    WebList webList_data = new WebList();
+public class MainActivity extends AppCompatActivity implements Fragment_web.create, MultPage_DialogFragment.NewPagebutton_click, MultPage_DialogFragment.DeletePage,MultPage_DialogFragment.SwitchPage {
+    private static final String TAG="MainActivity";
+
+    /*WebList webList_data = new WebList();
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
     String text;//搜索框里的内容
     Boolean multflag=true;//multflag决定多标签页的显示和隐藏
     ListView pagelist;
-    private CuViewModel viewmodel;
+    private CuViewModel viewmodel;*/
+
     Clist mClist= new Clist();
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
+    int currect=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,56 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         newWebView(0);
         f1.addView(mClist.getTop(0));
     }
+    @Override
+    public void click_newPagebutton(){
+        //新建标签页
+        newTab();
+    }
+    @Override
+    public int delete_page(int position){
+        if(1==mClist.size()){
+            //如果删除这个webview后没有其他的webview了，那就新建标签页
+            mClist.getTop(0).loadUrl(null);
+            return 0;
+        }
+        if(position>currect){
+            mClist.destroy(position);
+            delete_CUWL(position);
+            return 0;
+        }else if(position<currect){
+            f1.removeView(mClist.getTop(currect));
+            mClist.destroy(position);
+            delete_CUWL(position);
+            currect--;
+        }else{
+            if(position!=mClist.size()-1){
+                //currect==position时，只要不是删除最后一个，就都这样操作：移除当前webview，删除webivew，把新提升上来的当前位置的webview添加进视图
+                f1.removeView(mClist.getTop(position));
+                mClist.destroy(position);
+                delete_CUWL(position);
+                f1.addView(mClist.getTop(position));
+            }else{
+                f1.removeView(mClist.getTop(position));
+                currect--;
+                mClist.destroy(position);
+                delete_CUWL(position);
+                f1.addView(mClist.getTop(currect));
+            }
+        }
+        return 0;
+    }
+    @Override
+    public void switchPage(int pos){
+        f1.removeView(mClist.getTop(currect));
+        f1.addView(mClist.getTop(pos));
+        currect=pos;
+    }
 
+    private void delete_CUWL(int i){
+        //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
+        sCurrentUse_webPage_lists= CurrentUse_WebPage_Lists.get();
+        sCurrentUse_webPage_lists.delete(i);
+    }
 
     @Override
     //Fragment_web调用
@@ -95,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         web.setWebChromeClient(new CustomWebchromeClient());
         mClist.addToFirst(web,i);
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
+        sCurrentUse_webPage_lists= CurrentUse_WebPage_Lists.get();
         sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
         //把网页信息保存进去，flags记为1，表示是一个newTab，不计入历史记录
     }
@@ -102,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         f1.removeView(mClist.getTop(0));
         addWebviewtohome();
+        currect=0;
     }
     //把有webview的fragment放进webview_group这个视图里
     //废弃
@@ -140,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mClist.getTop(currect).goBack();
                 Toast.makeText(MainActivity.this,"dmji",Toast.LENGTH_SHORT).show();
 
             }
@@ -156,20 +213,22 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_mult:
-                        Toast.makeText(MainActivity.this,"多窗口",Toast.LENGTH_SHORT).show();
-
+                        Log.i(TAG, "onClick: 多窗口按钮被触发");
                         mult_dialog();
                         break;
                     case R.id.action_star:
-                        Toast.makeText(MainActivity.this,"收藏",Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "onClick: 收藏按钮被触发");
 
                         break;
                     case R.id.action_flash:
-                        Toast.makeText(MainActivity.this,"刷新",Toast.LENGTH_SHORT).show();
 
+                        Log.i(TAG, "onClick: 刷新按钮被触发");
+                        mClist.getTop(currect).reload();
                         break;
                     case R.id.action_menu:
-                        Toast.makeText(MainActivity.this,"菜单",Toast.LENGTH_SHORT).show();
+
+                        Log.i(TAG, "onClick: 菜单按钮被触发");
+
                     default:
                         break;
                 }

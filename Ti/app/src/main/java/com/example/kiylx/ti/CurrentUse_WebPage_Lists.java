@@ -28,4 +28,7 @@ public class CurrentUse_WebPage_Lists {
     public ArrayList<WebPage_Info> getPageList(){
         return mCurrectList;
     }
+    public int getPosition(WebPage_Info item){
+        return mCurrectList.indexOf(item);
+    }
 }

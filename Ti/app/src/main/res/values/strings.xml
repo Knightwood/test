@@ -15,4 +15,6 @@
     <string name="star">收藏</string>
     <string name="mult">多窗口</string>
     <string name="menu">设置</string>
+    <string name="multpage_cloas">关闭网页</string>
+    <string name="new_tab">新标签页</string>
 </resources>
