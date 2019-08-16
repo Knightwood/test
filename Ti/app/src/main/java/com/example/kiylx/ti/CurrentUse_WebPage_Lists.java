@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class CurrentUse_WebPage_Lists {
     //用来展示多窗口的网页数量的列表
-    private static CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
     private ArrayList<WebPage_Info> mCurrectList;
 
+    private static CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
     private CurrentUse_WebPage_Lists() {
         mCurrectList = new ArrayList<>();
     }

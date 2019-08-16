@@ -13,9 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 
-import com.example.kiylx.ti.R;
+
 import com.example.kiylx.ti.model.CuViewModel;
 
 import java.util.ArrayList;

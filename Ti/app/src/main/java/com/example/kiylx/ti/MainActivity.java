@@ -12,22 +12,19 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
-import com.example.kiylx.ti.model.CuViewModel;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements Fragment_web.create, MultPage_DialogFragment.NewPagebutton_click, MultPage_DialogFragment.DeletePage,MultPage_DialogFragment.SwitchPage {
     private static final String TAG="MainActivity";
 
-    /*WebList webList_data = new WebList();
+    /*
     String sharchin="https://www.baidu.com/s?wd=";
     EditText search;
     String text;//搜索框里的内容
-    Boolean multflag=true;//multflag决定多标签页的显示和隐藏
     ListView pagelist;
     private CuViewModel viewmodel;*/
 
@@ -35,15 +32,13 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
     int currect=0;
+    private long mExitTime;//拿来判断按返回键间隔
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         f1=findViewById(R.id.Webview_group);
-
-        //LayoutInflater inflater =getLayoutInflater();
-        //Layout vi=inflater.inflate(R.layout.mult_root);
 
         //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //UserBean userBean = new UserBean("whye",7);
@@ -59,10 +54,74 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                 }
             }
         });*/
-        addWebviewtohome();
+        if(mClist.isempty()){
+        addWebviewtohome();}
         toolbaract();
+        Log.d("lifecycle","onCreate()");
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("lifecycle","onStart()");
+    }
+    @Override
+    protected void onResume(){
+        super.onResume();
+        int s;
+        s=mClist.size();
+        Log.d("lifecycle","onResume()"+s);
+    }
+    @Override
+    protected void onPause(){
+        super.onPause();
+        Log.d("lifecycle","onPause()");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d("lifecycle","onStop()");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        Log.d("lifecycle","onDestroy()");
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("lifecycle","onRestart()");
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        // Check if the key event was the Back button and if there's history
+        //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
+        if((keyCode==KeyEvent.KEYCODE_BACK)&&mClist.getTop(currect).canGoBack()){
+            mClist.getTop(0).goBack();
+        }else{
+            exit();
+            return true;
+        }
+        // If it wasn't the Back key or there's no web page history, bubble up to the default
+        // system behavior (probably exit the activity)
+        return super.onKeyDown(keyCode, event);
+    }
+    private void exit(){
+        if ((System.currentTimeMillis() - mExitTime) > 1000) {
+            Toast.makeText(MainActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis(); }
+        else {
+            //用户退出处理
+            finish();
+            System.exit(0); }
+    }
+
 
     private void addWebviewtohome() {
         //作用是把数组第一个webview对象展示在面前
@@ -75,16 +134,15 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         newTab();
     }
     @Override
-    public int delete_page(int position){
+    public void delete_page(int position){
         if(1==mClist.size()){
             //如果删除这个webview后没有其他的webview了，那就新建标签页
             mClist.getTop(0).loadUrl(null);
-            return 0;
+            return;
         }
         if(position>currect){
             mClist.destroy(position);
             delete_CUWL(position);
-            return 0;
         }else if(position<currect){
             f1.removeView(mClist.getTop(currect));
             mClist.destroy(position);
@@ -105,7 +163,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
                 f1.addView(mClist.getTop(currect));
             }
         }
-        return 0;
     }
     @Override
     public void switchPage(int pos){
@@ -131,14 +188,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         web.setWebChromeClient(new CustomWebchromeClient());
         return web;
     }
-    /*废弃
-    public void addhome(){
-        FrameLayout f1=findViewById(R.id.Webview_group);
-        LayoutInflater inflater=getLayoutInflater();
-        View view = inflater.inflate(R.layout.home,null);
-        //f1.addView(view);
-        newWebView();//准备好webview
-    }*/
 
     private void newWebView(int i) {
         //新建webview并放进数组
@@ -159,39 +208,13 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         addWebviewtohome();
         currect=0;
     }
-    //把有webview的fragment放进webview_group这个视图里
-    //废弃
-    public void addwebpage(){
-        FragmentManager fragmentManager= getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        Fragment_web fragment_web = new Fragment_web();
-        fragmentTransaction.add(R.id.Webview_group, fragment_web);
-        fragmentTransaction.commit();
-        //fragmentManager.findFragmentByTag();
-
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        // Check if the key event was the Back button and if there's history
-        //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
-        if((keyCode==KeyEvent.KEYCODE_BACK)&&mClist.getTop(0).canGoBack()){
-            mClist.getTop(0).goBack();
-            return true;
-        }
-        // If it wasn't the Back key or there's no web page history, bubble up to the default
-        // system behavior (probably exit the activity)
-        return super.onKeyDown(keyCode, event);
-    }
 
 //工具栏设置
     private void toolbaract(){
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
 
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         //禁止显示标题
         bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,104 +274,44 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     private void search_dialog(){
         //展示搜索框
         FragmentManager fm = getSupportFragmentManager();
-        BottomDialogFragment bottomDialogFragment = new BottomDialogFragment();
-        bottomDialogFragment.show(fm,"fragment_bottom_dialog");
+        SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+        searchDialogFragment.show(fm,"fragment_bottom_dialog");
     }
 
-    public void mult_bottom(View v){
-        mult_dialog();
-    }
     private void mult_dialog(){
         //展示多窗口
         FragmentManager fm = getSupportFragmentManager();
         MultPage_DialogFragment md=new MultPage_DialogFragment();
         md.show(fm,"fragment_multPage_dialog");
     }
-//搜索逻辑
-    //废弃
-    void search(String string){
-        WebView temp= mClist.getTop(0);
-        temp.loadUrl(string);
-        //getInfromation(webList_data.getTop());//载入后获取url和标题
-        temp.setWebViewClient(new WebViewClient(){
-            @Override
-            public void onPageFinished(WebView view, String url){
-                //getInfromation(webList_data.getTop());
 
-            }
-        });
-        FrameLayout window1 =findViewById(R.id.Webview_group);
-        window1.addView(temp);
+
+    /*
+    //把有webview的fragment放进webview_group这个视图里
+    //废弃
+    public void addwebpage(){
+        FragmentManager fragmentManager= getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        Fragment_web fragment_web = new Fragment_web();
+        fragmentTransaction.add(R.id.Webview_group, fragment_web);
+        fragmentTransaction.commit();
+        //fragmentManager.findFragmentByTag();
+
+
     }
 
-
-    /*public void multiplePage(View v){
-        //已经在layout里设置了click属性，所以这里是点击时调用的函数
-        Toast.makeText(MainActivity.this,"fuck",Toast.LENGTH_SHORT).show();
-        //得调用viewControl();
-        pagelist = findViewById(R.id.pagelist);
-        //multflag的真触发显示和假来触发隐藏
-        if(multflag){
-        //multflag是真则隐藏网页，显示多窗口
-            //pagelist是显示打开过网页的listview
-            //TextView urlview = findViewById(R.id.url);
-
-            webList_data.Top.t.setVisibility(View.INVISIBLE);//这条是设置现在显示的网页的可见性
-            pagelist.setVisibility(View.VISIBLE);
-            //urlview.setVisibility(View.INVISIBLE);
-            multflag=false;
-
-            adapter.notifyDataSetChanged();
-            //要保持list和adapter的数据同步
-
-        }else{
-            pagelist.setVisibility(View.GONE);
-            webList_data.Top.t.setVisibility(View.VISIBLE);
-            multflag=true;
-
-        }
-    }//这里还缺一个在打开多窗口页面时处理返回键的方法，可以用multflag来做点事情
     */
 
 /*
-    private AdapterView.OnItemClickListener clickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            pagelist = findViewById(R.id.pagelist);
-            pagelist.setVisibility(View.GONE);
-
-           WebView web = webList_data.get(position);//listview单个条目
-           web.setVisibility(View.VISIBLE);
-
-
-
-           Toast.makeText(MainActivity.this,"fuck off",Toast.LENGTH_SHORT).show();
-        }
-    };//设置多窗口页面中单个条目的点击事件
-
-
     public void adapter(){
         adapter = new WebAdapter(MainActivity.this, webList_data);
         pagelist = findViewById(R.id.pagelist);
         pagelist.setAdapter(adapter);
 
     }
-    public void show(){
-        //多窗口页面中单个条目的点击事件，用来显示点击到的网页
-        pagelist = findViewById(R.id.pagelist);
-        pagelist.setOnItemClickListener(clickListener);
-
-    }*/
+    */
 /*
-    public void back(){
-        ImageButton imageButton=findViewById(R.id.backButton);
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webList_data.Top.t.goBack();
-            }
-        });
-    }
+
     public void home(){
         ImageButton home=findViewById(R.id.homebutton);
         home.setOnClickListener(new View.OnClickListener() {
@@ -371,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         settings.setJavaScriptEnabled(true);
         //设置WebView缓存模式 默认断网情况下不缓存
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        /**
+        /*
          * LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
          * LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
          * LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
@@ -404,14 +367,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
     }
     /*
-    public void addview1(){
-        //测试把另外的layout加载进特定位置
-        FrameLayout fragment_group=findViewById(R.id.fragment_group);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        //获取layoutinflater，用它来加载视图，然后用addview把加载进来的视图放进特定位置。
-        View view=inflater.inflate(R.layout.fragment_window,null,false);
-        fragment_group.addView(view,1);
-    }
 
     @Override
     public WebList getWebList_data(){

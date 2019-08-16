@@ -14,13 +14,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.SearchView;
 
-public class BottomDialogFragment extends DialogFragment {
+public class SearchDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_bottom_dialog,null);
         SearchView searchView = v.findViewById(R.id.real_search);
         searchView.setIconified(false);
+
         return v;
     }
 

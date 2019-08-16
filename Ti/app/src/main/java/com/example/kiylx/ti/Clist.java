@@ -40,6 +40,9 @@ public class Clist {
         removeWeb(pos);
 
     }
+    public boolean isempty(){
+        return mArrayList.isEmpty();
+    }
     private void removeWeb(int pos){
         WebView tmp=mArrayList.get(pos);
         if(tmp!=null){

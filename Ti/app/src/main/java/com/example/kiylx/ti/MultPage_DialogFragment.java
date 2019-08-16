@@ -38,6 +38,7 @@ private ImageButton mNewPageImageButton;
             @Override
             public void onClick(View v) {
                 mNewPagebutton_click= (NewPagebutton_click) getActivity();
+                assert mNewPagebutton_click != null;
                 mNewPagebutton_click.click_newPagebutton();
                 //执行操作后关闭对话框页面
                 dismiss();
@@ -67,11 +68,27 @@ private ImageButton mNewPageImageButton;
             setCancelable(true);
         }
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+
     public interface NewPagebutton_click {
         public void click_newPagebutton();
     }
     public interface DeletePage {
-        public int delete_page(int position);
+        public void delete_page(int position);
     }
     public interface SwitchPage{
         public void switchPage(int pos);
@@ -101,7 +118,7 @@ private ImageButton mNewPageImageButton;
         @NonNull
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            Log.d("MultPage_DialogFragment", "onClick: onCreateViewHolder方法被触发");
+            Log.d("MultPage_DialogFragment", "onClick: onCreateViewHolder构造方法被触发");
             View v=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item,viewGroup,false);
             return new WebsiteHolder(v);
 
@@ -131,7 +148,7 @@ private ImageButton mNewPageImageButton;
             super(itemView);
             textView = itemView.findViewById(R.id.website_item);
             imageButton = itemView.findViewById(R.id.close_button);
-            Log.d("MultPage_DialogFragment", "onClick: bind方法被触发");
+            Log.d("MultPage_DialogFragment", "onClick: WebsiteHolder构造方法被触发");
             textView.setOnClickListener(this);
             imageButton.setOnClickListener(this);
 
@@ -155,6 +172,7 @@ private ImageButton mNewPageImageButton;
                 case R.id.close_button:
                     Log.d("MultPage_DialogFragment", "onClick: 多窗口关闭按钮被触发"+pos);
                     mDeletePage=(DeletePage) getActivity();
+                    assert mDeletePage != null;
                     mDeletePage.delete_page(pos);
                     updateUI();
                     //删除完页面要更新视图
@@ -162,6 +180,7 @@ private ImageButton mNewPageImageButton;
                 case R.id.website_item:
                     Log.d("MultPage_DialogFragment", "onClick: 网页切换按钮被触发");
                     mSwitchPage = (SwitchPage)getActivity();
+                    assert mSwitchPage != null;
                     mSwitchPage.switchPage(pos);
                     dismiss();
                     break;
