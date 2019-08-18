@@ -1,7 +1,8 @@
 package com.example.kiylx.ti;
 
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,28 +12,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements Fragment_web.create, MultPage_DialogFragment.NewPagebutton_click, MultPage_DialogFragment.DeletePage,MultPage_DialogFragment.SwitchPage {
+public class MainActivity extends AppCompatActivity implements MultPage_DialogFragment.NewPagebutton_click, MultPage_DialogFragment.DeletePage,MultPage_DialogFragment.SwitchPage,CustomWebviewClient.sendTitle,MultPage_DialogFragment.GetIndex {
     private static final String TAG="MainActivity";
 
     /*
     String sharchin="https://www.baidu.com/s?wd=";
-    EditText search;
-    String text;//搜索框里的内容
-    ListView pagelist;
-    private CuViewModel viewmodel;*/
+    String text;//搜索框里的内容*/
 
     Clist mClist= new Clist();
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
     int currect=0;
+    int past=0;
     private long mExitTime;//拿来判断按返回键间隔
+    TextView m;
+    AboutHistory sAboutHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             @Override
             public void onChanged(@Nullable ArrayList<View> list) {
                 for (View item : list) {
-                    list.add(new WebView(MainActivity.this));
+                    list.addToDataBase(new WebView(MainActivity.this));
                 }
             }
         });*/
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         addWebviewtohome();}
         toolbaract();
         Log.d("lifecycle","onCreate()");
+        m=findViewById(R.id.search_edittext);
 
     }
 
@@ -65,13 +67,17 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     protected void onStart() {
         super.onStart();
         Log.d("lifecycle","onStart()");
+        //创建数据库，如果没有的话
+
+
     }
     @Override
     protected void onResume(){
         super.onResume();
-        int s;
-        s=mClist.size();
-        Log.d("lifecycle","onResume()"+s);
+        int s=mClist.size();
+        mClist.getTop(currect).resumeTimers();
+        Log.d("lifecycle","onResume()"+"webview数量"+s);
+
     }
     @Override
     protected void onPause(){
@@ -82,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     @Override
     protected void onStop() {
         super.onStop();
+        mClist.getTop(currect).pauseTimers();
         Log.d("lifecycle","onStop()");
     }
 
@@ -144,72 +151,106 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             mClist.destroy(position);
             delete_CUWL(position);
         }else if(position<currect){
+            //把当前页面暂停并移除，然后加载新的currect处页面
+            mClist.stop(currect);
             f1.removeView(mClist.getTop(currect));
             mClist.destroy(position);
             delete_CUWL(position);
             currect--;
+            f1.addView(mClist.getTop(currect));
+            mClist.restart(currect);
         }else{
             if(position!=mClist.size()-1){
                 //currect==position时，只要不是删除最后一个，就都这样操作：移除当前webview，删除webivew，把新提升上来的当前位置的webview添加进视图
+                mClist.stop(currect);
                 f1.removeView(mClist.getTop(position));
                 mClist.destroy(position);
                 delete_CUWL(position);
                 f1.addView(mClist.getTop(position));
+                mClist.restart(currect);
             }else{
+                mClist.stop(currect);
                 f1.removeView(mClist.getTop(position));
                 currect--;
                 mClist.destroy(position);
                 delete_CUWL(position);
                 f1.addView(mClist.getTop(currect));
+                mClist.restart(currect);
             }
         }
     }
     @Override
     public void switchPage(int pos){
+        mClist.stop(currect);
         f1.removeView(mClist.getTop(currect));
         f1.addView(mClist.getTop(pos));
         currect=pos;
+        mClist.restart(currect);
+        setTextForbar();//更新工具栏上的文字
+    }
+    @Override
+    public int getCurrect(){
+        return currect;
+    }
+
+
+    void setTextForbar() {
+        //以下三行把工具栏的的文字更新
+        sCUWL();
+        String mt =sCurrentUse_webPage_lists.getTitle(currect);
+        m.setText(mt);
+    }
+
+    @Override
+    public void getTitle(String s){
+        Log.d("lifecycle","webview标题"+s);
+        m.setText(s);//更新工具栏上的文字
+        sCUWL();
+        sCurrentUse_webPage_lists.setTitle(currect,s);
+        sCurrentUse_webPage_lists.setdate(currect);
+        Log.d(TAG, "Time:"+sCurrentUse_webPage_lists.getdate(currect));
+        getsAboutHistory();//历史记录加入数据库
+    }
+
+    void getsAboutHistory(){
+        //历史记录加入数据库
+        sAboutHistory=AboutHistory.get(getApplicationContext());
+        sAboutHistory.addToDataBase(sCurrentUse_webPage_lists.getInfo(currect));
+    }
+
+    void sCUWL() {
+        sCurrentUse_webPage_lists = CurrentUse_WebPage_Lists.get();
     }
 
     private void delete_CUWL(int i){
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
-        sCurrentUse_webPage_lists= CurrentUse_WebPage_Lists.get();
+        sCUWL();
         sCurrentUse_webPage_lists.delete(i);
-    }
-
-    @Override
-    //Fragment_web调用
-    //废弃
-    public WebView addWebview(){
-        WebView web = new WebView(this);
-        set1(web);
-        //给new出来的webview执行设置
-        web.setWebViewClient(new CustomWebviewClient());
-        web.setWebChromeClient(new CustomWebchromeClient());
-        return web;
     }
 
     private void newWebView(int i) {
         //新建webview并放进数组
-        WebView web = new WebView(this);
+        WebView web = new WebView(getApplicationContext());
         set1(web);
         //给new出来的webview执行设置
-        web.setWebViewClient(new CustomWebviewClient());
+        web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
         web.setWebChromeClient(new CustomWebchromeClient());
         mClist.addToFirst(web,i);
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
-        sCurrentUse_webPage_lists= CurrentUse_WebPage_Lists.get();
+        sCUWL();
         sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
         //把网页信息保存进去，flags记为1，表示是一个newTab，不计入历史记录
     }
     public void newTab(){
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
+        mClist.stop(currect);
         f1.removeView(mClist.getTop(0));
         addWebviewtohome();
         currect=0;
+        setTextForbar();//更新工具栏上的文字
     }
 
-//工具栏设置
+    //工具栏设置
     private void toolbaract(){
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
@@ -220,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
             @Override
             public void onClick(View v) {
                 mClist.getTop(currect).goBack();
-                Toast.makeText(MainActivity.this,"dmji",Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -267,17 +307,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
     }
 
 
-//搜索框代码
-    public void searchBar(View v){
-         search_dialog();
-    }
-    private void search_dialog(){
-        //展示搜索框
-        FragmentManager fm = getSupportFragmentManager();
-        SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-        searchDialogFragment.show(fm,"fragment_bottom_dialog");
-    }
-
     private void mult_dialog(){
         //展示多窗口
         FragmentManager fm = getSupportFragmentManager();
@@ -285,22 +314,33 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         md.show(fm,"fragment_multPage_dialog");
     }
 
-
-    /*
-    //把有webview的fragment放进webview_group这个视图里
-    //废弃
-    public void addwebpage(){
-        FragmentManager fragmentManager= getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
-        Fragment_web fragment_web = new Fragment_web();
-        fragmentTransaction.add(R.id.Webview_group, fragment_web);
-        fragmentTransaction.commit();
-        //fragmentManager.findFragmentByTag();
-
+    //搜索框代码
+    public void searchBar(View v){
+        search_dialog();
+    }
+    private void search_dialog(){
+        //展示搜索框
+        Intent intent = new Intent(MainActivity.this,DoSearchActivity.class);
+        startActivityForResult(intent,21);
 
     }
 
-    */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=RESULT_OK){
+            return;
+        }
+        if(requestCode==21){
+            //把DoSearchActivity的requestCode定义为21
+            assert data != null;
+            mClist.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
+            //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
+            sCUWL();
+            sCurrentUse_webPage_lists.setFlags(currect,1);
+            Log.d(TAG, "onActivityResult: 被触发" +data.getStringExtra("text_or_url"));
+    }
+    }
 
 /*
     public void adapter(){
@@ -310,19 +350,6 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
 
     }
     */
-/*
-
-    public void home(){
-        ImageButton home=findViewById(R.id.homebutton);
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webList_data.Top.t.loadUrl("http://www.baidu.com");
-                //addview1();//此行为测试加载特定layout用
-            }
-        });
-
-    }*/
 
     //webview的设置
     void set1(WebView ti){
@@ -355,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
         //设置WebView的访问UserAgent
-        //settings.setUserAgentString(String string);
+        settings.setUserAgentString(null);
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能
@@ -366,19 +393,12 @@ public class MainActivity extends AppCompatActivity implements Fragment_web.crea
         settings.setDatabaseEnabled(true);
 
     }
-    /*
-
-    @Override
-    public WebList getWebList_data(){
-        return webList_data;
-    }*/
 
 
     /*
     @Override
     protected void onResume() {
         WebView t = WebList.get(i).t;
-
         super.onResume();
         t.onResume();
         t.resumeTimers();}

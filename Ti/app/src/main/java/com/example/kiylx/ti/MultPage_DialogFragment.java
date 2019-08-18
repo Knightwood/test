@@ -2,6 +2,7 @@ package com.example.kiylx.ti;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -21,17 +22,20 @@ import java.util.ArrayList;
 
 
 public class MultPage_DialogFragment extends DialogFragment {
+    private static final String TAG="MultPage_DialogFragment";
 private RecyclerView mRecyclerView;
 private WebSiteAdapter mWebSiteAdapter;
 private NewPagebutton_click mNewPagebutton_click;
 private ImageButton mNewPageImageButton;
+private GetIndex mGetIndex;
+private int currect;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_multpage_dialog,null);
         mRecyclerView=v.findViewById(R.id.mult_item);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI();
+        updateUI();//每次打开多窗口都会触发更新视图
 
         mNewPageImageButton = v.findViewById(R.id.newPagebutton);
         mNewPageImageButton.setOnClickListener(new View.OnClickListener() {
@@ -44,13 +48,14 @@ private ImageButton mNewPageImageButton;
                 dismiss();
             }
         });
-
+        Log.d(TAG, "onCreateView: ");
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, "onViewCreated: ");
     }
 
     @Override
@@ -67,31 +72,40 @@ private ImageButton mNewPageImageButton;
             window.setWindowAnimations(R.style.animate_dialog);
             setCancelable(true);
         }
+        Log.d(TAG, "onStart: ");
+        mGetIndex=(GetIndex)getActivity();
+        currect=mGetIndex.getCurrect();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.d(TAG, "onStop: ");
     }
     @Override
     public void onResume(){
         super.onResume();
+        Log.d(TAG, "onResume: ");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        Log.d(TAG, "onDestroyView: ");
     }
 
 
     public interface NewPagebutton_click {
-        public void click_newPagebutton();
+        void click_newPagebutton();
     }
     public interface DeletePage {
-        public void delete_page(int position);
+        void delete_page(int position);
     }
     public interface SwitchPage{
-        public void switchPage(int pos);
+        void switchPage(int pos);
+    }
+    public interface GetIndex{
+        int getCurrect();
     }
 
     private void updateUI() {
@@ -100,8 +114,12 @@ private ImageButton mNewPageImageButton;
         if(null==mWebSiteAdapter){
             mWebSiteAdapter=new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
-            Log.d("MultPage_DialogFragment", "onClick: setAdapter方法被触发");
+            Log.d(TAG, "onClick: setAdapter方法被触发");
         }else{
+            currect=mGetIndex.getCurrect();
+            //重新拿到current值，用于当删除某个标签页时能正确设置颜色
+            mWebSiteAdapter.setLists(lists);
+            //重新获取数据更新
             mWebSiteAdapter.notifyDataSetChanged();
         }
     }
@@ -118,7 +136,7 @@ private ImageButton mNewPageImageButton;
         @NonNull
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            Log.d("MultPage_DialogFragment", "onClick: onCreateViewHolder构造方法被触发");
+            Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
             View v=LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item,viewGroup,false);
             return new WebsiteHolder(v);
 
@@ -126,14 +144,19 @@ private ImageButton mNewPageImageButton;
 
         @Override
         public void onBindViewHolder(@NonNull WebsiteHolder websiteHolder, int i) {
-            Log.d("MultPage_DialogFragment", "onClick: onBindViewHolder方法被触发");
+            Log.d(TAG, "onClick: onBindViewHolder方法被触发");
             websiteHolder.bind(lists.get(i),i);
         }
 
 
         @Override
         public int getItemCount() {
+
             return lists.size();
+        }
+        private void setLists(ArrayList<WebPage_Info> lists){
+
+            this.lists=lists;
         }
     }
 
@@ -148,7 +171,7 @@ private ImageButton mNewPageImageButton;
             super(itemView);
             textView = itemView.findViewById(R.id.website_item);
             imageButton = itemView.findViewById(R.id.close_button);
-            Log.d("MultPage_DialogFragment", "onClick: WebsiteHolder构造方法被触发");
+            Log.d(TAG, "onClick: WebsiteHolder构造方法被触发");
             textView.setOnClickListener(this);
             imageButton.setOnClickListener(this);
 
@@ -162,7 +185,10 @@ private ImageButton mNewPageImageButton;
                 title=getString(R.string.new_tab);
             }
             textView.setText(title);
-            Log.d("MultPage_DialogFragment", "onClick: bind方法被触发");
+            if(pos==currect)
+            textView.setTextColor(getResources().getColor(R.color.textColor));
+            //通过拿到currect值，改变文字颜色。
+            Log.d(TAG, "onClick: bind方法被触发");
 
         }
 
@@ -170,15 +196,16 @@ private ImageButton mNewPageImageButton;
         public void onClick(View v) {
             switch ((v.getId())) {
                 case R.id.close_button:
-                    Log.d("MultPage_DialogFragment", "onClick: 多窗口关闭按钮被触发"+pos);
+                    Log.d(TAG, "onClick: 多窗口关闭按钮被触发"+pos);
                     mDeletePage=(DeletePage) getActivity();
                     assert mDeletePage != null;
                     mDeletePage.delete_page(pos);
+
                     updateUI();
                     //删除完页面要更新视图
                     break;
                 case R.id.website_item:
-                    Log.d("MultPage_DialogFragment", "onClick: 网页切换按钮被触发");
+                    Log.d(TAG, "onClick: 网页切换按钮被触发");
                     mSwitchPage = (SwitchPage)getActivity();
                     assert mSwitchPage != null;
                     mSwitchPage.switchPage(pos);

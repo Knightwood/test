@@ -58,5 +58,7 @@ public class Clist {
             mArrayList.remove(pos);
         }
     }
+    public void stop(int i){mArrayList.get(i).onPause();}
+    public void restart(int i){mArrayList.get(i).onResume();}
 
 }

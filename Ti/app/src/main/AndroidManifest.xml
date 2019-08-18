@@ -13,6 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".SettingActivity"></activity>
+        <activity
+            android:name=".DoSearchActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

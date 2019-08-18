@@ -1,6 +1,8 @@
 package com.example.kiylx.ti;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CurrentUse_WebPage_Lists {
     //用来展示多窗口的网页数量的列表
@@ -28,7 +30,22 @@ public class CurrentUse_WebPage_Lists {
     public ArrayList<WebPage_Info> getPageList(){
         return mCurrectList;
     }
-    public int getPosition(WebPage_Info item){
-        return mCurrectList.indexOf(item);
+    public int getPosition(WebPage_Info item){ return mCurrectList.indexOf(item); }
+    public String getTitle(int pos){
+        return mCurrectList.get(pos).getTitle();
+    }
+    public void setTitle(int pos,String s){
+        mCurrectList.get(pos).setTitle(s);
+    }
+    public void setFlags(int pos,int i){
+        mCurrectList.get(pos).setFlags(i);
+    }
+    public WebPage_Info getInfo(int i){return mCurrectList.get(i);}
+    public String getdate(int i){return mCurrectList.get(i).getDate();}
+    public void setdate(int i){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+        // 获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        mCurrectList.get(i).setDate(simpleDateFormat.format(date));
     }
 }

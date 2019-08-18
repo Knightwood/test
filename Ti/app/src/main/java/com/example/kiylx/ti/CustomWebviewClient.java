@@ -1,5 +1,6 @@
 package com.example.kiylx.ti;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -15,6 +16,16 @@ import android.widget.TextView;
 import static android.support.v4.content.ContextCompat.startActivity;
 
 public class CustomWebviewClient extends WebViewClient {
+    private sendTitle mSendTitle;
+    private Context mContext;
+
+    public interface sendTitle{
+       void getTitle(String s);
+    }
+    public CustomWebviewClient(Context context){
+        //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
+        mContext=context;
+    }
     /**
      * 是否在 WebView 内加载页面
      *
@@ -62,11 +73,12 @@ public class CustomWebviewClient extends WebViewClient {
      * @param view
      * @param url
      */
-    /*@Override
+    @Override
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
-
-    }*/
+        mSendTitle=(sendTitle) mContext;
+        mSendTitle.getTitle(view.getTitle());
+    }
     /**
      * WebView 加载页面资源时会回调，每一个资源产生的一次网络加载，除非本地有当前 url 对应有缓存，否则就会加载。
      *
