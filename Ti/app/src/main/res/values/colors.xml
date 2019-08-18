@@ -5,4 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="textColor">#2196F3</color>
 
+    <color name="one">#6D8080</color>
+    <color name="two">#838A8A</color>
+    <color name="three">#8F9595</color>
+
 </resources>

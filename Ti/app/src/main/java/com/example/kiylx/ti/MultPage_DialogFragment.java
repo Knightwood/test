@@ -1,6 +1,8 @@
 package com.example.kiylx.ti;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -64,16 +67,25 @@ private int currect;
         Dialog dialog=getDialog();
         if(dialog!=null&&dialog.getWindow()!=null){
             Window window = dialog.getWindow();
+            WindowManager.LayoutParams layoutParams=window.getAttributes();
+            //layoutParams.y=0;
+            //layoutParams.x=0;
             //指定显示位置
-            dialog.getWindow().setGravity(Gravity.BOTTOM);
+           layoutParams.gravity=Gravity.BOTTOM;
             //指定显示大小
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.width=WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height=WindowManager.LayoutParams.WRAP_CONTENT;
+            //设置背景，不然无法扩展到屏幕边缘
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91,90,92)));
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);
+            //让属性设置生效
+            window.setAttributes(layoutParams);
             setCancelable(true);
         }
         Log.d(TAG, "onStart: ");
         mGetIndex=(GetIndex)getActivity();
+        assert mGetIndex != null;
         currect=mGetIndex.getCurrect();
     }
 
