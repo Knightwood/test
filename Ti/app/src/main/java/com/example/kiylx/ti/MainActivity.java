@@ -26,21 +26,21 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     String sharchin="https://www.baidu.com/s?wd=";
     String text;//搜索框里的内容*/
 
-    Clist mClist= new Clist();
+    Clist mClist;
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
-    int currect=0;
+    static int currect=0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     int past=0;
     private long mExitTime;//拿来判断按返回键间隔
     TextView m;
     AboutHistory sAboutHistory;
+    String Currect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         f1=findViewById(R.id.Webview_group);
-
         //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //UserBean userBean = new UserBean("whye",7);
         //binding.setUser(userBean);
@@ -55,8 +55,14 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
                 }
             }
         });*/
+        mClist=Clist.getInstance();
+        /*if(f1.getChildCount()!=0)
+            f1.removeAllViews();*/
         if(mClist.isempty()){
-        addWebviewtohome();}
+            Log.d(TAG, "onCreate: isempty");
+            addWebviewtohome();}else{
+            f1.addView(mClist.getTop(currect));
+        }/*当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来*/
         toolbaract();
         Log.d("lifecycle","onCreate()");
         m=findViewById(R.id.search_edittext);
@@ -64,18 +70,25 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Currect,currect);
+
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
+
         Log.d("lifecycle","onStart()");
+
         //创建数据库，如果没有的话
-
-
     }
     @Override
     protected void onResume(){
         super.onResume();
         int s=mClist.size();
-        mClist.getTop(currect).resumeTimers();
+        mClist.getTop(currect).onResume();
         Log.d("lifecycle","onResume()"+"webview数量"+s);
 
     }
@@ -88,19 +101,19 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     @Override
     protected void onStop() {
         super.onStop();
-        mClist.getTop(currect).pauseTimers();
+        mClist.getTop(currect).onPause();
+        f1.removeAllViews();//移除所有视图
         Log.d("lifecycle","onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-
         Log.d("lifecycle","onDestroy()");
     }
     @Override
     protected void onRestart() {
+        f1.addView(mClist.getTop(currect));
         super.onRestart();
         Log.d("lifecycle","onRestart()");
     }
@@ -181,12 +194,13 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     }
     @Override
     public void switchPage(int pos){
+        //pos是指要切换到的页面
         mClist.stop(currect);
         f1.removeView(mClist.getTop(currect));
         f1.addView(mClist.getTop(pos));
         currect=pos;
         mClist.restart(currect);
-        setTextForbar();//更新工具栏上的文字
+        setTextForbar(currect);//更新工具栏上的文字
     }
     @Override
     public int getCurrect(){
@@ -194,10 +208,10 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     }
 
 
-    void setTextForbar() {
+    void setTextForbar(int i) {
         //以下三行把工具栏的的文字更新
         sCUWL();
-        String mt =sCurrentUse_webPage_lists.getTitle(currect);
+        String mt =sCurrentUse_webPage_lists.getTitle(i);
         m.setText(mt);
     }
 
@@ -247,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         f1.removeView(mClist.getTop(0));
         addWebviewtohome();
         currect=0;
-        setTextForbar();//更新工具栏上的文字
+        setTextForbar(currect);//更新工具栏上的文字
     }
 
     //工具栏设置

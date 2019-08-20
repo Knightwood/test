@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -130,7 +129,7 @@ private int currect;
         }else{
             currect=mGetIndex.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
-            mWebSiteAdapter.setLists(lists);
+            //mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
             mWebSiteAdapter.notifyDataSetChanged();
         }

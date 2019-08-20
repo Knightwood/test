@@ -7,10 +7,27 @@ import java.util.ArrayList;
 public class Clist {
     private ArrayList<WebView> mArrayList;
 
-    public Clist(){
+    /*public Clist(){
         if(mArrayList ==null){
             mArrayList = new ArrayList<WebView>();
         }
+    }*/
+
+    private volatile static Clist sClist;
+    private Clist(){
+        if(mArrayList ==null){
+            mArrayList = new ArrayList<WebView>();
+        }
+    }
+    public static Clist getInstance(){
+        if(sClist==null){
+            synchronized (Clist.class){
+                if (sClist==null){
+                    sClist=new Clist();
+                }
+            }
+        }
+        return sClist;
     }
 
 
