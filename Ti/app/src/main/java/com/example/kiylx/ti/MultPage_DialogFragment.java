@@ -25,12 +25,13 @@ import java.util.ArrayList;
 
 public class MultPage_DialogFragment extends DialogFragment {
     private static final String TAG="MultPage_DialogFragment";
-private RecyclerView mRecyclerView;
-private WebSiteAdapter mWebSiteAdapter;
-private NewPagebutton_click mNewPagebutton_click;
-private ImageButton mNewPageImageButton;
-private GetIndex mGetIndex;
-private int currect;
+    private RecyclerView mRecyclerView;
+    private WebSiteAdapter mWebSiteAdapter;
+    private NewPagebutton_click mNewPagebutton_click;
+    private ImageButton mNewPageImageButton;
+    private GetIndex mGetIndex;
+    private int mCurrect;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -67,8 +68,6 @@ private int currect;
         if(dialog!=null&&dialog.getWindow()!=null){
             Window window = dialog.getWindow();
             WindowManager.LayoutParams layoutParams=window.getAttributes();
-            //layoutParams.y=0;
-            //layoutParams.x=0;
             //指定显示位置
            layoutParams.gravity=Gravity.BOTTOM;
             //指定显示大小
@@ -85,7 +84,7 @@ private int currect;
         Log.d(TAG, "onStart: ");
         mGetIndex=(GetIndex)getActivity();
         assert mGetIndex != null;
-        currect=mGetIndex.getCurrect();
+        mCurrect =mGetIndex.getCurrect();
     }
 
     @Override
@@ -120,14 +119,15 @@ private int currect;
     }
 
     private void updateUI() {
-        CurrentUse_WebPage_Lists mCurrect_list = CurrentUse_WebPage_Lists.get();
+        CurrentUse_WebPage_Lists mCurrect_list= CurrentUse_WebPage_Lists.get();
         ArrayList<WebPage_Info> lists=mCurrect_list.getPageList();
         if(null==mWebSiteAdapter){
             mWebSiteAdapter=new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         }else{
-            currect=mGetIndex.getCurrect();
+
+            mCurrect =mGetIndex.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
             //mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
@@ -190,13 +190,13 @@ private int currect;
         public void bind(WebPage_Info item_info,int pos){
             minfo=item_info;
             this.pos=pos;
-            //获取点击的item的位置，也就是webview在list的位置，方便后面使用
+            //获取点击的item的位置，也就是webview在list的位置，方便后面标记当前标签页
             String title=minfo.getTitle();
             if(0==minfo.getFlags()){
                 title=getString(R.string.new_tab);
             }
             textView.setText(title);
-            if(pos==currect)
+            if(pos== mCurrect)
             textView.setTextColor(getResources().getColor(R.color.textColor));
             //通过拿到currect值，改变文字颜色。
             Log.d(TAG, "onClick: bind方法被触发");
@@ -211,7 +211,6 @@ private int currect;
                     mDeletePage=(DeletePage) getActivity();
                     assert mDeletePage != null;
                     mDeletePage.delete_page(pos);
-
                     updateUI();
                     //删除完页面要更新视图
                     break;

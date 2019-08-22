@@ -1,10 +1,11 @@
 package com.example.kiylx.ti;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,36 +13,43 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Fragment_Search.OnFragmentInteractionListener} interface
+ * {@link Fragment_DoSearch.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Fragment_Search#newInstance} factory method to
+ * Use the {@link Fragment_DoSearch#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_Search extends Fragment {
+public class Fragment_DoSearch extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    //private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "fragmentLifeCycle";
+    private ArrayList<WebPage_Info> formatList =new ArrayList<>();
+    private ForDoSearchFragment tmp;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    //mParam1用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
+    //private String mParam2;
 
-    private String compared_with_history;
+    private String compared_with_history;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
     private EditText searchbox;
+    private RecyclerView showHistory;
+    private SearchrecordAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
 
-    public Fragment_Search() {
+    public Fragment_DoSearch() {
         // Required empty public constructor
     }
 
@@ -50,15 +58,15 @@ public class Fragment_Search extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Search.
+     * //@param param2 Parameter 2.
+     * @return A new instance of fragment Fragment_DoSearch.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_Search newInstance(String param1, String param2) {
-        Fragment_Search fragment = new Fragment_Search();
+    public static Fragment_DoSearch newInstance(String param1) {
+        Fragment_DoSearch fragment = new Fragment_DoSearch();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,8 +88,10 @@ public class Fragment_Search extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            //mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        if(null==tmp)
+        tmp=new ForDoSearchFragment();
         Log.d(TAG, "onCreate: ");
     }
 
@@ -91,9 +101,12 @@ public class Fragment_Search extends Fragment {
         // Inflate the layout for this fragment
         View v =inflater.inflate(R.layout.fragment_search_page, container, false);
         searchbox = (EditText) v.findViewById(R.id.search_column);
+        showHistory=(RecyclerView) v.findViewById(R.id.show_history_for_search);
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
+        if(mParam1!=null)
+        searchbox.setText(mParam1);//如果当前网页不是null，那就填充网址
         return v;
     }
 
@@ -142,9 +155,20 @@ public class Fragment_Search extends Fragment {
             public void afterTextChanged(Editable s) {
             //把文本与历史记录进行对比，筛选出符合的信息，刷新listview
                 compared_with_history=searchbox.getText().toString();
+                formatList =tmp.formatList(compared_with_history);
+                //与历史记录以及收藏记录比对，拿到arraylist
+                updateList(formatList);
+                //更新界面
 
             }
         });
+    }
+    private void updateList(ArrayList<WebPage_Info> m){
+        if(null==adapter){
+        adapter=new SearchrecordAdapter(m);
+        showHistory.setAdapter(adapter);}else{
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -161,34 +185,54 @@ public class Fragment_Search extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(String s);
     }
+    private class SearchrecordAdapter extends RecyclerView.Adapter<SearchItemHolder>{
+        private ArrayList<WebPage_Info> lists;
 
-    private class adapter extends BaseAdapter{
+        public SearchrecordAdapter(ArrayList<WebPage_Info> lists) {
+            this.lists = lists;
+        }
 
+        @NonNull
         @Override
-        public int getCount() {
-            return 0;
+        public SearchItemHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.history_item,null,false);
+            return new SearchItemHolder(v);
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public void onBindViewHolder(@NonNull SearchItemHolder searchItemHolder, int i) {
+            searchItemHolder.bind(lists.get(i));
         }
 
         @Override
-        public long getItemId(int position) {
-            return 0;
+        public int getItemCount() {
+            return lists.size();
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+    }
+    private class SearchItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        TextView view1;
+        TextView view2;
+        ImageView view3;
+        public SearchItemHolder(@NonNull View itemView) {
+            super(itemView);
+            view1=itemView.findViewById(R.id.itemTitle);
+            view2=itemView.findViewById(R.id.itemurl);
+            view3=itemView.findViewById(R.id.starimage);
+            itemView.setOnClickListener(this);
         }
-
-        class ViewHolder{
-            TextView mTextView;
-            ViewHolder(TextView v){
-                this.mTextView=v;
+        public void bind(WebPage_Info info){
+            view1.setText(info.getTitle());
+            view2.setText(info.getUrl());
+            if(info.IsStar()){
+                //如果是被收藏网址，那就把图片替换位已收藏
+                view3.setImageResource(R.drawable.ic_star_black_24dp);
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            String tmp=view2.getText().toString();
+            mListener.onFragmentInteraction(tmp);
         }
     }
 

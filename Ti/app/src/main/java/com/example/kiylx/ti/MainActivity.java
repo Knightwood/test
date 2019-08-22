@@ -30,11 +30,10 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
     static int currect=0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
-    int past=0;
     private long mExitTime;//拿来判断按返回键间隔
     TextView m;
     AboutHistory sAboutHistory;
-    String Currect;
+    private static final String CURL="current url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(Currect,currect);
 
     }
 
@@ -335,6 +333,8 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     private void search_dialog(){
         //展示搜索框
         Intent intent = new Intent(MainActivity.this,DoSearchActivity.class);
+        intent.putExtra(CURL,mClist.getTop(currect).getUrl());
+        //把当前网页网址传进去
         startActivityForResult(intent,21);
 
     }
