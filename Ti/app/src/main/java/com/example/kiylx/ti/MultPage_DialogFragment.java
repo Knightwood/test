@@ -79,6 +79,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效
             window.setAttributes(layoutParams);
+			//设置点击外部可以取消对话框
             setCancelable(true);
         }
         Log.d(TAG, "onStart: ");

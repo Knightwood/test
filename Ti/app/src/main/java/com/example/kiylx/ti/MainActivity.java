@@ -303,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
                     case R.id.action_menu:
 
                         Log.i(TAG, "onClick: 菜单按钮被触发");
-
+                        minset();
                     default:
                         break;
                 }
@@ -324,6 +324,12 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         FragmentManager fm = getSupportFragmentManager();
         MultPage_DialogFragment md=new MultPage_DialogFragment();
         md.show(fm,"fragment_multPage_dialog");
+    }
+    private void minset(){
+        //底部设置界面
+        FragmentManager fm =getSupportFragmentManager();
+        MinSetDialog md=new MinSetDialog();
+        md.show(fm,"minSetDialog");
     }
 
     //搜索框代码
