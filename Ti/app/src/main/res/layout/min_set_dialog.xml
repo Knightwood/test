@@ -2,13 +2,15 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@null">
 
-    <com.example.kiylx.ti.minsetViewgroup
+    <com.example.kiylx.ti.Discard.minsetViewgroup
         android:id="@+id/view_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:background="@null">
         <LinearLayout
 
             android:layout_width="match_parent"
@@ -111,6 +113,6 @@
                 android:src="@drawable/ic_settings_applications_black_24dp"/>
         </LinearLayout>
 
-    </com.example.kiylx.ti.minsetViewgroup>
+    </com.example.kiylx.ti.Discard.minsetViewgroup>
 
 </FrameLayout>

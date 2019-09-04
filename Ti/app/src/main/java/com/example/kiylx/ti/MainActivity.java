@@ -2,6 +2,7 @@ package com.example.kiylx.ti;
 
 import android.content.Intent;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -294,6 +295,9 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
                     case R.id.action_star:
                         Log.i(TAG, "onClick: 收藏按钮被触发");
 
+                        FragmentManager fm = getSupportFragmentManager();
+                        Star_webpage dialog = new Star_webpage();
+                        dialog.show(fm,"收藏当前网页");
                         break;
                     case R.id.action_flash:
 

@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.kiylx.ti.database.HistoryBaseHelper;
-import com.example.kiylx.ti.database.HistoryDbSchema.HistoryTable;
-import com.example.kiylx.ti.database.ItemCursorWrapper;
+import com.example.kiylx.ti.historydatabase.HistoryBaseHelper;
+import com.example.kiylx.ti.historydatabase.HistoryDbSchema.HistoryTable;
+import com.example.kiylx.ti.historydatabase.ItemCursorWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

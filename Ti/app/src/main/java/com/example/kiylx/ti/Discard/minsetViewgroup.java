@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Discard;
 
 import android.content.Context;
 import android.os.Build;

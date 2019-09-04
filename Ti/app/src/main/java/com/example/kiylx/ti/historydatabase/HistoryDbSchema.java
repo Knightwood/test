@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.database;
+package com.example.kiylx.ti.historydatabase;
 
 public class HistoryDbSchema {
     public static final class HistoryTable{

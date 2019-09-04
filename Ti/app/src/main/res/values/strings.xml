@@ -18,6 +18,22 @@
     <string name="multpage_cloas">关闭网页</string>
     <string name="new_tab">新标签页</string>
     <string name="type_text">键入文字</string>
+    <string name="folder">文件夹</string>
+    <string name="enter">确认</string>
+    <string name="cancel">取消</string>
+
+
+    <!-- 夜间，设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式-->
+    <string name="shezhi">设置</string>
+    <string name="xiazai">下载</string>
+    <string name="shoucang">收藏</string>
+    <string name="lishijilu">历史记录</string>
+    <string name="fenxiang">分享</string>
+    <string name="yinshen">隐身</string>
+    <string name="gongjuxiang">工具箱</string>
+    <string name="diannaomoshi">电脑模式</string>
+    <string name="yejian">夜间</string>
+    <string name="shuqian">书签</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

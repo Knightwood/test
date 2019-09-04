@@ -24,22 +24,23 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.min_set_dialog,null);
+        View v = inflater.inflate(R.layout.min_set_view,null);
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.sogo1).setOnClickListener(this);
-        view.findViewById(R.id.sogo2).setOnClickListener(this);
-        view.findViewById(R.id.sogo3).setOnClickListener(this);
-        view.findViewById(R.id.qq1).setOnClickListener(this);
-        view.findViewById(R.id.qq2).setOnClickListener(this);
-        view.findViewById(R.id.qq3).setOnClickListener(this);
-        view.findViewById(R.id.ie1).setOnClickListener(this);
-        view.findViewById(R.id.ie2).setOnClickListener(this);
-        view.findViewById(R.id.menu).setOnClickListener(this);
+        view.findViewById(R.id.a1).setOnClickListener(this);
+        view.findViewById(R.id.a2).setOnClickListener(this);
+        view.findViewById(R.id.a3).setOnClickListener(this);
+        view.findViewById(R.id.a4).setOnClickListener(this);
+        view.findViewById(R.id.a5).setOnClickListener(this);
+        view.findViewById(R.id.a6).setOnClickListener(this);
+        view.findViewById(R.id.a7).setOnClickListener(this);
+        view.findViewById(R.id.a8).setOnClickListener(this);
+        view.findViewById(R.id.a9).setOnClickListener(this);
+        view.findViewById(R.id.a10).setOnClickListener(this);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
             lp.gravity= Gravity.BOTTOM;
             lp.width=WindowManager.LayoutParams.MATCH_PARENT;
             lp.height=WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91,90,92)));
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255,255,255)));
             window.setWindowAnimations(R.style.animate_dialog);
             window.setAttributes(lp);
             //设置点击外部可以取消对话框
@@ -64,22 +65,48 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         v.setSelected(!v.isSelected());
         int id = v.getId();
         switch (id) {
-            case R.id.sogo1:
-            case R.id.sogo2:
-            case R.id.sogo3:
+            case R.id.a1:
+                //分享
+                dismiss();
+                break;
+            case R.id.a2:
+                //收藏
+                dismiss();
+                break;
+            case R.id.a3:
+                //隐身
+                dismiss();
                 Toast.makeText(getActivity(), "SoGO", LENGTH_SHORT).show();
                 break;
-            case R.id.qq1:
-            case R.id.qq2:
-            case R.id.qq3:
+            case R.id.a4:
+                //历史记录
+                dismiss();
+                break;
+            case R.id.a5:
+                //工具箱
+                dismiss();
+                break;
+            case R.id.a6:
+                //书签
+                dismiss();
                 Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
                 break;
-            case R.id.ie1:
+            case R.id.a7:
+                //电脑模式
+                dismiss();
                 break;
-            case R.id.ie2:
+            case R.id.a8:
+                //下载
+                dismiss();
                 break;
-            case R.id.menu:
+            case R.id.a9:
+                //夜间
+                dismiss();
+                break;
+            case R.id.a10:
+                //设置
                 startActivity(new Intent(getActivity(),SettingActivity.class));
+                dismiss();
                 break;
     }
 }}
