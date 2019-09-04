@@ -10,8 +10,8 @@ public class FavoritepageBaseHelper extends SQLiteOpenHelper {
 
     private static final int VERSION=1;
     private static final String DATABASE_NAME="favorite_tab";
-    public FavoritepageBaseHelper(Context context,String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public FavoritepageBaseHelper(Context context) {
+        super(context,FavoriteTable.NAME,null, VERSION);
     }
 
     @Override

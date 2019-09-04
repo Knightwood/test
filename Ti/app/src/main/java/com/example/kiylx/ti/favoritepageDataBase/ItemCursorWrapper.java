@@ -5,13 +5,13 @@ import android.database.CursorWrapper;
 
 import com.example.kiylx.ti.WebPage_Info;
 
-public class itemCursorWrapper extends CursorWrapper {
+public class ItemCursorWrapper extends CursorWrapper {
     /**
      * Creates a cursor wrapper.
      *
      * @param cursor The underlying cursor to wrap.
      */
-    public itemCursorWrapper(Cursor cursor) {
+    public ItemCursorWrapper(Cursor cursor) {
         super(cursor);
     }
     public WebPage_Info getFavoriterinfo(){

@@ -71,4 +71,11 @@ public class WebPage_Info {
         this.isStar = isStar;
     }
 
+    public String getFolders(){
+        return this.folders;
+    }
+    public void setFolders(String s){
+        this.folders=s;
+    }
+
 }
