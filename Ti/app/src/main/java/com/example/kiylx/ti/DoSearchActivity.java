@@ -1,9 +1,9 @@
 package com.example.kiylx.ti;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInteractionListener{

@@ -1,7 +1,10 @@
 package com.example.kiylx.ti;
 
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.kiylx.ti.settingFolders.GeneralFragment;
 
 public class SettingActivity extends AppCompatActivity {
 
@@ -9,5 +12,7 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        getSupportFragmentManager().beginTransaction().replace(R.id.ffff,new GeneralFragment()).commit();
     }
+
 }
