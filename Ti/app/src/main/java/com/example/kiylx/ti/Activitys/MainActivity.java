@@ -27,15 +27,17 @@ import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Fragments.Star_webpage;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements MultPage_DialogFragment.NewPagebutton_click,
+public class MainActivity extends AppCompatActivity implements
+        MultPage_DialogFragment.NewPagebutton_click,
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.sendTitle,
-        MultPage_DialogFragment.GetIndex
-        {
+        MultPage_DialogFragment.GetIndex,
+        Star_webpage.GetInfo{
     private static final String TAG="MainActivity";
 
 
@@ -47,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     TextView m;
     AboutHistory sAboutHistory;
     private static final String CURL="current url";
-    isEnableJavascript isEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +56,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         setContentView(R.layout.activity_main);
         f1=findViewById(R.id.Webview_group);
         mClist=Clist.getInstance();
-        //接口
-        isEnabled=(isEnableJavascript)MainActivity.this;
+
 
         if(mClist.isempty()){
             Log.d(TAG, "onCreate: isempty");
@@ -215,11 +215,12 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     }
 
     @Override
-    public void getTitle(String s){
-        Log.d("lifecycle","webview标题"+s);
-        m.setText(s);//更新工具栏上的文字
+    public void setInfos(String title,String url){
+        Log.d("lifecycle","webview标题"+url);
+        m.setText(url);//更新工具栏上的文字
         sCUWL();
-        sCurrentUse_webPage_lists.setTitle(currect,s);
+        sCurrentUse_webPage_lists.setTitle(currect,title);
+        sCurrentUse_webPage_lists.setUrl(currect,url);
         sCurrentUse_webPage_lists.setdate(currect);
         Log.d(TAG, "Time:"+sCurrentUse_webPage_lists.getdate(currect));
         getsAboutHistory();//历史记录加入数据库
@@ -253,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         sCUWL();
         sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
         //把网页信息保存进去，flags记为1，表示是一个newTab，不计入历史记录
+
     }
     public void newTab(){
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
@@ -418,9 +420,13 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
 
     }
 
-    public interface isEnableJavascript{
-        public boolean isEnabled();
+    @Override
+    public WebPage_Info getInfo() {
+        sCUWL();
+        return sCurrentUse_webPage_lists.getInfo(currect);
     }
+
+
 
     /*
     @Override

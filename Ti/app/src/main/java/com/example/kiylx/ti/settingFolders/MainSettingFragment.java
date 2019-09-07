@@ -16,8 +16,8 @@ import java.util.Objects;
 
 public class MainSettingFragment extends PreferenceFragmentCompat implements
         Preference.OnPreferenceChangeListener,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        MainActivity.isEnableJavascript {
+        SharedPreferences.OnSharedPreferenceChangeListener
+        {
     private static final String TAG ="SETTING";
 
 
@@ -63,9 +63,6 @@ public class MainSettingFragment extends PreferenceFragmentCompat implements
 
     }
 
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
+
 }
 

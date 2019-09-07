@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edit_title" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editUrl"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,12 +47,12 @@
         android:layout_height="30dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/folder"
+        android:text="@string/tag"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/editUrl" />
 
     <TextView
-        android:id="@+id/folders"
+        android:id="@+id/editfolders"
         android:layout_width="0dp"
         android:layout_height="35dp"
         app:layout_constraintEnd_toEndOf="parent"
