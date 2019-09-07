@@ -9,7 +9,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import android.os.Bundle;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.settingFolders.GeneralFragment;
+import com.example.kiylx.ti.settingFolders.MainSettingFragment;
 
 public class SettingActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
@@ -17,7 +17,7 @@ public class SettingActivity extends AppCompatActivity implements PreferenceFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        getSupportFragmentManager().beginTransaction().add(R.id.ffff,new GeneralFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.ffff,new MainSettingFragment()).commit();
     }
 
 

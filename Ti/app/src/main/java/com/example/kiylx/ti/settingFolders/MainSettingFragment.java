@@ -14,7 +14,7 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class GeneralFragment extends PreferenceFragmentCompat implements
+public class MainSettingFragment extends PreferenceFragmentCompat implements
         Preference.OnPreferenceChangeListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         MainActivity.isEnableJavascript {
@@ -29,7 +29,7 @@ public class GeneralFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.general, rootKey);
+        setPreferencesFromResource(R.xml.setting_main, rootKey);
         //SwitchPreference switchPreference=(SwitchPreference) findPreference("notifications");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
         //boolean turn = sharedPreferences.getBoolean("notifications",true);
@@ -57,7 +57,7 @@ public class GeneralFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("notifications")) {
+        if (key.equals("advanced")) {
             Log.d(TAG, "Preference value was updated to: " + sharedPreferences.getBoolean(key, true));
         }
 

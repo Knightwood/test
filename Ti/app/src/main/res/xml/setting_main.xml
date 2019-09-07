@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="conventional"
+        android:title="常规"/>
+    <Preference
+        android:key="advanced"
+        android:title="高级"/>
+    <Preference
+        android:key="theme"
+        android:title="主题"/>
+    <Preference
+        android:key="privacy"
+        android:title="隐私"/>
+    <Preference
+        android:key="beta"
+        android:title="实验室"/>
+
+    <PreferenceCategory
+        app:key="about"
+        app:title="关于">
+
+        <Preference
+            app:key="feedback"
+            app:summary="发送反馈"
+            app:title="发送反馈"
+            app:fragment="com.example.kiylx.ti.settingFolders.SecondFragment"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

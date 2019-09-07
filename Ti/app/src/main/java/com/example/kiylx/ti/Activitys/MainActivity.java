@@ -1,14 +1,11 @@
 package com.example.kiylx.ti.Activitys;
 
-import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -41,9 +38,6 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         {
     private static final String TAG="MainActivity";
 
-    /*
-    String sharchin="https://www.baidu.com/s?wd=";
-    String text;//搜索框里的内容*/
 
     Clist mClist;
     FrameLayout f1;
@@ -94,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         super.onResume();
         int s=mClist.size();
         mClist.getTop(currect).onResume();
-        //getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         Log.d("lifecycle","onResume()"+"webview数量"+s);
 
     }
@@ -415,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         //设置WebView的访问UserAgent
         settings.setUserAgentString(null);
         //设置脚本是否允许自动打开弹窗
-        settings.setJavaScriptCanOpenWindowsAutomatically(isEnabled.isEnabled());
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能
         settings.setAppCacheEnabled(true);
         // 设置编码格式
