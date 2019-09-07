@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.Activitys;
 
+import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
@@ -36,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.sendTitle,
-        MultPage_DialogFragment.GetIndex,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        MultPage_DialogFragment.GetIndex
+        {
     private static final String TAG="MainActivity";
 
     /*
@@ -52,30 +53,17 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     TextView m;
     AboutHistory sAboutHistory;
     private static final String CURL="current url";
-    private boolean isEnableJavascript=true;
+    isEnableJavascript isEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         f1=findViewById(R.id.Webview_group);
-        //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
-        //UserBean userBean = new UserBean("whye",7);
-        //binding.setUser(userBean);
-
-
-        /*viewmodel = ViewModelProviders.of(this).get(CuViewModel.class);
-        viewmodel.getWebViewlist().observe(this, new Observer<ArrayList<View>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<View> list) {
-                for (View item : list) {
-                    list.addToDataBase(new WebView(MainActivity.this));
-                }
-            }
-        });*/
         mClist=Clist.getInstance();
-        /*if(f1.getChildCount()!=0)
-            f1.removeAllViews();*/
+        //接口
+        isEnabled=(isEnableJavascript)MainActivity.this;
+
         if(mClist.isempty()){
             Log.d(TAG, "onCreate: isempty");
             addWebviewtohome();}else{
@@ -106,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         super.onResume();
         int s=mClist.size();
         mClist.getTop(currect).onResume();
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        //getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         Log.d("lifecycle","onResume()"+"webview数量"+s);
 
     }
@@ -427,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         //设置WebView的访问UserAgent
         settings.setUserAgentString(null);
         //设置脚本是否允许自动打开弹窗
-        settings.setJavaScriptCanOpenWindowsAutomatically(isEnableJavascript);
+        settings.setJavaScriptCanOpenWindowsAutomatically(isEnabled.isEnabled());
         // 开启Application H5 Caches 功能
         settings.setAppCacheEnabled(true);
         // 设置编码格式
@@ -437,14 +425,9 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
 
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals("notifications")) {
-            Log.d(TAG, "Preference value was updated to: " + sharedPreferences.getBoolean(key, true));
-            isEnableJavascript=sharedPreferences.getBoolean(key, true);
-        }
+    public interface isEnableJavascript{
+        public boolean isEnabled();
     }
-
 
     /*
     @Override

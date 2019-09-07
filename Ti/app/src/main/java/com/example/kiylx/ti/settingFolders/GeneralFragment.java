@@ -8,14 +8,18 @@ import android.util.Log;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
 
+import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class GeneralFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener,SharedPreferences.OnSharedPreferenceChangeListener {
+public class GeneralFragment extends PreferenceFragmentCompat implements
+        Preference.OnPreferenceChangeListener,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        MainActivity.isEnableJavascript {
     private static final String TAG ="SETTING";
+
 
     @Override
     public void onAttach(Context context) {
@@ -57,6 +61,11 @@ public class GeneralFragment extends PreferenceFragmentCompat implements Prefere
             Log.d(TAG, "Preference value was updated to: " + sharedPreferences.getBoolean(key, true));
         }
 
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }
 
