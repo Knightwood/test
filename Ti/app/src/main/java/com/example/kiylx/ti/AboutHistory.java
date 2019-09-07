@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.kiylx.ti.historydatabase.HistoryBaseHelper;
 import com.example.kiylx.ti.historydatabase.HistoryDbSchema.HistoryTable;
 import com.example.kiylx.ti.historydatabase.ItemCursorWrapper;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class AboutHistory {
         }
         return infos;
     }
-    void addToDataBase(WebPage_Info info){
+    public void addToDataBase(WebPage_Info info){
         ContentValues values =getContentValues(info);
         mDatabase.insert(HistoryTable.NAME,null,values);
     }

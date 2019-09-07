@@ -1,4 +1,6 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.model;
+
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;

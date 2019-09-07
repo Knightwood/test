@@ -13,13 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".StarPageActivity"></activity>
-        <activity android:name=".HistoryActivity" />
-        <activity android:name=".SettingActivity" />
+        <activity android:name=".Activitys.StarPageActivity"></activity>
+        <activity android:name=".Activitys.HistoryActivity" />
+        <activity android:name=".Activitys.SettingActivity" />
         <activity
-            android:name=".DoSearchActivity"
+            android:name=".Activitys.DoSearchActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

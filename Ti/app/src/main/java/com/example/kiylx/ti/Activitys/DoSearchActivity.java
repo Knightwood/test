@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Activitys;
 
 import android.content.Intent;
 import androidx.fragment.app.FragmentManager;
@@ -6,7 +6,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInteractionListener{
+import com.example.kiylx.ti.model.ForDoSearchFragment;
+import com.example.kiylx.ti.Fragments.Fragment_DoSearch;
+import com.example.kiylx.ti.R;
+
+public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInteractionListener {
     private static final String TAG = "DoSearchActivity";
     private static final String TEXR_OR_URL="text_or_url";
     private String searchEngine = " https://mijisou.com/search?q=";

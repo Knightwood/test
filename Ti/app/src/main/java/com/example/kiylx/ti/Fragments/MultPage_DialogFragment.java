@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -19,6 +19,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.model.CurrentUse_WebPage_Lists;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 

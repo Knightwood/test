@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -15,6 +15,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.example.kiylx.ti.Activitys.SettingActivity;
+import com.example.kiylx.ti.R;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -105,7 +108,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.a10:
                 //设置
-                startActivity(new Intent(getActivity(),SettingActivity.class));
+                startActivity(new Intent(getActivity(), SettingActivity.class));
                 dismiss();
                 break;
     }

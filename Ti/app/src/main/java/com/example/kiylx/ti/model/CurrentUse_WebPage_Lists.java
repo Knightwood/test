@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.model;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

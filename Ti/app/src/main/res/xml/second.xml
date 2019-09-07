@@ -2,12 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
-        app:key="main_category"
-        app:title="常规">
+        app:key="notifications_category"
+        app:title="通知">
 
         <SwitchPreferenceCompat
             app:key="notifications"
-            app:title="启用javascript"/>
+            app:title="打开通知"/>
 
     </PreferenceCategory>
 
@@ -16,10 +16,10 @@
         app:title="Help">
 
         <Preference
-            app:key="feedback"
+            app:key="反馈"
             app:summary="Report technical issues or suggest new features"
-            app:title="Send feedback"
-            app:fragment="com.example.kiylx.ti.settingFolders.SecondFragment"/>
+            app:title="发送反馈"
+            />
 
     </PreferenceCategory>
 

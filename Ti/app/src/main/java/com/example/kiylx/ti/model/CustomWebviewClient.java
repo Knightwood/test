@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.model;
 
 import android.content.Context;
 import android.content.Intent;

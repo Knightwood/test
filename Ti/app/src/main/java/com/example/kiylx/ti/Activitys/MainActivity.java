@@ -1,10 +1,13 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Activitys;
 
 import android.content.Intent;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -17,9 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.AboutHistory;
+import com.example.kiylx.ti.model.Clist;
+import com.example.kiylx.ti.model.CurrentUse_WebPage_Lists;
+import com.example.kiylx.ti.model.CustomWebchromeClient;
+import com.example.kiylx.ti.model.CustomWebviewClient;
+import com.example.kiylx.ti.Fragments.MinSetDialog;
+import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
+import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.Fragments.Star_webpage;
+
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements MultPage_DialogFragment.NewPagebutton_click, MultPage_DialogFragment.DeletePage,MultPage_DialogFragment.SwitchPage,CustomWebviewClient.sendTitle,MultPage_DialogFragment.GetIndex {
+public class MainActivity extends AppCompatActivity implements MultPage_DialogFragment.NewPagebutton_click,
+        MultPage_DialogFragment.DeletePage,
+        MultPage_DialogFragment.SwitchPage,
+        CustomWebviewClient.sendTitle,
+        MultPage_DialogFragment.GetIndex,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG="MainActivity";
 
     /*
@@ -34,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     TextView m;
     AboutHistory sAboutHistory;
     private static final String CURL="current url";
+    private boolean isEnableJavascript=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         super.onResume();
         int s=mClist.size();
         mClist.getTop(currect).onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         Log.d("lifecycle","onResume()"+"webview数量"+s);
 
     }
@@ -341,7 +361,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
     }
     private void search_dialog(){
         //展示搜索框
-        Intent intent = new Intent(MainActivity.this,DoSearchActivity.class);
+        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURL,mClist.getTop(currect).getUrl());
         //把当前网页网址传进去
         startActivityForResult(intent,21);
@@ -407,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         //设置WebView的访问UserAgent
         settings.setUserAgentString(null);
         //设置脚本是否允许自动打开弹窗
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setJavaScriptCanOpenWindowsAutomatically(isEnableJavascript);
         // 开启Application H5 Caches 功能
         settings.setAppCacheEnabled(true);
         // 设置编码格式
@@ -415,6 +435,14 @@ public class MainActivity extends AppCompatActivity implements MultPage_DialogFr
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("notifications")) {
+            Log.d(TAG, "Preference value was updated to: " + sharedPreferences.getBoolean(key, true));
+            isEnableJavascript=sharedPreferences.getBoolean(key, true);
+        }
     }
 
 
