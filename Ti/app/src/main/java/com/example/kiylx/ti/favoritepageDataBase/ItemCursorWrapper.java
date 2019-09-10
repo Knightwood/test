@@ -19,7 +19,7 @@ public class ItemCursorWrapper extends CursorWrapper {
         String url = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.url));
         String folders = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.FOLDERS));
 
-        WebPage_Info info = new WebPage_Info(title,url,folders,null);
+        WebPage_Info info = new WebPage_Info(title,url,folders,-1);
         return info;
     }
 }

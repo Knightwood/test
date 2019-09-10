@@ -13,11 +13,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class CustomWebviewClient extends WebViewClient {
-    private sendTitle mSendTitle;
+    private SETINFOS mSETINFOS;
+    private ISSTAR mISSTAR;
     private Context mContext;
 
-    public interface sendTitle{
+    public interface SETINFOS {
        void setInfos(String title, String url);
+    }
+    public interface ISSTAR{
+        boolean isStar(WebPage_Info info);
     }
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
@@ -72,9 +76,15 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
+        boolean isstar;
         super.onPageFinished(view, url);
-        mSendTitle=(sendTitle) mContext;
-        mSendTitle.setInfos(view.getTitle(),url);
+        mSETINFOS =(SETINFOS) mContext;
+        mSETINFOS.setInfos(view.getTitle(),url);
+        mISSTAR = (ISSTAR) mContext;
+        isstar= mISSTAR.isStar(new WebPage_Info(view.getTitle(),view.getUrl(),1));
+        if (isstar){
+            //如果网页已经被收藏，让收藏按键变色
+        }
     }
     /**
      * WebView 加载页面资源时会回调，每一个资源产生的一次网络加载，除非本地有当前 url 对应有缓存，否则就会加载。

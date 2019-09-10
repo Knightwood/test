@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CurrentUse_WebPage_Lists {
-    //用来展示多窗口的网页数量的列表
+    //用来展示多窗口的网页数量的列表，当前打开的所有网页信息
     private ArrayList<WebPage_Info> mCurrectList;
 
     private static CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
@@ -40,6 +40,7 @@ public class CurrentUse_WebPage_Lists {
     public void setTitle(int pos,String s){
         mCurrectList.get(pos).setTitle(s);
     }
+    public String getUrl(int pos){return mCurrectList.get(pos).getUrl();}
     public void setUrl(int pos,String url){mCurrectList.get(pos).setUrl(url);}
     public void setFlags(int pos,int i){
         mCurrectList.get(pos).setFlags(i);

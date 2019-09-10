@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         MultPage_DialogFragment.NewPagebutton_click,
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
-        CustomWebviewClient.sendTitle,
+        CustomWebviewClient.SETINFOS,
         MultPage_DialogFragment.GetIndex,
         Star_webpage.GetInfo{
     private static final String TAG="MainActivity";
@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void setInfos(String title,String url){
+        //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle","webview标题"+url);
         m.setText(url);//更新工具栏上的文字
         sCUWL();
@@ -425,7 +426,6 @@ public class MainActivity extends AppCompatActivity implements
         sCUWL();
         return sCurrentUse_webPage_lists.getInfo(currect);
     }
-
 
 
     /*

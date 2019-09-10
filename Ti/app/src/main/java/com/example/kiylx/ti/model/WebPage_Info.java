@@ -8,28 +8,26 @@ public class WebPage_Info {
     private String url;
     private int flags=0;
     private String date;
-    private boolean isStar;
     private String folders;
-    //flags：0，主页,不计入历史记录。1，载入了网址，计入历史记录
+    //flags：0，主页,不计入历史记录;1，载入了网址，计入历史记录;-1：网页被收藏了;-2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null
 
     public WebPage_Info(String title, String url, int flags) {
         this.title = title;
         this.url = url;
         this.flags=flags;
         this.date=null;
-        this.isStar=false;
     }
     public WebPage_Info(String title, String url,String date) {
         this.title = title;
         this.url = url;
         this.date=date;
     }
-    public WebPage_Info(String title, String url,String folders,String date) {
+    public WebPage_Info(String title, String url,String folders,int flags) {
         this.title = title;
         this.url = url;
         this.date=null;
-        this.isStar=false;
         this.folders=folders;
+        this.flags = flags;
 
     }
 
@@ -62,13 +60,6 @@ public class WebPage_Info {
     }
     public String getDate(){
         return this.date;
-    }
-    public boolean IsStar() {
-        return isStar;
-    }
-
-    public void setIsStar(boolean isStar) {
-        this.isStar = isStar;
     }
 
     public String getFolders(){
