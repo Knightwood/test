@@ -220,11 +220,16 @@ public class MainActivity extends AppCompatActivity implements
         Log.d("lifecycle","webview标题"+url);
         m.setText(url);//更新工具栏上的文字
         sCUWL();
+        //将当前页面网址更新数据，并加入历史记录
         sCurrentUse_webPage_lists.setTitle(currect,title);
         sCurrentUse_webPage_lists.setUrl(currect,url);
         sCurrentUse_webPage_lists.setdate(currect);
+        sCurrentUse_webPage_lists.setFlags(currect,1);
+        //更改flags，标记为已载入网址
         Log.d(TAG, "Time:"+sCurrentUse_webPage_lists.getdate(currect));
-        getsAboutHistory();//历史记录加入数据库
+
+        getsAboutHistory();
+        //历史记录加入数据库
     }
 
     void getsAboutHistory(){
@@ -254,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
         sCUWL();
         sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
-        //把网页信息保存进去，flags记为1，表示是一个newTab，不计入历史记录
+        //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
 
     }
     public void newTab(){

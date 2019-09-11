@@ -43,10 +43,15 @@ public class Star_webpage extends DialogFragment {
                 mAboutStar = AboutStar.get(getContext());
                 //把网页加入收藏database
                 //查询网页是否被收藏再决定是收藏还是更新
-                if(mAboutStar.isStar(getMessage(view))){
-                    //已经收藏了，更新数据库信息
+                WebPage_Info tmp =getMessage(view);
+                if(mAboutStar.isStar(tmp)){
+                    //已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
+                    //网址未修改，那就更新标题和tag，
+                    //如果网址被修改，那就算是一个新的，之后插入数据库
+                    mAboutStar.updateItem(tmp);
                 }else{
-                mAboutStar.add(getMessage(view));}
+                    //否则往数据库添加条目信息
+                mAboutStar.add(tmp);}
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override

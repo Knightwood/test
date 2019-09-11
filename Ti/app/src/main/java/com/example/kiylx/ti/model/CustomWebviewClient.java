@@ -76,10 +76,15 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
+        // 加入历史记录
+        // 判断网址是否被收藏
+        // 更新工具栏上的文字
         boolean isstar;
         super.onPageFinished(view, url);
+
         mSETINFOS =(SETINFOS) mContext;
         mSETINFOS.setInfos(view.getTitle(),url);
+
         mISSTAR = (ISSTAR) mContext;
         isstar= mISSTAR.isStar(new WebPage_Info(view.getTitle(),view.getUrl(),1));
         if (isstar){

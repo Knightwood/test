@@ -9,7 +9,11 @@ public class WebPage_Info {
     private int flags=0;
     private String date;
     private String folders;
-    //flags：0，主页,不计入历史记录;1，载入了网址，计入历史记录;-1：网页被收藏了;-2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null
+    //flags：0，主页,不计入历史记录;
+    //所以除了0以外的flags都是可以计入历史记录的
+    // 1，将载入网址，可以计入历史记录;
+    // -1：网页被收藏;
+    // -2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null
 
     public WebPage_Info(String title, String url, int flags) {
         this.title = title;

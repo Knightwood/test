@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.content.Context;
 
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
@@ -13,7 +12,6 @@ import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
 import com.example.kiylx.ti.model.CustomWebviewClient;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -46,6 +44,13 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
     }
     public void updateItem(WebPage_Info info){
         //更新条目
+        //如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
+        String url = info.getUrl();
+        ContentValues values = getContentValues(info);
+        if(isStar(info))
+        {mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"= ?",new String[]{url});}else{
+            add(info);
+        }
     }
 
     public WebPage_Info getWebPageinfo(String title){
@@ -135,6 +140,7 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
     }
 
     private String[] execString(StringBuilder sb) {
+        //分割从文件中读取到的字符串
         String tmp= sb.toString();
         String[] result = new String[0];
         if(tmp.contains("/")){
@@ -144,6 +150,7 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
     }
     @Override
     public boolean isStar(WebPage_Info info){
+        //判断标准是网址，与数据库里网址一致即为收藏了
         String url=info.getUrl();
         ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
         try{
