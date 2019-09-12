@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
 
+
         Log.d("lifecycle","onStart()");
 
         //创建数据库，如果没有的话

@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,15 +104,19 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
         return new ItemCursorWrapper(cursor);
     }
 
-    public void createTagFile(Context context,String content){
-        String filename = "TAG_0";
+    public void WriteContent(Context context, String content, String filename){
+
+        //String filename = "TAG_0";
         //content要保存的tag
-
         FileOutputStream outputStream;
-
         try {
             //openFileOutput需要context才能调用，所以这里没有写在activity中就需要自己放一个context去调用openFileOutput
             outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            //如果传入的内容是null，直接返回
+            if(content==null){
+                outputStream.close();
+                return;
+            }
             outputStream.write(content.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -119,25 +124,36 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
         }
     }
 
-    public void getDataFromInternalPath(Context context) {
+    public String[] getDataFromFile(Context context, String filename) {
+
         try {
             //用StringBuilder来接收数据，而不是用String+=的方法。
             StringBuilder sb = new StringBuilder();
             //每次读取1024个byte的数据
             byte[] bytes = new byte[1024];
-            FileInputStream inputStream = context.openFileInput("TAG_0");
-            int len = 0;
+            FileInputStream inputStream = context.openFileInput(filename);
+            int len;
             while ((len = inputStream.read(bytes)) != -1) {
                 sb.append(new String(bytes, 0, len));
             }
-            execString(sb);
             Log.e("读取到的数据", sb.toString());
+            //返回处理后的字符数组
+            return execString(sb);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
+    /*public boolean TagIsExist(Context context,String tag,String filename){
+        OutputStream outputStream;
+        try{
+            outputStream=context.openFileOutput(filename,Context.MODE_PRIVATE);
+
+        }
+    }*/
 
     private String[] execString(StringBuilder sb) {
         //分割从文件中读取到的字符串
