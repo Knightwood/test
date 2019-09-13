@@ -131,7 +131,6 @@ public class MultPage_DialogFragment extends DialogFragment {
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         }else{
-
             mCurrect =mGetIndex.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
             //mWebSiteAdapter.setLists(lists);

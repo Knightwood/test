@@ -43,8 +43,8 @@ public class AboutHistory {
             cursor.close();
         }
     }
-    public List<WebPage_Info> getHistoryInfos(){
-        List<WebPage_Info> infos=new ArrayList<>();
+    public ArrayList<WebPage_Info> getHistoryInfos(){
+        ArrayList<WebPage_Info> infos=new ArrayList<>();
 
         ItemCursorWrapper cursor = queryHistory(null,null);
         //查询时参数两个都是null，则会拿到包含所有数据的cursor

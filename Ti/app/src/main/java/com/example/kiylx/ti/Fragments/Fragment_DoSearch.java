@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -106,6 +107,7 @@ public class Fragment_DoSearch extends Fragment {
         View v =inflater.inflate(R.layout.fragment_search_page, container, false);
         searchbox = (EditText) v.findViewById(R.id.search_column);
         showHistory=(RecyclerView) v.findViewById(R.id.show_history_for_search);
+        showHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");

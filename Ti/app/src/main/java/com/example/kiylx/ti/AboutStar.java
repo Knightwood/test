@@ -20,7 +20,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AboutStar implements CustomWebviewClient.ISSTAR {
+public class AboutStar {
     private static AboutStar sAboutStar;
     private static ArrayList<WebPage_Info> lists;
     private SQLiteDatabase mDatabase;
@@ -112,11 +112,6 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
         try {
             //openFileOutput需要context才能调用，所以这里没有写在activity中就需要自己放一个context去调用openFileOutput
             outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            //如果传入的内容是null，直接返回
-            if(content==null){
-                outputStream.close();
-                return;
-            }
             outputStream.write(content.getBytes());
             outputStream.close();
         } catch (Exception e) {
@@ -164,7 +159,6 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
         }
         return result;
     }
-    @Override
     public boolean isStar(WebPage_Info info){
         //判断标准是网址，与数据库里网址一致即为收藏了
         String url=info.getUrl();
@@ -179,5 +173,9 @@ public class AboutStar implements CustomWebviewClient.ISSTAR {
         }finally {
             cursor.close();
         }
+    }
+
+    public boolean fileExist() {
+        return false;
     }
 }

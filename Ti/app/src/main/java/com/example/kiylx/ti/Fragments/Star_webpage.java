@@ -2,6 +2,7 @@ package com.example.kiylx.ti.Fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -20,10 +21,30 @@ import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Star_webpage extends DialogFragment {
     GetInfo mGetInfo;
     AboutStar mAboutStar;
-    static String[] tagList=new String[0];
+    //static String[] tagList=new String[50];
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mAboutStar = AboutStar.get(context);
+        //获取tag列表，tag列表这个字符数组是static的。
+        /*if(!mAboutStar.fileExist()){
+            //创建文件，如果不存在的话
+            mAboutStar.WriteContent(getActivity(),"未分类","TAG_0");
+        }
+        tagList=mAboutStar.getDataFromFile(context,"TAG_0");
+        tagList[0]="第一个选项";
+        tagList[1]="第二个选项";*/
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,14 +60,14 @@ public class Star_webpage extends DialogFragment {
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
         setMassage(view);//填充网页信息
-        setTags(view);//填充微调框
+        //setTags(view);//填充微调框
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 WebPage_Info tmp =getMessage(view);
-                mAboutStar = AboutStar.get(getContext());
+
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
 
                 if(mAboutStar.isStar(tmp)){
@@ -70,11 +91,14 @@ public class Star_webpage extends DialogFragment {
 
     }
 
-    private void setTags(View view) {
+    /*private void setTags(View view) {
         //填充微调框
+        ArrayList<String> lists = new ArrayList<>(Arrays.asList(tagList));
         Spinner spinner = view.findViewById(R.id.tag_select);
-        ArrayAdapter<String> adapter =
-    }
+        ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,lists);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }*/
 
     public interface GetInfo{
         //获取当前网页信息以填充收藏窗口
@@ -102,10 +126,7 @@ public class Star_webpage extends DialogFragment {
 
     @Override
     public void onStart() {
-        //创建文件，如果不存在的话
-        //获取tag列表，tag列表这个字符数组是static的。
-        mAboutStar.WriteContent(getActivity(),null,"TAG_0");
-        tagList=mAboutStar.getDataFromFile(getActivity(),"TAG_0");
+
         super.onStart();
 
     }

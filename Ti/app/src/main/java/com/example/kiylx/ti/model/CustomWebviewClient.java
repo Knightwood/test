@@ -11,18 +11,19 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import com.example.kiylx.ti.AboutStar;
 
 public class CustomWebviewClient extends WebViewClient {
     private SETINFOS mSETINFOS;
-    private ISSTAR mISSTAR;
+    private AboutStar mAboutStar;
     private Context mContext;
 
     public interface SETINFOS {
        void setInfos(String title, String url);
     }
-    public interface ISSTAR{
-        boolean isStar(WebPage_Info info);
-    }
+
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
         mContext=context;
@@ -85,10 +86,12 @@ public class CustomWebviewClient extends WebViewClient {
         mSETINFOS =(SETINFOS) mContext;
         mSETINFOS.setInfos(view.getTitle(),url);
 
-        mISSTAR = (ISSTAR) mContext;
-        isstar= mISSTAR.isStar(new WebPage_Info(view.getTitle(),view.getUrl(),1));
+        mAboutStar=AboutStar.get(mContext);
+        isstar= mAboutStar.isStar(new WebPage_Info(view.getTitle(),view.getUrl(),1));
         if (isstar){
             //如果网页已经被收藏，让收藏按键变色
+        }else{
+            Toast.makeText(mContext,"未收藏",Toast.LENGTH_LONG).show();
         }
     }
     /**
