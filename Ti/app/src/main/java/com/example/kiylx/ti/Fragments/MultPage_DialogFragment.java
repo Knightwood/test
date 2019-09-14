@@ -176,12 +176,17 @@ public class MultPage_DialogFragment extends DialogFragment {
     }
 
     private class WebsiteHolder extends ViewHolder implements View.OnClickListener{
+        //控件
         TextView textView;
         ImageButton imageButton;
+        //变量
+        private int pos;
         private WebPage_Info minfo;
+        //接口
         private DeletePage mDeletePage;
         private SwitchPage mSwitchPage;
-        private int pos;
+
+
         public WebsiteHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.website_item);

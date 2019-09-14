@@ -15,7 +15,7 @@ public class HistoryBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+ HistoryTable.NAME+"("+"_id integer primary key autoincrement, "+HistoryTable.Entry.TITLE +","+HistoryTable.Entry.URL +","+HistoryTable.Entry.DATE +")");
+        db.execSQL("create table "+ HistoryTable.NAME+"("+"_id integer primary key autoincrement, "+ HistoryTable.Childs.TITLE +","+ HistoryTable.Childs.URL +","+ HistoryTable.Childs.DATE +")");
     }
 
     @Override

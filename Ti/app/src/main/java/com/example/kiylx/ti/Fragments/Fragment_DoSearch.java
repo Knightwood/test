@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.model.ForDoSearchFragment;
+import com.example.kiylx.ti.model.ProcessRecordItem;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
@@ -39,17 +39,17 @@ public class Fragment_DoSearch extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     //private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "fragmentLifeCycle";
-    private ArrayList<WebPage_Info> formatList =new ArrayList<>();
-    private ForDoSearchFragment tmp;
+    private ArrayList<WebPage_Info> mPage_infos =new ArrayList<>();
+    private ProcessRecordItem mProcessRecordItem;//处理字符串的类
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     //mParam1用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
     //private String mParam2;
 
-    private String compared_with_history;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
+    private String searchbarTEXT;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
     private EditText searchbox;
-    private RecyclerView showHistory;
+    private RecyclerView mRecyclerView;
     private SearchrecordAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
@@ -95,8 +95,8 @@ public class Fragment_DoSearch extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             //mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        if(null==tmp)
-        tmp=new ForDoSearchFragment();
+        if(null== mProcessRecordItem)
+        mProcessRecordItem =new ProcessRecordItem();
         Log.d(TAG, "onCreate: ");
     }
 
@@ -105,9 +105,12 @@ public class Fragment_DoSearch extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =inflater.inflate(R.layout.fragment_search_page, container, false);
-        searchbox = (EditText) v.findViewById(R.id.search_column);
-        showHistory=(RecyclerView) v.findViewById(R.id.show_history_for_search);
-        showHistory.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        searchbox =v.findViewById(R.id.search_column);
+
+        mRecyclerView =v.findViewById(R.id.show_history_for_search);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateList();//展示空的recyclerview
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
@@ -136,7 +139,7 @@ public class Fragment_DoSearch extends Fragment {
                 if(keyCode==KeyEvent.KEYCODE_ENTER){
                     Log.d(TAG, "onKeyDown: ");
                     //监听回车键，按下的时候就开始执行搜索操作。
-                    mListener.onFragmentInteraction(compared_with_history);
+                    mListener.onFragmentInteraction(searchbarTEXT);
                     return true;
                 }
                 return false;
@@ -160,19 +163,19 @@ public class Fragment_DoSearch extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
             //把文本与历史记录进行对比，筛选出符合的信息，刷新listview
-                compared_with_history=searchbox.getText().toString();
-                formatList =tmp.formatList(compared_with_history);
+                searchbarTEXT =searchbox.getText().toString();
+                mPage_infos = mProcessRecordItem.formatList(searchbarTEXT);
                 //与历史记录以及收藏记录比对，拿到arraylist
-                updateList(formatList);
-                //更新界面
+                updateList();//更新界面
+
 
             }
         });
     }
-    private void updateList(ArrayList<WebPage_Info> m){
+    private void updateList(){
         if(null==adapter){
-        adapter=new SearchrecordAdapter(m);
-        showHistory.setAdapter(adapter);}else{
+        adapter=new SearchrecordAdapter(mPage_infos);
+        mRecyclerView.setAdapter(adapter);}else{
             adapter.notifyDataSetChanged();
         }
     }

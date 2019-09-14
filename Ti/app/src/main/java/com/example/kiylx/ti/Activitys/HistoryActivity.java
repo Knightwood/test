@@ -4,8 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,45 +25,57 @@ public class HistoryActivity extends AppCompatActivity{
     View view;
     RecyclerView listView;
     AboutHistory sAboutHistory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = LayoutInflater.from(HistoryActivity.this).inflate(R.layout.activity_history,null,false);
-        listView=view.findViewById(R.id.showHistory);
-        sAboutHistory=AboutHistory.get(HistoryActivity.this);
-        updateUI(listView);
         setContentView(R.layout.activity_history);
+        listView=findViewById(R.id.showHistory_1);
+        listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 
+        updateUI();
     }
 
-    private void updateUI(RecyclerView view){
-        view.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    private void updateUI(){
+        sAboutHistory=AboutHistory.get(this);
         mWebPage_infos=sAboutHistory.getHistoryInfos();
         if(null==mAdapter){
             mAdapter=new HistoryAdapter(mWebPage_infos);
-            view.setAdapter(mAdapter);
+            listView.setAdapter(mAdapter);
+            Log.d("历史activity", "onClick: 创建adapter函数被触发");
         }else{
             mAdapter.notifyDataSetChanged();
         }
+
 
     }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder>{
         ArrayList<WebPage_Info> lists;
-        public HistoryAdapter(ArrayList<WebPage_Info> lists){
+        HistoryAdapter(ArrayList<WebPage_Info> lists){
             this.lists=lists;
+            boolean ta=lists.isEmpty();
+            Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空"+ta+lists.get(0).getUrl());
         }
 
         @NonNull
         @Override
         public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,null,false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,parent,false);
+            Log.d("历史activity", "onCreateViewHolder函数被触发");
             return new HistoryViewHolder(v);
         }
 
         @Override
         public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
             holder.bind(lists.get(position));
+            Log.d("历史activity", " onBindViewHolder函数被触发");
         }
 
 
@@ -70,12 +84,13 @@ public class HistoryActivity extends AppCompatActivity{
             return lists.size();
         }
     }
-    private class HistoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class HistoryViewHolder extends ViewHolder implements View.OnClickListener{
         TextView title;
         TextView url;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
+            Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title=itemView.findViewById(R.id.itemTitle);
             url=itemView.findViewById(R.id.itemurl);
             itemView.setOnClickListener(this);
@@ -83,6 +98,7 @@ public class HistoryActivity extends AppCompatActivity{
         public void bind(WebPage_Info info){
             title.setText(info.getTitle());
             url.setText(info.getUrl());
+            Log.d("历史activity", "bind函数被触发");
         }
 
         @Override

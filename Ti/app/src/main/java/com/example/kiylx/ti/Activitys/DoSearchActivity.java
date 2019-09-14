@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.example.kiylx.ti.model.ForDoSearchFragment;
+import com.example.kiylx.ti.model.ProcessRecordItem;
 import com.example.kiylx.ti.Fragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
@@ -31,7 +31,7 @@ public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSe
     }
     @Override
     public void onFragmentInteraction(String s){
-        ForDoSearchFragment tmp=new ForDoSearchFragment();
+        ProcessRecordItem tmp=new ProcessRecordItem();
         Intent intent = new Intent();
         if(tmp.processString(s)){
         intent.putExtra(TEXR_OR_URL,s);}else{

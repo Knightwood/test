@@ -15,9 +15,9 @@ public class ItemCursorWrapper extends CursorWrapper {
         super(cursor);
     }
     public WebPage_Info getWebPageInfo(){
-        String url=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Entry.URL));
-        String title=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Entry.TITLE));
-        String date=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Entry.DATE));
+        String url=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.URL));
+        String title=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.TITLE));
+        String date=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.DATE));
 
         WebPage_Info minfo=new WebPage_Info(title,url,date);
         return minfo;

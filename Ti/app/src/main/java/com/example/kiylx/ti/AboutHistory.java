@@ -11,7 +11,6 @@ import com.example.kiylx.ti.historydatabase.ItemCursorWrapper;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AboutHistory {
     private static AboutHistory sAboutHistory;
@@ -32,7 +31,7 @@ public class AboutHistory {
         return sAboutHistory;
     }
     public WebPage_Info getHistoryInfo(String mtitle){
-        ItemCursorWrapper cursor =queryHistory(HistoryTable.Entry.TITLE+"=?",new String[]{mtitle});
+        ItemCursorWrapper cursor =queryHistory(HistoryTable.Childs.TITLE+"=?",new String[]{mtitle});
         try {
             if(cursor.getCount()==0){
                 return null;
@@ -74,9 +73,9 @@ public class AboutHistory {
 
     private static ContentValues getContentValues(WebPage_Info info){
         ContentValues values=new ContentValues();
-        values.put(HistoryTable.Entry.TITLE,info.getTitle());
-        values.put(HistoryTable.Entry.URL,info.getUrl());
-        values.put(HistoryTable.Entry.DATE,info.getDate());
+        values.put(HistoryTable.Childs.TITLE,info.getTitle());
+        values.put(HistoryTable.Childs.URL,info.getUrl());
+        values.put(HistoryTable.Childs.DATE,info.getDate());
         return values;
     }
     private ItemCursorWrapper queryHistory(String whereClause, String[] whereArgs){

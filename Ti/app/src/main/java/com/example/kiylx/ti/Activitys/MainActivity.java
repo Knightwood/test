@@ -225,15 +225,15 @@ public class MainActivity extends AppCompatActivity implements
         //更改flags，标记为已载入网址
         Log.d(TAG, "Time:"+sCurrentUse_webPage_lists.getdate(currect));
 
-        getsAboutHistory();
         //历史记录加入数据库
+        sAboutHistory=AboutHistory.get(MainActivity.this);
+        sAboutHistory.addToDataBase(sCurrentUse_webPage_lists.getInfo(currect));
+        String massage = sCurrentUse_webPage_lists.getInfo(currect).getUrl();
+        Log.d(TAG,"即将加入历史记录的内容"+massage);
+
+
     }
 
-    void getsAboutHistory(){
-        //历史记录加入数据库
-        sAboutHistory=AboutHistory.get(getApplicationContext());
-        sAboutHistory.addToDataBase(sCurrentUse_webPage_lists.getInfo(currect));
-    }
 
     void sCUWL() {
         sCurrentUse_webPage_lists = CurrentUse_WebPage_Lists.get();
