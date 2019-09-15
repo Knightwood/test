@@ -6,17 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.kiylx.ti.favoritepageDataBase.FavoritepageBaseHelper;
+import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
 import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
-import com.example.kiylx.ti.model.CustomWebviewClient;
+import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class AboutStar {
     private AboutStar(Context context){
         mContext=context;
         lists=new ArrayList<>();//暂时没有用
-        mDatabase=new FavoritepageBaseHelper(mContext).getWritableDatabase();
+        mDatabase=new FavoritePageBaseHelper(mContext,FavoritepageDbSchema.FavoriteTable.NAME,null,1).getWritableDatabase();
     }
     public static AboutStar get(Context context){
         if(sAboutStar==null){
@@ -84,6 +83,7 @@ public class AboutStar {
         return mlists;
     }
     private static ContentValues getContentValues(WebPage_Info info){
+        //存网页信息
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE,info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url,info.getUrl());
@@ -91,6 +91,7 @@ public class AboutStar {
 
         return values;
     }
+
     private ItemCursorWrapper queryFavority(String whereClause, String[] whereArgs){
         Cursor cursor =mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
