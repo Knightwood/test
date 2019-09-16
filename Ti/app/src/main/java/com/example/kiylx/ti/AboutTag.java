@@ -2,11 +2,15 @@ package com.example.kiylx.ti;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
+import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
 import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
+
+import java.util.ArrayList;
 
 public class AboutTag {
     AboutTag sAboutTag;
@@ -32,5 +36,50 @@ public class AboutTag {
         values.put(TagDbSchema.TagTable.childs.TAG,tag);
 
         return values;
+    }
+    public void delete(String tag){
+
+    }
+    public String getItem(String tag){
+        String result;
+        ItemCursorWrapper cursor = queryTag(TagDbSchema.TagTable.childs.TAG,new String[]{tag});
+        try{
+            if(cursor.getCount()==0){
+                return null;
+            }
+            cursor.moveToFirst();
+            result=cursor.getTaginfo();
+        }finally {
+            cursor.close();
+        }
+        return result;
+    }
+
+    public ArrayList<String> getItems(String tag){
+        ItemCursorWrapper cursor = queryTag(null,null);
+        ArrayList<String> lists = new ArrayList<>();
+        try{
+            if(cursor.getCount()==0){
+                return null;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){
+                lists.add(cursor.getTaginfo());
+            }
+        }finally {
+            cursor.close();
+        }
+        return lists;
+
+    }
+    private ItemCursorWrapper queryTag(String where,String[] whereArgs){
+        Cursor cursor = mDatabase.query(TagDbSchema.TagTable.NAME,
+                null,
+                where,
+                whereArgs,
+                null,
+                null,
+                null);
+        return new ItemCursorWrapper(cursor);
     }
 }
