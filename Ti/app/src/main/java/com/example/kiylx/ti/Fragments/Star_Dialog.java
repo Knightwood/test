@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
+import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -25,18 +26,21 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-public class Star_webpage extends DialogFragment {
-    GetInfo mGetInfo;
-    AboutStar mAboutStar;
-    //static String[] tagList=new String[50];
+public class Star_Dialog extends DialogFragment {
+    private GetInfo mGetInfo;
+    private AboutStar mAboutStar;
+    private AboutTag mAboutTag;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mAboutStar = AboutStar.get(context);
-        //获取tag列表，tag列表这个字符数组是static的。
-        /*if(!mAboutStar.fileExist()){
+        mAboutTag = AboutTag.get(context);
+
+        /*获取tag列表，tag列表这个字符数组是static的。
+        if(!mAboutStar.fileExist()){
             //创建文件，如果不存在的话
             mAboutStar.WriteContent(getActivity(),"未分类","TAG_0");
         }
@@ -60,16 +64,14 @@ public class Star_webpage extends DialogFragment {
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
         setMassage(view);//填充网页信息
-        //setTags(view);//填充微调框
+        setTags(view);//填充微调框
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 WebPage_Info tmp =getMessage(view);
-
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
-
                 if(mAboutStar.isStar(tmp)){
                     /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
                      *网址未修改，那就更新标题和tag，
@@ -91,14 +93,14 @@ public class Star_webpage extends DialogFragment {
 
     }
 
-    /*private void setTags(View view) {
+    private void setTags(View view) {
         //填充微调框
-        ArrayList<String> lists = new ArrayList<>(Arrays.asList(tagList));
+        ArrayList<String> lists =mAboutTag.getItems();
         Spinner spinner = view.findViewById(R.id.tag_select);
-        ArrayAdapter<String> adapter =new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,lists);
+        ArrayAdapter<String> adapter =new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,lists);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-    }*/
+    }
 
     public interface GetInfo{
         //获取当前网页信息以填充收藏窗口

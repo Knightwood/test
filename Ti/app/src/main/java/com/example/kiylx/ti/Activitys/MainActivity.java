@@ -26,7 +26,7 @@ import com.example.kiylx.ti.model.CustomWebviewClient;
 import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Fragments.Star_webpage;
+import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.SETINFOS,
         MultPage_DialogFragment.GetIndex,
-        Star_webpage.GetInfo{
+        Star_Dialog.GetInfo{
     private static final String TAG="MainActivity";
 
 
@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements
                         Log.i(TAG, "onClick: 收藏按钮被触发");
 
                         FragmentManager fm = getSupportFragmentManager();
-                        Star_webpage dialog = new Star_webpage();
+                        Star_Dialog dialog = new Star_Dialog();
                         dialog.show(fm,"收藏当前网页");
                         break;
                     case R.id.action_flash:
@@ -428,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public WebPage_Info getInfo() {
+        //Star_Dialog里的方法，目的是获取当前网页信息
         sCUWL();
         return sCurrentUse_webPage_lists.getInfo(currect);
     }
