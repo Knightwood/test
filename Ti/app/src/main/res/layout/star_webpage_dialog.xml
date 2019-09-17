@@ -51,22 +51,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editUrl" />
 
-    <EditText
-        android:id="@+id/editTags"
+    <TextView
+        android:id="@+id/showTags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
+        android:layout_marginStart="8dp"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/folder"
+        app:layout_constraintTop_toBottomOf="@+id/folder" />
+
+    <TextView
+        android:id="@+id/tag_select"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/tagFliter"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/showTags"
+        app:layout_constraintEnd_toStartOf="@+id/showTags"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/folder" />
 
-    <Spinner
-        android:id="@+id/tag_select"
+    <EditText
+        android:id="@+id/edit_Tag"
         android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/editTags"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/folder" />
+        app:layout_constraintTop_toBottomOf="@+id/showTags" />
 </androidx.constraintlayout.widget.ConstraintLayout>

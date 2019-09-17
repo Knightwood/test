@@ -7,14 +7,16 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.DialogFragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
@@ -22,10 +24,7 @@ import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class Star_Dialog extends DialogFragment {
@@ -33,6 +32,8 @@ public class Star_Dialog extends DialogFragment {
     private AboutStar mAboutStar;
     private AboutTag mAboutTag;
     private WebPage_Info info;
+    private PopupMenu mPopupMenu;
+    TextView diaplaytagView;
 
     @Override
     public void onAttach(Context context) {
@@ -56,8 +57,15 @@ public class Star_Dialog extends DialogFragment {
         //return super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
+        diaplaytagView=view.findViewById(R.id.showTags);
+        diaplaytagView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopMenu(v);
+            }
+        });
         setMassage(view);//填充网页信息
-        //setTags(view);//填充微调框
+
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
@@ -67,6 +75,7 @@ public class Star_Dialog extends DialogFragment {
                     //如果是主页，那就不加入收藏夹，以后可能会有变动
                     return;
                 }*/
+
                 WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
                 if(mAboutStar.isStar(tmp)){
@@ -77,8 +86,9 @@ public class Star_Dialog extends DialogFragment {
                     /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
                      *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
                 }else{
-                    //否则往数据库添加条目信息
-                mAboutStar.add(tmp);}
+                    //否则往收藏数据库添加收藏条目信息和添加tag到tag数据库
+                    mAboutTag.add(tmp.getFolders());
+                    mAboutStar.add(tmp);}
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -90,14 +100,14 @@ public class Star_Dialog extends DialogFragment {
 
     }
 
-    private void setTags(View view) {
+   /*private void setTags(View view) {
         //填充微调框
         ArrayList<String> lists =mAboutTag.getItems();
         Spinner spinner = view.findViewById(R.id.tag_select);
         ArrayAdapter<String> adapter =new ArrayAdapter<String>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,lists);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-    }
+    }*/
 
     public interface GetInfo{
         //获取当前网页信息以填充收藏窗口
@@ -112,17 +122,53 @@ public class Star_Dialog extends DialogFragment {
         title.setText(info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);
         url.setText(info.getUrl());
-        TextView tags=v.findViewById(R.id.editTags);
+        TextView tags=v.findViewById(R.id.showTags);
 
     }
     private WebPage_Info getMessage(View v){
         //获取收藏框的信息
         EditText title=v.findViewById(R.id.edit_title);
         EditText url=v.findViewById(R.id.editUrl);
-        EditText tags=v.findViewById(R.id.editTags);
+        TextView tags=v.findViewById(R.id.showTags);
         WebPage_Info info=new WebPage_Info(title.getText().toString(),url.getText().toString(),tags.getText().toString(),-1);
         return info;
     }
+
+    public void showPopMenu(View v) {
+        mPopupMenu=new PopupMenu(Objects.requireNonNull(getActivity()),v);
+        MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
+        //存着tag的lists
+        ArrayList<String> mItems=mAboutTag.getItems();
+        if(mItems==null){
+            //如果tag的lists是null，也就是空的，那什么tag也不会显示
+            mPopupMenu.show();
+            return;
+        }
+        for(int i=0;i<mItems.size();i++){
+            //group通常为0
+            //第二个参数是自己赋予item的id
+            //第三个选项通常为0
+            //第四个选项是item的名称
+            menuBuilder.add(0,i,0,mItems.get(i));
+        }
+        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int i=item.getItemId();
+                Log.d("Star_Dialog_Popmenu", String.valueOf(i));
+                //设置标签筛选的标题
+                setTags(item.getTitle().toString());
+                return false;
+            }
+        });
+        mPopupMenu.show();
+    }
+
+    private void setTags(String str) {
+        //TextView view=LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null).findViewById(R.id.editTags);
+        diaplaytagView.setText(str);
+    }
+
 
     @Override
     public void onStart() {
