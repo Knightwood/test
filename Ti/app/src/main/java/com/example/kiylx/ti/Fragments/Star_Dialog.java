@@ -63,10 +63,10 @@ public class Star_Dialog extends DialogFragment {
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(0==info.getFlags()){
+                /*if(0==info.getFlags()){
                     //如果是主页，那就不加入收藏夹，以后可能会有变动
                     return;
-                }
+                }*/
                 WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
                 if(mAboutStar.isStar(tmp)){

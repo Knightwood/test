@@ -63,11 +63,6 @@ public class StarPageActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
-
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         private ArrayList<WebPage_Info> mList;
         public RecyclerAdapter(ArrayList<WebPage_Info> lists){

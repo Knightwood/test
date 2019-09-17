@@ -39,4 +39,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tag">标签</string>
     <string name="tagFliter">标签选择</string>
+    <string name="history1">历史</string>
+    <string name="date">日期选择</string>
 </resources>
