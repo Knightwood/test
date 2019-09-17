@@ -5,13 +5,8 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 
 public class Clist {
+    //存着当前打开的所有webview对象
     private ArrayList<WebView> mArrayList;
-
-    /*public Clist(){
-        if(mArrayList ==null){
-            mArrayList = new ArrayList<WebView>();
-        }
-    }*/
 
     private volatile static Clist sClist;
     private Clist(){

@@ -307,9 +307,7 @@ public class MainActivity extends AppCompatActivity implements
                     case R.id.action_flash:
 
                         Log.i(TAG, "onClick: 刷新按钮被触发");
-                        //mClist.getTop(currect).reload();
-                        Intent intent = new Intent(MainActivity.this,HistoryActivity.class);
-                        startActivity(intent);
+                        mClist.getTop(currect).reload();
 
                         break;
                     case R.id.action_menu:

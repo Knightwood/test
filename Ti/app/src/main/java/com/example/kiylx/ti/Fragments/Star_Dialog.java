@@ -32,6 +32,7 @@ public class Star_Dialog extends DialogFragment {
     private GetInfo mGetInfo;
     private AboutStar mAboutStar;
     private AboutTag mAboutTag;
+    private WebPage_Info info;
 
     @Override
     public void onAttach(Context context) {
@@ -39,21 +40,13 @@ public class Star_Dialog extends DialogFragment {
         mAboutStar = AboutStar.get(context);
         mAboutTag = AboutTag.get(context);
 
-        /*获取tag列表，tag列表这个字符数组是static的。
-        if(!mAboutStar.fileExist()){
-            //创建文件，如果不存在的话
-            mAboutStar.WriteContent(getActivity(),"未分类","TAG_0");
-        }
-        tagList=mAboutStar.getDataFromFile(context,"TAG_0");
-        tagList[0]="第一个选项";
-        tagList[1]="第二个选项";*/
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGetInfo=(GetInfo)getActivity();
+        info = mGetInfo.getInfo();
     }
 
     @NonNull
@@ -64,12 +57,16 @@ public class Star_Dialog extends DialogFragment {
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
         setMassage(view);//填充网页信息
-        setTags(view);//填充微调框
+        //setTags(view);//填充微调框
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if(0==info.getFlags()){
+                    //如果是主页，那就不加入收藏夹，以后可能会有变动
+                    return;
+                }
                 WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
                 if(mAboutStar.isStar(tmp)){
@@ -104,12 +101,13 @@ public class Star_Dialog extends DialogFragment {
 
     public interface GetInfo{
         //获取当前网页信息以填充收藏窗口
+        //在MainActivity中实现的
         public WebPage_Info getInfo();
     }
 
     private void setMassage(View v) {
         //拿到当前网页信息填充收藏框
-        WebPage_Info info = mGetInfo.getInfo();
+
         EditText title=v.findViewById(R.id.edit_title);
         title.setText(info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);

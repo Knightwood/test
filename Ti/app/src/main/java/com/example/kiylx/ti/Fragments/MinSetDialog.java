@@ -16,7 +16,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.Activitys.HistoryActivity;
+import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.Activitys.SettingActivity;
+import com.example.kiylx.ti.Activitys.StarPageActivity;
 import com.example.kiylx.ti.R;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -83,6 +86,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.a4:
                 //历史记录
+                Intent history_intent = new Intent(getContext(), HistoryActivity.class);
+                startActivity(history_intent);
                 dismiss();
                 break;
             case R.id.a5:
@@ -91,6 +96,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.a6:
                 //书签
+                Intent star_intent = new Intent(getContext(), StarPageActivity.class);
+                startActivity(star_intent);
                 dismiss();
                 Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
                 break;

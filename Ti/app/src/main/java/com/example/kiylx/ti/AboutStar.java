@@ -66,7 +66,7 @@ public class AboutStar {
             cursor.close();
         }
     }
-    public List<WebPage_Info> getWebPageinfos(){
+    public ArrayList<WebPage_Info> getWebPageinfos(){
         ItemCursorWrapper cursor = queryFavority(null,null);
         ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
         try{
