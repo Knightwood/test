@@ -13,6 +13,7 @@ import com.example.kiylx.ti.favoritepageDataBase.TagOpenHelper;
 import java.util.ArrayList;
 
 public class AboutTag {
+    /*tag，如果在添加标签的时候选择的是未分类，那么这一条*/
     private static AboutTag sAboutTag;
     private SQLiteDatabase mDatabase;
 

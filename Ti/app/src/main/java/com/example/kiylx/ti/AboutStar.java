@@ -66,9 +66,16 @@ public class AboutStar {
             cursor.close();
         }
     }
-    public ArrayList<WebPage_Info> getWebPageinfos(){
-        ItemCursorWrapper cursor = queryFavority(null,null);
+    public ArrayList<WebPage_Info> getWebPageinfos(String str1,String str2){
+        ItemCursorWrapper cursor;
         ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
+
+        if(str1==null&&str2==null){
+            cursor= queryFavority(null,null);
+        }else{
+            cursor = queryFavority(str1,new String[]{str2});
+        }
+
         try{
             if(cursor.getCount()==0){
                 return null;
@@ -106,7 +113,7 @@ public class AboutStar {
         );
         return new ItemCursorWrapper(cursor);
     }
-
+/*
     public void WriteContent(Context context, String content, String filename){
 
         //String filename = "TAG_0";
@@ -145,7 +152,7 @@ public class AboutStar {
         }
         return null;
     }
-    /*public boolean TagIsExist(Context context,String tag,String filename){
+    public boolean TagIsExist(Context context,String tag,String filename){
         OutputStream outputStream;
         try{
             outputStream=context.openFileOutput(filename,Context.MODE_PRIVATE);
@@ -180,5 +187,13 @@ public class AboutStar {
 
     public boolean fileExist() {
         return false;
+    }
+
+    public ArrayList<WebPage_Info> getChangeLists(String str) {
+        //返回tag的书签list
+        if(str.equals("所有书签")){
+            return getWebPageinfos(null,null);
+        }
+        return getWebPageinfos(FavoritepageDbSchema.FavoriteTable.childs.FOLDERS,str);
     }
 }

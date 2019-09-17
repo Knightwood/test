@@ -1,7 +1,9 @@
 package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,11 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
+import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -25,40 +29,79 @@ public class StarPageActivity extends AppCompatActivity {
     private AboutStar mAboutStar;
     private RecyclerAdapter adapter;
     private PopupMenu mPopupMenu;
+    private AboutTag mAboutTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_star_page);
+        mAboutTag=AboutTag.get(this);
 
-        updateUI();
-
-    }
-    private void updateUI(){
         mAboutStar= AboutStar.get(StarPageActivity.this);
-        lists = mAboutStar.getWebPageinfos();
-        if(lists==null){
-            //如果收藏夹没有任何内容，那什么也不做
-            return;
-        }
+        lists = mAboutStar.getWebPageinfos(null,null);
 
         view = findViewById(R.id.show_StarItem);
         view.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));
 
-
-        if(null==adapter){
-            adapter = new RecyclerAdapter(lists);
-            view.setAdapter(adapter);
-            Log.d("收藏activity", "onClick: 创建adapter函数被触发");
-        }else{
-            adapter.notifyDataSetChanged();
-        }
+        updateUI("所有书签");
 
 
     }
+    private void updateUI(String str){
+        /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
+        这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
+        如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
+        如果不是null，根据tag来更新视图*/
+        if(lists==null){
+            //如果收藏夹没有任何内容，那什么也不做
+            return;
+        }
+        if(null==adapter){
+            adapter = new RecyclerAdapter(lists);//这里的lists是包含所有书签的
+            setTags(str);//这里设置一开始的tag显示所有书签
+            view.setAdapter(adapter);
+            Log.d("收藏activity", "onClick: 创建adapter函数被触发");
+        }else{
+            adapter.setList(mAboutStar.getChangeLists(str));
+            adapter.notifyDataSetChanged();
+        }
+    }
+    public void setTags(String str){
+        TextView textView=findViewById(R.id.bc_qm_ul_xr);
+        //“标签筛选textview”被设置好是显示那个标签后要更新recyclerview
+        textView.setText(str);
+        if(!str.equals("所有书签")){
+            //如果tag不是“所有书签”，那是可以根据tag更新视图的
+            updateUI(str);}
+    }
+
     public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(this,v);
-        mPopupMenu.inflate(R.menu.menu_tag_list_item);
+        MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
+        //存着tag的lists
+        ArrayList<String> mItems=mAboutTag.getItems();
+        if(mItems==null){
+            //如果tag的lists是null，也就是空的，那什么tag也不会显示
+            mPopupMenu.show();
+            return;
+        }
+        for(int i=0;i<mItems.size();i++){
+            //group通常为0
+            //第二个参数是自己赋予item的id
+            //第三个选项通常为0
+            //第四个选项是item的名称
+            menuBuilder.add(0,i,0,mItems.get(i));
+        }
+        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int i=item.getItemId();
+                Log.d("Popmenu", String.valueOf(i));
+                //设置标签筛选的标题
+                setTags(item.getTitle().toString());
+                return false;
+            }
+        });
         mPopupMenu.show();
     }
 
@@ -67,6 +110,9 @@ public class StarPageActivity extends AppCompatActivity {
         private ArrayList<WebPage_Info> mList;
         public RecyclerAdapter(ArrayList<WebPage_Info> lists){
             mList=lists;
+        }
+        public void setList(ArrayList<WebPage_Info> updatelists){
+            mList=updatelists;
         }
 
         @NonNull
