@@ -10,9 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.EditBox;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -47,6 +50,8 @@ public class Star_Dialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mGetInfo=(GetInfo)getActivity();
+
+        assert mGetInfo != null;
         info = mGetInfo.getInfo();
     }
 
@@ -57,24 +62,17 @@ public class Star_Dialog extends DialogFragment {
         //return super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
-        diaplaytagView=view.findViewById(R.id.showTags);
-        diaplaytagView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopMenu(v);
-            }
-        });
         setMassage(view);//填充网页信息
 
+        diaplaytagView=view.findViewById(R.id.showTags);
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                /*if(0==info.getFlags()){
-                    //如果是主页，那就不加入收藏夹，以后可能会有变动
-                    return;
-                }*/
+                /*
+                  如果是主页，那就不加入收藏夹，以后可能会有变动
+                */
 
                 WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
@@ -87,13 +85,20 @@ public class Star_Dialog extends DialogFragment {
                      *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
                 }else{
                     //否则往收藏数据库添加收藏条目信息和添加tag到tag数据库
-                    mAboutTag.add(tmp.getFolders());
+
+                    mAboutTag.add(tmp.getWebTags());
                     mAboutStar.add(tmp);}
             }
         }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //关闭dialog
+            }
+        });
+        diaplaytagView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopMenu(v);
             }
         });
         return builder.create();
@@ -122,7 +127,7 @@ public class Star_Dialog extends DialogFragment {
         title.setText(info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);
         url.setText(info.getUrl());
-        TextView tags=v.findViewById(R.id.showTags);
+
 
     }
     private WebPage_Info getMessage(View v){
@@ -130,12 +135,15 @@ public class Star_Dialog extends DialogFragment {
         EditText title=v.findViewById(R.id.edit_title);
         EditText url=v.findViewById(R.id.editUrl);
         TextView tags=v.findViewById(R.id.showTags);
-        WebPage_Info info=new WebPage_Info(title.getText().toString(),url.getText().toString(),tags.getText().toString(),-1);
-        return info;
+        return new WebPage_Info(title.getText().toString(),url.getText().toString(),tags.getText().toString(),-1);
     }
 
     public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(Objects.requireNonNull(getActivity()),v);
+        //添加固定的选项：添加新标签，点击后打开一个编辑框
+        MenuInflater menuInflater = mPopupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());
+
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         //存着tag的lists
         ArrayList<String> mItems=mAboutTag.getItems();
@@ -154,8 +162,16 @@ public class Star_Dialog extends DialogFragment {
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+
+                if (item.getItemId() == R.id.newTag) {
+                    //启动一个dialog，里面放上编辑框
+                    EditBox editBox=new EditBox();
+                    FragmentManager fm =getFragmentManager();
+                    editBox.show(fm,"编辑框");
+                }
                 int i=item.getItemId();
                 Log.d("Star_Dialog_Popmenu", String.valueOf(i));
+
                 //设置标签筛选的标题
                 setTags(item.getTitle().toString());
                 return false;
@@ -168,14 +184,11 @@ public class Star_Dialog extends DialogFragment {
         //TextView view=LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null).findViewById(R.id.editTags);
         diaplaytagView.setText(str);
     }
-
-
-    @Override
-    public void onStart() {
-
-        super.onStart();
-
+    public void setEditwithTag(){
+        //从tag选择里选择一个tag，点击确定会从showTags里拿取tag，保存在收藏里
+        //如果在edit_Tag里填写了tag，那就把它设置到showTags里
     }
+
 
     @Nullable
     @Override
@@ -187,15 +200,5 @@ public class Star_Dialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

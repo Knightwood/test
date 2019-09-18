@@ -28,6 +28,9 @@ public class AboutTag {
     }
 
     public void add(String tag){
+        if(tag==null){
+            return;
+        }
         ContentValues values = getContentValues(tag);
         mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
 

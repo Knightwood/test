@@ -4,21 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
 import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
-import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AboutStar {
     private static AboutStar sAboutStar;
@@ -39,6 +31,9 @@ public class AboutStar {
     }
 
     public void add(WebPage_Info info){
+        if(info==null||info.getUrl()==null){
+            return;
+        }
         ContentValues values = getContentValues(info);
         mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
 
@@ -95,7 +90,7 @@ public class AboutStar {
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE,info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url,info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.FOLDERS,info.getFolders());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG,info.getWebTags());
 
         return values;
     }
@@ -194,6 +189,6 @@ public class AboutStar {
         if(str.equals("所有书签")){
             return getWebPageinfos(null,null);
         }
-        return getWebPageinfos(FavoritepageDbSchema.FavoriteTable.childs.FOLDERS,str);
+        return getWebPageinfos(FavoritepageDbSchema.FavoriteTable.childs.TAG,str);
     }
 }

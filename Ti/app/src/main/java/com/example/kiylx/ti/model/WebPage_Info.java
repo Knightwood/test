@@ -1,14 +1,12 @@
 package com.example.kiylx.ti.model;
 
-import android.database.sqlite.SQLiteDatabase;
-
 public class WebPage_Info {
     //收集网页的信息，用于展示多窗口以及记录历史记录
     private String title;
     private String url;
     private int flags=0;
     private String date;
-    private String folders;
+    private String webTag;
     //flags：0，主页,不计入历史记录;
     //所以除了0以外的flags都是可以计入历史记录的
     // 1，将载入网址，可以计入历史记录;
@@ -26,11 +24,11 @@ public class WebPage_Info {
         this.url = url;
         this.date=date;
     }
-    public WebPage_Info(String title, String url,String folders,int flags) {
+    public WebPage_Info(String title, String url, String webTag, int flags) {
         this.title = title;
         this.url = url;
         this.date=null;
-        this.folders=folders;
+        this.webTag = webTag;
         this.flags = flags;
 
     }
@@ -66,11 +64,11 @@ public class WebPage_Info {
         return this.date;
     }
 
-    public String getFolders(){
-        return this.folders;
+    public String getWebTags(){
+        return this.webTag;
     }
-    public void setFolders(String s){
-        this.folders=s;
+    public void setWebTag(String s){
+        this.webTag =s;
     }
 
 }
