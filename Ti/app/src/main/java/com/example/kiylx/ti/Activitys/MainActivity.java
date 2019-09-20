@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements
     }
     private void exit(){
         if ((System.currentTimeMillis() - mExitTime) > 1000) {
-            Toast.makeText(MainActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "再按一次退出应用", Toast.LENGTH_SHORT).show();
             mExitTime = System.currentTimeMillis(); }
         else {
             //用户退出处理

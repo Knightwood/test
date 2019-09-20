@@ -58,8 +58,8 @@ public class HistoryActivity extends AppCompatActivity{
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder>{
         ArrayList<WebPage_Info> lists;
-        HistoryAdapter(ArrayList<WebPage_Info> lists){
-            this.lists=lists;
+        HistoryAdapter(ArrayList<WebPage_Info> list){
+            this.lists=list;
             boolean ta=lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空"+ta+lists.get(0).getUrl());
         }

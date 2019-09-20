@@ -24,5 +24,6 @@ public class ItemCursorWrapper extends CursorWrapper {
     }
     public String getTaginfo(){
         return getString(getColumnIndex(TagDbSchema.TagTable.childs.TAG));
+
     }
 }

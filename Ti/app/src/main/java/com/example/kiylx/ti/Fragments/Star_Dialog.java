@@ -37,12 +37,16 @@ public class Star_Dialog extends DialogFragment {
     private WebPage_Info info;
     private PopupMenu mPopupMenu;
     TextView diaplaytagView;
-
+    private Context mContext;
+/*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
+里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
+当点击确定后，把信息加入收藏夹数据库*/
     @Override
     public void onAttach(Context context) {
-        super.onAttach(context);
-        mAboutStar = AboutStar.get(context);
-        mAboutTag = AboutTag.get(context);
+        mContext=context;
+        super.onAttach(mContext);
+        mAboutStar = AboutStar.get(mContext);
+        mAboutTag = AboutTag.get(mContext);
 
     }
 
@@ -70,10 +74,7 @@ public class Star_Dialog extends DialogFragment {
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                /*
-                  如果是主页，那就不加入收藏夹，以后可能会有变动
-                */
-
+                /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
                 WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
                 if(mAboutStar.isStar(tmp)){
@@ -84,15 +85,15 @@ public class Star_Dialog extends DialogFragment {
                     /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
                      *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
                 }else{
-                    //否则往收藏数据库添加收藏条目信息和添加tag到tag数据库
-
-                    mAboutTag.add(tmp.getWebTags());
+                    //否则往收藏数据库添加收藏条目信息
                     mAboutStar.add(tmp);}
             }
-        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //关闭dialog
+
+
             }
         });
         diaplaytagView.setOnClickListener(new View.OnClickListener() {
@@ -141,39 +142,38 @@ public class Star_Dialog extends DialogFragment {
     public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(Objects.requireNonNull(getActivity()),v);
         //添加固定的选项：添加新标签，点击后打开一个编辑框
-        MenuInflater menuInflater = mPopupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());
-
+       /*MenuInflater menuInflater = mPopupMenu.getMenuInflater();
+        menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());*/
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
+        menuBuilder.add(0,-1,0,"添加标签");
         //存着tag的lists
-        ArrayList<String> mItems=mAboutTag.getItems();
-        if(mItems==null){
+        /*ArrayList<String> mItems=mAboutTag.getItems();
+        if(mItems==null||mItems.isEmpty()){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();
             return;
-        }
-        for(int i=0;i<mItems.size();i++){
+        }*/
+
+        for(int i=0;i<10;i++){
             //group通常为0
             //第二个参数是自己赋予item的id
             //第三个选项通常为0
             //第四个选项是item的名称
-            menuBuilder.add(0,i,0,mItems.get(i));
+            menuBuilder.add(0,i,0,"bug"+i);
+
         }
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
-                if (item.getItemId() == R.id.newTag) {
-                    //启动一个dialog，里面放上编辑框
+                int i=item.getItemId();
+                if(i==-1){
                     EditBox editBox=new EditBox();
                     FragmentManager fm =getFragmentManager();
                     editBox.show(fm,"编辑框");
-                }
-                int i=item.getItemId();
+                }else{
                 Log.d("Star_Dialog_Popmenu", String.valueOf(i));
-
                 //设置标签筛选的标题
-                setTags(item.getTitle().toString());
+                setTags(item.getTitle().toString());}
                 return false;
             }
         });
@@ -200,5 +200,12 @@ public class Star_Dialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        //mContext=null;
+
     }
 }

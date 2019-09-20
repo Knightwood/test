@@ -28,11 +28,11 @@ public class AboutTag {
     }
 
     public void add(String tag){
-        if(tag==null){
+        if(tag.equals("")){
             return;
         }
         ContentValues values = getContentValues(tag);
-        mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
+        mDatabase.insert(TagDbSchema.TagTable.NAME,null,values);
 
     }
     private static ContentValues getContentValues(String tag){

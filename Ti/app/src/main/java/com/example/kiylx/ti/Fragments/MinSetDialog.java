@@ -86,7 +86,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.a4:
                 //历史记录
-                Intent history_intent = new Intent(getContext(), HistoryActivity.class);
+                Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
                 startActivity(history_intent);
                 dismiss();
                 break;
