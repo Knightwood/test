@@ -87,7 +87,8 @@ public class AboutTag {
 
     }
     private ItemCursorWrapper queryTag(String where,String[] whereArgs){
-        Cursor cursor = mDatabase.query(TagDbSchema.TagTable.NAME,
+        Cursor cursor = mDatabase.query(
+                TagDbSchema.TagTable.NAME,
                 null,
                 where,
                 whereArgs,
