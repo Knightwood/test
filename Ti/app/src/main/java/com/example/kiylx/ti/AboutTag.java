@@ -5,9 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
-import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
 import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
+import com.example.kiylx.ti.favoritepageDataBase.TagItemCursorWrapper;
 import com.example.kiylx.ti.favoritepageDataBase.TagOpenHelper;
 
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ public class AboutTag {
     private SQLiteDatabase mDatabase;
 
     public AboutTag(Context context) {
+
         mDatabase = new TagOpenHelper(context, TagDbSchema.TagTable.NAME,null,1).getWritableDatabase();
     }
     public static AboutTag get(Context context){
@@ -28,9 +28,6 @@ public class AboutTag {
     }
 
     public void add(String tag){
-        if(tag.equals("")){
-            return;
-        }
         ContentValues values = getContentValues(tag);
         mDatabase.insert(TagDbSchema.TagTable.NAME,null,values);
 
@@ -56,7 +53,7 @@ public class AboutTag {
     }
     public String getItem(String tag){
         String result;
-        ItemCursorWrapper cursor = queryTag(TagDbSchema.TagTable.childs.TAG,new String[]{tag});
+        TagItemCursorWrapper cursor = queryTag(TagDbSchema.TagTable.childs.TAG,new String[]{tag});
         try{
             if(cursor.getCount()==0){
                 return null;
@@ -70,7 +67,7 @@ public class AboutTag {
     }
 
     public ArrayList<String> getItems(){
-        ItemCursorWrapper cursor = queryTag(null,null);
+        TagItemCursorWrapper cursor = queryTag(null,null);
         ArrayList<String> lists = new ArrayList<>();
         try{
             if(cursor.getCount()==0){
@@ -79,6 +76,7 @@ public class AboutTag {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()){
                 lists.add(cursor.getTaginfo());
+                cursor.moveToNext();
             }
         }finally {
             cursor.close();
@@ -86,7 +84,7 @@ public class AboutTag {
         return lists;
 
     }
-    private ItemCursorWrapper queryTag(String where,String[] whereArgs){
+    private TagItemCursorWrapper queryTag(String where, String[] whereArgs){
         Cursor cursor = mDatabase.query(
                 TagDbSchema.TagTable.NAME,
                 null,
@@ -95,6 +93,6 @@ public class AboutTag {
                 null,
                 null,
                 null);
-        return new ItemCursorWrapper(cursor);
+        return new TagItemCursorWrapper(cursor);
     }
 }

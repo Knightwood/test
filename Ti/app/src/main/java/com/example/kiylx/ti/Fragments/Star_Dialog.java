@@ -14,7 +14,6 @@ import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,24 +25,25 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.EditBox;
+import com.example.kiylx.ti.EditBox_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Star_Dialog extends DialogFragment {
+public class Star_Dialog extends DialogFragment implements
+        EditBox_Dialog.UPDATE_UI {
     private GetInfo mGetInfo;
     private AboutStar mAboutStar;
-    private AboutTag mAboutTag;
     private WebPage_Info info;
     private PopupMenu mPopupMenu;
     private TextView diaplaytagView;
     private Spinner mSpinner;
     private Context mContext;
     private ArrayList<String> taglists;
-    private EditBox editBox;
+    private EditBox_Dialog mEditBoxDialog;
+    private AboutTag mAboutTag;
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
@@ -52,7 +52,7 @@ public class Star_Dialog extends DialogFragment {
         mContext=context;
         super.onAttach(mContext);
         mAboutStar = AboutStar.get(mContext);
-        mAboutTag = AboutTag.get(mContext);
+        mAboutTag= AboutTag.get(mContext);
 
     }
 
@@ -64,11 +64,13 @@ public class Star_Dialog extends DialogFragment {
         //getInfo,是获取当前网页的信息
         assert mGetInfo != null;
         info = mGetInfo.getInfo();
-        taglists=new ArrayList<>();
 
+        /*taglists=new ArrayList<>();
         for(int i=0;i<10;i++){
             taglists.add(i,"标签"+i);
-        }
+        }*/
+        taglists=mAboutTag.getItems();
+
         taglists.add("添加标签");
 
     }
@@ -136,13 +138,14 @@ public class Star_Dialog extends DialogFragment {
                 if(position==taglists.size()-1){
                     //备忘：这里list的size是11，但是下标从0开始的，最后一个元素下标是10
                     Log.d("tag序号", "onItemSelected: "+position);
-                    editBox=new EditBox();
+                    mEditBoxDialog =new EditBox_Dialog();
                     FragmentManager fm =getFragmentManager();
-                    editBox.show(fm,"编辑框");
+                    mEditBoxDialog.show(fm,"编辑框");
 
                 }
                 //选择某一个tag后更新webviewinfo信息
                 updateWebinfo(taglists.get(position));
+
             }
 
             @Override
@@ -223,8 +226,10 @@ public class Star_Dialog extends DialogFragment {
         diaplaytagView.setText(str);
     }
 
-
-
+    @Override
+    public void updateSpinnerUI(){
+        taglists=mAboutTag.getItems();
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

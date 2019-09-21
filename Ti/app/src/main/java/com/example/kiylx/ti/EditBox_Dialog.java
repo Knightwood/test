@@ -16,9 +16,11 @@ import androidx.fragment.app.DialogFragment;
 
 import java.util.Objects;
 
-public class EditBox extends DialogFragment {
+public class EditBox_Dialog extends DialogFragment {
     private AboutTag mAboutTag;
     private EditText view1;
+    private Context mContext;
+    private UPDATE_UI mUPDATE_UI;
 
 
     @NonNull
@@ -33,8 +35,9 @@ public class EditBox extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = view1.getText().toString();
-                if (!str.equals("")){
+                if (!(str.equals(""))){
                 mAboutTag.add(str);
+                mUPDATE_UI.updateSpinnerUI();
                 }
 
             }
@@ -51,12 +54,18 @@ public class EditBox extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext=getActivity();
+        mAboutTag=AboutTag.get(mContext);
+        mUPDATE_UI =(UPDATE_UI) mContext;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAboutTag=AboutTag.get(getContext());
+
+    }
+    public interface UPDATE_UI {
+        public void updateSpinnerUI();
     }
 
     @Nullable
@@ -70,5 +79,9 @@ public class EditBox extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mContext=null;
+    }
 }

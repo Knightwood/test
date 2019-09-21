@@ -22,8 +22,5 @@ public class ItemCursorWrapper extends CursorWrapper {
         WebPage_Info info = new WebPage_Info(title,url,folders,-1);
         return info;
     }
-    public String getTaginfo(){
-        return getString(getColumnIndex(TagDbSchema.TagTable.childs.TAG));
 
-    }
 }
