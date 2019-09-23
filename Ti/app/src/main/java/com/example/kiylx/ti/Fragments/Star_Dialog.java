@@ -1,9 +1,11 @@
 package com.example.kiylx.ti.Fragments;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,8 +34,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Star_Dialog extends DialogFragment implements
-        EditBox_Dialog.UPDATE_UI {
+public class Star_Dialog extends DialogFragment {
     private GetInfo mGetInfo;
     private AboutStar mAboutStar;
     private WebPage_Info info;
@@ -138,9 +139,7 @@ public class Star_Dialog extends DialogFragment implements
                 if(position==taglists.size()-1){
                     //备忘：这里list的size是11，但是下标从0开始的，最后一个元素下标是10
                     Log.d("tag序号", "onItemSelected: "+position);
-                    mEditBoxDialog =new EditBox_Dialog();
-                    FragmentManager fm =getFragmentManager();
-                    mEditBoxDialog.show(fm,"编辑框");
+                    newEditBox();
 
                 }
                 //选择某一个tag后更新webviewinfo信息
@@ -154,6 +153,15 @@ public class Star_Dialog extends DialogFragment implements
             }
         });
     }
+
+    private void newEditBox() {
+        //启动编辑tag的fragment
+        mEditBoxDialog =new EditBox_Dialog();
+        FragmentManager fm =getFragmentManager();
+        mEditBoxDialog.setTargetFragment(Star_Dialog.this,0);
+        mEditBoxDialog.show(fm,"编辑框");
+    }
+
     private void updateWebinfo(String str){
         info.setWebTag(str);
     }
@@ -226,10 +234,6 @@ public class Star_Dialog extends DialogFragment implements
         diaplaytagView.setText(str);
     }
 
-    @Override
-    public void updateSpinnerUI(){
-        taglists=mAboutTag.getItems();
-    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -237,6 +241,15 @@ public class Star_Dialog extends DialogFragment implements
         //设置tag的选项
         return super.onCreateView(inflater, container, savedInstanceState);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!= Activity.RESULT_OK){
+            return;
+        }
+        taglists=mAboutTag.getItems();
     }
 
     @Override

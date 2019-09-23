@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements
     private long mExitTime;//拿来判断按返回键间隔
     TextView m;
     AboutHistory sAboutHistory;
-    private static final String CURL="current url";
+    private static final String CURRENT_URL ="current url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements
     private void search_dialog(){
         //展示搜索框
         Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
-        intent.putExtra(CURL,mClist.getTop(currect).getUrl());
+        intent.putExtra(CURRENT_URL,mClist.getTop(currect).getUrl());
         //把当前网页网址传进去
         startActivityForResult(intent,21);
 

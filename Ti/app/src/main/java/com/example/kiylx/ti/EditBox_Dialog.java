@@ -1,8 +1,10 @@
 package com.example.kiylx.ti;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
+import com.example.kiylx.ti.Fragments.Star_Dialog;
 
 import java.util.Objects;
 
@@ -20,9 +25,19 @@ public class EditBox_Dialog extends DialogFragment {
     private AboutTag mAboutTag;
     private EditText view1;
     private Context mContext;
-    private UPDATE_UI mUPDATE_UI;
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext=getActivity();
+        mAboutTag=AboutTag.get(mContext);
+    }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -36,9 +51,13 @@ public class EditBox_Dialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 String str = view1.getText().toString();
                 if (!(str.equals(""))){
-                mAboutTag.add(str);
-                mUPDATE_UI.updateSpinnerUI();
+                    mAboutTag.add(str);
                 }
+                if (getTargetFragment() == null) {
+                    return;
+                }
+                Intent intent =new Intent();
+                getTargetFragment().onActivityResult(0, Activity.RESULT_OK,intent);
 
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -51,22 +70,6 @@ public class EditBox_Dialog extends DialogFragment {
 
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext=getActivity();
-        mAboutTag=AboutTag.get(mContext);
-        mUPDATE_UI =(UPDATE_UI) mContext;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-    public interface UPDATE_UI {
-        public void updateSpinnerUI();
-    }
 
     @Nullable
     @Override
@@ -77,6 +80,11 @@ public class EditBox_Dialog extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void setTargetFragment(@Nullable Fragment fragment, int requestCode) {
+        super.setTargetFragment(fragment, requestCode);
     }
 
     @Override
