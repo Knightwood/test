@@ -38,13 +38,13 @@ public class Star_Dialog extends DialogFragment {
     private GetInfo mGetInfo;
     private AboutStar mAboutStar;
     private WebPage_Info info;
-    private PopupMenu mPopupMenu;
-    private TextView diaplaytagView;
+    private TextView tagadd;
     private Spinner mSpinner;
     private Context mContext;
     private ArrayList<String> taglists;
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
+    private ArrayAdapter<String> adapter;
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
@@ -72,7 +72,6 @@ public class Star_Dialog extends DialogFragment {
         }*/
         taglists=mAboutTag.getItems();
 
-        taglists.add("添加标签");
 
     }
 
@@ -85,7 +84,13 @@ public class Star_Dialog extends DialogFragment {
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
         setMassage(view);//填充网页信息
 
-        diaplaytagView=view.findViewById(R.id.showTags);
+        tagadd=view.findViewById(R.id.tag_add);
+        tagadd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newEditBox();
+            }
+        });
         mSpinner =view.findViewById(R.id.select_Tags);
 
 
@@ -116,19 +121,13 @@ public class Star_Dialog extends DialogFragment {
 
             }
         });
-        diaplaytagView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         return builder.create();
 
     }
 
    private void selectTags() {
         //填充微调框
-        ArrayAdapter<String> adapter =new ArrayAdapter<>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,taglists);
+        adapter =new ArrayAdapter<>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,taglists);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -136,12 +135,6 @@ public class Star_Dialog extends DialogFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("tag序号", "onItemSelected: "+position+"数组大小"+taglists.size());
 
-                if(position==taglists.size()-1){
-                    //备忘：这里list的size是11，但是下标从0开始的，最后一个元素下标是10
-                    Log.d("tag序号", "onItemSelected: "+position);
-                    newEditBox();
-
-                }
                 //选择某一个tag后更新webviewinfo信息
                 updateWebinfo(taglists.get(position));
 
@@ -191,11 +184,11 @@ public class Star_Dialog extends DialogFragment {
         return new WebPage_Info(title.getText().toString(),url.getText().toString(),"未分类",-1);
     }
 
-    public void showPopMenu(View v) {
+    /*public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(Objects.requireNonNull(getActivity()),v);
         //添加固定的选项：添加新标签，点击后打开一个编辑框
-       /*MenuInflater menuInflater = mPopupMenu.getMenuInflater();
-        menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());*/
+       //MenuInflater menuInflater = mPopupMenu.getMenuInflater();
+        //menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         menuBuilder.add(0,-1,0,"添加标签");
         //存着tag的lists
@@ -205,7 +198,7 @@ public class Star_Dialog extends DialogFragment {
             mPopupMenu.show();
             return;
         }*/
-
+/*
         for(int i=0;i<10;i++){
             //group通常为0
             //第二个参数是自己赋予item的id
@@ -228,11 +221,11 @@ public class Star_Dialog extends DialogFragment {
             }
         });
         mPopupMenu.show();
-    }
+    }*/
 
-    private void setTags(String str) {
+    /*private void setTags(String str) {
         diaplaytagView.setText(str);
-    }
+    }*/
 
     @Nullable
     @Override
@@ -249,7 +242,13 @@ public class Star_Dialog extends DialogFragment {
         if(resultCode!= Activity.RESULT_OK){
             return;
         }
-        taglists=mAboutTag.getItems();
+        //用新的list更新界面
+        if(adapter==null){
+            adapter =new ArrayAdapter<>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,taglists);
+        }else{
+            taglists=mAboutTag.getItems();
+        }
+
     }
 
     @Override

@@ -42,5 +42,6 @@
     <string name="history1">历史</string>
     <string name="date">日期选择</string>
     <string name="newTag">新标签</string>
+    <string name="new_a_tag">新建标签</string>
 
 </resources>

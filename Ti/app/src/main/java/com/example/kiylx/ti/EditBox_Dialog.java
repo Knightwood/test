@@ -56,8 +56,7 @@ public class EditBox_Dialog extends DialogFragment {
                 if (getTargetFragment() == null) {
                     return;
                 }
-                Intent intent =new Intent();
-                getTargetFragment().onActivityResult(0, Activity.RESULT_OK,intent);
+                returnResult();
 
             }
         }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -68,6 +67,14 @@ public class EditBox_Dialog extends DialogFragment {
         });
         return mbuilder.create();
 
+    }
+
+    private void returnResult() {
+        if(getTargetFragment()==null){
+            return;
+        }
+        Intent intent =new Intent();
+        getTargetFragment().onActivityResult(0, Activity.RESULT_OK,intent);
     }
 
 
