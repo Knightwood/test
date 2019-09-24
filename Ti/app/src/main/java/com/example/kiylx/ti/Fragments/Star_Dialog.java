@@ -48,6 +48,13 @@ public class Star_Dialog extends DialogFragment {
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
+
+
+    public static Star_Dialog newInstance(){
+        Star_Dialog  star_dialog = new Star_Dialog();
+        return star_dialog;
+    }
+
     @Override
     public void onAttach(Context context) {
         mContext=context;

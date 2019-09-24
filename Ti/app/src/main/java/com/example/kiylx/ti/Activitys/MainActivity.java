@@ -301,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements
                         Log.i(TAG, "onClick: 收藏按钮被触发");
 
                         FragmentManager fm = getSupportFragmentManager();
-                        Star_Dialog dialog = new Star_Dialog();
+                        Star_Dialog dialog =Star_Dialog.newInstance();
                         dialog.show(fm,"收藏当前网页");
                         break;
                     case R.id.action_flash:

@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.widget.PopupMenu;
@@ -14,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
@@ -30,18 +32,23 @@ public class StarPageActivity extends AppCompatActivity {
     private RecyclerAdapter adapter;
     private PopupMenu mPopupMenu;
     private AboutTag mAboutTag;
+    private Spinner mSpinner;
+    private ArrayList<String> mTaglists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_star_page);
-        mAboutTag=AboutTag.get(this);
+        mAboutTag=AboutTag.get(StarPageActivity.this);
+        mTaglists =mAboutTag.getItems();
 
         mAboutStar= AboutStar.get(StarPageActivity.this);
         lists = mAboutStar.getWebPageinfos(null,null);
 
+        mSpinner=findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
+        showTags();
         view = findViewById(R.id.show_StarItem);
-        view.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));
+        view.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));//展示具体收藏item的recyclerview
 
         updateUI("所有书签");
 
@@ -67,12 +74,25 @@ public class StarPageActivity extends AppCompatActivity {
         }
     }
     public void setTags(String str){
-        TextView textView=findViewById(R.id.bc_qm_ul_xr);
+        //TextView textView=findViewById(R.id.bc_qm_ul_xr);
         //“标签筛选textview”被设置好是显示那个标签后要更新recyclerview
-        textView.setText(str);
+        //textView.setText(str);
         if(!str.equals("所有书签")){
             //如果tag不是“所有书签”，那是可以根据tag更新视图的
             updateUI(str);}
+    }
+
+    public void showTags(){
+
+        ArrayAdapter<String> madapter=new ArrayAdapter<>(StarPageActivity.this,android.R.layout.simple_list_item_1, mTaglists);
+        madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(madapter);
+        mSpinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                updateUI(mTaglists.get(position));
+            }
+        });
     }
 
     public void showPopMenu(View v) {
