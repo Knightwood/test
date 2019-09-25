@@ -2,7 +2,7 @@ package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,11 +24,10 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import java.util.ArrayList;
 
 public class StarPageActivity extends AppCompatActivity {
-    private RecyclerView view;
+    private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> lists;
     private AboutStar mAboutStar;
     private RecyclerAdapter adapter;
-    private PopupMenu mPopupMenu;
     private AboutTag mAboutTag;
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
@@ -50,43 +49,38 @@ public class StarPageActivity extends AppCompatActivity {
         showTags();//展示spinner
 
         //展示recyclerview
-        view = findViewById(R.id.show_StarItem);
-        view.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));//展示具体收藏item的recyclerview
-        updateUI(mTaglists.get(0));
+        mRecyclerView = findViewById(R.id.show_StarItem);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));//展示具体收藏item的recyclerview
+
+        //更新lists，然后更新视图
+        getChangeLists(mTaglists.get(0));
+        updateUI();
 
 
     }
-    private void updateUI(String str){
+    private void updateUI(){
         /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
         这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
         如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
         如果不是null，根据tag来更新视图*/
         if(lists.isEmpty()){
-            //如果收藏夹没有任何内容，那什么也不做
+            //如果收藏夹没有任何内容，那什么也不做，且隐藏recyclerview
+           mRecyclerView.setVisibility(View.GONE);
             return;
         }
+        mRecyclerView.setVisibility(View.VISIBLE);
         if(null==adapter){
             adapter = new RecyclerAdapter(lists);//这里的lists是包含未分类
-            view.setAdapter(adapter);
+            mRecyclerView.setAdapter(adapter);
             Log.d("收藏activity", "onClick: 创建adapter函数被触发");
         }else{
-            adapter.setList(getChangeLists(str));
+            adapter.setList(lists);
             adapter.notifyDataSetChanged();
         }
     }
 
-    private ArrayList<WebPage_Info> getChangeLists(String str) {
+    private void getChangeLists(String str) {
         lists=mAboutStar.getinfos_TAG(str);
-        return lists;
-    }
-
-    public void setTags(String str){
-        //TextView textView=findViewById(R.id.bc_qm_ul_xr);
-        //“标签筛选textview”被设置好是显示那个标签后要更新recyclerview
-        //textView.setText(str);
-        if(!str.equals("所有书签")){
-            //如果tag不是“所有书签”，那是可以根据tag更新视图的
-            updateUI(str);}
     }
 
     public void showTags(){
@@ -97,7 +91,8 @@ public class StarPageActivity extends AppCompatActivity {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                updateUI(mTaglists.get(position));
+                getChangeLists(mTaglists.get(position));
+                updateUI();
             }
 
             @Override
@@ -140,12 +135,13 @@ public class StarPageActivity extends AppCompatActivity {
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         private ArrayList<WebPage_Info> mList;
-        public RecyclerAdapter(ArrayList<WebPage_Info> lists){
+        RecyclerAdapter(ArrayList<WebPage_Info> lists){
             mList=lists;
         }
-        public void setList(ArrayList<WebPage_Info> updatelists){
+        void setList(ArrayList<WebPage_Info> updatelists){
             mList=updatelists;
         }
+
 
         @NonNull
         @Override

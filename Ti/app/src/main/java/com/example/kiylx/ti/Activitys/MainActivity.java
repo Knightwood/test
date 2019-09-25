@@ -272,16 +272,17 @@ public class MainActivity extends AppCompatActivity implements
     private void toolbaract(){
         Toolbar bar = findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
-
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         //禁止显示标题
-        bar.setNavigationOnClickListener(new View.OnClickListener() {
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+
+        //toolbar上的导航键
+        /*bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mClist.getTop(currect).goBack();
 
             }
-        });
+        });*/
 
 
         //设置移除图片  如果不设置会默认使用系统灰色的图标
