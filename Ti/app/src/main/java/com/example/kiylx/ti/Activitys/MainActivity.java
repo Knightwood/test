@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.SETINFOS,
-        MultPage_DialogFragment.GetIndex
+        MultPage_DialogFragment.GetIndex,
+        Star_Dialog.SHOW_DIALOG
         {
     private static final String TAG="MainActivity";
 
@@ -319,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    void showStarDialog() {
+    public void showStarDialog() {
         FragmentManager fm = getSupportFragmentManager();
         Star_Dialog dialog =Star_Dialog.newInstance();
         dialog.putInfo(sCurrentUse_webPage_lists.getInfo(currect));//把当前网页信息传给收藏dialog
@@ -427,6 +428,11 @@ public class MainActivity extends AppCompatActivity implements
         settings.setDatabaseEnabled(true);
 
     }
+
+            @Override
+            public void show_Dialog() {
+                showStarDialog();
+            }
 
 
     /*

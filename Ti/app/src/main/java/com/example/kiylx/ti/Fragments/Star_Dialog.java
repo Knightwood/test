@@ -40,6 +40,7 @@ public class Star_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
+    private SHOW_DIALOG mSHOW_dialog;
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
@@ -59,6 +60,7 @@ public class Star_Dialog extends DialogFragment {
         super.onAttach(mContext);
         mAboutStar = AboutStar.get(mContext);
         mAboutTag= AboutTag.get(mContext);
+        mSHOW_dialog=(SHOW_DIALOG)mContext;
 
     }
 
@@ -236,8 +238,11 @@ public class Star_Dialog extends DialogFragment {
         }
         Log.d("唉","iggs");
         //用新的list更新界面
-        taglists=mAboutTag.getItems();
-
+        mSHOW_dialog.show_Dialog();
+    }
+    public interface SHOW_DIALOG{
+        //调用MianActivity中的showStarDialog()更新数据，如果有比这更好的方法的话，唉
+        void show_Dialog();
     }
 
     @Override
@@ -248,6 +253,7 @@ public class Star_Dialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("Star_Dialog", "onDetach: ");
         mContext=null;
 
     }
