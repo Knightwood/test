@@ -27,7 +27,6 @@ import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
-import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
@@ -36,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.SETINFOS,
-        MultPage_DialogFragment.GetIndex,
-        Star_Dialog.GetInfo{
+        MultPage_DialogFragment.GetIndex
+        {
     private static final String TAG="MainActivity";
 
 
@@ -56,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         f1=findViewById(R.id.Webview_group);
         mClist=Clist.getInstance();
-
+        sCUWL();
 
         if(mClist.isempty()){
             Log.d(TAG, "onCreate: isempty");
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements
 
     void setTextForbar(int i) {
         //以下三行把工具栏的的文字更新
-        sCUWL();
+        //sCUWL();
         String mt =sCurrentUse_webPage_lists.getTitle(i);
         m.setText(mt);
     }
@@ -216,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle","webview标题"+url);
         m.setText(url);//更新工具栏上的文字
-        sCUWL();
+        //sCUWL();
         //将当前页面网址更新数据，并加入历史记录
         sCurrentUse_webPage_lists.setTitle(currect,title);
         sCurrentUse_webPage_lists.setUrl(currect,url);
@@ -241,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void delete_CUWL(int i){
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
-        sCUWL();
+        //sCUWL();
         sCurrentUse_webPage_lists.delete(i);
     }
 
@@ -254,7 +253,7 @@ public class MainActivity extends AppCompatActivity implements
         web.setWebChromeClient(new CustomWebchromeClient());
         mClist.addToFirst(web,i);
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
-        sCUWL();
+        //sCUWL();
         sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
         //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
 
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //工具栏设置
     private void toolbaract(){
-        Toolbar bar = (Toolbar) findViewById(R.id.toolbar1);
+        Toolbar bar = findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -299,10 +298,7 @@ public class MainActivity extends AppCompatActivity implements
                         break;
                     case R.id.action_star:
                         Log.i(TAG, "onClick: 收藏按钮被触发");
-
-                        FragmentManager fm = getSupportFragmentManager();
-                        Star_Dialog dialog =Star_Dialog.newInstance();
-                        dialog.show(fm,"收藏当前网页");
+                        showStarDialog();
                         break;
                     case R.id.action_flash:
 
@@ -322,6 +318,14 @@ public class MainActivity extends AppCompatActivity implements
         });
 
     }
+
+    void showStarDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        Star_Dialog dialog =Star_Dialog.newInstance();
+        dialog.putInfo(sCurrentUse_webPage_lists.getInfo(currect));//把当前网页信息传给收藏dialog
+        dialog.show(fm,"收藏当前网页");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu,menu);
@@ -366,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements
             assert data != null;
             mClist.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
-            sCUWL();
+            //sCUWL();
             sCurrentUse_webPage_lists.setFlags(currect,1);
             Log.d(TAG, "onActivityResult: 被触发" +data.getStringExtra("text_or_url"));
     }
@@ -422,13 +426,6 @@ public class MainActivity extends AppCompatActivity implements
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
 
-    }
-
-    @Override
-    public WebPage_Info getInfo() {
-        //Star_Dialog里的方法，目的是获取当前网页信息
-        sCUWL();
-        return sCurrentUse_webPage_lists.getInfo(currect);
     }
 
 

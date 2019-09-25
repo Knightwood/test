@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
+import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
@@ -97,6 +100,8 @@ public class EditBox_Dialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.d("EditBox","onDetach");
         mContext=null;
+
     }
 }

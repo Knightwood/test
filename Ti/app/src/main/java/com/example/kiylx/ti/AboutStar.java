@@ -61,19 +61,31 @@ public class AboutStar {
             cursor.close();
         }
     }
-    public ArrayList<WebPage_Info> getWebPageinfos(String str1,String str2){
-        ItemCursorWrapper cursor;
+    public ArrayList<WebPage_Info> getWebPageinfos(){
+        //第一个参数来指示查询哪一列
+
         ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
-
-        if(str1==null&&str2==null){
-            cursor= queryFavority(null,null);
-        }else{
-            cursor = queryFavority(str1,new String[]{str2});
-        }
-
+        ItemCursorWrapper cursor= queryFavority(null,null);
         try{
             if(cursor.getCount()==0){
-                return null;
+                return mlists;
+            }
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                mlists.add(cursor.getFavoriterinfo());
+                cursor.moveToNext();
+            }
+        }finally {
+            cursor.close();
+        }
+        return mlists;
+    }
+    public ArrayList<WebPage_Info> getinfos_TAG(String str){
+        ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
+        ItemCursorWrapper cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG,new String[]{str});
+        try{
+            if(cursor.getCount()==0){
+                return mlists;
             }
             cursor.moveToFirst();
             while(!cursor.isAfterLast()){
@@ -100,7 +112,7 @@ public class AboutStar {
         Cursor cursor =mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
                 null,
-                whereClause,
+                whereClause+"= ?",
                 whereArgs,
                 null,
                 null,
@@ -187,8 +199,8 @@ public class AboutStar {
     public ArrayList<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
         if(str.equals("所有书签")){
-            return getWebPageinfos(null,null);
+            return getWebPageinfos();
         }
-        return getWebPageinfos(FavoritepageDbSchema.FavoriteTable.childs.TAG,str);
+        return getinfos_TAG(str);
     }
 }

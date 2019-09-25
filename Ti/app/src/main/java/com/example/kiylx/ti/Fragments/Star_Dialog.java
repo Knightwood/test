@@ -9,14 +9,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,7 +24,6 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.EditBox_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -35,9 +31,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Star_Dialog extends DialogFragment {
-    private GetInfo mGetInfo;
     private AboutStar mAboutStar;
-    private WebPage_Info info;
+    private WebPage_Info beStared_info;
     private TextView tagadd;
     private Spinner mSpinner;
     private Context mContext;
@@ -54,6 +49,9 @@ public class Star_Dialog extends DialogFragment {
         Star_Dialog  star_dialog = new Star_Dialog();
         return star_dialog;
     }
+    public void putInfo(WebPage_Info info){
+        beStared_info = info;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -67,17 +65,8 @@ public class Star_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mGetInfo=(GetInfo)getActivity();
-
-        //getInfo,是获取当前网页的信息
-        assert mGetInfo != null;
-        info = mGetInfo.getInfo();
-
-        /*taglists=new ArrayList<>();
-        for(int i=0;i<10;i++){
-            taglists.add(i,"标签"+i);
-        }*/
         taglists=mAboutTag.getItems();
+        taglists.add(0,"未分类");
 
 
     }
@@ -91,34 +80,35 @@ public class Star_Dialog extends DialogFragment {
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.star_webpage_dialog,null);
         setMassage(view);//填充网页信息
 
-        tagadd=view.findViewById(R.id.tag_add);
+        tagadd=view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
         tagadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newEditBox();
             }
         });
-        mSpinner =view.findViewById(R.id.select_Tags);
 
+        mSpinner =view.findViewById(R.id.select_Tags);
+        selectTags();//设置tag的选项
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
-                WebPage_Info tmp =getMessage(view);
+                //WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
-                if(mAboutStar.isStar(tmp)){
+                if(mAboutStar.isStar(beStared_info)){
                     /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
                      *网址未修改，那就更新标题和tag，
                      *如果网址被修改，那就算是一个新的，之后插入数据库*/
-                    mAboutStar.updateItem(tmp);
+                    mAboutStar.updateItem(beStared_info);
                     /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
                      *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
                 }else{
                     //否则往收藏数据库添加收藏条目信息
-                    mAboutStar.add(tmp);}
-                Log.d("网页tag", "onClick: "+info.getWebTags());
+                    mAboutStar.add(beStared_info);}
+                Log.d("网页tag", "onClick: "+ beStared_info.getWebTags());
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -152,6 +142,7 @@ public class Star_Dialog extends DialogFragment {
 
             }
         });
+
     }
 
     private void newEditBox() {
@@ -160,36 +151,31 @@ public class Star_Dialog extends DialogFragment {
         FragmentManager fm =getFragmentManager();
         mEditBoxDialog.setTargetFragment(Star_Dialog.this,0);
         mEditBoxDialog.show(fm,"编辑框");
+        dismiss();
     }
 
     private void updateWebinfo(String str){
-        info.setWebTag(str);
-    }
-
-    public interface GetInfo{
-        //获取当前网页信息以填充收藏窗口
-        //在MainActivity中实现的
-        public WebPage_Info getInfo();
+        beStared_info.setWebTag(str);
     }
 
     private void setMassage(View v) {
         //拿到当前网页信息填充收藏框
 
         EditText title=v.findViewById(R.id.edit_title);
-        title.setText(info.getTitle());
+        title.setText(beStared_info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);
-        url.setText(info.getUrl());
+        url.setText(beStared_info.getUrl());
 
 
     }
-
+/*
     private WebPage_Info getMessage(View v){
         //获取收藏框的信息
         EditText title=v.findViewById(R.id.edit_title);
         EditText url=v.findViewById(R.id.editUrl);
 
         return new WebPage_Info(title.getText().toString(),url.getText().toString(),"未分类",-1);
-    }
+    }*/
 
     /*public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(Objects.requireNonNull(getActivity()),v);
@@ -237,8 +223,7 @@ public class Star_Dialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        selectTags();
-        //设置tag的选项
+
         return super.onCreateView(inflater, container, savedInstanceState);
 
     }
@@ -249,12 +234,9 @@ public class Star_Dialog extends DialogFragment {
         if(resultCode!= Activity.RESULT_OK){
             return;
         }
+        Log.d("唉","iggs");
         //用新的list更新界面
-        if(adapter==null){
-            adapter =new ArrayAdapter<>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,taglists);
-        }else{
-            taglists=mAboutTag.getItems();
-        }
+        taglists=mAboutTag.getItems();
 
     }
 

@@ -28,6 +28,9 @@ public class AboutTag {
     }
 
     public void add(String tag){
+        /*if(isExist(tag)){
+            return;
+        }*/
         ContentValues values = getContentValues(tag);
         mDatabase.insert(TagDbSchema.TagTable.NAME,null,values);
 
@@ -51,19 +54,13 @@ public class AboutTag {
         // 修改条件
         // 满足修改的值
     }
-    public String getItem(String tag){
-        String result;
+    private boolean isExist(String tag){
         TagItemCursorWrapper cursor = queryTag(TagDbSchema.TagTable.childs.TAG,new String[]{tag});
         try{
-            if(cursor.getCount()==0){
-                return null;
-            }
-            cursor.moveToFirst();
-            result=cursor.getTaginfo();
+            return cursor.getCount() != 0;
         }finally {
             cursor.close();
         }
-        return result;
     }
 
     public ArrayList<String> getItems(){
@@ -71,7 +68,7 @@ public class AboutTag {
         ArrayList<String> lists = new ArrayList<>();
         try{
             if(cursor.getCount()==0){
-                return null;
+                return lists;
             }
             cursor.moveToFirst();
             while (!cursor.isAfterLast()){
