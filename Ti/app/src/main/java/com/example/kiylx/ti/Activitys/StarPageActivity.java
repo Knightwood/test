@@ -3,6 +3,7 @@ package com.example.kiylx.ti.Activitys;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,8 +19,11 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -179,8 +183,14 @@ public class StarPageActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            TextView urlview=itemView.findViewById(R.id.itemurl);
-            Log.d("收藏activity", "onclick函数被触发"+urlview.getText());
+            TextView titleview = itemView.findViewById(R.id.itemurl);
+            TextView urlview =itemView.findViewById(R.id.itemTitle);
+
+            Star_Dialog star_dialog = Star_Dialog.newInstance();
+            FragmentManager fm = getSupportFragmentManager();
+            star_dialog.show(fm,"changeStar");
+            star_dialog.putInfo(new WebPage_Info(titleview.getText(),urlview.getText(),));
+            Log.d("收藏activity", "onclick函数被触发");
         }
     }
 }

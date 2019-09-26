@@ -43,11 +43,8 @@ public class AboutStar {
         //如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
         String url = info.getUrl();
         ContentValues values = getContentValues(info);
-        if(isStar(info))
-        {mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"= ?",new String[]{url});}else{
-            add(info);
+        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"= ?",new String[]{url});
         }
-    }
 
     public WebPage_Info getWebPageinfo(String title){
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE+"=?",new String[]{title});
