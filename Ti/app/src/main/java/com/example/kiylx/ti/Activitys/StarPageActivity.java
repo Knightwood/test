@@ -2,6 +2,7 @@ package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,10 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -167,6 +172,7 @@ public class StarPageActivity extends AppCompatActivity {
     private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView title;
         TextView url;
+        ImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -174,10 +180,34 @@ public class StarPageActivity extends AppCompatActivity {
             title=itemView.findViewById(R.id.itemTitle);
             url=itemView.findViewById(R.id.itemurl);
             itemView.setOnClickListener(this);
+            imageView= itemView.findViewById(R.id.more_setting);
+
+        }
+        void addPopMenu(View v, final String title1, final String url1){
+            PopupMenu popupMenu=new PopupMenu(StarPageActivity.this,v);
+            MenuInflater menuInflater=popupMenu.getMenuInflater();
+            menuInflater.inflate(R.menu.star_item_options,popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()){
+                        case R.id.edit_star:
+                            tump(title1,url1);
+                            break;
+                        case R.id.delete_star:
+                            break;
+                    }
+                    return false;
+                }
+            });
+
         }
         public void bind(WebPage_Info info){
-            title.setText(info.getTitle());
-            url.setText(info.getUrl());
+            String title_1=info.getTitle();
+            String url_1=info.getUrl();
+            title.setText(title_1);
+            url.setText(url_1);
+            addPopMenu(itemView.findViewById(R.id.more_setting),title_1,url_1);
             Log.d("收藏activity", "bind函数被触发");
         }
 
@@ -186,11 +216,13 @@ public class StarPageActivity extends AppCompatActivity {
             TextView titleview = itemView.findViewById(R.id.itemurl);
             TextView urlview =itemView.findViewById(R.id.itemTitle);
 
+            Log.d("收藏activity", "onclick函数被触发");
+        }
+        void tump(String str1,String str2){
             Star_Dialog star_dialog = Star_Dialog.newInstance();
             FragmentManager fm = getSupportFragmentManager();
             star_dialog.show(fm,"changeStar");
-            star_dialog.putInfo(new WebPage_Info(titleview.getText(),urlview.getText(),));
-            Log.d("收藏activity", "onclick函数被触发");
+            star_dialog.putInfo(new WebPage_Info(str1,str2,-1));
         }
     }
 }

@@ -11,34 +11,51 @@
         android:id="@+id/itemTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:singleLine="true"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@+id/star_frameLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/more_setting"
+        app:layout_constraintStart_toEndOf="@+id/star_frameLayout"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemurl"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:singleLine="true"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/star_frameLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/more_setting"
+        app:layout_constraintStart_toEndOf="@+id/star_frameLayout"
         app:layout_constraintTop_toBottomOf="@+id/itemTitle" />
+
+    <ImageView
+        android:id="@+id/more_setting"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_expand_more_black_24dp" />
 
     <FrameLayout
         android:id="@+id/star_frameLayout"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/starimage"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="33dp"
+            android:layout_height="31dp"
             android:layout_gravity="center"
             android:contentDescription="@string/star"
             app:srcCompat="@android:drawable/menuitem_background" />

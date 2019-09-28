@@ -43,5 +43,7 @@
     <string name="date">日期选择</string>
     <string name="newTag">新标签</string>
     <string name="new_a_tag">新建标签</string>
+    <string name="edit1">编辑</string>
+    <string name="delete">删除</string>
 
 </resources>
