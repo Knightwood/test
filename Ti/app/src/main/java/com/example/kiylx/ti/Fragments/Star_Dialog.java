@@ -151,8 +151,10 @@ public class Star_Dialog extends DialogFragment {
         //启动编辑tag的fragment
         mEditBoxDialog =new EditBox_Dialog();
         FragmentManager fm =getFragmentManager();
+        //EditBox设置目标fragment为Star_Dialog Fragment。
         mEditBoxDialog.setTargetFragment(Star_Dialog.this,0);
         mEditBoxDialog.show(fm,"编辑框");
+        //开启EditBox后关闭当前的Star_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
         dismiss();
     }
 
@@ -170,6 +172,44 @@ public class Star_Dialog extends DialogFragment {
 
 
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!= Activity.RESULT_OK){
+            return;
+        }
+        //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
+        Log.d("唉","iggs");
+        //用新的list更新界面
+        mSHOW_dialog.show_Dialog();
+    }
+    public interface SHOW_DIALOG{
+        //调用某Activity中的showStarDialog()更新数据，如果有比这更好的方法的话，唉
+        void show_Dialog();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("Star_Dialog", "onDetach: ");
+        mContext=null;
+
+    }
+}
 /*
     private WebPage_Info getMessage(View v){
         //获取收藏框的信息
@@ -221,40 +261,3 @@ public class Star_Dialog extends DialogFragment {
     /*private void setTags(String str) {
         diaplaytagView.setText(str);
     }*/
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        return super.onCreateView(inflater, container, savedInstanceState);
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!= Activity.RESULT_OK){
-            return;
-        }
-        Log.d("唉","iggs");
-        //用新的list更新界面
-        mSHOW_dialog.show_Dialog();
-    }
-    public interface SHOW_DIALOG{
-        //调用MianActivity中的showStarDialog()更新数据，如果有比这更好的方法的话，唉
-        void show_Dialog();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.d("Star_Dialog", "onDetach: ");
-        mContext=null;
-
-    }
-}

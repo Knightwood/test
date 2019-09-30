@@ -32,7 +32,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class StarPageActivity extends AppCompatActivity {
+public class StarPageActivity extends AppCompatActivity implements Star_Dialog.SHOW_DIALOG {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> lists;
     private AboutStar mAboutStar;
@@ -111,7 +111,106 @@ public class StarPageActivity extends AppCompatActivity {
         });
     }
 
-    /*public void showPopMenu(View v) {
+    @Override
+    public void show_Dialog() {
+        tump();
+    }
+
+    public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
+        private ArrayList<WebPage_Info> mList;
+        RecyclerAdapter(ArrayList<WebPage_Info> lists){
+            mList=lists;
+        }
+        void setList(ArrayList<WebPage_Info> updatelists){
+            mList=updatelists;
+        }
+
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,parent,false);
+            return new ViewHolder(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            holder.bind(mList.get(position));
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return mList.size();
+        }
+    }
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        TextView title;
+        TextView url;
+        ImageView imageView;
+        String title_1,url_1;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            Log.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
+            title=itemView.findViewById(R.id.itemTitle);
+            url=itemView.findViewById(R.id.itemurl);
+            title.setOnClickListener(this);
+            imageView= itemView.findViewById(R.id.more_setting);
+            imageView.setOnClickListener(this);
+        }
+        void addPopMenu(View v, final String title1, final String url1){
+            PopupMenu popupMenu=new PopupMenu(StarPageActivity.this,v);
+            MenuInflater menuInflater=popupMenu.getMenuInflater();
+            menuInflater.inflate(R.menu.star_item_options,popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()){
+                        case R.id.edit_star:
+                            tump(title1,url1);
+                            break;
+                        case R.id.delete_star:
+                            break;
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
+
+        }
+        public void bind(WebPage_Info info){
+            title_1=info.getTitle();
+            url_1=info.getUrl();
+
+            title.setText(title_1);
+            url.setText(url_1);
+
+            Log.d("收藏activity", "bind函数被触发");
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.itemTitle:
+                    break;
+                case R.id.more_setting:
+                    Log.d("StarPageActivity","more_setting被触发");
+                    addPopMenu(itemView.findViewById(R.id.more_setting),title_1,url_1);
+                    break;
+            }
+
+            Log.d("收藏activity", "onclick函数被触发");
+        }
+        void tump(String str1,String str2){
+            Star_Dialog star_dialog = Star_Dialog.newInstance();
+            FragmentManager fm = getSupportFragmentManager();
+            star_dialog.show(fm,"changeStar");
+            star_dialog.putInfo(new WebPage_Info(str1,str2,-1));
+        }
+    }
+}
+/*public void showPopMenu(View v) {
         mPopupMenu=new PopupMenu(this,v);
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         //存着tag的lists
@@ -140,89 +239,3 @@ public class StarPageActivity extends AppCompatActivity {
         });
         mPopupMenu.show();
     }*/
-
-
-    public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
-        private ArrayList<WebPage_Info> mList;
-        RecyclerAdapter(ArrayList<WebPage_Info> lists){
-            mList=lists;
-        }
-        void setList(ArrayList<WebPage_Info> updatelists){
-            mList=updatelists;
-        }
-
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,parent,false);
-            return new ViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.bind(mList.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mList.size();
-        }
-    }
-    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView title;
-        TextView url;
-        ImageView imageView;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            Log.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
-            title=itemView.findViewById(R.id.itemTitle);
-            url=itemView.findViewById(R.id.itemurl);
-            itemView.setOnClickListener(this);
-            imageView= itemView.findViewById(R.id.more_setting);
-
-        }
-        void addPopMenu(View v, final String title1, final String url1){
-            PopupMenu popupMenu=new PopupMenu(StarPageActivity.this,v);
-            MenuInflater menuInflater=popupMenu.getMenuInflater();
-            menuInflater.inflate(R.menu.star_item_options,popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    switch (item.getItemId()){
-                        case R.id.edit_star:
-                            tump(title1,url1);
-                            break;
-                        case R.id.delete_star:
-                            break;
-                    }
-                    return false;
-                }
-            });
-
-        }
-        public void bind(WebPage_Info info){
-            String title_1=info.getTitle();
-            String url_1=info.getUrl();
-            title.setText(title_1);
-            url.setText(url_1);
-            addPopMenu(itemView.findViewById(R.id.more_setting),title_1,url_1);
-            Log.d("收藏activity", "bind函数被触发");
-        }
-
-        @Override
-        public void onClick(View v) {
-            TextView titleview = itemView.findViewById(R.id.itemurl);
-            TextView urlview =itemView.findViewById(R.id.itemTitle);
-
-            Log.d("收藏activity", "onclick函数被触发");
-        }
-        void tump(String str1,String str2){
-            Star_Dialog star_dialog = Star_Dialog.newInstance();
-            FragmentManager fm = getSupportFragmentManager();
-            star_dialog.show(fm,"changeStar");
-            star_dialog.putInfo(new WebPage_Info(str1,str2,-1));
-        }
-    }
-}

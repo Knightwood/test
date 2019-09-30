@@ -52,6 +52,7 @@ public class EditBox_Dialog extends DialogFragment {
         mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                /*点击确定后调用returnResult方法*/
                 String str = view1.getText().toString();
                 if (!(str.equals(""))){
                     mAboutTag.add(str);
@@ -73,6 +74,7 @@ public class EditBox_Dialog extends DialogFragment {
     }
 
     private void returnResult() {
+        /*获取目标activity，调用目标activity的onActivityResult方法，传递数据*/
         if(getTargetFragment()==null){
             return;
         }
