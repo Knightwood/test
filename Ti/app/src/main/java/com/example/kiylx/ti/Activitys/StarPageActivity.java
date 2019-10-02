@@ -30,12 +30,13 @@ import java.util.ArrayList;
 
 public class StarPageActivity extends AppCompatActivity implements Star_Dialog.UPDATEINTERFACE{
     private RecyclerView mRecyclerView;
-    private ArrayList<WebPage_Info> lists;
+    private ArrayList<WebPage_Info> mPageInfoArrayList;
     private AboutStar mAboutStar;
     private RecyclerAdapter adapter;
     private AboutTag mAboutTag;
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
+    private String tagname;//指示当前是哪个tag在taglists中的pos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
 
         //获取收藏item列表，并默认展示未tag的列表
         mAboutStar= AboutStar.get(StarPageActivity.this);
-        lists = mAboutStar.getinfos_TAG("未分类");
+        mPageInfoArrayList = mAboutStar.getinfos_TAG("未分类");
 
         mSpinner=findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
         showTags();//展示spinner
@@ -68,24 +69,24 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
         这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
         如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
         如果不是null，根据tag来更新视图*/
-        if(lists.isEmpty()){
+        if(mPageInfoArrayList.isEmpty()){
             //如果收藏夹没有任何内容，那什么也不做，且隐藏recyclerview
            mRecyclerView.setVisibility(View.GONE);
             return;
         }
         mRecyclerView.setVisibility(View.VISIBLE);
         if(null==adapter){
-            adapter = new RecyclerAdapter(lists);//这里的lists是包含未分类
+            adapter = new RecyclerAdapter(mPageInfoArrayList);//这里的lists是包含未分类
             mRecyclerView.setAdapter(adapter);
             Log.d("收藏activity", "onClick: 创建adapter函数被触发");
         }else{
-            adapter.setList(lists);
+            adapter.setList(mPageInfoArrayList);
             adapter.notifyDataSetChanged();
         }
     }
 
     private void getChangeLists(String str) {
-        lists=mAboutStar.getinfos_TAG(str);
+        mPageInfoArrayList =mAboutStar.getinfos_TAG(str);
     }
 
     public void showTags(){
@@ -96,7 +97,9 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                getChangeLists(mTaglists.get(position));
+                tagname=mTaglists.get(position);//更新tagname
+                //对tagname赋值，以它更新视图
+                getChangeLists(tagname);
                 updateUI();
             }
 
@@ -109,6 +112,8 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
 
     @Override
     public void updatelistui() {
+        //在修改完item后刷新视图
+        getChangeLists(tagname);
         updateUI();
     }
 
@@ -168,6 +173,9 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
                             showStarDialog(title1,url1,tag_1);
                             break;
                         case R.id.delete_star:
+                            mAboutStar.delete(url1);
+                            getChangeLists(tag_1);
+                            updateUI();
                             break;
                     }
                     return false;

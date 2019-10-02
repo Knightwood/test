@@ -95,6 +95,9 @@ public class AboutStar {
         }
         return mlists;
     }
+    public void delete(String url){
+        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
+    }
     private static ContentValues getContentValues(WebPage_Info info){
         //存网页信息
         ContentValues values = new ContentValues();

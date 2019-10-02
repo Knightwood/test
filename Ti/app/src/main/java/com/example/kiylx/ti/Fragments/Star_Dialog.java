@@ -111,7 +111,8 @@ public class Star_Dialog extends DialogFragment {
                 }else{
                     //否则往收藏数据库添加收藏条目信息
                     mAboutStar.add(beStared_info);}
-                minterface.updatelistui();
+                //更新StarpageActivity视图
+                    minterface.updatelistui();
                 Log.d("网页tag", "onClick: "+ beStared_info.getWebTags());
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -161,7 +162,6 @@ public class Star_Dialog extends DialogFragment {
         mEditBoxDialog.setTargetFragment(Star_Dialog.this,0);
         mEditBoxDialog.show(fm,"编辑框");
         //开启EditBox后关闭当前的Star_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
-        //dismiss();
     }
 
     private void updateWebinfo(String str){
