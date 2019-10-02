@@ -90,7 +90,7 @@ public class Star_Dialog extends DialogFragment {
         });
 
         mSpinner =view.findViewById(R.id.select_Tags);
-        selectTags();//设置tag的选项
+        selectTags(beStared_info.getWebTags().equals("")?0:getPosinTaglists(beStared_info.getWebTags()));//设置tag的选项
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
@@ -123,7 +123,7 @@ public class Star_Dialog extends DialogFragment {
 
     }
 
-   private void selectTags() {
+   private void selectTags(int i) {
         //填充微调框
        if(adapter==null) {
            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, taglists);
@@ -146,6 +146,7 @@ public class Star_Dialog extends DialogFragment {
 
             }
         });
+        mSpinner.setSelection(i);
 
     }
 
@@ -171,8 +172,7 @@ public class Star_Dialog extends DialogFragment {
         title.setText(beStared_info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);
         url.setText(beStared_info.getUrl());
-        //spinner显示特定位置选项
-        //mSpinner.setSelection(getPosinTaglists(beStared_info.getWebTags()));
+
 
     }
     private int getPosinTaglists(String str){
@@ -202,8 +202,7 @@ public class Star_Dialog extends DialogFragment {
         //用新的list更新界面
         String tmptag=data.getStringExtra("newTagName");
         taglists.add(tmptag);
-        selectTags();
-        mSpinner.setSelection(getPosinTaglists(tmptag));
+        selectTags(getPosinTaglists(tmptag));
 
     }
 

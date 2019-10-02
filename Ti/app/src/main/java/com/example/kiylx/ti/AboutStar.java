@@ -43,11 +43,11 @@ public class AboutStar {
         //如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
         String url = info.getUrl();
         ContentValues values = getContentValues(info);
-        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"= ?",new String[]{url});
+        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
         }
 
     public WebPage_Info getWebPageinfo(String title){
-        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE+"=?",new String[]{title});
+        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE,new String[]{title});
         try{
             if(cursor.getCount()==0){
                 return null;
@@ -176,7 +176,7 @@ public class AboutStar {
     public boolean isStar(WebPage_Info info){
         //判断标准是网址，与数据库里网址一致即为收藏了
         String url=info.getUrl();
-        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
+        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url,new String[]{url});
         try{
             if(cursor.getCount()==0){
                 //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
