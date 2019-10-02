@@ -40,6 +40,7 @@ public class Star_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
+    private UPDATEINTERFACE minterface;
 
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
@@ -60,7 +61,7 @@ public class Star_Dialog extends DialogFragment {
         super.onAttach(mContext);
         mAboutStar = AboutStar.get(mContext);
         mAboutTag= AboutTag.get(mContext);
-
+        minterface=(UPDATEINTERFACE)mContext;
     }
 
     @Override
@@ -68,8 +69,9 @@ public class Star_Dialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         taglists=mAboutTag.getItems();
         taglists.add(0,"未分类");
-
-
+    }
+    public interface UPDATEINTERFACE{
+        void updatelistui();
     }
 
     @NonNull
@@ -109,6 +111,7 @@ public class Star_Dialog extends DialogFragment {
                 }else{
                     //否则往收藏数据库添加收藏条目信息
                     mAboutStar.add(beStared_info);}
+                minterface.updatelistui();
                 Log.d("网页tag", "onClick: "+ beStared_info.getWebTags());
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

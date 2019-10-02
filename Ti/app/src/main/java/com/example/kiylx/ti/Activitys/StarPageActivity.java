@@ -28,7 +28,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class StarPageActivity extends AppCompatActivity{
+public class StarPageActivity extends AppCompatActivity implements Star_Dialog.UPDATEINTERFACE{
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> lists;
     private AboutStar mAboutStar;
@@ -107,6 +107,11 @@ public class StarPageActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public void updatelistui() {
+        updateUI();
+    }
+
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         private ArrayList<WebPage_Info> mList;
@@ -161,8 +166,6 @@ public class StarPageActivity extends AppCompatActivity{
                     switch (item.getItemId()){
                         case R.id.edit_star:
                             showStarDialog(title1,url1,tag_1);
-                            //更新界面
-                            updateUI();
                             break;
                         case R.id.delete_star:
                             break;
