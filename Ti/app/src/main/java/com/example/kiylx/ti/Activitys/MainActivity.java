@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity implements
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
         CustomWebviewClient.SETINFOS,
-        MultPage_DialogFragment.GetIndex,
-        Star_Dialog.SHOW_DIALOG
+        MultPage_DialogFragment.GetIndex
         {
     private static final String TAG="MainActivity";
 
@@ -429,12 +428,6 @@ public class MainActivity extends AppCompatActivity implements
         settings.setDatabaseEnabled(true);
 
     }
-
-            @Override
-            public void show_Dialog() {
-                showStarDialog();
-            }
-
 
     /*
     @Override

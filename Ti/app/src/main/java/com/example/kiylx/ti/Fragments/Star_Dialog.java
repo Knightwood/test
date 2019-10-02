@@ -40,7 +40,7 @@ public class Star_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
-    private SHOW_DIALOG mSHOW_dialog;
+
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
@@ -60,7 +60,6 @@ public class Star_Dialog extends DialogFragment {
         super.onAttach(mContext);
         mAboutStar = AboutStar.get(mContext);
         mAboutTag= AboutTag.get(mContext);
-        mSHOW_dialog=(SHOW_DIALOG)mContext;
 
     }
 
@@ -126,9 +125,12 @@ public class Star_Dialog extends DialogFragment {
 
    private void selectTags() {
         //填充微调框
-        adapter =new ArrayAdapter<>(Objects.requireNonNull(getActivity()),android.R.layout.simple_spinner_item,taglists);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
+       if(adapter==null) {
+           adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, taglists);
+           adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+       }else{
+           adapter.notifyDataSetChanged();
+       }mSpinner.setAdapter(adapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -155,7 +157,7 @@ public class Star_Dialog extends DialogFragment {
         mEditBoxDialog.setTargetFragment(Star_Dialog.this,0);
         mEditBoxDialog.show(fm,"编辑框");
         //开启EditBox后关闭当前的Star_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
-        dismiss();
+        //dismiss();
     }
 
     private void updateWebinfo(String str){
@@ -169,8 +171,16 @@ public class Star_Dialog extends DialogFragment {
         title.setText(beStared_info.getTitle());
         EditText url=v.findViewById(R.id.editUrl);
         url.setText(beStared_info.getUrl());
+        //spinner显示特定位置选项
+        //mSpinner.setSelection(getPosinTaglists(beStared_info.getWebTags()));
 
-
+    }
+    private int getPosinTaglists(String str){
+        //获取tag在lists中的位置，以此来设置spinner显示特定项
+        if (str.equals("")){
+            return 0;//如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
+        }
+        return taglists.indexOf(str);
     }
 
     @Nullable
@@ -190,11 +200,11 @@ public class Star_Dialog extends DialogFragment {
         //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
         Log.d("唉","iggs");
         //用新的list更新界面
-        mSHOW_dialog.show_Dialog();
-    }
-    public interface SHOW_DIALOG{
-        //调用某Activity中的showStarDialog()更新数据，如果有比这更好的方法的话，唉
-        void show_Dialog();
+        String tmptag=data.getStringExtra("newTagName");
+        taglists.add(tmptag);
+        selectTags();
+        mSpinner.setSelection(getPosinTaglists(tmptag));
+
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,11 +26,9 @@ import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
-public class StarPageActivity extends AppCompatActivity implements Star_Dialog.SHOW_DIALOG {
+public class StarPageActivity extends AppCompatActivity{
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> lists;
     private AboutStar mAboutStar;
@@ -111,10 +107,6 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         });
     }
 
-    @Override
-    public void show_Dialog() {
-        tump();
-    }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         private ArrayList<WebPage_Info> mList;
@@ -148,7 +140,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         TextView title;
         TextView url;
         ImageView imageView;
-        String title_1,url_1;
+        String title_1,url_1,tag_1;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -168,7 +160,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()){
                         case R.id.edit_star:
-                            tump(title1,url1);
+                            showStarDialog(title1,url1,tag_1);
                             break;
                         case R.id.delete_star:
                             break;
@@ -182,6 +174,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         public void bind(WebPage_Info info){
             title_1=info.getTitle();
             url_1=info.getUrl();
+            tag_1=info.getWebTags();
 
             title.setText(title_1);
             url.setText(url_1);
@@ -202,11 +195,11 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
 
             Log.d("收藏activity", "onclick函数被触发");
         }
-        void tump(String str1,String str2){
+        void showStarDialog(String str1, String str2,String str3){
             Star_Dialog star_dialog = Star_Dialog.newInstance();
             FragmentManager fm = getSupportFragmentManager();
             star_dialog.show(fm,"changeStar");
-            star_dialog.putInfo(new WebPage_Info(str1,str2,-1));
+            star_dialog.putInfo(new WebPage_Info(str1,str2,str3,-1));
         }
     }
 }

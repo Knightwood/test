@@ -19,7 +19,6 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -28,6 +27,7 @@ public class EditBox_Dialog extends DialogFragment {
     private AboutTag mAboutTag;
     private EditText view1;
     private Context mContext;
+    private String newtagname;
 
     @Override
     public void onAttach(Context context) {
@@ -53,9 +53,9 @@ public class EditBox_Dialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 /*点击确定后调用returnResult方法*/
-                String str = view1.getText().toString();
-                if (!(str.equals(""))){
-                    mAboutTag.add(str);
+                newtagname = view1.getText().toString();
+                if (!(newtagname.equals(""))){
+                    mAboutTag.add(newtagname);
                 }
                 if (getTargetFragment() == null) {
                     return;
@@ -79,6 +79,8 @@ public class EditBox_Dialog extends DialogFragment {
             return;
         }
         Intent intent =new Intent();
+        //上面把新添加的标签加入到数据库，这里再把它放进intent返回，这样，Stardialog就可以不用从数据库再读取一次数据，直接拿到返回的放进lists中刷新视图
+        intent.putExtra("newTagName",newtagname);
         getTargetFragment().onActivityResult(0, Activity.RESULT_OK,intent);
     }
 
