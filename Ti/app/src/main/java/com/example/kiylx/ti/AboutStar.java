@@ -44,7 +44,8 @@ public class AboutStar {
         String url = info.getUrl();
         ContentValues values = getContentValues(info);
         mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
-        }
+
+    }
 
     public WebPage_Info getWebPageinfo(String title){
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE,new String[]{title});

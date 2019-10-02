@@ -90,7 +90,7 @@ public class Star_Dialog extends DialogFragment {
         });
 
         mSpinner =view.findViewById(R.id.select_Tags);
-        selectTags(beStared_info.getWebTags().equals("")?0:getPosinTaglists(beStared_info.getWebTags()));//设置tag的选项
+        selectTags(getPosinTaglists(beStared_info.getWebTags()));//设置tag的选项
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {

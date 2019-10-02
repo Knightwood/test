@@ -161,6 +161,8 @@ public class StarPageActivity extends AppCompatActivity{
                     switch (item.getItemId()){
                         case R.id.edit_star:
                             showStarDialog(title1,url1,tag_1);
+                            //更新界面
+                            updateUI();
                             break;
                         case R.id.delete_star:
                             break;
@@ -186,6 +188,7 @@ public class StarPageActivity extends AppCompatActivity{
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.itemTitle:
+                    //点击item后访问网址
                     break;
                 case R.id.more_setting:
                     Log.d("StarPageActivity","more_setting被触发");

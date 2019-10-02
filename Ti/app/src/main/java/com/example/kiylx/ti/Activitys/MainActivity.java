@@ -27,6 +27,7 @@ import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
@@ -253,8 +254,10 @@ public class MainActivity extends AppCompatActivity implements
         web.setWebChromeClient(new CustomWebchromeClient());
         mClist.addToFirst(web,i);
         //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
-        //sCUWL();
-        sCurrentUse_webPage_lists.add(web.getTitle(),web.getUrl(),0);
+
+        //空白页需要自定义，需要根据用户所写的来设置
+        sCurrentUse_webPage_lists.add("空白页","about:newTab","未分类",0);
+        //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
         //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
 
     }
@@ -321,9 +324,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void showStarDialog() {
+        WebPage_Info tmp=sCurrentUse_webPage_lists.getInfo(currect);
         FragmentManager fm = getSupportFragmentManager();
         Star_Dialog dialog =Star_Dialog.newInstance();
-        dialog.putInfo(sCurrentUse_webPage_lists.getInfo(currect));//把当前网页信息传给收藏dialog
+        dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
         dialog.show(fm,"收藏当前网页");
     }
 

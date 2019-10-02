@@ -24,6 +24,11 @@ public class CurrentUse_WebPage_Lists {
         mCurrectList.add(0,info);
         //在0处添加元素，与webview添加进clist的顺序保持一致
     }
+    public void add(String title, String url,String tags,int flags){
+        WebPage_Info info = new WebPage_Info(title, url,tags,flags);
+        mCurrectList.add(0,info);
+        //在0处添加元素，与webview添加进clist的顺序保持一致
+    }
     public void delete(int index){
         mCurrectList.remove(index);
     }
