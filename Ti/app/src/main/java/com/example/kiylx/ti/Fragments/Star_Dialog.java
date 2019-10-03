@@ -40,7 +40,7 @@ public class Star_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
-    private UPDATEINTERFACE minterface;
+    private static Star_DialogF_interface minterface;
 
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
@@ -61,7 +61,7 @@ public class Star_Dialog extends DialogFragment {
         super.onAttach(mContext);
         mAboutStar = AboutStar.get(mContext);
         mAboutTag= AboutTag.get(mContext);
-        minterface=(UPDATEINTERFACE)mContext;
+
     }
 
     @Override
@@ -70,8 +70,11 @@ public class Star_Dialog extends DialogFragment {
         taglists=mAboutTag.getItems();
         taglists.add(0,"未分类");
     }
-    public interface UPDATEINTERFACE{
+    public interface Star_DialogF_interface {
         void updatelistui();
+    }
+    public static void setInterface(Star_DialogF_interface minterface){
+        Star_Dialog.minterface=minterface;
     }
 
     @NonNull

@@ -31,10 +31,11 @@ public class MultPage_DialogFragment extends DialogFragment {
     private static final String TAG="MultPage_DialogFragment";
     private RecyclerView mRecyclerView;
     private WebSiteAdapter mWebSiteAdapter;
-    private NewPagebutton_click mNewPagebutton_click;
+    //private NewPagebutton_click mNewPagebutton_click;
     private ImageButton mNewPageImageButton;
-    private GetIndex mGetIndex;
+    //private GetIndex mGetIndex;
     private int mCurrect;
+    private static MultPage_DialogF_interface minterface;
 
     @Nullable
     @Override
@@ -48,9 +49,10 @@ public class MultPage_DialogFragment extends DialogFragment {
         mNewPageImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNewPagebutton_click= (NewPagebutton_click) getActivity();
+                /*mNewPagebutton_click= (NewPagebutton_click) getActivity();
                 assert mNewPagebutton_click != null;
-                mNewPagebutton_click.click_newPagebutton();
+                mNewPagebutton_click.click_newPagebutton();*/
+                minterface.click_newPagebutton();
                 //执行操作后关闭对话框页面
                 dismiss();
             }
@@ -87,9 +89,10 @@ public class MultPage_DialogFragment extends DialogFragment {
             setCancelable(true);
         }
         Log.d(TAG, "onStart: ");
-        mGetIndex=(GetIndex)getActivity();
+        /*mGetIndex=(GetIndex)getActivity();
         assert mGetIndex != null;
-        mCurrect =mGetIndex.getCurrect();
+        mCurrect =mGetIndex.getCurrect();*/
+        mCurrect=minterface.getCurrect();
     }
 
     @Override
@@ -107,6 +110,19 @@ public class MultPage_DialogFragment extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: ");
+    }
+
+    public interface MultPage_DialogF_interface{
+        void click_newPagebutton();
+
+        void delete_page(int position);
+
+        void switchPage(int pos);
+
+        int getCurrect();
+    }
+    public static void setInterface(MultPage_DialogF_interface minterface){
+        MultPage_DialogFragment.minterface=minterface;
     }
 
 
@@ -131,7 +147,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         }else{
-            mCurrect =mGetIndex.getCurrect();
+            mCurrect =minterface.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
             //mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
@@ -183,8 +199,8 @@ public class MultPage_DialogFragment extends DialogFragment {
         private int pos;
         private WebPage_Info minfo;
         //接口
-        private DeletePage mDeletePage;
-        private SwitchPage mSwitchPage;
+        //private DeletePage mDeletePage;
+        //private SwitchPage mSwitchPage;
 
 
         public WebsiteHolder(@NonNull View itemView) {
@@ -217,17 +233,19 @@ public class MultPage_DialogFragment extends DialogFragment {
             switch ((v.getId())) {
                 case R.id.close_button:
                     Log.d(TAG, "onClick: 多窗口关闭按钮被触发"+pos);
-                    mDeletePage=(DeletePage) getActivity();
+                    /*mDeletePage=(DeletePage) getActivity();
                     assert mDeletePage != null;
-                    mDeletePage.delete_page(pos);
+                    mDeletePage.delete_page(pos);*/
+                    minterface.delete_page(pos);
                     updateUI();
                     //删除完页面要更新视图
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");
-                    mSwitchPage = (SwitchPage)getActivity();
+                    /*mSwitchPage = (SwitchPage)getActivity();
                     assert mSwitchPage != null;
-                    mSwitchPage.switchPage(pos);
+                    mSwitchPage.switchPage(pos);*/
+                    minterface.switchPage(pos);
                     dismiss();
                     break;
             }

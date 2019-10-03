@@ -28,7 +28,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class StarPageActivity extends AppCompatActivity implements Star_Dialog.UPDATEINTERFACE{
+public class StarPageActivity extends AppCompatActivity implements Star_Dialog.Star_DialogF_interface {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mPageInfoArrayList;
     private AboutStar mAboutStar;
@@ -37,6 +37,13 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
     private String tagname;//指示当前是哪个tag在taglists中的pos
+    private static SatrPageA_interface sSatrPageA_interface;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +69,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
         getChangeLists(mTaglists.get(0));
         updateUI();
 
+        Star_Dialog.setInterface(this);
 
     }
     private void updateUI(){
@@ -115,6 +123,14 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
         //在修改完item后刷新视图
         getChangeLists(tagname);
         updateUI();
+    }
+
+    public interface SatrPageA_interface {
+        void loadUrl(String urlname);
+    }
+
+    public static void setInterface(SatrPageA_interface minterface){
+        StarPageActivity.sSatrPageA_interface =minterface;
     }
 
 
@@ -200,6 +216,11 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.U
             switch (v.getId()){
                 case R.id.itemTitle:
                     //点击item后访问网址
+                    if(url_1.equals("about:newTab")){
+                        sSatrPageA_interface.loadUrl(null);
+                    }else{
+                        sSatrPageA_interface.loadUrl(url_1);
+                    }
                     break;
                 case R.id.more_setting:
                     Log.d("StarPageActivity","more_setting被触发");

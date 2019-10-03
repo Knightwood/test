@@ -32,11 +32,11 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements
-        MultPage_DialogFragment.NewPagebutton_click,
+        /*MultPage_DialogFragment.NewPagebutton_click,
         MultPage_DialogFragment.DeletePage,
         MultPage_DialogFragment.SwitchPage,
-        CustomWebviewClient.SETINFOS,
-        MultPage_DialogFragment.GetIndex
+        MultPage_DialogFragment.GetIndex,*/
+        CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface
         {
     private static final String TAG="MainActivity";
 
@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity implements
         toolbaract();
         Log.d("lifecycle","onCreate()");
         m=findViewById(R.id.search_edittext);
-
+        useStarPageActivityInterface();
+        useMultPage_DialogFragmentInterface();
     }
 
     @Override
@@ -202,7 +203,24 @@ public class MainActivity extends AppCompatActivity implements
     public int getCurrect(){
         return currect;
     }
+    /*@Override
+    public void loadUrl(String urlname){
+        //来自StarpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
+        mClist.getTop(currect).loadUrl(urlname);
+    }*/
 
+    public void useStarPageActivityInterface(){
+        StarPageActivity.setInterface(new StarPageActivity.SatrPageA_interface(){
+            @Override
+            public void loadUrl(String urlname){
+                mClist.getTop(currect).loadUrl(urlname);
+            }
+        });
+    }
+
+    public void useMultPage_DialogFragmentInterface(){
+        MultPage_DialogFragment.setInterface(this);
+    }
 
     void setTextForbar(int i) {
         //以下三行把工具栏的的文字更新
