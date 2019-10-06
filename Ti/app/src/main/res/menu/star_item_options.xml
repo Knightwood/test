@@ -7,4 +7,7 @@
     <item
         android:id="@+id/delete_star"
         android:title="@string/delete" />
+    <item
+        android:id="@+id/openPageinNewWindow"
+        android:title="@string/openPageinNewWindow"/>
 </menu>

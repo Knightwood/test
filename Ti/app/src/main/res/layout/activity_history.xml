@@ -8,20 +8,6 @@
     tools:context=".Activitys.HistoryActivity">
 
     <TextView
-        android:id="@+id/ri_qi__ul_xr"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="2dp"
-        android:singleLine="true"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/date_fliter"
-        app:layout_constraintTop_toTopOf="@+id/date_fliter" />
-
-    <TextView
         android:id="@+id/pagetitle"
         android:layout_width="0dp"
         android:layout_height="90dp"
@@ -33,28 +19,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/date_fliter"
-        android:layout_width="90dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="2dp"
-        android:singleLine="true"
-        android:text="@string/date"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pagetitle" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/showHistory_1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ri_qi__ul_xr" />
+        app:layout_constraintTop_toBottomOf="@+id/history_searchView" />
+
+    <SearchView
+        android:id="@+id/history_searchView"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pagetitle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

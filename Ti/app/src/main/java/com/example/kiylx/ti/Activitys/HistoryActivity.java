@@ -55,6 +55,9 @@ public class HistoryActivity extends AppCompatActivity{
 
 
     }
+    private void itemPopmenu(){
+
+    }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder>{
         ArrayList<WebPage_Info> lists;

@@ -21,6 +21,7 @@
     <string name="folder">文件夹</string>
     <string name="enter">确认</string>
     <string name="cancel">取消</string>
+    <string name="openPageinNewWindow">在新窗口打开</string>
 
 
     <!-- 夜间，设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式-->

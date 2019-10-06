@@ -31,9 +31,6 @@ public class MultPage_DialogFragment extends DialogFragment {
     private static final String TAG="MultPage_DialogFragment";
     private RecyclerView mRecyclerView;
     private WebSiteAdapter mWebSiteAdapter;
-    //private NewPagebutton_click mNewPagebutton_click;
-    private ImageButton mNewPageImageButton;
-    //private GetIndex mGetIndex;
     private int mCurrect;
     private static MultPage_DialogF_interface minterface;
 
@@ -45,13 +42,12 @@ public class MultPage_DialogFragment extends DialogFragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();//每次打开多窗口都会触发更新视图
 
-        mNewPageImageButton = v.findViewById(R.id.newPagebutton);
-        mNewPageImageButton.setOnClickListener(new View.OnClickListener() {
+        ImageButton newPageImageButton = v.findViewById(R.id.newPagebutton);
+        newPageImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*mNewPagebutton_click= (NewPagebutton_click) getActivity();
-                assert mNewPagebutton_click != null;
-                mNewPagebutton_click.click_newPagebutton();*/
+
+                //新建网页
                 minterface.click_newPagebutton();
                 //执行操作后关闭对话框页面
                 dismiss();
@@ -89,9 +85,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             setCancelable(true);
         }
         Log.d(TAG, "onStart: ");
-        /*mGetIndex=(GetIndex)getActivity();
-        assert mGetIndex != null;
-        mCurrect =mGetIndex.getCurrect();*/
+       //获取当前网页的pos
         mCurrect=minterface.getCurrect();
     }
 
@@ -126,19 +120,6 @@ public class MultPage_DialogFragment extends DialogFragment {
     }
 
 
-    public interface NewPagebutton_click {
-        void click_newPagebutton();
-    }
-    public interface DeletePage {
-        void delete_page(int position);
-    }
-    public interface SwitchPage{
-        void switchPage(int pos);
-    }
-    public interface GetIndex{
-        int getCurrect();
-    }
-
     private void updateUI() {
         CurrentUse_WebPage_Lists mCurrect_list= CurrentUse_WebPage_Lists.get();
         ArrayList<WebPage_Info> lists=mCurrect_list.getPageList();
@@ -158,7 +139,7 @@ public class MultPage_DialogFragment extends DialogFragment {
     private class WebSiteAdapter extends RecyclerView.Adapter<WebsiteHolder>{
         private ArrayList<WebPage_Info> lists;
 
-        public WebSiteAdapter(ArrayList<WebPage_Info> mlists) {
+        WebSiteAdapter(ArrayList<WebPage_Info> mlists) {
             this.lists = mlists;
             boolean ta=lists.isEmpty();
             Log.d("MultPage_DialogFragment", "onClick: Adapter构造函数被触发"+ta);
@@ -198,12 +179,9 @@ public class MultPage_DialogFragment extends DialogFragment {
         //变量
         private int pos;
         private WebPage_Info minfo;
-        //接口
-        //private DeletePage mDeletePage;
-        //private SwitchPage mSwitchPage;
 
 
-        public WebsiteHolder(@NonNull View itemView) {
+        WebsiteHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.website_item);
             imageButton = itemView.findViewById(R.id.close_button);
@@ -212,7 +190,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             imageButton.setOnClickListener(this);
 
         }
-        public void bind(WebPage_Info item_info,int pos){
+        void bind(WebPage_Info item_info, int pos){
             minfo=item_info;
             this.pos=pos;
             //获取点击的item的位置，也就是webview在list的位置，方便后面标记当前标签页
@@ -233,18 +211,14 @@ public class MultPage_DialogFragment extends DialogFragment {
             switch ((v.getId())) {
                 case R.id.close_button:
                     Log.d(TAG, "onClick: 多窗口关闭按钮被触发"+pos);
-                    /*mDeletePage=(DeletePage) getActivity();
-                    assert mDeletePage != null;
-                    mDeletePage.delete_page(pos);*/
+
                     minterface.delete_page(pos);
                     updateUI();
                     //删除完页面要更新视图
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");
-                    /*mSwitchPage = (SwitchPage)getActivity();
-                    assert mSwitchPage != null;
-                    mSwitchPage.switchPage(pos);*/
+
                     minterface.switchPage(pos);
                     dismiss();
                     break;

@@ -68,7 +68,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         //更新lists，然后更新视图
         getChangeLists(mTaglists.get(0));
         updateUI();
-
+        //接口回调
         Star_Dialog.setInterface(this);
 
     }
@@ -126,7 +126,8 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
     }
 
     public interface SatrPageA_interface {
-        void loadUrl(String urlname);
+        void loadUrl(String urlname,boolean flags);
+        //flags,是否使用新的标签页打开网页
     }
 
     public static void setInterface(SatrPageA_interface minterface){
@@ -193,6 +194,10 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
                             getChangeLists(tag_1);
                             updateUI();
                             break;
+                        case R.id.openPageinNewWindow:
+                            finish();
+                            //因为mainactivity里加载网页代码太烂，这里写true用新标签页打开会有bug
+                            sSatrPageA_interface.loadUrl(url_1,false);
                     }
                     return false;
                 }
@@ -217,9 +222,11 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
                 case R.id.itemTitle:
                     //点击item后访问网址
                     if(url_1.equals("about:newTab")){
-                        sSatrPageA_interface.loadUrl(null);
+                        finish();
+                        sSatrPageA_interface.loadUrl(null,false);
                     }else{
-                        sSatrPageA_interface.loadUrl(url_1);
+                        finish();
+                        sSatrPageA_interface.loadUrl(url_1,false);
                     }
                     break;
                 case R.id.more_setting:

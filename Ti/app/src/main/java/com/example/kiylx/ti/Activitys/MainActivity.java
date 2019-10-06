@@ -110,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements
     }
     @Override
     protected void onRestart() {
-        f1.addView(mClist.getTop(currect));
         super.onRestart();
+        f1.addView(mClist.getTop(currect));
         Log.d("lifecycle","onRestart()");
     }
     @Override
@@ -203,16 +203,16 @@ public class MainActivity extends AppCompatActivity implements
     public int getCurrect(){
         return currect;
     }
-    /*@Override
-    public void loadUrl(String urlname){
-        //来自StarpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
-        mClist.getTop(currect).loadUrl(urlname);
-    }*/
 
     public void useStarPageActivityInterface(){
+        //来自StarpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
         StarPageActivity.setInterface(new StarPageActivity.SatrPageA_interface(){
             @Override
-            public void loadUrl(String urlname){
+            public void loadUrl(String urlname,boolean flags){
+                if (flags){
+                    newTab();
+                    mClist.getTop(currect).loadUrl(urlname);
+                }else
                 mClist.getTop(currect).loadUrl(urlname);
             }
         });
