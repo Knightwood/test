@@ -47,4 +47,9 @@
     <string name="edit1">编辑</string>
     <string name="delete">删除</string>
 
+    <!--历史记录条目菜单项资源 -->
+    <string name="open">打开</string>
+    <string name="open1">新标签页打开</string>
+    <string name="delete_history_item">删除</string>
+    <string name="add_to_star">添加到收藏</string>
 </resources>

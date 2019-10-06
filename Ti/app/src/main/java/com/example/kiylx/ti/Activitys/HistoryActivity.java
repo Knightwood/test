@@ -2,6 +2,7 @@ package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -55,8 +58,27 @@ public class HistoryActivity extends AppCompatActivity{
 
 
     }
-    private void itemPopmenu(){
-
+    private void itemPopmenu(View v){
+        PopupMenu itemMenu=new PopupMenu(this,v);
+        MenuInflater inflater = itemMenu.getMenuInflater();
+        inflater.inflate(R.menu.history_item_option,itemMenu.getMenu());
+        itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.open:
+                        break;
+                    case R.id.open1:
+                        break;
+                    case R.id.delete_hiatory:
+                        break;
+                    case R.id.addToStar:
+                        break;
+                }
+                return false;
+            }
+        });
+        itemMenu.show();
     }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder>{
