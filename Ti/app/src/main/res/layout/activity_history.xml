@@ -7,13 +7,14 @@
     android:layout_height="match_parent"
     tools:context=".Activitys.HistoryActivity">
 
-    <CalendarView
-        android:id="@+id/calendarView1"
+    <TextView
+        android:id="@+id/historytime"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/history_searchView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/showHistory_1"
@@ -22,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/history_searchView" />
+        app:layout_constraintTop_toBottomOf="@+id/historytime" />
 
     <SearchView
         android:id="@+id/history_searchView"
@@ -31,6 +32,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/calendarView1" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
