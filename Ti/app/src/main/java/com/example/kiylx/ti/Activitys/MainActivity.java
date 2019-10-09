@@ -234,26 +234,28 @@ public class MainActivity extends AppCompatActivity implements
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle","webview标题"+url);
         m.setText(url);//更新工具栏上的文字
-        //sCUWL();
-        //将当前页面网址更新数据，并加入历史记录
-        sCurrentUse_webPage_lists.setTitle(currect,title);
-        sCurrentUse_webPage_lists.setUrl(currect,url);
-        sCurrentUse_webPage_lists.setdate(currect);
-        sCurrentUse_webPage_lists.setFlags(currect,1);
-        //更改flags，标记为已载入网址
-        Log.d(TAG, "Time:"+sCurrentUse_webPage_lists.getdate(currect));
-
+        //更新当前页面的webviewpageinfo信息
+        updateInfo(title, url);
         //历史记录加入数据库
         sAboutHistory=AboutHistory.get(MainActivity.this);
         sAboutHistory.addToDataBase(sCurrentUse_webPage_lists.getInfo(currect));
+
         String massage = sCurrentUse_webPage_lists.getInfo(currect).getUrl();
         Log.d(TAG,"即将加入历史记录的内容"+massage);
 
-
     }
 
+            void updateInfo(String title, String url) {
+                //将当前页面网址更新数据，并加入历史记录
+                sCurrentUse_webPage_lists.setTitle(currect,title);
+                sCurrentUse_webPage_lists.setUrl(currect,url);
+                sCurrentUse_webPage_lists.setdate(currect);
+                //更改flags，标记为已载入网址
+                sCurrentUse_webPage_lists.setFlags(currect,1);
+            }
 
-    void sCUWL() {
+
+            void sCUWL() {
         sCurrentUse_webPage_lists = CurrentUse_WebPage_Lists.get();
     }
 

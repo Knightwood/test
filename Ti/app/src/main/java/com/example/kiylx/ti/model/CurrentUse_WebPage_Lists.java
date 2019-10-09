@@ -57,9 +57,6 @@ public class CurrentUse_WebPage_Lists {
         return mCurrectList.get(i).getDate();
     }
     public void setdate(int i){
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
-        // 获取当前时间
-        Date date = new Date(System.currentTimeMillis());
-        mCurrectList.get(i).setDate(simpleDateFormat.format(date));
+        mCurrectList.get(i).setDate(TimeProcess.getTime());
     }
 }
