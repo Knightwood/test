@@ -107,7 +107,7 @@ public class AboutHistory {
         return new ItemCursorWrapper(cursor);
     }/*通过queryHistory查询数据库，返回的是ItemCursorWrapper类型的cursor，遍历cursor，获取需要的数据。*/
     private ItemCursorWrapper queryHistoryfromDate(String date1,String date2){
-        Cursor cursor= mDatabase.rawQuery("SELECT * from "+HistoryTable.NAME+" where date(?) between date(?) and date(?) ",new String[]{HistoryTable.Childs.DATE,date1,date2});
+        Cursor cursor= mDatabase.rawQuery("SELECT * from "+HistoryTable.NAME+" where date(?) between date(?) and date(?) order by ? desc",new String[]{HistoryTable.Childs.DATE,date1,date2,HistoryTable.Childs.DATE});
         return new ItemCursorWrapper(cursor);
     }
 
