@@ -15,7 +15,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Activitys.StarPageActivity"></activity>
-        <activity android:name=".Activitys.HistoryActivity" />
+        <activity
+            android:name=".Activitys.HistoryActivity"
+            android:theme="@style/AppTheme1" />
         <activity android:name=".Activitys.SettingActivity" />
         <activity
             android:name=".Activitys.DoSearchActivity"

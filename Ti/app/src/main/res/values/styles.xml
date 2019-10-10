@@ -18,6 +18,13 @@
             <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
             <item name="android:windowExitAnimation">@anim/dialog_out</item>
         </style>
+<!--history主题 -->
+    <style name="AppTheme1" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
 
+    </style>
 
 </resources>

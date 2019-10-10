@@ -52,4 +52,11 @@
     <string name="open1">新标签页打开</string>
     <string name="delete_history_item">删除</string>
     <string name="add_to_star">添加到收藏</string>
+    <string name="thisweek">本周</string>
+    <string name="thismonth">本月</string>
+    <string name="month1">一个月前</string>
+    <string name="month2">两个月前</string>
+    <string name="month3">三个月前</string>
+    <string name="month4">四个月前</string>
+    <string name="month5">五个月前</string>
 </resources>
