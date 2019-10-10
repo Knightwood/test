@@ -70,6 +70,22 @@ public class AboutHistory {
     }
     void delete(){}
     void deleteAll(){}
+    ArrayList<WebPage_Info> getInfoFromDate(String date1, String date2){
+        //查询并返回一个时间段内的所有条目
+        ArrayList<WebPage_Info> temp =new ArrayList<>();
+        ItemCursorWrapper cursor=queryHistoryfromDate(date1,date2);
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()){
+                temp.add(cursor.getWebPageInfo());
+                cursor.moveToNext();
+            }
+        }finally{
+                cursor.close();
+            }
+        return temp;
+
+    }
 
     private static ContentValues getContentValues(WebPage_Info info){
         ContentValues values=new ContentValues();
@@ -90,5 +106,9 @@ public class AboutHistory {
         );
         return new ItemCursorWrapper(cursor);
     }/*通过queryHistory查询数据库，返回的是ItemCursorWrapper类型的cursor，遍历cursor，获取需要的数据。*/
+    private ItemCursorWrapper queryHistoryfromDate(String date1,String date2){
+        Cursor cursor= mDatabase.rawQuery("SELECT * from "+HistoryTable.NAME+" where date(?) between date(?) and date(?) ",new String[]{HistoryTable.Childs.DATE,date1,date2});
+        return new ItemCursorWrapper(cursor);
+    }
 
 }
