@@ -1,5 +1,8 @@
 package com.example.kiylx.ti;
 
+import android.app.Instrumentation;
+import android.content.Context;
+
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import org.junit.After;
@@ -15,6 +18,8 @@ import java.util.SimpleTimeZone;
 import static org.junit.Assert.*;
 
 public class AboutHistoryTest {
+    AboutHistory mAboutHistory;
+    Context mContext;
 
     @Before
     public void setUp() throws Exception {
@@ -54,8 +59,9 @@ public class AboutHistoryTest {
 
     @Test
     public void getInfoFromDate() {
+        mContext=Instrumentation.
         genItem();
-
+        mAboutHistory=AboutHistory.get();
 
     }
 
