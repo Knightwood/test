@@ -4,6 +4,7 @@ import com.example.kiylx.ti.KindsofDate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,25 +36,35 @@ public class TimeProcess {
     }
     public static String[] getWeekorMonth(String arg1,String datenow){
         init();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(convertToDate(datenow));
         String result=null;
         switch (KindsofDate.valueOf(arg1)){
             case THISWEEK:
+                calendar.add(Calendar.DAY_OF_MONTH,-7);
                 break;
             case THISMONTH:
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
             case MONTH1:
+                calendar.add(Calendar.MONTH,-1);
                 break;
             case MONTH2:
+                calendar.add(Calendar.MONTH,-2);
                 break;
             case MONTH3:
+                calendar.add(Calendar.MONTH,-3);
                 break;
             case MONTH4:
+                calendar.add(Calendar.MONTH,-4);
                 break;
             case MONTH5:
+                calendar.add(Calendar.MONTH,-5);
                 break;
-
         }
+        result=simpleDateFormat.format(calendar.getTime());
         return new String[]{datenow,result};
     }
+
 
 }

@@ -1,3 +1,5 @@
+package com.example.kiylx.ti;
+
 import com.example.kiylx.ti.KindsofDate;
 
 import org.junit.Test;
