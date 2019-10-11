@@ -1,6 +1,6 @@
 package com.example.kiylx.ti;
 
-import com.example.kiylx.ti.KindsofDate;
+import com.example.kiylx.ti.model.KindsofDate;
 
 import org.junit.Test;
 

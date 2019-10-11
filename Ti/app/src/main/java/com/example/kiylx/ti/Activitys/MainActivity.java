@@ -31,16 +31,8 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements
-        /*MultPage_DialogFragment.NewPagebutton_click,
-        MultPage_DialogFragment.DeletePage,
-        MultPage_DialogFragment.SwitchPage,
-        MultPage_DialogFragment.GetIndex,*/
-        CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface
-        {
+public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
     private static final String TAG="MainActivity";
-
-
     Clist mClist;
     FrameLayout f1;
     CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
@@ -261,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements
 
     private void delete_CUWL(int i){
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
-        //sCUWL();
         sCurrentUse_webPage_lists.delete(i);
     }
 
@@ -453,20 +444,6 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    /*
-    @Override
-    protected void onResume() {
-        WebView t = WebList.get(i).t;
-        super.onResume();
-        t.onResume();
-        t.resumeTimers();}
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        WebList.get(i).onPause();
-        WebList.get(i).pauseTimers();
-    }
 /*
     @Override
     protected void onDestroy() {

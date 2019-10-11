@@ -1,12 +1,6 @@
 package com.example.kiylx.ti.model;
 
-import com.example.kiylx.ti.KindsofDate;
-
 import org.junit.Test;
-
-import java.util.Calendar;
-
-import static org.junit.Assert.*;
 
 public class TimeProcessTest {
 

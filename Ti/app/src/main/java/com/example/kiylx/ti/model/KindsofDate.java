@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.model;
 
 public enum KindsofDate {
     /*
