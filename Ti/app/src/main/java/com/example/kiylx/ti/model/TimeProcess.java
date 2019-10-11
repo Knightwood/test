@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.model;
 
+import com.example.kiylx.ti.BR;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -46,22 +48,29 @@ public class TimeProcess {
                 break;
             case MONTH1:
                 calendar.add(Calendar.MONTH,-1);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
             case MONTH2:
                 calendar.add(Calendar.MONTH,-2);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
             case MONTH3:
                 calendar.add(Calendar.MONTH,-3);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
             case MONTH4:
                 calendar.add(Calendar.MONTH,-4);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
             case MONTH5:
                 calendar.add(Calendar.MONTH,-5);
+                calendar.set(Calendar.DAY_OF_MONTH,1);
                 break;
         }
+
+
         result=simpleDateFormat.format(calendar.getTime());
-        return new String[]{datenow,result};
+        return new String[]{result,datenow};
     }
 
 

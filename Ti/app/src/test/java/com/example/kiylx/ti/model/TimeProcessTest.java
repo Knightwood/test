@@ -6,7 +6,7 @@ public class TimeProcessTest {
 
     @Test
     public void getTime() {
-        System.out.println(TimeProcess.getTime());
+        System.out.println("获取时间"+TimeProcess.getTime());
     }
 
     @Test
