@@ -2,6 +2,7 @@ package com.example.kiylx.ti.model;
 
 import com.example.kiylx.ti.BR;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -34,44 +35,47 @@ public class TimeProcess {
         }
         return date;
     }
-    public static String[] getWeekorMonth(String arg1,String datenow){
+    public static String getWeekorMonth_start(String arg1, String datenow) {
         init();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(convertToDate(datenow));
-        String result=null;
-        switch (KindsofDate.valueOf(arg1)){
+        String startDate = null;
+        switch (KindsofDate.valueOf(arg1)) {
             case THISWEEK:
-                calendar.add(Calendar.DAY_OF_MONTH,-7);
+                calendar.add(Calendar.DAY_OF_MONTH, -7);
                 break;
             case THISMONTH:
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.set(Calendar.DAY_OF_MONTH, 1);
                 break;
             case MONTH1:
-                calendar.add(Calendar.MONTH,-1);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.add(Calendar.MONTH, -1);
                 break;
             case MONTH2:
-                calendar.add(Calendar.MONTH,-2);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.add(Calendar.MONTH, -2);
                 break;
             case MONTH3:
-                calendar.add(Calendar.MONTH,-3);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.add(Calendar.MONTH, -3);
                 break;
             case MONTH4:
-                calendar.add(Calendar.MONTH,-4);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.add(Calendar.MONTH, -4);
                 break;
             case MONTH5:
-                calendar.add(Calendar.MONTH,-5);
-                calendar.set(Calendar.DAY_OF_MONTH,1);
+                calendar.add(Calendar.MONTH, -5);
                 break;
         }
+        if (!arg1.equals("THISWEEK")) {
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+        }
+            startDate = simpleDateFormat.format(calendar.getTime());
+            return startDate;
+        }
+        public static String getlastday(String startDate){
 
+            Calendar calendar2=Calendar.getInstance();
+            calendar2.setTime(convertToDate(startDate));
+            calendar2.set(Calendar.DAY_OF_MONTH,0);
+        return simpleDateFormat.format(calendar2.getTime());
 
-        result=simpleDateFormat.format(calendar.getTime());
-        return new String[]{result,datenow};
+        }
+
     }
-
-
-}

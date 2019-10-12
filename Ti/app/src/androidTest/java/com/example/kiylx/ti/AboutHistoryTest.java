@@ -1,7 +1,8 @@
 package com.example.kiylx.ti;
 
-import android.app.Instrumentation;
 import android.content.Context;
+
+import androidx.test.InstrumentationRegistry;
 
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -9,20 +10,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.SimpleTimeZone;
 
 import static org.junit.Assert.*;
 
 public class AboutHistoryTest {
     AboutHistory mAboutHistory;
     Context mContext;
-
     @Before
     public void setUp() throws Exception {
+        mContext= InstrumentationRegistry.getContext();
     }
 
     @After
@@ -59,9 +56,13 @@ public class AboutHistoryTest {
 
     @Test
     public void getInfoFromDate() {
-        //mContext=Instrumentation.
-        genItem();
-        //mAboutHistory=AboutHistory.get();
+        mAboutHistory=AboutHistory.get(mContext);
+        ArrayList<WebPage_Info> items= genItem();
+        for (WebPage_Info i:items
+             ) {
+            mAboutHistory.addToDataBase(i);
+
+        }
 
     }
 

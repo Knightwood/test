@@ -3,6 +3,7 @@ package com.example.kiylx.ti.model;
 import org.junit.Test;
 
 public class TimeProcessTest {
+    String tmp=null;
 
     @Test
     public void getTime() {
@@ -15,11 +16,19 @@ public class TimeProcessTest {
     }
 
     @Test
-    public void getWeekorMonth() {
+    public void getWeekorMonth_start() {
         for(KindsofDate i:KindsofDate.values()){
-            String[] tmp= TimeProcess.getWeekorMonth(i.toString(),"2019-10-11");
-            System.out.println(tmp[0]+"//"+tmp[1]);
-
+            tmp= TimeProcess.getWeekorMonth_start(i.toString(),"2019-10-11");
+            getlastday1();
+            System.out.println("开始时间"+tmp);
         }
+    }
+
+
+   @Test
+    public void getlastday1() {
+        String end =TimeProcess.getlastday(tmp);
+        System.out.println("结束"+end);
+
     }
 }

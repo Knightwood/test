@@ -29,6 +29,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.model.WebPage_Info;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
@@ -72,6 +73,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     protected void onStart() {
         super.onStart();
         Log.d("lifecycle","onStart()");
+
+        sAboutHistory=AboutHistory.get(MainActivity.this);
+        ArrayList<WebPage_Info> items= genItem();
+        for (WebPage_Info i:items
+        ) {
+            sAboutHistory.addToDataBase(i);
+
+        }
     }
     @Override
     protected void onResume(){
@@ -236,7 +245,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         Log.d(TAG,"即将加入历史记录的内容"+massage);
 
     }
-
+    private ArrayList<WebPage_Info> genItem() {
+        ArrayList<WebPage_Info> tmp=new ArrayList<>();
+        String[] datearr = new String[]{"2019-06-03","2019-06-05","2019-07-01","2019-09-08","2019-09-11"};
+        for (int i=0;i<5;i++){
+            tmp.add(new WebPage_Info("title"+i,"null",datearr[i]));
+        }
+        return tmp;
+    }
             void updateInfo(String title, String url) {
                 //将当前页面网址更新数据，并加入历史记录
                 sCurrentUse_webPage_lists.setTitle(currect,title);

@@ -70,7 +70,7 @@ public class AboutHistory {
     }
     void delete(){}
     void deleteAll(){}
-    ArrayList<WebPage_Info> getInfoFromDate(String date1, String date2){
+    public ArrayList<WebPage_Info> getInfoFromDate(String date1, String date2){
         //查询并返回一个时间段内的所有条目
         ArrayList<WebPage_Info> temp =new ArrayList<>();
         ItemCursorWrapper cursor=queryHistoryfromDate(date1,date2);
@@ -107,7 +107,7 @@ public class AboutHistory {
         return new ItemCursorWrapper(cursor);
     }/*通过queryHistory查询数据库，返回的是ItemCursorWrapper类型的cursor，遍历cursor，获取需要的数据。*/
     private ItemCursorWrapper queryHistoryfromDate(String date1,String date2){
-        Cursor cursor= mDatabase.rawQuery("SELECT * from "+HistoryTable.NAME+" where date(?) between date(?) and date(?) order by ? desc",new String[]{HistoryTable.Childs.DATE,date1,date2,HistoryTable.Childs.DATE});
+        Cursor cursor= mDatabase.rawQuery("SELECT * from history_item where date between ? and ? order by date desc",new String[]{date1,date2});
         return new ItemCursorWrapper(cursor);
     }
 
