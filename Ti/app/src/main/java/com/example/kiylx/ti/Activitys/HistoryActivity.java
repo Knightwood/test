@@ -47,7 +47,6 @@ public class HistoryActivity extends AppCompatActivity{
 
     private void updateUI(){
         sAboutHistory=AboutHistory.get(this);
-        //mWebPage_infos=sAboutHistory.getHistoryInfos();
         mWebPage_infos=sAboutHistory.getInfoFromDate("2019-07-01","2019-09-11");
         if(null==mAdapter){
             mAdapter=new HistoryAdapter(mWebPage_infos);

@@ -19,8 +19,8 @@ public class TimeProcessTest {
     public void getWeekorMonth_start() {
         for(KindsofDate i:KindsofDate.values()){
             tmp= TimeProcess.getWeekorMonth_start(i.toString(),"2019-10-11");
-            getlastday1();
             System.out.println("开始时间"+tmp);
+            getlastday1();
         }
     }
 
