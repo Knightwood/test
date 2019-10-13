@@ -3,47 +3,72 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background_2"
+    style="@style/Widget.MaterialComponents.Chip.Action"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activitys.StarPageActivity">
-
-    <TextView
-        android:id="@+id/pagetitle"
+<!--
+    <HorizontalScrollView
+        android:id="@+id/horizontalScrollView2"
         android:layout_width="0dp"
-        android:layout_height="90dp"
-        android:text="@string/shuqian"
-        android:textAlignment="textStart"
-        android:textSize="52sp"
+        android:layout_height="55dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_star">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/star_chipgroup"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/uncategorized_chip"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/uncategorized"
+                android:textSize="14sp" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+    -->
+
+    <SearchView
+        android:id="@+id/search_star"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/bc_qm_ul_xr"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tag_fliter"
-        android:layout_width="90dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="16dp"
-        android:singleLine="true"
-        android:text="@string/tagFliter"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pagetitle" />
-
     <Spinner
         android:id="@+id/bc_qm_ul_xr"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        style="@android:style/Widget.Material.Light.Spinner"
+        android:layout_width="170dp"
+        android:layout_height="45dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tag_fliter"
+        android:spinnerMode="dropdown"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/delete_tagbutton"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/delete_tagbutton"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/background"
+        android:text="@string/delete"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tag_fliter"
-        app:layout_constraintTop_toBottomOf="@+id/pagetitle" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/show_StarItem"
@@ -54,6 +79,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tag_fliter" />
+        app:layout_constraintTop_toBottomOf="@+id/search_star" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,6 +25,8 @@ import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
@@ -64,6 +66,15 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         //展示recyclerview
         mRecyclerView = findViewById(R.id.show_StarItem);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(StarPageActivity.this));//展示具体收藏item的recyclerview
+
+        //chipgroup
+        /*ChipGroup mChipgroup=findViewById(R.id.star_chipgroup);
+        mChipgroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup chipGroup, int i) {
+
+            }
+        });*/
 
         //更新lists，然后更新视图
         getChangeLists(mTaglists.get(0));

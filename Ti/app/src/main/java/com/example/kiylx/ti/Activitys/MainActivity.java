@@ -73,14 +73,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     protected void onStart() {
         super.onStart();
         Log.d("lifecycle","onStart()");
-
+/*
         sAboutHistory=AboutHistory.get(MainActivity.this);
         ArrayList<WebPage_Info> items= genItem();
         for (WebPage_Info i:items
         ) {
             sAboutHistory.addToDataBase(i);
 
-        }
+        }*/
     }
     @Override
     protected void onResume(){
