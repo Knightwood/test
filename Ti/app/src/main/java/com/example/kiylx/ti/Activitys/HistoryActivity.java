@@ -18,7 +18,9 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.model.TimeProcess;
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
@@ -28,6 +30,8 @@ public class HistoryActivity extends AppCompatActivity{
     View view;
     RecyclerView listView;
     AboutHistory sAboutHistory;
+    ChipGroup mChipGroup;
+    String[] mDateli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +39,46 @@ public class HistoryActivity extends AppCompatActivity{
         setContentView(R.layout.activity_history);
         listView=findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
+//初始化recyclerview为最近七天的数据
+        mDateli=new String[2];
+        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+        updateUI(mDateli[0],mDateli[1]);
+        CheckedChangeListener();
+    }
+    //监听chipgroup以更新recyclerview视图
+    private void CheckedChangeListener(){
+        mChipGroup = findViewById(R.id.Date_ChipGroup);
+        mChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup chipGroup, int i) {
 
-        updateUI();
+                switch(i){
+                    case R.id.thisweek:
+                        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+                        break;
+                    case R.id.thismonth:
+                        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+                        break;
+                    case R.id.month1:
+                        mDateli= TimeProcess.getWeekorMonth_start("MONTH1",TimeProcess.getTime());
+                        break;
+                    case R.id.month2:
+                        mDateli=TimeProcess.getWeekorMonth_start("MONTH2",TimeProcess.getTime());
+                        break;
+                    case R.id.month3:
+                        mDateli=TimeProcess.getWeekorMonth_start("MONTH3",TimeProcess.getTime());
+                        break;
+                    case R.id.month4:
+                        mDateli=TimeProcess.getWeekorMonth_start("MONTH4",TimeProcess.getTime());
+                        break;
+                    case R.id.month5:
+                        mDateli=TimeProcess.getWeekorMonth_start("MONTH5",TimeProcess.getTime());
+                        break;
+                }
+                updateUI(mDateli[0],mDateli[1]);
+            }
+        });
+
     }
 
 
@@ -45,14 +87,16 @@ public class HistoryActivity extends AppCompatActivity{
         super.onStart();
     }
 
-    private void updateUI(){
+    private void updateUI(String startDate,String endDate){
+        //str1:开始日期。str2:结束日期
         sAboutHistory=AboutHistory.get(this);
-        mWebPage_infos=sAboutHistory.getInfoFromDate("2019-07-01","2019-09-11");
+        mWebPage_infos=sAboutHistory.getInfoFromDate(startDate,endDate);
         if(null==mAdapter){
             mAdapter=new HistoryAdapter(mWebPage_infos);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
         }else{
+            mAdapter.setLists(mWebPage_infos);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -87,6 +131,9 @@ public class HistoryActivity extends AppCompatActivity{
             this.lists=list;
             boolean ta=lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空"+ta+lists.get(0).getUrl());
+        }
+        public void setLists(ArrayList<WebPage_Info> lists){
+            this.lists=lists;
         }
 
         @NonNull

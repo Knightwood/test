@@ -35,7 +35,8 @@ public class TimeProcess {
         }
         return date;
     }
-    public static String getWeekorMonth_start(String arg1, String datenow) {
+    public static String[] getWeekorMonth_start(String arg1, String datenow) {
+        //直接返回一个字符串数组，第一个元素是开始时间，第二个是结束时间
         init();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(convertToDate(datenow));
@@ -67,7 +68,8 @@ public class TimeProcess {
             calendar.set(Calendar.DAY_OF_MONTH, 1);
         }
             startDate = simpleDateFormat.format(calendar.getTime());
-            return startDate;
+
+            return new String[]{startDate,getlastday(startDate)};
         }
         public static String getlastday(String startDate){
 
