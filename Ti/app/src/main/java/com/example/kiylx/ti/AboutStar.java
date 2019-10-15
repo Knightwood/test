@@ -121,6 +121,7 @@ public class AboutStar {
         );
         return new ItemCursorWrapper(cursor);
     }
+
 /*
     public void WriteContent(Context context, String content, String filename){
 
@@ -203,5 +204,12 @@ public class AboutStar {
             return getWebPageinfos();
         }
         return getinfos_TAG(str);
+    }
+    public void changeTags(String tag){
+        //根据tag批量更改条目的信息
+
+    }
+    public void deleteWithtag(String tag) {
+        //根据tag这个标签删除相关的条目
     }
 }

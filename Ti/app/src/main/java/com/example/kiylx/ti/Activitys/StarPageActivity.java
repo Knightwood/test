@@ -1,11 +1,13 @@
 package com.example.kiylx.ti.Activitys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutStar;
 import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.Fragments.Delete_tag;
 import com.example.kiylx.ti.Fragments.Star_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -40,6 +44,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
     private ArrayList<String> mTaglists;
     private String tagname;//指示当前是哪个tag在taglists中的pos
     private static SatrPageA_interface sSatrPageA_interface;
+    private Button deleteTag_button;
 
 
     @Override
@@ -77,23 +82,47 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         });*/
 
         //更新lists，然后更新视图
-        getChangeLists(mTaglists.get(0));
+        tagname=mTaglists.get(0);
+        getChangeLists(tagname);
         updateUI();
         //接口回调
         Star_Dialog.setInterface(this);
 
+        //删除tag按钮
+        deleteTag_button=findViewById(R.id.delete_tagbutton);
+        deleteTag_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteTag(tagname);
+            }
+        });
+
+
+
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void deleteTag(String arg) {
+        Delete_tag fr= Delete_tag.getInstance(arg);
+        FragmentManager fm=getSupportFragmentManager();
+        fr.show(fm,"删除标签dialog");
+    }
+
     private void updateUI(){
         /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
         这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
         如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
         如果不是null，根据tag来更新视图*/
-        if(mPageInfoArrayList.isEmpty()){
+        /*if(mPageInfoArrayList.isEmpty()){
             //如果收藏夹没有任何内容，那什么也不做，且隐藏recyclerview
            mRecyclerView.setVisibility(View.GONE);
             return;
         }
-        mRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);*/
         if(null==adapter){
             adapter = new RecyclerAdapter(mPageInfoArrayList);//这里的lists是包含未分类
             mRecyclerView.setAdapter(adapter);
