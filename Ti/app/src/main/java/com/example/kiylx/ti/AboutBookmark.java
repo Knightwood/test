@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.BaseAdapter;
 
 import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
@@ -12,22 +13,22 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class AboutStar {
-    private static AboutStar sAboutStar;
-    private static ArrayList<WebPage_Info> lists;
+public class AboutBookmark {
+    private static AboutBookmark sAboutBookmark;
+    private static ArrayList<WebPage_Info> bookMarklists;
     private SQLiteDatabase mDatabase;
     private Context mContext;
 
-    private AboutStar(Context context){
+    private AboutBookmark(Context context){
         mContext=context;
-        lists=new ArrayList<>();//暂时没有用
+        bookMarklists =new ArrayList<>();//暂时没有用
         mDatabase=new FavoritePageBaseHelper(mContext,FavoritepageDbSchema.FavoriteTable.NAME,null,1).getWritableDatabase();
     }
-    public static AboutStar get(Context context){
-        if(sAboutStar==null){
-            sAboutStar=new  AboutStar(context);
+    public static AboutBookmark get(Context context){
+        if(sAboutBookmark==null){
+            sAboutBookmark=new  AboutBookmark(context);
         }
-        return sAboutStar;
+        return sAboutBookmark;
     }
 
     public void add(WebPage_Info info){
@@ -78,7 +79,7 @@ public class AboutStar {
         }
         return mlists;
     }
-    public ArrayList<WebPage_Info> getinfos_TAG(String str){
+    public ArrayList<WebPage_Info> getBookmarkitems(String str){
         ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG,new String[]{str});
         try{
@@ -178,7 +179,7 @@ public class AboutStar {
         }
         return result;
     }
-    public boolean isStar(WebPage_Info info){
+    public boolean isBookmark(WebPage_Info info){
         //判断标准是网址，与数据库里网址一致即为收藏了
         String url=info.getUrl();
         ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url,new String[]{url});
@@ -203,7 +204,7 @@ public class AboutStar {
         if(str.equals("所有书签")){
             return getWebPageinfos();
         }
-        return getinfos_TAG(str);
+        return getBookmarkitems(str);
     }
     public void changeTags(String tag){
         //根据tag批量更改条目的信息

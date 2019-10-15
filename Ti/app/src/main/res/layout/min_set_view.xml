@@ -142,7 +142,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:drawableTop="@drawable/bg_ie"
-        android:text="@string/star"
+        android:text="@string/Bookmark"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/h1"
         app:layout_constraintEnd_toStartOf="@+id/v2"

@@ -79,7 +79,7 @@ public class EditBox_Dialog extends DialogFragment {
             return;
         }
         Intent intent =new Intent();
-        //上面把新添加的标签加入到数据库，这里再把它放进intent返回，这样，Stardialog就可以不用从数据库再读取一次数据，直接拿到返回的放进lists中刷新视图
+        //上面把新添加的标签加入到数据库，这里再把它放进intent返回，这样，Bookmarkdialog就可以不用从数据库再读取一次数据，直接拿到返回的放进lists中刷新视图
         intent.putExtra("newTagName",newtagname);
         getTargetFragment().onActivityResult(0, Activity.RESULT_OK,intent);
     }

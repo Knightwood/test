@@ -26,7 +26,7 @@ import com.example.kiylx.ti.model.CustomWebviewClient;
 import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Fragments.Star_Dialog;
+import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         toolbaract();
         Log.d("lifecycle","onCreate()");
         m=findViewById(R.id.search_edittext);
-        useStarPageActivityInterface();
+        useBookmarkPageActivityInterface();
         useMultPage_DialogFragmentInterface();
     }
 
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("lifecycle","onStart()");
+        Log.d("lifecycle","onBookmarkt()");
 /*
         sAboutHistory=AboutHistory.get(MainActivity.this);
         ArrayList<WebPage_Info> items= genItem();
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     protected void onRestart() {
         super.onRestart();
         f1.addView(mClist.getTop(currect));
-        Log.d("lifecycle","onRestart()");
+        Log.d("lifecycle","onReBookmarkt()");
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             delete_CUWL(position);
             currect--;
             f1.addView(mClist.getTop(currect));
-            mClist.restart(currect);
+            mClist.reStart(currect);
         }else{
             if(position!=mClist.size()-1){
                 //currect==position时，只要不是删除最后一个，就都这样操作：移除当前webview，删除webivew，把新提升上来的当前位置的webview添加进视图
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 mClist.destroy(position);
                 delete_CUWL(position);
                 f1.addView(mClist.getTop(position));
-                mClist.restart(currect);
+                mClist.reStart(currect);
             }else{
                 mClist.stop(currect);
                 f1.removeView(mClist.getTop(position));
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 mClist.destroy(position);
                 delete_CUWL(position);
                 f1.addView(mClist.getTop(currect));
-                mClist.restart(currect);
+                mClist.reStart(currect);
             }
         }
     }
@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         f1.removeView(mClist.getTop(currect));
         f1.addView(mClist.getTop(pos));
         currect=pos;
-        mClist.restart(currect);
+        mClist.reStart(currect);
         setTextForbar(currect);//更新工具栏上的文字
     }
     @Override
@@ -205,9 +205,9 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         return currect;
     }
 
-    public void useStarPageActivityInterface(){
-        //来自StarpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
-        StarPageActivity.setInterface(new StarPageActivity.SatrPageA_interface(){
+    public void useBookmarkPageActivityInterface(){
+        //来自BookmarkpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
+        BookmarkPageActivity.setInterface(new BookmarkPageActivity.SatrPageA_interface(){
             @Override
             public void loadUrl(String urlname,boolean flags){
                 if (flags){
@@ -327,9 +327,9 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                         Log.i(TAG, "onClick: 多窗口按钮被触发");
                         mult_dialog();
                         break;
-                    case R.id.action_star:
+                    case R.id.action_Bookmark:
                         Log.i(TAG, "onClick: 收藏按钮被触发");
-                        showStarDialog();
+                        showBookmarkDialog();
                         break;
                     case R.id.action_flash:
 
@@ -350,10 +350,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     }
 
-    public void showStarDialog() {
+    public void showBookmarkDialog() {
         WebPage_Info tmp=sCurrentUse_webPage_lists.getInfo(currect);
         FragmentManager fm = getSupportFragmentManager();
-        Star_Dialog dialog =Star_Dialog.newInstance();
+        Bookmark_Dialog dialog =Bookmark_Dialog.newInstance("1");
         dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
         dialog.show(fm,"收藏当前网页");
     }

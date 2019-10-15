@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/edit_star"
+        android:id="@+id/edit_Bookmark"
         android:title="@string/edit1" />
     <item
-        android:id="@+id/delete_star"
+        android:id="@+id/delete_Bookmark"
         android:title="@string/delete" />
     <item
         android:id="@+id/openPageinNewWindow"

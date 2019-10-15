@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class HistoryActivity extends AppCompatActivity{
     HistoryAdapter mAdapter;
-    ArrayList<WebPage_Info> mWebPage_infos;
+    ArrayList<WebPage_Info> mHistorys;
     View view;
     RecyclerView listView;
     AboutHistory sAboutHistory;
@@ -90,13 +90,16 @@ public class HistoryActivity extends AppCompatActivity{
     private void updateUI(String startDate,String endDate){
         //str1:开始日期。str2:结束日期
         sAboutHistory=AboutHistory.get(this);
-        mWebPage_infos=sAboutHistory.getInfoFromDate(startDate,endDate);
+        mHistorys =sAboutHistory.getInfoFromDate(startDate,endDate);
+        if(mHistorys.isEmpty()){
+            return;
+        }
         if(null==mAdapter){
-            mAdapter=new HistoryAdapter(mWebPage_infos);
+            mAdapter=new HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
         }else{
-            mAdapter.setLists(mWebPage_infos);
+            mAdapter.setLists(mHistorys);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -116,7 +119,7 @@ public class HistoryActivity extends AppCompatActivity{
                         break;
                     case R.id.delete_hiatory:
                         break;
-                    case R.id.addToStar:
+                    case R.id.addToBookmark:
                         break;
                 }
                 return false;

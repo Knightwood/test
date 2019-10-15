@@ -84,7 +84,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 			//设置点击外部可以取消对话框
             setCancelable(true);
         }
-        Log.d(TAG, "onStart: ");
+        Log.d(TAG, "onBookmarkt: ");
        //获取当前网页的pos
         mCurrect=minterface.getCurrect();
     }

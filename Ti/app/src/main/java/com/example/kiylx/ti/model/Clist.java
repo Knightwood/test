@@ -71,6 +71,6 @@ public class Clist {
         }
     }
     public void stop(int i){mArrayList.get(i).onPause();}
-    public void restart(int i){mArrayList.get(i).onResume();}
+    public void reStart(int i){mArrayList.get(i).onResume();}
 
 }

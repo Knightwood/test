@@ -13,11 +13,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.AboutStar;
+import com.example.kiylx.ti.AboutBookmark;
 
 public class CustomWebviewClient extends WebViewClient {
     private SETINFOS mSETINFOS;
-    private AboutStar mAboutStar;
+    private AboutBookmark mAboutBookmark;
     private Context mContext;
 
     public interface SETINFOS {
@@ -41,7 +41,7 @@ public class CustomWebviewClient extends WebViewClient {
                 view.loadUrl(url);
             } else {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                //startActivity(intent);
+                //BookmarktActivity(intent);
             }
             return true;
         } catch (Exception e){
@@ -80,15 +80,15 @@ public class CustomWebviewClient extends WebViewClient {
         // 加入历史记录
         // 判断网址是否被收藏
         // 更新工具栏上的文字
-        boolean isstar;
+        boolean isBookmark;
         super.onPageFinished(view, url);
 
         mSETINFOS =(SETINFOS) mContext;
         mSETINFOS.setInfos(view.getTitle(),url);
 
-        mAboutStar=AboutStar.get(mContext);
-        isstar= mAboutStar.isStar(new WebPage_Info(view.getTitle(),view.getUrl(),1));
-        if (isstar){
+        mAboutBookmark=AboutBookmark.get(mContext);
+        isBookmark= mAboutBookmark.isBookmark(new WebPage_Info(view.getTitle(),view.getUrl(),1));
+        if (isBookmark){
             //如果网页已经被收藏，让收藏按键变色
         }else{
             Toast.makeText(mContext,"未收藏",Toast.LENGTH_LONG).show();

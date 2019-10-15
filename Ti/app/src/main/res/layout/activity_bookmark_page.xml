@@ -6,7 +6,7 @@
     style="@style/Widget.MaterialComponents.Chip.Action"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitys.StarPageActivity">
+    tools:context=".Activitys.BookmarkPageActivity">
 <!--
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView2"
@@ -15,10 +15,10 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_star">
+        app:layout_constraintTop_toBottomOf="@+id/search_Bookmark">
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/star_chipgroup"
+            android:id="@+id/Bookmark_chipgroup"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
@@ -34,7 +34,7 @@
     -->
 
     <SearchView
-        android:id="@+id/search_star"
+        android:id="@+id/search_Bookmark"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
@@ -71,7 +71,7 @@
         tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/show_StarItem"
+        android:id="@+id/show_BookmarkItem"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -79,6 +79,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_star" />
+        app:layout_constraintTop_toBottomOf="@+id/search_Bookmark" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

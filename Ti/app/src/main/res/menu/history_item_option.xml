@@ -10,7 +10,7 @@
         android:id="@+id/delete_hiatory"
         android:title="@string/delete_history_item"/>
     <item
-        android:id="@+id/addToStar"
-        android:title="@string/add_to_star"/>
+        android:id="@+id/addToBookmark"
+        android:title="@string/add_to_Bookmark"/>
 
 </menu>

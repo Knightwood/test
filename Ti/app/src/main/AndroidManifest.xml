@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activitys.StarPageActivity"></activity>
+        <activity android:name=".Activitys.BookmarkPageActivity"></activity>
         <activity
             android:name=".Activitys.HistoryActivity"
             android:theme="@style/AppTheme1" />

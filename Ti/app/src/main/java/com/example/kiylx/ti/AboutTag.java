@@ -15,16 +15,39 @@ public class AboutTag {
     /*tag，如果在添加标签的时候选择的是未分类，那么这一条*/
     private static AboutTag sAboutTag;
     private SQLiteDatabase mDatabase;
+    private ArrayList<String> taglists;
 
     public AboutTag(Context context) {
 
         mDatabase = new TagOpenHelper(context, TagDbSchema.TagTable.NAME,null,1).getWritableDatabase();
+        taglists=new ArrayList<>();
+        taglists.add(0,"未分类");
     }
     public static AboutTag get(Context context){
         if(null==sAboutTag){
             sAboutTag=new AboutTag(context);
         }
         return sAboutTag;
+    }
+    public void addTagintoLists(String str){
+        if(!str.equals("未分类"))
+        taglists.add(str);
+    }
+    public void deleteTagfromLists(String str){
+        if (!str.equals("未分类"))
+        taglists.remove(str);
+    }public int getPosfromLists(String str){
+        //获取tag在lists中的位置，以此来设置spinner显示特定项
+        if (str.equals("")){
+            return 0;//如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
+        }
+        return taglists.indexOf(str);
+    }
+    public String getItemfromList(int pos){
+        return taglists.get(pos);
+    }
+    public int getSize(){
+        return taglists.size();
     }
 
     public void add(String tag){
@@ -63,22 +86,21 @@ public class AboutTag {
         }
     }
 
-    public ArrayList<String> getItems(){
+    public ArrayList<String> getTagListfromDB(){
         TagItemCursorWrapper cursor = queryTag(null,null);
-        ArrayList<String> lists = new ArrayList<>();
         try{
             if(cursor.getCount()==0){
-                return lists;
+                return taglists;
             }
             cursor.moveToFirst();
             while (!cursor.isAfterLast()){
-                lists.add(cursor.getTaginfo());
+                taglists.add(cursor.getTaginfo());
                 cursor.moveToNext();
             }
         }finally {
             cursor.close();
         }
-        return lists;
+        return taglists;
 
     }
     private TagItemCursorWrapper queryTag(String where, String[] whereArgs){

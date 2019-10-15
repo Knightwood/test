@@ -17,9 +17,8 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.kiylx.ti.Activitys.HistoryActivity;
-import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.Activitys.SettingActivity;
-import com.example.kiylx.ti.Activitys.StarPageActivity;
+import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 
 import static android.widget.Toast.LENGTH_SHORT;
@@ -96,8 +95,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.a6:
                 //书签
-                Intent star_intent = new Intent(getContext(), StarPageActivity.class);
-                startActivity(star_intent);
+                Intent Bookmark_intent = new Intent(getContext(), BookmarkPageActivity.class);
+                startActivity(Bookmark_intent);
                 dismiss();
                 Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
                 break;
