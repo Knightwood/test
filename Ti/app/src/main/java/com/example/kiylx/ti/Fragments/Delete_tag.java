@@ -3,6 +3,7 @@ package com.example.kiylx.ti.Fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +26,13 @@ public class Delete_tag extends DialogFragment {
     private String tag;
     private AboutTag aboutTag;
     private AboutStar aboutStar;
+    private static final String ARG_PARAM = "param";
+    private static Delete_tagF_interface mDelete_tag;
 
 
     public static Delete_tag getInstance(String tagname){
         Bundle arg=new Bundle();
-        arg.putSerializable("target_tag",tagname);//把要删除的tag拿到
+        arg.putSerializable(ARG_PARAM,tagname);//把要删除的tag拿到
 
         Delete_tag mdialog=new Delete_tag();
         mdialog.setArguments(arg);
@@ -42,7 +45,7 @@ public class Delete_tag extends DialogFragment {
         aboutTag=AboutTag.get(getActivity());
         aboutStar=AboutStar.get(getActivity());
         if(getArguments() !=null){
-            tag=getArguments().getString("删除标签dialog");
+            tag=getArguments().getString(ARG_PARAM);
             Log.d(TAG,"要删除的标签"+tag);
         }
 
@@ -67,7 +70,9 @@ public class Delete_tag extends DialogFragment {
                 deleteAll(tag);
             }
         });
-        aboutTag.delete(tag);
+        //aboutTag.delete(tag);
+        //调用onActivityresult刷新StarPageActivity里面的视图
+        mDelete_tag.onResult();
         return builder.create();
 
     }
@@ -80,9 +85,10 @@ public class Delete_tag extends DialogFragment {
         //把有相关tag的书签批量更改
         aboutStar.changeTags(tag);
     }
-
-    @Override
-    public void setTargetFragment(@Nullable Fragment fragment, int requestCode) {
-        super.setTargetFragment(fragment, requestCode);
+    public static void setInterface(Delete_tagF_interface minterface){
+        Delete_tag.mDelete_tag=minterface;
+    }
+    public interface Delete_tagF_interface{
+        void onResult();
     }
 }

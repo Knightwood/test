@@ -34,7 +34,7 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
-public class StarPageActivity extends AppCompatActivity implements Star_Dialog.Star_DialogF_interface {
+public class StarPageActivity extends AppCompatActivity implements Star_Dialog.Star_DialogF_interface,Delete_tag.Delete_tagF_interface {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mPageInfoArrayList;
     private AboutStar mAboutStar;
@@ -87,6 +87,7 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
         updateUI();
         //接口回调
         Star_Dialog.setInterface(this);
+        Delete_tag.setInterface(this);
 
         //删除tag按钮
         deleteTag_button=findViewById(R.id.delete_tagbutton);
@@ -157,10 +158,19 @@ public class StarPageActivity extends AppCompatActivity implements Star_Dialog.S
             }
         });
     }
-
+    //Star_Dialog_Interface
     @Override
     public void updatelistui() {
         //在修改完item后刷新视图
+        getChangeLists(tagname);
+        updateUI();
+    }
+
+    //Delete_tag_Interface
+    @Override
+    public void onResult(){
+        //标签已被传进去删除，所以重新置为0号的“未分类”
+        tagname=mTaglists.get(0);
         getChangeLists(tagname);
         updateUI();
     }
