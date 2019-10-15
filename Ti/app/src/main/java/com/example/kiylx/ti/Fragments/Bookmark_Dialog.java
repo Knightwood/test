@@ -66,8 +66,8 @@ public class Bookmark_Dialog extends DialogFragment {
         super.onAttach(mContext);
         mAboutBookmark = AboutBookmark.get(mContext);
         mAboutTag= AboutTag.get(mContext);
-        assert getArguments() != null;
-        intentid=getArguments().getString(ARGME);
+
+
 
     }
 
@@ -75,6 +75,10 @@ public class Bookmark_Dialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taglists=mAboutTag.getTagListfromDB();
+
+        if(getArguments()!=null){
+            intentid=getArguments().getString(ARGME);
+        }
     }
     public interface Bookmark_DialogF_interface {
         void updatelistui();
