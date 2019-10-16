@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -42,7 +41,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
     private ArrayList<String> mTaglists;
     private String tagname;//指示当前是哪个tag在taglists中的pos
     private static SatrPageA_interface sSatrPageA_interface;
-    private Button deleteTag_button;
+    private TextView deleteTag_textview;
 
 
     @Override
@@ -63,20 +62,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         mBookmarkArrayList = mAboutBookmark.getBookmarkitems("未分类");
 
         mSpinner=findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
-        showTags();//展示spinner
+        selectTagtoUpdate();//展示spinner
 
         //展示recyclerview
         mRecyclerView = findViewById(R.id.show_BookmarkItem);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(BookmarkPageActivity.this));//展示具体收藏item的recyclerview
-
-        //chipgroup
-        /*ChipGroup mChipgroup=findViewById(R.id.Bookmark_chipgroup);
-        mChipgroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ChipGroup chipGroup, int i) {
-
-            }
-        });*/
 
         //更新lists，然后更新视图
         tagname=mTaglists.get(0);//一开始就初始化tag名称防止出错
@@ -87,28 +77,20 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         Delete_tag.setInterface(this);
 
         //删除tag按钮
-        deleteTag_button=findViewById(R.id.delete_tagbutton);
-        deleteTag_button.setOnClickListener(new View.OnClickListener() {
+        deleteTag_textview=findViewById(R.id.delete_tagbutton);
+        deleteTag_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteTag(tagname);
-                mAboutTag.deleteTagfromLists(tagname);
+                addMenutoEditTag(v);
+
             }
         });
-
-
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void deleteTag(String arg) {
-        Delete_tag fr= Delete_tag.getInstance(arg);
-        FragmentManager fm=getSupportFragmentManager();
-        fr.show(fm,"删除标签dialog");
     }
 
     private void updateUI(){
@@ -136,7 +118,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         mBookmarkArrayList =mAboutBookmark.getBookmarkitems(str);
     }
 
-    public void showTags(){
+    public void selectTagtoUpdate(){
 
         ArrayAdapter<String> madapter=new ArrayAdapter<>(BookmarkPageActivity.this,android.R.layout.simple_list_item_1, mTaglists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -183,6 +165,41 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         BookmarkPageActivity.sSatrPageA_interface =minterface;
     }
 
+    private void addMenutoEditTag(View v){
+        //用来控制tag编辑的几个菜单选项
+        PopupMenu menu = new PopupMenu(BookmarkPageActivity.this,v);
+        MenuInflater inflater = menu.getMenuInflater();
+        inflater.inflate(R.menu.tagmanager_menu,menu.getMenu());
+        menu.show();
+        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.editTag:
+                        editTag(tagname);
+                        break;
+                    case R.id.newTag:
+                        newTag(tagname);
+                        break;
+                    case R.id.deleteTag:
+                        deleteTag(tagname);
+                        break;
+                }
+                return false;
+            }
+        });
+    }
+    private void editTag(String arg){
+
+    }
+    private void newTag(String arg){
+
+    }
+    private void deleteTag(String arg) {
+        Delete_tag fr= Delete_tag.getInstance(arg);
+        FragmentManager fm=getSupportFragmentManager();
+        fr.show(fm,"删除标签dialog");
+    }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder>{
         private ArrayList<WebPage_Info> mList;
@@ -323,3 +340,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         });
         mPopupMenu.show();
     }*/
+//chipgroup
+        /*ChipGroup mChipgroup=findViewById(R.id.Bookmark_chipgroup);
+        mChipgroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ChipGroup chipGroup, int i) {
+
+            }
+        });*/

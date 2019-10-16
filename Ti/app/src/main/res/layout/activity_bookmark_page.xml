@@ -56,15 +56,15 @@
         app:layout_constraintEnd_toStartOf="@+id/delete_tagbutton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <TextView
         android:id="@+id/delete_tagbutton"
-        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="70dp"
         android:layout_height="35dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/background"
         android:text="@string/delete"
+        android:textAlignment="center"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

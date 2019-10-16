@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
 import com.example.kiylx.ti.favoritepageDataBase.TagItemCursorWrapper;
@@ -16,6 +17,10 @@ public class AboutTag {
     private static AboutTag sAboutTag;
     private SQLiteDatabase mDatabase;
     private ArrayList<String> taglists;
+    /*taglist是一个全局的列表，
+    会从数据库里拿数据后添加进taglist返回给需要的对象，
+    所以，必要时需要判断taglist是不是空的再决定是否从数据库里拿数据放进去*/
+    /*添加或是删除时，会让数据库和taglists保持一致，因为其他类的lists也是taglist的引用，所以不需要做额外工作*/
 
     public AboutTag(Context context) {
 
@@ -50,23 +55,24 @@ public class AboutTag {
         return taglists.size();
     }
 
+    private boolean isExist(String tag){
+        //查询是否有与形参“tag”重复的元素
+        return taglists.contains(tag);
+    }
+//=============================以下数据库操作===================//
     public void add(String tag){
-        /*if(isExist(tag)){
+        if(isExist(tag)){
             return;
-        }*/
+        }
+        Log.d("tag添加",tag);
         ContentValues values = getContentValues(tag);
         mDatabase.insert(TagDbSchema.TagTable.NAME,null,values);
+        addTagintoLists(tag);
 
-    }
-    private static ContentValues getContentValues(String tag){
-        //存tag
-        ContentValues values = new ContentValues();
-        values.put(TagDbSchema.TagTable.childs.TAG,tag);
-
-        return values;
     }
     public void delete(String tag){
         mDatabase.delete(TagDbSchema.TagTable.NAME, TagDbSchema.TagTable.childs.TAG,new String[]{tag});
+        deleteTagfromLists(tag);
 
     }
     public void updateTag(String tag, String tag2){
@@ -77,18 +83,21 @@ public class AboutTag {
         // 修改条件
         // 满足修改的值
     }
-    private boolean isExist(String tag){
-        TagItemCursorWrapper cursor = queryTag(TagDbSchema.TagTable.childs.TAG,new String[]{tag});
-        try{
-            return cursor.getCount() != 0;
-        }finally {
-            cursor.close();
-        }
+    private static ContentValues getContentValues(String tag){
+        //存tag
+        ContentValues values = new ContentValues();
+        values.put(TagDbSchema.TagTable.childs.TAG,tag);
+
+        return values;
     }
+
 
     public ArrayList<String> getTagListfromDB(){
         TagItemCursorWrapper cursor = queryTag(null,null);
+        //如果taglist仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是taglist仅被初始化还没有从数据库里拿数据
+        if(taglists.size()==1)
         try{
+            Log.d("TagDB数量", String.valueOf(cursor.getCount()));
             if(cursor.getCount()==0){
                 return taglists;
             }

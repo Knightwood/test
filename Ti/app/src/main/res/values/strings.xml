@@ -61,4 +61,9 @@
     <string name="month5">五个月前</string>
     <string name="uncategorized">未分类</string>
     <string name="whether_deleteTag">是否删除“标签”</string>
+
+    <!--tag管理选项-->
+    <string name="editTag">编辑标签</string>
+    <string name="deleteTag">删除标签</string>
+    <string name="addTag">添加新标签</string>
 </resources>

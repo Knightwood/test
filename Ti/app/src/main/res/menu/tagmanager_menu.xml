@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/editTag"
+        android:title="@string/editTag" />
+    <item
+        android:id="@+id/deleteTag"
+        android:title="@string/deleteTag" />
+    <item
+        android:id="@+id/newTag"
+        android:title="@string/addTag" />
+</menu>

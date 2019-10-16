@@ -31,12 +31,22 @@ public class AboutBookmark {
         return sAboutBookmark;
     }
 
+    public void addTolist(WebPage_Info info){
+        bookMarklists.add(info);
+
+    }
+    public void deleteFromList(WebPage_Info info){
+        bookMarklists.remove(info);
+
+    }
+//==========================以下数据库操作=========================//
     public void add(WebPage_Info info){
         if(info==null||info.getUrl()==null){
             return;
         }
         ContentValues values = getContentValues(info);
         mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
+        addTolist(info);
 
     }
     public void updateItem(WebPage_Info info){
@@ -46,19 +56,6 @@ public class AboutBookmark {
         ContentValues values = getContentValues(info);
         mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
 
-    }
-
-    public WebPage_Info getWebPageinfo(String title){
-        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE,new String[]{title});
-        try{
-            if(cursor.getCount()==0){
-                return null;
-    }
-            cursor.moveToFirst();
-            return cursor.getFavoriterinfo();
-    }finally {
-            cursor.close();
-        }
     }
     public ArrayList<WebPage_Info> getWebPageinfos(){
         //第一个参数来指示查询哪一列
@@ -122,7 +119,36 @@ public class AboutBookmark {
         );
         return new ItemCursorWrapper(cursor);
     }
+    public boolean isMarked(WebPage_Info info){
+        //判断标准是网址，与数据库里网址一致即为收藏了
+        String url=info.getUrl();
+        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url,new String[]{url});
+        try{
+            if(cursor.getCount()==0){
+                //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
+                return false;
+            }
+            return true;
+        }finally {
+            cursor.close();
+        }
+    }
 
+    public ArrayList<WebPage_Info> getChangeLists(String str) {
+        //返回tag的书签list
+        if(str.equals("所有书签")){
+            return getWebPageinfos();
+        }
+        return getBookmarkitems(str);
+    }
+    public void changeTags(String tag){
+        //根据tag批量更改条目的信息
+
+    }
+    public void deleteWithtag(String tag) {
+        //根据tag这个标签删除相关的条目
+    }
+}
 /*
     public void WriteContent(Context context, String content, String filename){
 
@@ -137,6 +163,20 @@ public class AboutBookmark {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private String[] execString(StringBuilder sb) {
+        //分割从文件中读取到的字符串
+        String tmp= sb.toString();
+        String[] result = new String[0];
+        if(tmp.contains("/")){
+            result=tmp.split("/");
+        }
+        return result;
+    }
+
+    public boolean fileExist() {
+        return false;
     }
 
     public String[] getDataFromFile(Context context, String filename) {
@@ -169,48 +209,3 @@ public class AboutBookmark {
 
         }
     }*/
-
-    private String[] execString(StringBuilder sb) {
-        //分割从文件中读取到的字符串
-        String tmp= sb.toString();
-        String[] result = new String[0];
-        if(tmp.contains("/")){
-            result=tmp.split("/");
-        }
-        return result;
-    }
-    public boolean isBookmark(WebPage_Info info){
-        //判断标准是网址，与数据库里网址一致即为收藏了
-        String url=info.getUrl();
-        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url,new String[]{url});
-        try{
-            if(cursor.getCount()==0){
-                //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
-                return false;
-            }
-
-            return true;
-        }finally {
-            cursor.close();
-        }
-    }
-
-    public boolean fileExist() {
-        return false;
-    }
-
-    public ArrayList<WebPage_Info> getChangeLists(String str) {
-        //返回tag的书签list
-        if(str.equals("所有书签")){
-            return getWebPageinfos();
-        }
-        return getBookmarkitems(str);
-    }
-    public void changeTags(String tag){
-        //根据tag批量更改条目的信息
-
-    }
-    public void deleteWithtag(String tag) {
-        //根据tag这个标签删除相关的条目
-    }
-}

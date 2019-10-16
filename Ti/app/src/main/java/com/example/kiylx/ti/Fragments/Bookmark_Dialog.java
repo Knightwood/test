@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Bookmark_Dialog extends DialogFragment {
+    private static final String TAG = "Bookmark_Dialog";
     private AboutBookmark mAboutBookmark;
     private WebPage_Info beBookmarked_info;
     private TextView tagadd;
@@ -44,6 +45,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private static final String ARGME="wholauncherI";
     private String intentid;//谁启动了这个对话框
 
+
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
 里面只有一个edittext，编辑好tag后，加入数据库，返回选择tag选择界面，选择其中一个后，把他放在showTags里。
 当点击确定后，把信息加入收藏夹数据库*/
@@ -51,10 +53,11 @@ public class Bookmark_Dialog extends DialogFragment {
 
     public static Bookmark_Dialog newInstance(String id){
         //id表征是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
-        Bookmark_Dialog  Bookmark_dialog = new Bookmark_Dialog();
+        Bookmark_Dialog  bookmark_dialog = new Bookmark_Dialog();
         Bundle Arg=new Bundle();
-        Arg.putSerializable(ARGME,id);
-        return Bookmark_dialog;
+        Arg.putString(ARGME,id);
+        bookmark_dialog.setArguments(Arg);
+        return bookmark_dialog;
     }
     public void putInfo(WebPage_Info info){
         beBookmarked_info = info;
@@ -78,6 +81,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
         if(getArguments()!=null){
             intentid=getArguments().getString(ARGME);
+            Log.d(TAG, "onCreate: 谁启动了此fragment"+intentid);
         }
     }
     public interface Bookmark_DialogF_interface {
@@ -114,7 +118,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
                 //WebPage_Info tmp =getMessage(view);
                 //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
-                if(mAboutBookmark.isBookmark(beBookmarked_info)){
+                if(mAboutBookmark.isMarked(beBookmarked_info)){
                     /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
                      *网址未修改，那就更新标题和tag，
                      *如果网址被修改，那就算是一个新的，之后插入数据库*/
@@ -218,7 +222,6 @@ public class Bookmark_Dialog extends DialogFragment {
         Log.d("唉","iggs");
         //用新的list更新界面
         String tmptag=data.getStringExtra("newTagName");
-        mAboutTag.addTagintoLists(tmptag);
         selectTags(mAboutTag.getPosfromLists(tmptag));
 
     }

@@ -70,7 +70,8 @@ public class Delete_tag extends DialogFragment {
                 deleteAll(tag);
             }
         });
-        //aboutTag.delete(tag);
+        //删除tag
+        aboutTag.delete(tag);
         //调用onActivityresult刷新BookmarkPageActivity里面的视图
         mDelete_tag.onResult();
         return builder.create();
