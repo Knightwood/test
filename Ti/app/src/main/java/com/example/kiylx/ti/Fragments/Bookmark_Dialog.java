@@ -41,9 +41,9 @@ public class Bookmark_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
-    private static Bookmark_DialogF_interface minterface;
     private static final String ARGME="wholauncherI";
     private String intentid;//谁启动了这个对话框
+    private static RefreshBookMark_recyclerview refresh;
 
 
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
@@ -59,6 +59,11 @@ public class Bookmark_Dialog extends DialogFragment {
         bookmark_dialog.setArguments(Arg);
         return bookmark_dialog;
     }
+
+    public static void setRefresh(RefreshBookMark_recyclerview refresh) {
+        Bookmark_Dialog.refresh = refresh;
+    }
+
     public void putInfo(WebPage_Info info){
         beBookmarked_info = info;
     }
@@ -83,12 +88,6 @@ public class Bookmark_Dialog extends DialogFragment {
             intentid=getArguments().getString(ARGME);
             Log.d(TAG, "onCreate: 谁启动了此fragment"+intentid);
         }
-    }
-    public interface Bookmark_DialogF_interface {
-        void updatelistui();
-    }
-    public static void setInterface(Bookmark_DialogF_interface minterface){
-        Bookmark_Dialog.minterface=minterface;
     }
 
     @NonNull
@@ -130,7 +129,7 @@ public class Bookmark_Dialog extends DialogFragment {
                     mAboutBookmark.add(beBookmarked_info);}
                 //更新BookmarkpageActivity视图
                 if(intentid.equals("2"))
-                    minterface.updatelistui();
+                    refresh.refresh(null);
                 Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags());
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

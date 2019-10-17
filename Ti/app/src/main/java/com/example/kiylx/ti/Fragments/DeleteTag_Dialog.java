@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,10 +25,11 @@ public class DeleteTag_Dialog extends DialogFragment {
     private AboutTag aboutTag;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
-    private static Delete_tagF_interface sDelete_tagF_interface;
+    private static RefreshBookMark_recyclerview refresh;
 
 
     public static DeleteTag_Dialog getInstance(String tagname){
+
         Bundle arg=new Bundle();
         arg.putSerializable(ARG_PARAM,tagname);//把要删除的tag拿到
 
@@ -60,7 +62,7 @@ public class DeleteTag_Dialog extends DialogFragment {
                 //删除标签同时把这个标签下的书签记录的tag改成默认的“未分类”
                 updateBookmark(tag,"未分类");
                 //刷新BookmarkPageActivity里面的视图
-                sDelete_tagF_interface.flashBookMarkLists();
+                refresh.refresh();
 
             }
         });
@@ -68,11 +70,11 @@ public class DeleteTag_Dialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteAll(tag);
+                refresh.refresh();
             }
         });
         //删除tag
         aboutTag.delete(tag);
-
         return builder.create();
 
     }
@@ -86,10 +88,8 @@ public class DeleteTag_Dialog extends DialogFragment {
         //把有相关标签的书签批量更改它的标签
         aboutBookmark.updateTagsforItems(tag,newTagname);
     }
-    public static void setInterface(Delete_tagF_interface minterface){
-        DeleteTag_Dialog.sDelete_tagF_interface =minterface;
+    public static void setInterface(RefreshBookMark_recyclerview minterface){
+        DeleteTag_Dialog.refresh =minterface;
     }
-    public interface Delete_tagF_interface{
-        void flashBookMarkLists();
-    }
+
 }

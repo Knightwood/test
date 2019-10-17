@@ -27,12 +27,13 @@ import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.Fragments.EditBox_Dialog;
+import com.example.kiylx.ti.Fragments.RefreshBookMark_recyclerview;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_Dialog.Bookmark_DialogF_interface, DeleteTag_Dialog.Delete_tagF_interface {
+public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark_recyclerview {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
@@ -75,8 +76,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         getBookmarksWithTagChanged(tagname);
         updateUI();
         //接口回调
-        Bookmark_Dialog.setInterface(this);
+
         DeleteTag_Dialog.setInterface(this);
+        Bookmark_Dialog.setRefresh(this);
 
         //删除tag按钮
         deleteTag_textview=findViewById(R.id.delete_tagbutton);
@@ -141,21 +143,27 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
             }
         });
     }
-    //Bookmark_Dialog_Interface回调
+
     @Override
-    public void updatelistui() {
-        //在用书签记录的菜单修改完后，重新获取含有这个标签的书签来刷新视图，
-        getBookmarksWithTagChanged(tagname);
-        updateUI();
+    public void refresh(String tagname) {
+        //更新BookmarkPageActivity里的那些书签recyclerview视图
+
+        //在编辑详细一个书签条目后用当前的tagname刷新视图，所以，传入的是null那就不用赋值，直接用当前的tagname刷新视图
+        if(tagname!=null)
+        this.tagname=tagname;
+
+        //在spinner中选择新的tagname，并更新书签记录的视图
+        mSpinner.setSelection(mTaglists.indexOf(this.tagname));
+        getBookmarksWithTagChanged(tagname);//标签已被传进去删除，所以重新获取list，并重新置为tagname
+        updateUI();//更新书签记录的视图
+
     }
 
-    //Delete_tag_Interface
     @Override
-    public void flashBookMarkLists(){
+    public void refresh() {
+        //更新BookmarkPageActivity里的那些书签recyclerview视图
         //标签已被传进去删除，所以重新获取list，并重新置为0号的“未分类”
-        //Log.d(TAG, "flashBookMarkLists之前的旧列表:"+mTaglists.get(1));
-        //mTaglists=mAboutTag.getTaglists();
-        //Log.d(TAG, "flashBookMarkLists之后的新列表:"+mTaglists.get(1));
+        //更新BookmarkPageActivity里的那些书签recyclerview视图
         tagname=mTaglists.get(0);
         mSpinner.setSelection(0);
         getBookmarksWithTagChanged(tagname);

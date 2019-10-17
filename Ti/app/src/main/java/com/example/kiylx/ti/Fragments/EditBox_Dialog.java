@@ -32,6 +32,7 @@ public class EditBox_Dialog extends DialogFragment {
     private String oldtagname;//保存没被修改的标签，在修改标签时会用到
     private String tmp2;
     private static final String TAG="EditBox_Dialog";
+    private RefreshBookMark_recyclerview flashBookmark;
 
 
     public static EditBox_Dialog getInstance(){
@@ -70,14 +71,13 @@ public class EditBox_Dialog extends DialogFragment {
             //如果tagname不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
             view1.setText(newtagname);
 
-            //tmp2=new String(newtagname.getBytes());
-            oldtagname =newtagname;//我也不知道他两是不是指向相同的对象
+            oldtagname =newtagname;//备份原有的名称，在更新操作中会用到
 
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //更新tag
-                    newtagname=view1.getText().toString();
+                    newtagname=view1.getText().toString();//tag名称更新
                     Log.d(TAG, "onClick: tagname被改为"+newtagname+"oldtagname:"+ oldtagname +"tmp2:"+tmp2);
 
                     mAboutTag.updateTag(oldtagname,newtagname);
@@ -86,12 +86,8 @@ public class EditBox_Dialog extends DialogFragment {
                     bookmark.updateTagsforItems(oldtagname,newtagname);
 
                     //刷新BookmarkActivity里的视图
-
-
-                    if (getTargetFragment() == null) {
-                        //判断有无目标fragment
-                        return;
-                    }
+                    flashBookmark.refresh(newtagname);
+                    returnResult();
 
                 }
             });
@@ -108,7 +104,7 @@ public class EditBox_Dialog extends DialogFragment {
                     if (getTargetFragment() == null) {
                         return;
                     }
-                    returnResult();
+                    returnResult();//新建操作不仅是“书签activity”也有可能是“收藏fragment”启动的，所以这一句不能去掉
 
                 }
             });
@@ -158,5 +154,9 @@ public class EditBox_Dialog extends DialogFragment {
         Log.d("EditBox","onDetach");
         mContext=null;
 
+    }
+
+    public void setFlashBookmark(RefreshBookMark_recyclerview flashBookmark) {
+        this.flashBookmark = flashBookmark;
     }
 }
