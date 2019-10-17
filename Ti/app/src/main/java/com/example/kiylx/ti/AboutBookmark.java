@@ -31,14 +31,6 @@ public class AboutBookmark {
         return sAboutBookmark;
     }
 
-    public void addTolist(WebPage_Info info){
-        bookMarklists.add(info);
-
-    }
-    public void deleteFromList(WebPage_Info info){
-        bookMarklists.remove(info);
-
-    }
 //==========================以下数据库操作=========================//
     public void add(WebPage_Info info){
         if(info==null||info.getUrl()==null){
@@ -46,7 +38,6 @@ public class AboutBookmark {
         }
         ContentValues values = getContentValues(info);
         mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
-        addTolist(info);
 
     }
     public void updateItem(WebPage_Info info){
@@ -78,7 +69,7 @@ public class AboutBookmark {
     }
     public ArrayList<WebPage_Info> getBookmarkitems(String str){
         ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
-        ItemCursorWrapper cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG,new String[]{str});
+        ItemCursorWrapper cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG + " =?",new String[]{str});
         try{
             if(cursor.getCount()==0){
                 return mlists;
@@ -94,7 +85,7 @@ public class AboutBookmark {
         return mlists;
     }
     public void delete(String url){
-        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
+        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url + " =?",new String[]{url});
     }
     private static ContentValues getContentValues(WebPage_Info info){
         //存网页信息
@@ -111,7 +102,7 @@ public class AboutBookmark {
         Cursor cursor =mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
                 null,
-                whereClause+"= ?",
+                whereClause,
                 whereArgs,
                 null,
                 null,
@@ -122,7 +113,7 @@ public class AboutBookmark {
     public boolean isMarked(WebPage_Info info){
         //判断标准是网址，与数据库里网址一致即为收藏了
         String url=info.getUrl();
-        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url,new String[]{url});
+        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?",new String[]{url});
         try{
             if(cursor.getCount()==0){
                 //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏

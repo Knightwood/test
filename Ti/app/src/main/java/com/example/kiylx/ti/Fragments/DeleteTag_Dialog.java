@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.Fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;

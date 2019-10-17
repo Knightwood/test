@@ -27,7 +27,7 @@ import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.Fragments.EditBox_Dialog;
-import com.example.kiylx.ti.Fragments.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -145,15 +145,15 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     @Override
-    public void refresh(String tagname) {
+    public void refresh(String tagname_) {
         //更新BookmarkPageActivity里的那些书签recyclerview视图
 
         //在编辑详细一个书签条目后用当前的tagname刷新视图，所以，传入的是null那就不用赋值，直接用当前的tagname刷新视图
         if(tagname!=null)
-        this.tagname=tagname;
+        tagname=tagname_;
 
         //在spinner中选择新的tagname，并更新书签记录的视图
-        mSpinner.setSelection(mTaglists.indexOf(this.tagname));
+        mSpinner.setSelection(mTaglists.indexOf(tagname));
         getBookmarksWithTagChanged(tagname);//标签已被传进去删除，所以重新获取list，并重新置为tagname
         updateUI();//更新书签记录的视图
 

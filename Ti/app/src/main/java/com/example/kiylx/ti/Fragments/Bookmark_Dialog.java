@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -76,18 +77,17 @@ public class Bookmark_Dialog extends DialogFragment {
         mAboutTag= AboutTag.get(mContext);
 
 
-
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taglists=mAboutTag.getTagListfromDB();
-
         if(getArguments()!=null){
             intentid=getArguments().getString(ARGME);
             Log.d(TAG, "onCreate: 谁启动了此fragment"+intentid);
         }
+
     }
 
     @NonNull
@@ -130,7 +130,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 //更新BookmarkpageActivity视图
                 if(intentid.equals("2"))
                     refresh.refresh(null);
-                Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags());
+                Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags()+"intentid"+intentid);
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
