@@ -331,12 +331,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                         Log.i(TAG, "onClick: 收藏按钮被触发");
                         showBookmarkDialog();
                         break;
-                    case R.id.action_flash:
-
+                    /*case R.id.action_flash:
                         Log.i(TAG, "onClick: 刷新按钮被触发");
                         mClist.getTop(currect).reload();
-
-                        break;
+                        break;*/
                     case R.id.action_menu:
 
                         Log.i(TAG, "onClick: 菜单按钮被触发");

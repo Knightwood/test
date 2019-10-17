@@ -159,7 +159,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 Log.d("tag序号", "onItemSelected: "+position+"数组大小"+mAboutTag.getSize());
 
                 //选择某一个tag后更新webviewinfo信息
-                updateWebinfo(mAboutTag.getItemfromList(position));
+                updateWebinfo(mAboutTag.getTagfromList(position));
 
             }
 

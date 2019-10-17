@@ -24,7 +24,7 @@ public class DeleteTag_Dialog extends DialogFragment {
     private AboutTag aboutTag;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
-    private static Delete_tagF_interface mDeleteTag_Dialog;
+    private static Delete_tagF_interface sDelete_tagF_interface;
 
 
     public static DeleteTag_Dialog getInstance(String tagname){
@@ -59,6 +59,8 @@ public class DeleteTag_Dialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 //删除标签同时把这个标签下的书签记录的tag改成默认的“未分类”
                 updateBookmark(tag,"未分类");
+                //刷新BookmarkPageActivity里面的视图
+                sDelete_tagF_interface.flashBookMarkLists();
 
             }
         });
@@ -70,24 +72,24 @@ public class DeleteTag_Dialog extends DialogFragment {
         });
         //删除tag
         aboutTag.delete(tag);
-        //调用onActivityresult刷新BookmarkPageActivity里面的视图
-        mDeleteTag_Dialog.onResult();
+
         return builder.create();
 
     }
 
     private void deleteAll(String tag) {
+        //把有这个标签的书签尽数删除
         aboutBookmark.deleteWithtag(tag);
     }
 
     private void updateBookmark(String tag,String newTagname) {
-        //把有相关tag的书签批量更改
+        //把有相关标签的书签批量更改它的标签
         aboutBookmark.updateTagsforItems(tag,newTagname);
     }
     public static void setInterface(Delete_tagF_interface minterface){
-        DeleteTag_Dialog.mDeleteTag_Dialog =minterface;
+        DeleteTag_Dialog.sDelete_tagF_interface =minterface;
     }
     public interface Delete_tagF_interface{
-        void onResult();
+        void flashBookMarkLists();
     }
 }

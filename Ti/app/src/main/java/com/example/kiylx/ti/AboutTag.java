@@ -28,29 +28,36 @@ public class AboutTag {
         taglists=new ArrayList<>();
         taglists.add(0,"未分类");
     }
+
     public static AboutTag get(Context context){
         if(null==sAboutTag){
             sAboutTag=new AboutTag(context);
         }
         return sAboutTag;
     }
+
     public void addTagintoLists(String str){
         if(!str.equals("未分类"))
         taglists.add(str);
     }
+
     public void deleteTagfromLists(String str){
         if (!str.equals("未分类"))
         taglists.remove(str);
-    }public int getPosfromLists(String str){
+    }
+
+    public int getPosfromLists(String str){
         //获取tag在lists中的位置，以此来设置spinner显示特定项
         if (str.equals("")){
             return 0;//如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
         }
         return taglists.indexOf(str);
     }
-    public String getItemfromList(int pos){
+
+    public String getTagfromList(int pos){
         return taglists.get(pos);
     }
+
     public int getSize(){
         return taglists.size();
     }
@@ -59,6 +66,14 @@ public class AboutTag {
         //查询是否有与形参“tag”重复的元素
         return taglists.contains(tag);
     }
+
+    private void updateTaginList(String oldTag, String newTag) {
+        taglists.set(taglists.indexOf(oldTag),newTag);
+    }
+    public ArrayList<String> getTaglists() {
+        return taglists;
+    }
+
 //=============================以下数据库操作===================//
     public void add(String tag){
         if(isExist(tag)){
@@ -70,20 +85,24 @@ public class AboutTag {
         addTagintoLists(tag);
 
     }
+
     public void delete(String tag){
-        mDatabase.delete(TagDbSchema.TagTable.NAME, TagDbSchema.TagTable.childs.TAG,new String[]{tag});
+        mDatabase.delete(TagDbSchema.TagTable.NAME, TagDbSchema.TagTable.childs.TAG+" =? ",new String[]{tag});
         deleteTagfromLists(tag);
 
     }
+
     public void updateTag(String oldTag, String newTag){
         //更新tag为新的名称
         //oldTag:原tag;newTag:要改成的名称
-        mDatabase.update(TagDbSchema.TagTable.NAME,getContentValues(newTag),TagDbSchema.TagTable.childs.TAG+"=?" ,new String[]{oldTag});
+        mDatabase.update(TagDbSchema.TagTable.NAME,getContentValues(newTag),TagDbSchema.TagTable.childs.TAG + " =?" ,new String[]{oldTag});
         // 表名
         // 修改后的数据
         // 修改条件
         // 满足修改的值
+        updateTaginList(oldTag,newTag);//实时刷新taglist中的值
     }
+
     private static ContentValues getContentValues(String tag){
         //存tag
         ContentValues values = new ContentValues();
@@ -91,7 +110,6 @@ public class AboutTag {
 
         return values;
     }
-
 
     public ArrayList<String> getTagListfromDB(){
         TagItemCursorWrapper cursor = queryTag(null,null);

@@ -43,6 +43,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
     private String tagname;//指示当前是哪个tag,以及在taglists中的pos
     private static SatrPageA_interface sSatrPageA_interface;
     private TextView deleteTag_textview;
+    private static final String TAG="BookmarkActivity";
 
 
     @Override
@@ -116,19 +117,20 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
     }
 
     private void getBookmarksWithTagChanged(String str) {
+        //获取含有此标签的书签记录
         mBookmarkArrayList =mAboutBookmark.getBookmarkitems(str);
     }
 
     public void selectTagtoUpdate(){
-
+        //在spinner中选择一个项目，然后更新含有此标签的书签列表
         ArrayAdapter<String> madapter=new ArrayAdapter<>(BookmarkPageActivity.this,android.R.layout.simple_list_item_1, mTaglists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(madapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tagname=mTaglists.get(position);//更新tagname
                 //对tagname赋值，以它更新视图
+                tagname=mTaglists.get(position);
                 getBookmarksWithTagChanged(tagname);
                 updateUI();
             }
@@ -139,18 +141,21 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
             }
         });
     }
-    //Bookmark_Dialog_Interface
+    //Bookmark_Dialog_Interface回调
     @Override
     public void updatelistui() {
-        //在修改完item后刷新视图
+        //在用书签记录的菜单修改完后，重新获取含有这个标签的书签来刷新视图，
         getBookmarksWithTagChanged(tagname);
         updateUI();
     }
 
     //Delete_tag_Interface
     @Override
-    public void onResult(){
-        //标签已被传进去删除，所以重新置为0号的“未分类”
+    public void flashBookMarkLists(){
+        //标签已被传进去删除，所以重新获取list，并重新置为0号的“未分类”
+        //Log.d(TAG, "flashBookMarkLists之前的旧列表:"+mTaglists.get(1));
+        //mTaglists=mAboutTag.getTaglists();
+        //Log.d(TAG, "flashBookMarkLists之后的新列表:"+mTaglists.get(1));
         tagname=mTaglists.get(0);
         mSpinner.setSelection(0);
         getBookmarksWithTagChanged(tagname);
@@ -178,12 +183,15 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
                 switch (item.getItemId()){
                     case R.id.editTag:
                         editTag(tagname);
+                        //更新tag列表和书签记录列表
                         break;
                     case R.id.newTag:
                         newTag();
+                        //更新tag列表
                         break;
                     case R.id.deleteTag:
                         deleteTag(tagname);
+                        //更新tag列表和书签记录列表
                         break;
                 }
                 return false;
