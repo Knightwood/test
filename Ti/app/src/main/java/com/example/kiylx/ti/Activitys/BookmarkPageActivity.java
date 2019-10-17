@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.Fragments.Delete_tag;
+import com.example.kiylx.ti.Fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.Fragments.EditBox_Dialog;
 import com.example.kiylx.ti.R;
@@ -32,7 +32,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_Dialog.Bookmark_DialogF_interface,Delete_tag.Delete_tagF_interface {
+public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_Dialog.Bookmark_DialogF_interface, DeleteTag_Dialog.Delete_tagF_interface {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
@@ -75,7 +75,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         updateUI();
         //接口回调
         Bookmark_Dialog.setInterface(this);
-        Delete_tag.setInterface(this);
+        DeleteTag_Dialog.setInterface(this);
 
         //删除tag按钮
         deleteTag_textview=findViewById(R.id.delete_tagbutton);
@@ -203,7 +203,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
 
     }
     private void deleteTag(String arg) {
-        Delete_tag fr= Delete_tag.getInstance(arg);
+        DeleteTag_Dialog fr= DeleteTag_Dialog.getInstance(arg);
         FragmentManager fm=getSupportFragmentManager();
         fr.show(fm,"删除标签dialog");
     }

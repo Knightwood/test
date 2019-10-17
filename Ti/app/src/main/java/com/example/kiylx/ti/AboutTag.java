@@ -75,10 +75,10 @@ public class AboutTag {
         deleteTagfromLists(tag);
 
     }
-    public void updateTag(String tag, String tag2){
+    public void updateTag(String oldTag, String newTag){
         //更新tag为新的名称
-        //tag:原tag;tag2:要改成的名称
-        mDatabase.update(TagDbSchema.TagTable.NAME,getContentValues(tag2),TagDbSchema.TagTable.childs.TAG,new String[]{tag});
+        //oldTag:原tag;newTag:要改成的名称
+        mDatabase.update(TagDbSchema.TagTable.NAME,getContentValues(newTag),TagDbSchema.TagTable.childs.TAG+"=?" ,new String[]{oldTag});
         // 表名
         // 修改后的数据
         // 修改条件

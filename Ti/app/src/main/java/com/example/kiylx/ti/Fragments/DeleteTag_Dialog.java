@@ -18,20 +18,20 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class Delete_tag extends DialogFragment {
-    private static final String TAG = "Delete_tag";
+public class DeleteTag_Dialog extends DialogFragment {
+    private static final String TAG = "DeleteTag_Dialog";
     private String tag;
     private AboutTag aboutTag;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
-    private static Delete_tagF_interface mDelete_tag;
+    private static Delete_tagF_interface mDeleteTag_Dialog;
 
 
-    public static Delete_tag getInstance(String tagname){
+    public static DeleteTag_Dialog getInstance(String tagname){
         Bundle arg=new Bundle();
         arg.putSerializable(ARG_PARAM,tagname);//把要删除的tag拿到
 
-        Delete_tag mdialog=new Delete_tag();
+        DeleteTag_Dialog mdialog=new DeleteTag_Dialog();
         mdialog.setArguments(arg);
         return mdialog;
     }
@@ -71,7 +71,7 @@ public class Delete_tag extends DialogFragment {
         //删除tag
         aboutTag.delete(tag);
         //调用onActivityresult刷新BookmarkPageActivity里面的视图
-        mDelete_tag.onResult();
+        mDeleteTag_Dialog.onResult();
         return builder.create();
 
     }
@@ -82,10 +82,10 @@ public class Delete_tag extends DialogFragment {
 
     private void updateBookmark(String tag,String newTagname) {
         //把有相关tag的书签批量更改
-        aboutBookmark.updateTagsforItems(tag);
+        aboutBookmark.updateTagsforItems(tag,newTagname);
     }
     public static void setInterface(Delete_tagF_interface minterface){
-        Delete_tag.mDelete_tag=minterface;
+        DeleteTag_Dialog.mDeleteTag_Dialog =minterface;
     }
     public interface Delete_tagF_interface{
         void onResult();

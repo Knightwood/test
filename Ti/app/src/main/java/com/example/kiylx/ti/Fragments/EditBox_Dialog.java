@@ -29,7 +29,9 @@ public class EditBox_Dialog extends DialogFragment {
     private EditText view1;
     private Context mContext;
     private static String newtagname;
-    private String tmp;//保存没被修改的标签，在修改标签时会用到
+    private String oldtagname;//保存没被修改的标签，在修改标签时会用到
+    private String tmp2;
+    private static final String TAG="EditBox_Dialog";
 
 
     public static EditBox_Dialog getInstance(){
@@ -67,17 +69,21 @@ public class EditBox_Dialog extends DialogFragment {
         if(newtagname != null){
             //如果tagname不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
             view1.setText(newtagname);
-            //tmp=new String(newtagname.getBytes());
-            tmp=newtagname;//我也不知道他两是不是指向相同的对象
+
+            //tmp2=new String(newtagname.getBytes());
+            oldtagname =newtagname;//我也不知道他两是不是指向相同的对象
+
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //更新tag
                     newtagname=view1.getText().toString();
-                    mAboutTag.updateTag(tmp,newtagname);
+                    Log.d(TAG, "onClick: tagname被改为"+newtagname+"oldtagname:"+ oldtagname +"tmp2:"+tmp2);
+
+                    mAboutTag.updateTag(oldtagname,newtagname);
                     //更新相关tag的书签
                     AboutBookmark bookmark=AboutBookmark.get(mContext);
-                    bookmark.updateTagsforItems(tmp,newtagname);
+                    bookmark.updateTagsforItems(oldtagname,newtagname);
 
                     //刷新BookmarkActivity里的视图
 
