@@ -174,7 +174,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
     private void newEditBox() {
         //启动编辑tag的fragment
-        mEditBoxDialog =new EditBox_Dialog();
+        mEditBoxDialog =EditBox_Dialog.getInstance();
         FragmentManager fm =getFragmentManager();
         //EditBox设置目标fragment为Bookmark_Dialog Fragment。
         mEditBoxDialog.setTargetFragment(Bookmark_Dialog.this,0);

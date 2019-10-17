@@ -141,8 +141,8 @@ public class AboutBookmark {
         }
         return getBookmarkitems(str);
     }
-    public void changeTags(String tag){
-        //根据tag批量更改条目的信息
+    public void updateTagsforItems(String tag, String newTagname){
+        //根据tag批量更改条目的信息,更新书签记录的tag名称
 
     }
     public void deleteWithtag(String tag) {

@@ -26,6 +26,7 @@ import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.Delete_tag;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
+import com.example.kiylx.ti.Fragments.EditBox_Dialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -39,7 +40,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
     private AboutTag mAboutTag;
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
-    private String tagname;//指示当前是哪个tag在taglists中的pos
+    private String tagname;//指示当前是哪个tag,以及在taglists中的pos
     private static SatrPageA_interface sSatrPageA_interface;
     private TextView deleteTag_textview;
 
@@ -179,7 +180,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
                         editTag(tagname);
                         break;
                     case R.id.newTag:
-                        newTag(tagname);
+                        newTag();
                         break;
                     case R.id.deleteTag:
                         deleteTag(tagname);
@@ -190,9 +191,15 @@ public class BookmarkPageActivity extends AppCompatActivity implements Bookmark_
         });
     }
     private void editTag(String arg){
+        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance(arg);
+        FragmentManager fm=getSupportFragmentManager();
+        editBox_dialog.show(fm,"编辑tag");
 
     }
-    private void newTag(String arg){
+    private void newTag(){
+        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance();
+        FragmentManager fm=getSupportFragmentManager();
+        editBox_dialog.show(fm,"新建一个tag");
 
     }
     private void deleteTag(String arg) {

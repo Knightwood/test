@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.R;
 
@@ -27,7 +28,21 @@ public class EditBox_Dialog extends DialogFragment {
     private AboutTag mAboutTag;
     private EditText view1;
     private Context mContext;
-    private String newtagname;
+    private static String newtagname;
+    private String tmp;//保存没被修改的标签，在修改标签时会用到
+
+
+    public static EditBox_Dialog getInstance(){
+        EditBox_Dialog editBox_dialog=new EditBox_Dialog();
+        newtagname=null;
+        return editBox_dialog;
+    }
+    public static EditBox_Dialog getInstance(String tagname){
+        //编辑tag时会调用这个方法，并把它
+        EditBox_Dialog editBox_dialog=new EditBox_Dialog();
+        newtagname=tagname;
+        return editBox_dialog;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -47,23 +62,53 @@ public class EditBox_Dialog extends DialogFragment {
         AlertDialog.Builder mbuilder =new AlertDialog.Builder(Objects.requireNonNull(getContext()));
         final View view=LayoutInflater.from(getContext()).inflate(R.layout.edit_box,null);
         view1 = view.findViewById(R.id.editTagBox);
-
         mbuilder.setView(view);
-        mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                /*点击确定后调用returnResult方法*/
-                newtagname = view1.getText().toString();
-                if (!(newtagname.equals(""))){
-                    mAboutTag.add(newtagname);
-                }
-                if (getTargetFragment() == null) {
-                    return;
-                }
-                returnResult();
 
-            }
-        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        if(newtagname != null){
+            //如果tagname不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
+            view1.setText(newtagname);
+            //tmp=new String(newtagname.getBytes());
+            tmp=newtagname;//我也不知道他两是不是指向相同的对象
+            mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //更新tag
+                    newtagname=view1.getText().toString();
+                    mAboutTag.updateTag(tmp,newtagname);
+                    //更新相关tag的书签
+                    AboutBookmark bookmark=AboutBookmark.get(mContext);
+                    bookmark.updateTagsforItems(tmp,newtagname);
+
+                    //刷新BookmarkActivity里的视图
+
+
+                    if (getTargetFragment() == null) {
+                        //判断有无目标fragment
+                        return;
+                    }
+
+                }
+            });
+        }else{
+            //tagname是null，说明是“新建tag操作”，需要把tag加入数据库
+            mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    /*点击确定后调用returnResult方法*/
+                    newtagname = view1.getText().toString();
+                    if (!(newtagname.equals(""))){
+                        mAboutTag.add(newtagname);
+                    }
+                    if (getTargetFragment() == null) {
+                        return;
+                    }
+                    returnResult();
+
+                }
+            });
+        }
+
+        mbuilder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 

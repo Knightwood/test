@@ -76,7 +76,8 @@ public class AboutTag {
 
     }
     public void updateTag(String tag, String tag2){
-        //tag:原tag;tag2:要改成的目标tag
+        //更新tag为新的名称
+        //tag:原tag;tag2:要改成的名称
         mDatabase.update(TagDbSchema.TagTable.NAME,getContentValues(tag2),TagDbSchema.TagTable.childs.TAG,new String[]{tag});
         // 表名
         // 修改后的数据

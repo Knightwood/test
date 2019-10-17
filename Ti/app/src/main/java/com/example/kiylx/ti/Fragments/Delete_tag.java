@@ -1,9 +1,7 @@
 package com.example.kiylx.ti.Fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
@@ -60,7 +57,8 @@ public class Delete_tag extends DialogFragment {
         builder.setPositiveButton("仅删除标签", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                updateBookmark(tag);
+                //删除标签同时把这个标签下的书签记录的tag改成默认的“未分类”
+                updateBookmark(tag,"未分类");
 
             }
         });
@@ -82,9 +80,9 @@ public class Delete_tag extends DialogFragment {
         aboutBookmark.deleteWithtag(tag);
     }
 
-    private void updateBookmark(String tag) {
+    private void updateBookmark(String tag,String newTagname) {
         //把有相关tag的书签批量更改
-        aboutBookmark.changeTags(tag);
+        aboutBookmark.updateTagsforItems(tag);
     }
     public static void setInterface(Delete_tagF_interface minterface){
         Delete_tag.mDelete_tag=minterface;
