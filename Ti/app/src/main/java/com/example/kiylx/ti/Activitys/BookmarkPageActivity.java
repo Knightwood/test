@@ -145,12 +145,12 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     @Override
-    public void refresh(String tagname_) {
+    public void refresh(String arg1) {
         //更新BookmarkPageActivity里的那些书签recyclerview视图
 
-        //在编辑详细一个书签条目后用当前的tagname刷新视图，所以，传入的是null那就不用赋值，直接用当前的tagname刷新视图
-        if(tagname!=null)
-        tagname=tagname_;
+        //在书签页面编辑详细一个书签条目后，应该用当前的tagname刷新视图。所以，此时传入的是null，直接用当前的tagname刷新视图
+        if(arg1!=null)
+        tagname=arg1;
 
         //在spinner中选择新的tagname，并更新书签记录的视图
         mSpinner.setSelection(mTaglists.indexOf(tagname));
@@ -327,7 +327,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             Log.d("收藏activity", "onclick函数被触发");
         }
         void showBookmarkDialog(String str1, String str2,String str3){
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance("2");
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2);
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm,"changeBookmark");
             Bookmark_dialog.putInfo(new WebPage_Info(str1,str2,str3,-1));

@@ -43,7 +43,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
     private static final String ARGME="wholauncherI";
-    private String intentid;//谁启动了这个对话框
+    private static int intentid;//谁启动了这个对话框
     private static RefreshBookMark_recyclerview refresh;
 
 
@@ -52,12 +52,10 @@ public class Bookmark_Dialog extends DialogFragment {
 当点击确定后，把信息加入收藏夹数据库*/
 
 
-    public static Bookmark_Dialog newInstance(String id){
+    public static Bookmark_Dialog newInstance(int id){
         //id表征是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
         Bookmark_Dialog  bookmark_dialog = new Bookmark_Dialog();
-        Bundle Arg=new Bundle();
-        Arg.putString(ARGME,id);
-        bookmark_dialog.setArguments(Arg);
+        Bookmark_Dialog.intentid =id;
         return bookmark_dialog;
     }
 
@@ -83,10 +81,6 @@ public class Bookmark_Dialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         taglists=mAboutTag.getTagListfromDB();
-        if(getArguments()!=null){
-            intentid=getArguments().getString(ARGME);
-            Log.d(TAG, "onCreate: 谁启动了此fragment"+intentid);
-        }
 
     }
 
@@ -127,10 +121,12 @@ public class Bookmark_Dialog extends DialogFragment {
                 }else{
                     //否则往收藏数据库添加收藏条目信息
                     mAboutBookmark.add(beBookmarked_info);}
-                //更新BookmarkpageActivity视图
-                if(intentid.equals("2"))
+
+                //如果intentid是2(BookmarkPageActivity)，更新视图
+                if(intentid==2){
+                    Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags()+"intentid"+intentid);
                     refresh.refresh(null);
-                Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags()+"intentid"+intentid);
+                }
             }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override

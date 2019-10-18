@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     public void showBookmarkDialog() {
         WebPage_Info tmp=sCurrentUse_webPage_lists.getInfo(currect);
         FragmentManager fm = getSupportFragmentManager();
-        Bookmark_Dialog dialog =Bookmark_Dialog.newInstance("1");
+        Bookmark_Dialog dialog =Bookmark_Dialog.newInstance(1);
         dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
         dialog.show(fm,"收藏当前网页");
     }
