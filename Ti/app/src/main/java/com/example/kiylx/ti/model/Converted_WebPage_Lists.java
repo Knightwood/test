@@ -1,22 +1,23 @@
 package com.example.kiylx.ti.model;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Observable;
+import java.util.Observer;
 
-public class CurrentUse_WebPage_Lists {
+public class Converted_WebPage_Lists implements Observer {
+    /*此类用来存储浏览网页产生的网页信息，是实时从webview中抽取信息，存储。*/
     //用来展示多窗口的网页数量的列表，当前打开的所有网页信息
     private ArrayList<WebPage_Info> mCurrectList;
 
-    private static CurrentUse_WebPage_Lists sCurrentUse_webPage_lists;
-    private CurrentUse_WebPage_Lists() {
+    private static Converted_WebPage_Lists sConverted_webPage_lists;
+    private Converted_WebPage_Lists() {
         mCurrectList = new ArrayList<>();
     }
-    public static CurrentUse_WebPage_Lists get(){
-        if (sCurrentUse_webPage_lists ==null){
-            sCurrentUse_webPage_lists=new CurrentUse_WebPage_Lists();
+    public static Converted_WebPage_Lists get(){
+        if (sConverted_webPage_lists ==null){
+            sConverted_webPage_lists =new Converted_WebPage_Lists();
         }
-        return sCurrentUse_webPage_lists;
+        return sConverted_webPage_lists;
     }
 
     public void add(String title, String url,int flags){
@@ -58,5 +59,10 @@ public class CurrentUse_WebPage_Lists {
     }
     public void setdate(int i){
         mCurrectList.get(i).setDate(TimeProcess.getTime());
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+
     }
 }

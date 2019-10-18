@@ -3,26 +3,30 @@ package com.example.kiylx.ti.model;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
+import java.util.Observable;
+/*Clist用来存储webview，管理webview。
+    当webview发生更新，包括添加或是删除或是webview自身发生更新，
+    使用观察者模式更新Converted_WebPage_Lists中的数据*/
+public class WebViewManager extends Observable {
 
-public class Clist {
     //存着当前打开的所有webview对象
     private ArrayList<WebView> mArrayList;
 
-    private volatile static Clist sClist;
-    private Clist(){
+    private volatile static WebViewManager sWebViewManager;
+    private WebViewManager(){
         if(mArrayList ==null){
             mArrayList = new ArrayList<WebView>();
         }
     }
-    public static Clist getInstance(){
-        if(sClist==null){
-            synchronized (Clist.class){
-                if (sClist==null){
-                    sClist=new Clist();
+    public static WebViewManager getInstance(){
+        if(sWebViewManager ==null){
+            synchronized (WebViewManager.class){
+                if (sWebViewManager ==null){
+                    sWebViewManager =new WebViewManager();
                 }
             }
         }
-        return sClist;
+        return sWebViewManager;
     }
 
 

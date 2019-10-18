@@ -21,7 +21,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.model.CurrentUse_WebPage_Lists;
+import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
@@ -121,8 +121,8 @@ public class MultPage_DialogFragment extends DialogFragment {
 
 
     private void updateUI() {
-        CurrentUse_WebPage_Lists mCurrect_list= CurrentUse_WebPage_Lists.get();
-        ArrayList<WebPage_Info> lists=mCurrect_list.getPageList();
+        Converted_WebPage_Lists mConverted_lists= Converted_WebPage_Lists.get();
+        ArrayList<WebPage_Info> lists=mConverted_lists.getPageList();
         if(null==mWebSiteAdapter){
             mWebSiteAdapter=new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
