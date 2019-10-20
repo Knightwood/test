@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,6 +82,11 @@ public class CrimeLab {
             cursor.close();
         }
         //return null;
+    }
+
+    public File getPhotoFile(Crime crime){
+        File filesDir = mContext.getFilesDir();
+        return new File(filesDir,crime.getPhotoFilename());
     }
     public void addCrime(Crime c){
         ContentValues values = getContentValues(c);
