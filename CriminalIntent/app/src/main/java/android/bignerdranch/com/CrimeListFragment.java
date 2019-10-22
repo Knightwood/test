@@ -1,5 +1,6 @@
 package android.bignerdranch.com;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,8 +28,19 @@ public class CrimeListFragment extends Fragment {
 
     private boolean mSubtitleVisible=true;
     private static final String SAVED_SUBTITLE_VISIBLE = "subtitle";
+    private Callbacks mCallbacks;
 
     private boolean deleteFlags=false;
+
+    public interface Callbacks{
+        void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks=(Callbacks)context;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,13 +64,19 @@ public class CrimeListFragment extends Fragment {
     }
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks=null;
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE,mSubtitleVisible);
 
     }
 
-    private void updateUI() {
+    public void updateUI() {
         //执行更新list操作
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
@@ -91,8 +109,10 @@ public class CrimeListFragment extends Fragment {
             case R.id.new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getId());
-                startActivity(intent);
+               // Intent intent = CrimePagerActivity.newIntent(getActivity(),crime.getId());
+                //startActivity(intent);
+                updateUI();
+                mCallbacks.onCrimeSelected(crime);
                 return true;
             case R.id.show_subtitle:
                 updateSubtitle();
@@ -210,9 +230,10 @@ public class CrimeListFragment extends Fragment {
                     mCrime.getTitle() + " clicked!", Toast.LENGTH_SHORT)
                     .show();
 			//Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId());
-            Intent intent = CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
+            //Intent intent = CrimePagerActivity.newIntent(getActivity(),mCrime.getId());
 
-			startActivity(intent);
+			//startActivity(intent);
+            mCallbacks.onCrimeSelected(mCrime);
         }
     }
 }
