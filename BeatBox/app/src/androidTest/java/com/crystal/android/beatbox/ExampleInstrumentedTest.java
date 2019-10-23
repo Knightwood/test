@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("android.crystal.beatbox", appContext.getPackageName());
+        assertEquals("com.crystal.android.beatbox", appContext.getPackageName());
     }
 }

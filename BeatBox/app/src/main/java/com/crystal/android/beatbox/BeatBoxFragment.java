@@ -1,7 +1,5 @@
 package com.crystal.android.beatbox;
 
-import android.crystal.beatbox.databinding.FragmentBeatBoxBinding;
-import android.crystal.beatbox.databinding.ListItemSoundBinding;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.crystal.android.beatbox.databinding.FragmentBeatBoxBinding;
+import com.crystal.android.beatbox.databinding.ListItemSoundBinding;
 
 import java.util.List;
 
@@ -48,14 +49,15 @@ public class BeatBoxFragment extends Fragment {
         @Override
         public SoundHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater=LayoutInflater.from(getActivity());
-            ListItemSoundBinding binding=DataBindingUtil.inflate(inflater,R.layout.list_item_sound,parent,false);
+            ListItemSoundBinding binding=DataBindingUtil.inflate(inflater, R.layout.list_item_sound,parent,false);
 
             return new SoundHolder(binding);
         }
 
         @Override
         public void onBindViewHolder(@NonNull SoundHolder holder, int position) {
-
+            Sound sound = mSounds.get(position);
+            holder.bind(sound);
         }
 
         @Override
@@ -70,6 +72,10 @@ public class BeatBoxFragment extends Fragment {
             super(binding.getRoot());
             mBinding=binding;
             mBinding.setViewModel(new SoundViewModel(mBeatBox));
+        }
+        public void bind(Sound sound){
+            mBinding.getViewModel().setSound(sound);
+            mBinding.executePendingBindings();
         }
     }
 
