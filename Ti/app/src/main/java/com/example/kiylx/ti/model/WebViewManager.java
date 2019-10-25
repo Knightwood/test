@@ -5,9 +5,11 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 import java.util.Observable;
 
-/*Clist用来存储webview，管理webview。
+/*WebViewManager用来存储webview，管理webview。
     当webview发生更新，包括添加或是删除或是webview自身发生更新，
-    使用观察者模式更新Converted_WebPage_Lists中的数据*/
+    使用观察者模式更新Converted_WebPage_Lists中的数据。
+    Converted_WebPage_Lists中的抽取出特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；
+    通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。*/
 public class WebViewManager extends Observable {
 
     //存着当前打开的所有webview对象
@@ -48,6 +50,9 @@ public class WebViewManager extends Observable {
         notifyObservers(getTmpData());
     }
 
+    /**
+     * @param i 将要删除的元素位置
+     */
     public void delete(int i) {
         removeWebView(i);
     }
@@ -55,7 +60,7 @@ public class WebViewManager extends Observable {
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
         setChanged();
-        notifyObservers(1);
+        notifyObservers(i);
     }
 
     public int size() {
@@ -72,6 +77,9 @@ public class WebViewManager extends Observable {
 
     }
 
+    /**
+     * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
+     */
     private void setTmpData(WebView webView){
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
@@ -79,6 +87,10 @@ public class WebViewManager extends Observable {
         tmpData.setFlags(1);
 
     }
+
+    /**
+     * @return 获得tmpData
+     */
     private WebPage_Info getTmpData(){
         return tmpData;
     }

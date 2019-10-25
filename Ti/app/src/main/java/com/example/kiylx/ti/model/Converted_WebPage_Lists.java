@@ -6,7 +6,7 @@ import java.util.Observer;
 
 public class Converted_WebPage_Lists implements Observer {
     /*此类用来存储浏览网页产生的网页信息，是实时从webview中抽取信息，存储。*/
-    //用来展示多窗口的网页数量的列表，当前打开的所有网页信息
+    //用来展示多窗口的网页的列表，当前打开的所有网页信息
     private ArrayList<WebPage_Info> mCurrectList;
     private Observable mObservable;
 
