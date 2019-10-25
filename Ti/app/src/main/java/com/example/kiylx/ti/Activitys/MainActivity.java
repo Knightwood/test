@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.Activitys;
 
 import android.content.Intent;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.AboutHistory;
@@ -33,46 +35,48 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
-    private static final String TAG="MainActivity";
+    private static final String TAG = "MainActivity";
     WebViewManager mWebViewManager;
     FrameLayout f1;
     Converted_WebPage_Lists mConverted_lists;
-    static int currect=0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
+    static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
     TextView m;
     AboutHistory sAboutHistory;
-    private static final String CURRENT_URL ="current url";
+    private static final String CURRENT_URL = "current url";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        f1=findViewById(R.id.Webview_group);
+        f1 = findViewById(R.id.Webview_group);
         mWebViewManager = WebViewManager.getInstance();
         sCUWL();
 
-        if(mWebViewManager.isempty()){
+        if (mWebViewManager.isempty()) {
             Log.d(TAG, "onCreate: isempty");
-            addWebviewtohome();}else{
+            addWebviewtohome();
+        } else {
             f1.addView(mWebViewManager.getTop(currect));
         }/*当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来*/
         toolbaract();
-        Log.d("lifecycle","onCreate()");
-        m=findViewById(R.id.search_edittext);
+        Log.d("lifecycle", "onCreate()");
+        m = findViewById(R.id.search_edittext);
         useBookmarkPageActivityInterface();
         useMultPage_DialogFragmentInterface();
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
+    protected void onRestart() {
+        super.onRestart();
+        f1.addView(mWebViewManager.getTop(currect));
+        Log.d("lifecycle", "onReBookmarkt()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d("lifecycle","onBookmarkt()");
+        Log.d("lifecycle", "onBookmarkt()");
 /*
         sAboutHistory=AboutHistory.get(MainActivity.this);
         ArrayList<WebPage_Info> items= genItem();
@@ -82,18 +86,20 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         }*/
     }
+
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        int s= mWebViewManager.size();
+        int s = mWebViewManager.size();
         mWebViewManager.getTop(currect).onResume();
-        Log.d("lifecycle","onResume()"+"webview数量"+s);
+        Log.d("lifecycle", "onResume()" + "webview数量" + s);
 
     }
+
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
-        Log.d("lifecycle","onPause()");
+        Log.d("lifecycle", "onPause()");
     }
 
     @Override
@@ -101,28 +107,29 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         super.onStop();
         mWebViewManager.getTop(currect).onPause();
         f1.removeAllViews();//移除所有视图
-        Log.d("lifecycle","onStop()");
+        Log.d("lifecycle", "onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("lifecycle","onDestroy()");
+        Log.d("lifecycle", "onDestroy()");
     }
+
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        f1.addView(mWebViewManager.getTop(currect));
-        Log.d("lifecycle","onReBookmarkt()");
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
-        if((keyCode==KeyEvent.KEYCODE_BACK)&& mWebViewManager.getTop(currect).canGoBack()){
+        if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
             mWebViewManager.getTop(0).goBack();
-        }else{
+        } else {
             exit();
             return true;
         }
@@ -130,14 +137,16 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         // system behavior (probably exit the activity)
         return super.onKeyDown(keyCode, event);
     }
-    private void exit(){
+
+    private void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 1000) {
             Toast.makeText(getApplicationContext(), "再按一次退出应用", Toast.LENGTH_SHORT).show();
-            mExitTime = System.currentTimeMillis(); }
-        else {
+            mExitTime = System.currentTimeMillis();
+        } else {
             //用户退出处理
             finish();
-            System.exit(0); }
+            System.exit(0);
+        }
     }
 
 
@@ -146,22 +155,24 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         newWebView(0);
         f1.addView(mWebViewManager.getTop(0));
     }
+
     @Override
-    public void click_newPagebutton(){
+    public void click_newPagebutton() {
         //新建标签页
         newTab();
     }
+
     @Override
-    public void delete_page(int position){
-        if(1== mWebViewManager.size()){
+    public void delete_page(int position) {
+        if (1 == mWebViewManager.size()) {
             //如果删除这个webview后没有其他的webview了，那就新建标签页
             mWebViewManager.getTop(0).loadUrl(null);
             return;
         }
-        if(position>currect){
+        if (position > currect) {
             mWebViewManager.destroy(position);
             delete_CUWL(position);
-        }else if(position<currect){
+        } else if (position < currect) {
             //把当前页面暂停并移除，然后加载新的currect处页面
             mWebViewManager.stop(currect);
             f1.removeView(mWebViewManager.getTop(currect));
@@ -170,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             currect--;
             f1.addView(mWebViewManager.getTop(currect));
             mWebViewManager.reStart(currect);
-        }else{
-            if(position!= mWebViewManager.size()-1){
+        } else {
+            if (position != mWebViewManager.size() - 1) {
                 //currect==position时，只要不是删除最后一个，就都这样操作：移除当前webview，删除webivew，把新提升上来的当前位置的webview添加进视图
                 mWebViewManager.stop(currect);
                 f1.removeView(mWebViewManager.getTop(position));
@@ -179,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 delete_CUWL(position);
                 f1.addView(mWebViewManager.getTop(position));
                 mWebViewManager.reStart(currect);
-            }else{
+            } else {
                 mWebViewManager.stop(currect);
                 f1.removeView(mWebViewManager.getTop(position));
                 currect--;
@@ -190,36 +201,38 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             }
         }
     }
+
     @Override
-    public void switchPage(int pos){
+    public void switchPage(int pos) {
         //pos是指要切换到的页面
         mWebViewManager.stop(currect);
         f1.removeView(mWebViewManager.getTop(currect));
         f1.addView(mWebViewManager.getTop(pos));
-        currect=pos;
+        currect = pos;
         mWebViewManager.reStart(currect);
         setTextForbar(currect);//更新工具栏上的文字
     }
+
     @Override
-    public int getCurrect(){
+    public int getCurrect() {
         return currect;
     }
 
-    public void useBookmarkPageActivityInterface(){
+    public void useBookmarkPageActivityInterface() {
         //来自BookmarkpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
-        BookmarkPageActivity.setInterface(new BookmarkPageActivity.SatrPageA_interface(){
+        BookmarkPageActivity.setInterface(new BookmarkPageActivity.SatrPageA_interface() {
             @Override
-            public void loadUrl(String urlname,boolean flags){
-                if (flags){
+            public void loadUrl(String urlname, boolean flags) {
+                if (flags) {
                     newTab();
                     mWebViewManager.getTop(currect).loadUrl(urlname);
-                }else
-                mWebViewManager.getTop(currect).loadUrl(urlname);
+                } else
+                    mWebViewManager.getTop(currect).loadUrl(urlname);
             }
         });
     }
 
-    public void useMultPage_DialogFragmentInterface(){
+    public void useMultPage_DialogFragmentInterface() {
         MultPage_DialogFragment.setInterface(this);
     }
 
@@ -231,43 +244,45 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
     @Override
-    public void setInfos(String title,String url){
+    public void setInfos(String title, String url) {
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
-        Log.d("lifecycle","webview标题"+url);
+        Log.d("lifecycle", "webview标题" + url);
         m.setText(url);//更新工具栏上的文字
         //更新当前页面的webviewpageinfo信息
         updateInfo(title, url);
         //历史记录加入数据库
-        sAboutHistory=AboutHistory.get(MainActivity.this);
+        sAboutHistory = AboutHistory.get(MainActivity.this);
         sAboutHistory.addToDataBase(mConverted_lists.getInfo(currect));
 
         String massage = mConverted_lists.getInfo(currect).getUrl();
-        Log.d(TAG,"即将加入历史记录的内容"+massage);
+        Log.d(TAG, "即将加入历史记录的内容" + massage);
 
     }
+
     private ArrayList<WebPage_Info> genItem() {
-        ArrayList<WebPage_Info> tmp=new ArrayList<>();
-        String[] datearr = new String[]{"2019-10-13","2019-10-06","2019-07-01","2019-09-08","2019-09-11"};
-        for (int i=0;i<5;i++){
-            tmp.add(new WebPage_Info("title"+i,"null",datearr[i]));
+        ArrayList<WebPage_Info> tmp = new ArrayList<>();
+        String[] datearr = new String[]{"2019-10-13", "2019-10-06", "2019-07-01", "2019-09-08", "2019-09-11"};
+        for (int i = 0; i < 5; i++) {
+            tmp.add(new WebPage_Info("title" + i, "null", datearr[i]));
         }
         return tmp;
     }
-            void updateInfo(String title, String url) {
-                //将当前页面网址更新数据，并加入历史记录
-                mConverted_lists.setTitle(currect,title);
-                mConverted_lists.setUrl(currect,url);
-                mConverted_lists.setdate(currect);
-                //更改flags，标记为已载入网址
-                mConverted_lists.setFlags(currect,1);
-            }
+
+    void updateInfo(String title, String url) {
+        //将当前页面网址更新数据，并加入历史记录
+        mConverted_lists.setTitle(currect, title);
+        mConverted_lists.setUrl(currect, url);
+        mConverted_lists.setdate(currect);
+        //更改flags，标记为已载入网址
+        mConverted_lists.setFlags(currect, 1);
+    }
 
 
-            void sCUWL() {
+    void sCUWL() {
         mConverted_lists = Converted_WebPage_Lists.get();
     }
 
-    private void delete_CUWL(int i){
+    private void delete_CUWL(int i) {
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
         mConverted_lists.delete(i);
     }
@@ -279,26 +294,27 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
         web.setWebChromeClient(new CustomWebchromeClient());
-        mWebViewManager.addToFirst(web,i);
-        //addToFirst(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
+        mWebViewManager.addToWebManager(web, i);
+        //addToWebManager(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
 
         //空白页需要自定义，需要根据用户所写的来设置
-        mConverted_lists.add("空白页","about:newTab","未分类",0);
+        mConverted_lists.add("空白页", "about:newTab", "未分类", 0);
         //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
         //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
 
     }
-    public void newTab(){
+
+    public void newTab() {
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         mWebViewManager.stop(currect);
         f1.removeView(mWebViewManager.getTop(0));
         addWebviewtohome();
-        currect=0;
+        currect = 0;
         setTextForbar(currect);//更新工具栏上的文字
     }
 
     //工具栏设置
-    private void toolbaract(){
+    private void toolbaract() {
         Toolbar bar = findViewById(R.id.toolbar1);
         setSupportActionBar(bar);
         //禁止显示标题
@@ -322,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.action_mult:
                         Log.i(TAG, "onClick: 多窗口按钮被触发");
                         mult_dialog();
@@ -349,61 +365,63 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
     public void showBookmarkDialog() {
-        WebPage_Info tmp= mConverted_lists.getInfo(currect);
+        WebPage_Info tmp = mConverted_lists.getInfo(currect);
         FragmentManager fm = getSupportFragmentManager();
-        Bookmark_Dialog dialog =Bookmark_Dialog.newInstance(1);
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1);
         dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
-        dialog.show(fm,"收藏当前网页");
+        dialog.show(fm, "收藏当前网页");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu,menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
 
-    private void mult_dialog(){
+    private void mult_dialog() {
         //展示多窗口
         FragmentManager fm = getSupportFragmentManager();
-        MultPage_DialogFragment md=new MultPage_DialogFragment();
-        md.show(fm,"fragment_multPage_dialog");
+        MultPage_DialogFragment md = new MultPage_DialogFragment();
+        md.show(fm, "fragment_multPage_dialog");
     }
-    private void minset(){
+
+    private void minset() {
         //底部设置界面
-        FragmentManager fm =getSupportFragmentManager();
-        MinSetDialog md=new MinSetDialog();
-        md.show(fm,"minSetDialog");
+        FragmentManager fm = getSupportFragmentManager();
+        MinSetDialog md = new MinSetDialog();
+        md.show(fm, "minSetDialog");
     }
 
     //搜索框代码
-    public void searchBar(View v){
+    public void searchBar(View v) {
         search_dialog();
     }
-    private void search_dialog(){
+
+    private void search_dialog() {
         //展示搜索框
         Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
-        startActivityForResult(intent,21);
+        startActivityForResult(intent, 21);
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=RESULT_OK){
+        if (resultCode != RESULT_OK) {
             return;
         }
-        if(requestCode==21){
+        if (requestCode == 21) {
             //把DoSearchActivity的requestCode定义为21
             assert data != null;
             mWebViewManager.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
             //sCUWL();
-            mConverted_lists.setFlags(currect,1);
-            Log.d(TAG, "onActivityResult: 被触发" +data.getStringExtra("text_or_url"));
-    }
+            mConverted_lists.setFlags(currect, 1);
+            Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
+        }
     }
 
 /*
@@ -416,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     */
 
     //webview的设置
-    void set1(WebView ti){
+    void set1(WebView ti) {
 
         ti.canGoBack();
         ti.canGoForward();
