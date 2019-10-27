@@ -8,5 +8,7 @@ public class Converted_WebPage_ListsTest {
 
     @Before
     public void setUp() throws Exception {
+        WebPage_Info info = new WebPage_Info("")
+        WebPage_Info info1 = new WebPage_Info();
     }
 }

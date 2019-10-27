@@ -13,17 +13,35 @@ public class WebPage_Info {
     // -1：网页被收藏;
     // -2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null
 
+    /**
+     * @param title 标题
+     * @param url 网址
+     * @param flags 标识网页是什么类的，收藏，历史，为加载网址。以半废弃
+     */
     public WebPage_Info(String title, String url, int flags) {
         this.title = title;
         this.url = url;
         this.flags=flags;
         this.date=null;
     }
+
+    /**
+     * @param title 标题
+     * @param url 网址
+     * @param date 日期
+     */
     public WebPage_Info(String title, String url,String date) {
         this.title = title;
         this.url = url;
         this.date=date;
     }
+
+    /**
+     * @param title 标题
+     * @param url 网址
+     * @param webTag 网页的标签(tag),用于收藏网页时使用。
+     * @param flags 标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
+     */
     public WebPage_Info(String title, String url, String webTag, int flags) {
         this.title = title;
         this.url = url;
