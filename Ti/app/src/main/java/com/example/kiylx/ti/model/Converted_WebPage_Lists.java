@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -9,8 +11,8 @@ public class Converted_WebPage_Lists implements Observer {
     //用来展示多窗口的网页的列表，当前打开的所有网页信息
     private ArrayList<WebPage_Info> mCurrectList;
     private Observable mObservable;
-
     private static Converted_WebPage_Lists sConverted_webPage_lists;
+    private static final String TAG = "Converted_WebPage_Lists";
 
     private Converted_WebPage_Lists() {
         mCurrectList = new ArrayList<>();
@@ -94,6 +96,24 @@ public class Converted_WebPage_Lists implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        if (arg instanceof WebPage_Info) {
+            updateWebpageInfo((WebPage_Info) arg);
+            Log.d(TAG, "更新信息");
+        } else {
+            mCurrectList.remove((int) arg);
+            Log.d(TAG, "删除信息");
+        }
 
+    }
+
+    /**
+     * @param arg 如果传入的WebPage_Info是已经存在的，更新信息；否则就添加这个WebPage_Info。
+     */
+    private void updateWebpageInfo(WebPage_Info arg) {
+        if(mCurrectList.contains(arg)){
+
+        }else{
+            mCurrectList.add(arg);
+        }
     }
 }

@@ -5,10 +5,9 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 import java.util.Observable;
 
-/*WebViewManager用来存储webview，管理webview。
-    当webview发生更新，包括添加或是删除或是webview自身发生更新，
+/*  WebViewManager用来存储webview，管理webview。当webview发生更新，包括添加或是删除或是webview自身发生更新，
     使用观察者模式更新Converted_WebPage_Lists中的数据。
-    Converted_WebPage_Lists中的抽取出特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；
+    Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
     通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。*/
 public class WebViewManager extends Observable {
 
@@ -22,7 +21,7 @@ public class WebViewManager extends Observable {
     private WebViewManager() {
         if (mArrayList == null) {
             mArrayList = new ArrayList<WebView>();
-            tmpData = new WebPage_Info(null,null,null);
+            tmpData = new WebPage_Info(null, null, null);
         }
     }
 
@@ -40,14 +39,17 @@ public class WebViewManager extends Observable {
     public void addToWebManager(WebView v, int i) {
         //添加到第一个位置，但是也可以指定i的值添加到其他位置
         insertWebView(v, i);
-        //更新信息
-        setTmpData(v);
+
     }
 
     private void insertWebView(WebView v, int i) {
         mArrayList.add(i, v);
-        setChanged();
-        notifyObservers(getTmpData());
+        updateWebview(v,i);
+    }
+
+    @Override
+    protected synchronized void setChanged() {
+        super.setChanged();
     }
 
     /**
@@ -59,8 +61,7 @@ public class WebViewManager extends Observable {
 
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
-        setChanged();
-        notifyObservers(i);
+       updateWebview(mArrayList.get(i),i);
     }
 
     public int size() {
@@ -80,7 +81,7 @@ public class WebViewManager extends Observable {
     /**
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
-    private void setTmpData(WebView webView){
+    private void setTmpData(WebView webView) {
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
@@ -91,8 +92,24 @@ public class WebViewManager extends Observable {
     /**
      * @return 获得tmpData
      */
-    private WebPage_Info getTmpData(){
+    private WebPage_Info getTmpData() {
         return tmpData;
+    }
+
+    /**
+     * @param arg 发生变化的Webview
+     * @param i 如果是-1，那就是让观察者执行删除，大于等于0的数字则是webview在arraylist中的位置。
+     */
+    //网页载入了网址，要触发这个方法，更新Convented_WebviewPage_List网页信息.
+    public void updateWebview(WebView arg,int i) {
+        setTmpData(arg);
+        setChanged();
+        if (i!=-1){
+            notifyObservers(i);
+        }else{
+            notifyObservers(getTmpData());
+        }
+
     }
 
     public boolean isempty() {
