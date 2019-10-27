@@ -73,11 +73,6 @@ public class WebViewManager extends Observable {
         return mArrayList.get(i);
     }
 
-    public void destroy(int pos) {
-        removeWeb(pos);
-
-    }
-
     /**
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
@@ -116,7 +111,7 @@ public class WebViewManager extends Observable {
         return mArrayList.isEmpty();
     }
 
-    private void removeWeb(int pos) {
+    public void destroy(int pos) {
         WebView tmp = mArrayList.get(pos);
         if (tmp != null) {
             //先加载空内容
@@ -128,7 +123,7 @@ public class WebViewManager extends Observable {
             //然后销毁
             tmp.destroy();
             //然后置为空
-            mArrayList.remove(pos);
+            delete(pos);
         }
     }
 
