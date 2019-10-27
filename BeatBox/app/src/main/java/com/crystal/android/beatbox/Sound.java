@@ -1,8 +1,10 @@
 package com.crystal.android.beatbox;
 
 public class Sound {
+    //Sound类存储了一首音乐的asset下的路径和这个音乐的文件名称
     private String mAssetPath;
     private String mName;
+    private Integer mSoundId;
 
     public Integer getSoundId() {
         return mSoundId;
@@ -12,7 +14,6 @@ public class Sound {
         mSoundId = soundId;
     }
 
-    private Integer mSoundId;
 
     public Sound(String assetPath){
         mAssetPath=assetPath;

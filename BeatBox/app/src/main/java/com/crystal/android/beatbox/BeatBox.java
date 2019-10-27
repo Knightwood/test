@@ -25,7 +25,9 @@ public class BeatBox {
     private SoundPool mSoundPool;
 
     public BeatBox(Context context) {
+        //获取asset
         mAssets = context.getAssets();
+        //创建soundpool
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             AudioAttributes audioAttributes = null;
             /*
@@ -42,10 +44,12 @@ public class BeatBox {
         } else {
             mSoundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0);
         }
+        //执行loadSound()
         loadSounds();
     }
 
     private void loadSounds() {
+        //把所有文件路径和名称存为Sound对象，然后把文件载入内存。
         String[] soundNames;
         try {
             soundNames = mAssets.list(SOUNDS_FOLDER);
@@ -55,15 +59,42 @@ public class BeatBox {
             return;
         }
         for (String filename : soundNames) {
-            String assetPath = SOUNDS_FOLDER + "/" + filename;
-            Sound sound = new Sound(assetPath);
-            mSounds.add(sound);
+            try {
+                //路径加上文件名组成完整的路径，
+                String assetPath = SOUNDS_FOLDER + "/" + filename;
+                //用完整的路径new一个Sound对象
+                Sound sound = new Sound(assetPath);
+                //执行load()方法，载入内存
+                load(sound);
+                //把刚刚new出来的sound实例存入mSound这个ArrayList
+                mSounds.add(sound);
+            } catch (IOException ioe) {
+                Log.e(TAG, "Could not load sound " + filename, ioe);
+            }
         }
     }
-    private void load(Sound sound) throws IOException{
+
+    private void load(Sound sound) throws IOException {
+        //获取afd，通过load(afd,1)获取id，把id存进sound对象
         AssetFileDescriptor afd = mAssets.openFd(sound.getAssetPath());
-        int soundId = mSoundPool.load(afd,1);
+        int soundId = mSoundPool.load(afd, 1);
         sound.setSoundId(soundId);
+    }
+
+    public void play(Sound sound) {
+        //上面已经处理过了，sound有了id，就可以直接执行play()方法播放音乐
+        Integer soundId = sound.getSoundId();
+        if (soundId == null) {
+            return;
+        }
+        mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+    public void controlProcess(int id,float rate){
+        mSoundPool.play(id,1.0f,1.0f,1,0,rate);
+    }
+
+    public void relase(){
+        mSoundPool.release();
     }
 
     public List<Sound> getSounds() {
