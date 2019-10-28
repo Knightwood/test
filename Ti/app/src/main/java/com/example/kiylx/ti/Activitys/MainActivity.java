@@ -171,13 +171,13 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
         if (position > currect) {
             mWebViewManager.destroy(position);
-            delete_CUWL(position);
+            //delete_CUWL(position);
         } else if (position < currect) {
             //把当前页面暂停并移除，然后加载新的currect处页面
             mWebViewManager.stop(currect);
             f1.removeView(mWebViewManager.getTop(currect));
             mWebViewManager.destroy(position);
-            delete_CUWL(position);
+            //delete_CUWL(position);
             currect--;
             f1.addView(mWebViewManager.getTop(currect));
             mWebViewManager.reStart(currect);
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 mWebViewManager.stop(currect);
                 f1.removeView(mWebViewManager.getTop(position));
                 mWebViewManager.destroy(position);
-                delete_CUWL(position);
+                //delete_CUWL(position);
                 f1.addView(mWebViewManager.getTop(position));
                 mWebViewManager.reStart(currect);
             } else {
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 f1.removeView(mWebViewManager.getTop(position));
                 currect--;
                 mWebViewManager.destroy(position);
-                delete_CUWL(position);
+                //delete_CUWL(position);
                 f1.addView(mWebViewManager.getTop(currect));
                 mWebViewManager.reStart(currect);
             }
@@ -248,8 +248,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle", "webview标题" + url);
         m.setText(url);//更新工具栏上的文字
+        /*
         //更新当前页面的webviewpageinfo信息
-        updateInfo(title, url);
+        updateInfo(title, url);*/
+
         //历史记录加入数据库
         sAboutHistory = AboutHistory.get(MainActivity.this);
         sAboutHistory.addToDataBase(mConverted_lists.getInfo(currect));
@@ -267,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
         return tmp;
     }
-
+/*
     void updateInfo(String title, String url) {
         //将当前页面网址更新数据，并加入历史记录
         mConverted_lists.setTitle(currect, title);
@@ -275,17 +277,17 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         mConverted_lists.setdate(currect);
         //更改flags，标记为已载入网址
         mConverted_lists.setFlags(currect, 1);
-    }
+    }*/
 
 
     void sCUWL() {
         mConverted_lists = Converted_WebPage_Lists.get();
     }
-
+/*
     private void delete_CUWL(int i) {
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
         mConverted_lists.delete(i);
-    }
+    }*/
 
     private void newWebView(int i) {
         //新建webview并放进数组
