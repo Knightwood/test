@@ -5,10 +5,12 @@ import android.webkit.WebView;
 import java.util.ArrayList;
 import java.util.Observable;
 
-/*  WebViewManager用来存储webview，管理webview。当webview发生更新，包括添加或是删除或是webview自身发生更新，
-    使用观察者模式更新Converted_WebPage_Lists中的数据。
-    Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
-    通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。*/
+/**
+ * WebViewManager用来存储webview，管理webview。当webview发生更新，包括添加或是删除或是webview自身发生更新，
+ * 使用观察者模式更新Converted_WebPage_Lists中的数据。
+ * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
+ * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
+ */
 public class WebViewManager extends Observable {
 
     //存着当前打开的所有webview对象
@@ -44,7 +46,7 @@ public class WebViewManager extends Observable {
 
     private void insertWebView(WebView v, int i) {
         mArrayList.add(i, v);
-        updateWebview(v,i);
+        updateWebview(v, i, Action.ADD);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class WebViewManager extends Observable {
 
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
-       updateWebview(mArrayList.get(i),i);
+        updateWebview(null, i, Action.DELETE);
     }
 
     public int size() {
@@ -84,26 +86,38 @@ public class WebViewManager extends Observable {
 
     }
 
+
     /**
-     * @return 获得tmpData
+     * @param pos    tpmDate指向的WebView在lists中的位置
+     * @param action 动作：添加，删除或是更新数据
+     * @return 获得SealedWebPageInfo
+     * 获取封装好的WebPageInfo，后面将用它作为推送给观察者的数据
      */
-    private WebPage_Info getTmpData() {
-        return tmpData;
+    private SealedWebPageInfo getSealedData(int pos, Action action) {
+        return new SealedWebPageInfo(tmpData, pos, action);
     }
 
     /**
-     * @param arg 发生变化的Webview
-     * @param i 如果是-1，那就是让观察者执行删除，大于等于0的数字则是webview在arraylist中的位置。
+     * @param pos WebView在list中的位置。
+     *            当网页载入了新的网址，WebView会更新，
+     *            所以，当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
      */
-    //网页载入了网址，要触发这个方法，更新Convented_WebviewPage_List网页信息.
-    public void updateWebview(WebView arg,int i) {
+    public void notifyWebViewUpdate(int pos) {
+        updateWebview(mArrayList.get(pos), pos, Action.UPDATEINFO);
+    }
+
+    /**
+     * @param arg    发生变化的Webview
+     * @param i      webview在arraylist中的位置。
+     * @param action 要执行的动作：添加，删除，或是更新
+     *               网页载入了网址，要触发这个方法，更新Convented_WebviewPage_List网页信息.
+     */
+    public void updateWebview(WebView arg, int i, Action action) {
+        //用传入的webview更新tmpData，后面需要用tmp进行封装
         setTmpData(arg);
         setChanged();
-        if (i!=-1){
-            notifyObservers(i);
-        }else{
-            notifyObservers(getTmpData());
-        }
+        //用封装的WebPageInfo执行推送
+        notifyObservers(getSealedData(i, action));
 
     }
 

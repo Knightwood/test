@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.model;
 
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -96,24 +95,30 @@ public class Converted_WebPage_Lists implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (arg instanceof WebPage_Info) {
-            updateWebpageInfo((WebPage_Info) arg);
-            Log.d(TAG, "更新信息");
-        } else {
-            mCurrectList.remove((int) arg);
-            Log.d(TAG, "删除信息");
+        if (arg instanceof SealedWebPageInfo) {
+            updateItem(((SealedWebPageInfo) arg).getInfo(),((SealedWebPageInfo) arg).getPos(),((SealedWebPageInfo) arg).getAction());
         }
 
     }
 
     /**
-     * @param arg 如果传入的WebPage_Info是已经存在的，更新信息；否则就添加这个WebPage_Info。
+     * @param info WebPageInfo对象，被封装的基础
+     * @param pos info在ArrayList中的位置
+     * @param action 需要执行的动作，添加，删除或是更新信息
+     *               根据action执行相应的更新动作
      */
-    private void updateWebpageInfo(WebPage_Info arg) {
-        if(mCurrectList.contains(arg)){
-
-        }else{
-            mCurrectList.add(arg);
+    private void updateItem(WebPage_Info info, int pos, Action action) {
+        switch (action){
+            case ADD:
+                mCurrectList.add(pos,info);
+                break;
+            case DELETE:
+                mCurrectList.remove(pos);
+                break;
+            case UPDATEINFO:
+                mCurrectList.remove(pos);
+                mCurrectList.add(pos,info);
+                break;
         }
     }
 }
