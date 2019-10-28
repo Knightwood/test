@@ -15,16 +15,29 @@ public class TimeProcess {
     static SimpleDateFormat simpleDateFormat;
     public TimeProcess(){
     }
+
+    /**
+     * 初始化操作，生成一个simpleDateFormat对象
+     */
     private static void init(){
         if(simpleDateFormat==null)
         simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
     }
+
+    /**
+     * @return 获取当前的日期，返回日期是String类型
+     */
     public static String  getTime(){
         init();
         // 获取当前时间
         String time = simpleDateFormat.format(new Date(System.currentTimeMillis()));
         return time;
     }
+
+    /**
+     * @param str 日期字符串
+     * @return 把str格式化为Date对象
+     */
     public static Date convertToDate(String str){
         init();
         Date date=null;
@@ -35,13 +48,18 @@ public class TimeProcess {
         }
         return date;
     }
-    public static String[] getWeekorMonth_start(String arg1, String datenow) {
-        //直接返回一个字符串数组，第一个元素是开始时间，第二个是结束时间
+
+    /**
+     * @param kinds 要获取的日期范围
+     * @param datenow 当前日期的字符串
+     * @return 直接返回一个字符串数组，第一个元素是开始时间，第二个是结束时间
+     */
+    public static String[] getWeekorMonth_start(KindsofDate kinds, String datenow) {
         init();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(convertToDate(datenow));
         String startDate = null;
-        switch (KindsofDate.valueOf(arg1)) {
+        switch (kinds) {
             case THISWEEK:
                 calendar.add(Calendar.DAY_OF_MONTH, -7);
                 break;
@@ -64,7 +82,7 @@ public class TimeProcess {
                 calendar.add(Calendar.MONTH, -5);
                 break;
         }
-        if (!arg1.equals("THISWEEK")) {
+        if (kinds==KindsofDate.THISWEEK) {
             calendar.set(Calendar.DAY_OF_MONTH, 1);
         }
             startDate = simpleDateFormat.format(calendar.getTime());

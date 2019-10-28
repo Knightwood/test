@@ -79,6 +79,9 @@ public class WebViewManager extends Observable {
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
     private void setTmpData(WebView webView) {
+        if(webView==null){
+            return;
+        }
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());

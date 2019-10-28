@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.model.KindsofDate;
 import com.example.kiylx.ti.model.TimeProcess;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
@@ -41,7 +42,7 @@ public class HistoryActivity extends AppCompatActivity{
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 //初始化recyclerview为最近七天的数据
         mDateli=new String[2];
-        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
         updateUI(mDateli[0],mDateli[1]);
         CheckedChangeListener();
     }
@@ -54,25 +55,25 @@ public class HistoryActivity extends AppCompatActivity{
 
                 switch(i){
                     case R.id.thisweek:
-                        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
                         break;
                     case R.id.thismonth:
-                        mDateli=TimeProcess.getWeekorMonth_start("THISWEEK",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
                         break;
                     case R.id.month1:
-                        mDateli= TimeProcess.getWeekorMonth_start("MONTH1",TimeProcess.getTime());
+                        mDateli= TimeProcess.getWeekorMonth_start(KindsofDate.MONTH1,TimeProcess.getTime());
                         break;
                     case R.id.month2:
-                        mDateli=TimeProcess.getWeekorMonth_start("MONTH2",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH2,TimeProcess.getTime());
                         break;
                     case R.id.month3:
-                        mDateli=TimeProcess.getWeekorMonth_start("MONTH3",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH3,TimeProcess.getTime());
                         break;
                     case R.id.month4:
-                        mDateli=TimeProcess.getWeekorMonth_start("MONTH4",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH4,TimeProcess.getTime());
                         break;
                     case R.id.month5:
-                        mDateli=TimeProcess.getWeekorMonth_start("MONTH5",TimeProcess.getTime());
+                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH5,TimeProcess.getTime());
                         break;
                 }
                 updateUI(mDateli[0],mDateli[1]);
