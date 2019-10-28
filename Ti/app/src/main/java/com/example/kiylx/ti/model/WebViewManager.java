@@ -2,6 +2,8 @@ package com.example.kiylx.ti.model;
 
 import android.webkit.WebView;
 
+import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
+
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -11,7 +13,7 @@ import java.util.Observable;
  * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
  * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
  */
-public class WebViewManager extends Observable {
+public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     //存着当前打开的所有webview对象
     private ArrayList<WebView> mArrayList;
@@ -125,11 +127,14 @@ public class WebViewManager extends Observable {
         return new SealedWebPageInfo(tmpData, pos, action);
     }
 
+
+
     /**
      * @param pos WebView在list中的位置。
      *            当网页载入了新的网址，WebView会更新，
      *            所以，当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
      */
+    @Override
     public void notifyWebViewUpdate(int pos) {
         updateWebview(mArrayList.get(pos), pos, Action.UPDATEINFO);
     }

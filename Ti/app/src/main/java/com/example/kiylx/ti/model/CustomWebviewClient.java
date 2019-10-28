@@ -14,11 +14,14 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.example.kiylx.ti.AboutBookmark;
+import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
 
 public class CustomWebviewClient extends WebViewClient {
     private SETINFOS mSETINFOS;
     private AboutBookmark mAboutBookmark;
     private Context mContext;
+    private NotifyWebViewUpdate mNotifyWebViewUpdate;
 
     public interface SETINFOS {
        void setInfos(String title, String url);
@@ -83,8 +86,12 @@ public class CustomWebviewClient extends WebViewClient {
         boolean isBookmark;
         super.onPageFinished(view, url);
 
-        mSETINFOS =(SETINFOS) mContext;
-        mSETINFOS.setInfos(view.getTitle(),url);
+        /*mSETINFOS =(SETINFOS) mContext;
+        mSETINFOS.setInfos(view.getTitle(),url);*/
+
+        //网页停止加载时，更新信息
+        mNotifyWebViewUpdate=(NotifyWebViewUpdate) mContext;
+        mNotifyWebViewUpdate.notifyWebViewUpdate(MainActivity.getCurrect());
 
         mAboutBookmark=AboutBookmark.get(mContext);
         isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));

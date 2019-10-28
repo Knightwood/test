@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         if (mWebViewManager.isempty()) {
             Log.d(TAG, "onCreate: isempty");
-            addWebviewtohome();
+            //addWebviewtohome();
+            newTab();
         } else {
             f1.addView(mWebViewManager.getTop(currect));
         }/*当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来*/
@@ -174,16 +175,20 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         mWebViewManager.stop(currect);
         f1.removeView(mWebViewManager.getTop(0));
-        addWebviewtohome();
+        //addWebviewtohome();
+
+        newWebView(0);
+        f1.addView(mWebViewManager.getTop(0));
+
         currect = 0;
         setTextForbar(currect);//更新工具栏上的文字
     }
-
+/*
     private void addWebviewtohome() {
         //作用是把数组第一个webview对象展示在面前
         newWebView(0);
         f1.addView(mWebViewManager.getTop(0));
-    }
+    }*/
 
     @Override
     public void delete_page(int position) {
@@ -236,8 +241,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         setTextForbar(currect);//更新工具栏上的文字
     }
 
-    @Override
-    public int getCurrect() {
+    /**
+     * @return 获取当前webview在arraylist中的位置
+     */
+    public static int getCurrect() {
         return currect;
     }
 

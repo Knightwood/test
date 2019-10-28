@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -86,7 +87,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         }
         Log.d(TAG, "onBookmarkt: ");
        //获取当前网页的pos
-        mCurrect=minterface.getCurrect();
+        mCurrect= MainActivity.getCurrect();
     }
 
     @Override
@@ -113,7 +114,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 
         void switchPage(int pos);
 
-        int getCurrect();
+        //int getCurrect();
     }
     public static void setInterface(MultPage_DialogF_interface minterface){
         MultPage_DialogFragment.minterface=minterface;
@@ -128,7 +129,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         }else{
-            mCurrect =minterface.getCurrect();
+            mCurrect =MainActivity.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
             //mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
