@@ -38,9 +38,22 @@ public class WebViewManager extends Observable {
         return sWebViewManager;
     }
 
-    public void addToWebManager(WebView v, int i) {
-        //添加到第一个位置，但是也可以指定i的值添加到其他位置
-        insertWebView(v, i);
+    /**
+     * @param v    要添加的webview
+     * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
+     * @param flag 标识这是什么网页，-1表示这是新标签页
+     *             添加新标签页时，会用另一个版本的setTmpData设置新标签页的信息
+     *             然后调用updateWebView()时，传入null，这样tmpData就不会被再次更新
+     */
+    public void addToWebManager(WebView v, int i, int flag) {
+        if (flag == -1) {
+            //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
+            //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
+            setTmpData("空白页", "about:newTab");
+            updateWebview(null, 0, Action.ADD);
+
+        } else
+            insertWebView(v, i);
 
     }
 
@@ -75,11 +88,24 @@ public class WebViewManager extends Observable {
         return mArrayList.get(i);
     }
 
+
+    /**
+     * @param title 网址标题
+     * @param url   URL
+     *              这是为生成新标签页准备的方法。
+     */
+    private void setTmpData(String title, String url) {
+        tmpData.setTitle(title);
+        tmpData.setUrl(url);
+        tmpData.setDate(TimeProcess.getTime());
+        tmpData.setFlags(1);
+    }
+
     /**
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
     private void setTmpData(WebView webView) {
-        if(webView==null){
+        if (webView == null) {
             return;
         }
         tmpData.setTitle(webView.getTitle());
@@ -88,7 +114,6 @@ public class WebViewManager extends Observable {
         tmpData.setFlags(1);
 
     }
-
 
     /**
      * @param pos    tpmDate指向的WebView在lists中的位置

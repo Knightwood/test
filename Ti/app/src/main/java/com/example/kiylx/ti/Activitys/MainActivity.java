@@ -36,14 +36,14 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
     private static final String TAG = "MainActivity";
+    private static final String CURRENT_URL = "current url";
+    static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     WebViewManager mWebViewManager;
     FrameLayout f1;
     Converted_WebPage_Lists mConverted_lists;
-    static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
-    private long mExitTime;//拿来判断按返回键间隔
     TextView m;
     AboutHistory sAboutHistory;
-    private static final String CURRENT_URL = "current url";
+    private long mExitTime;//拿来判断按返回键间隔
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,17 +149,40 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
     }
 
+    /**
+     * @param i pos，webview要添加进的位置
+     *          新建一个webview并放进WebViewManager
+     */
+    private void newWebView(int i) {
+        //新建webview并放进数组
+        WebView web = new WebView(getApplicationContext());
+        set1(web);
+        //给new出来的webview执行设置
+        web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
+        web.setWebChromeClient(new CustomWebchromeClient());
+        mWebViewManager.addToWebManager(web, i, -1);
 
-    private void addWebviewtohome() {
-        //作用是把数组第一个webview对象展示在面前
-        newWebView(0);
-        f1.addView(mWebViewManager.getTop(0));
     }
 
     @Override
     public void click_newPagebutton() {
         //新建标签页
         newTab();
+    }
+
+    public void newTab() {
+        //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
+        mWebViewManager.stop(currect);
+        f1.removeView(mWebViewManager.getTop(0));
+        addWebviewtohome();
+        currect = 0;
+        setTextForbar(currect);//更新工具栏上的文字
+    }
+
+    private void addWebviewtohome() {
+        //作用是把数组第一个webview对象展示在面前
+        newWebView(0);
+        f1.addView(mWebViewManager.getTop(0));
     }
 
     @Override
@@ -289,31 +312,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         mConverted_lists.delete(i);
     }*/
 
-    private void newWebView(int i) {
-        //新建webview并放进数组
-        WebView web = new WebView(getApplicationContext());
-        set1(web);
-        //给new出来的webview执行设置
-        web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
-        web.setWebChromeClient(new CustomWebchromeClient());
-        mWebViewManager.addToWebManager(web, i);
-        //addToWebManager(web,i)其实没有做限制，int i指示放在哪，默认是0，既是第一个位置。
-
-        //空白页需要自定义，需要根据用户所写的来设置
-        mConverted_lists.add("空白页", "about:newTab", "未分类", 0);
-        //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
-        //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
-
-    }
-
-    public void newTab() {
-        //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
-        mWebViewManager.stop(currect);
-        f1.removeView(mWebViewManager.getTop(0));
-        addWebviewtohome();
-        currect = 0;
-        setTextForbar(currect);//更新工具栏上的文字
-    }
 
     //工具栏设置
     private void toolbaract() {
