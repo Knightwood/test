@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.model.WebViewManager;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.CustomWebchromeClient;
@@ -41,36 +40,35 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     WebViewManager mWebViewManager;
     FrameLayout f1;
     Converted_WebPage_Lists mConverted_lists;
-    TextView m;
+    TextView mTextView;
     //AboutHistory sAboutHistory;
     private long mExitTime;//拿来判断按返回键间隔
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
         sCUWL();
 
-        setContentView(R.layout.activity_main);
-
         f1 = findViewById(R.id.Webview_group);
+        mTextView = findViewById(R.id.search_edittext);
 
+        //判断webviewmanager中有没有webview，有的话执行恢复方法，把webview重新放进屏幕。当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来
         if (mWebViewManager.isempty()) {
             Log.d(TAG, "onCreate: isempty");
-            //addWebviewtohome();
             newTab();
         } else {
-            f1.addView(mWebViewManager.getTop(currect));
-        }/*当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来*/
+            reasumeWebview();
+            //f1.addView(mWebViewManager.getTop(currect));
+        }
 
+        //工具栏
         toolbaract();
         Log.d("lifecycle", "onCreate()");
 
-        m = findViewById(R.id.search_edittext);
-
         useBookmarkPageActivityInterface();
-
         useMultPage_DialogFragmentInterface();
     }
 
@@ -155,6 +153,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             finish();
             System.exit(0);
         }
+    }
+
+    /**
+     * 退出应用或是其他原因使webview从屏幕上被移除，那就用这个方法恢复
+     */
+    private void reasumeWebview() {
     }
 
     /**
@@ -279,14 +283,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //以下三行把工具栏的的文字更新
         //sCUWL();
         String mt = mConverted_lists.getTitle(i);
-        m.setText(mt);
+        mTextView.setText(mt);
     }
 
     @Override
     public void setInfos(String title, String url) {
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle", "webview标题" + url);
-        m.setText(url);//更新工具栏上的文字
+        mTextView.setText(url);//更新工具栏上的文字
         /*
         //更新当前页面的webviewpageinfo信息
         updateInfo(title, url);*/
