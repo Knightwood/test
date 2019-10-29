@@ -6,7 +6,7 @@ import android.webkit.WebView;
 public class WebSetting {
 
     //webview的设置
-    void set1(WebView ti){
+    void set1(WebView ti) {
 
         ti.canGoBack();
         ti.canGoForward();

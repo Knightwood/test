@@ -1,7 +1,11 @@
 package com.example.kiylx.ti.model;
 
+import android.content.Context;
 import android.webkit.WebView;
 
+import com.example.kiylx.ti.AboutBookmark;
+import com.example.kiylx.ti.AboutHistory;
+import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
 
 import java.util.ArrayList;
@@ -19,21 +23,23 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private ArrayList<WebView> mArrayList;
     //存储当前使用的webview的网址等数据，用来向观察者推送更新。
     private WebPage_Info tmpData;
-
     private volatile static WebViewManager sWebViewManager;
+    private AboutHistory sAboutHistory;
+    private Context mContext;
 
-    private WebViewManager() {
+    private WebViewManager(Context context) {
         if (mArrayList == null) {
             mArrayList = new ArrayList<WebView>();
             tmpData = new WebPage_Info(null, null, null);
+            this.mContext = context;
         }
     }
 
-    public static WebViewManager getInstance() {
+    public static WebViewManager getInstance(Context context) {
         if (sWebViewManager == null) {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
-                    sWebViewManager = new WebViewManager();
+                    sWebViewManager = new WebViewManager(context);
                 }
             }
         }
@@ -52,7 +58,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
             //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
             setTmpData("空白页", "about:newTab");
-            updateWebview(null, 0, Action.ADD);
+            notifyupdate(null, 0, Action.ADD);
 
         } else
             insertWebView(v, i);
@@ -61,7 +67,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private void insertWebView(WebView v, int i) {
         mArrayList.add(i, v);
-        updateWebview(v, i, Action.ADD);
+        notifyupdate(v, i, Action.ADD);
     }
 
     @Override
@@ -78,7 +84,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
-        updateWebview(null, i, Action.DELETE);
+        notifyupdate(null, i, Action.DELETE);
     }
 
     public int size() {
@@ -128,7 +134,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
 
-
     /**
      * @param pos WebView在list中的位置。
      *            当网页载入了新的网址，WebView会更新，
@@ -136,21 +141,26 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     @Override
     public void notifyWebViewUpdate(int pos) {
-        updateWebview(mArrayList.get(pos), pos, Action.UPDATEINFO);
+        notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
     }
 
     /**
      * @param arg    发生变化的Webview
      * @param i      webview在arraylist中的位置。
      * @param action 要执行的动作：添加，删除，或是更新
-     *               网页载入了网址，要触发这个方法，更新Convented_WebviewPage_List网页信息.
+     *               网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
+     *               并且，把被更新的网页信息加入历史记录数据库
      */
-    public void updateWebview(WebView arg, int i, Action action) {
+    public void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         setTmpData(arg);
         setChanged();
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
+
+        //历史记录加入数据库
+        sAboutHistory = AboutHistory.get(mContext);
+        sAboutHistory.addToDataBase(tmpData);
 
     }
 

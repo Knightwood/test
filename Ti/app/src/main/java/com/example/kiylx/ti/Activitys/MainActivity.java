@@ -42,16 +42,19 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     FrameLayout f1;
     Converted_WebPage_Lists mConverted_lists;
     TextView m;
-    AboutHistory sAboutHistory;
+    //AboutHistory sAboutHistory;
     private long mExitTime;//拿来判断按返回键间隔
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        f1 = findViewById(R.id.Webview_group);
-        mWebViewManager = WebViewManager.getInstance();
+
+        mWebViewManager = WebViewManager.getInstance(MainActivity.this);
         sCUWL();
+
+        setContentView(R.layout.activity_main);
+
+        f1 = findViewById(R.id.Webview_group);
 
         if (mWebViewManager.isempty()) {
             Log.d(TAG, "onCreate: isempty");
@@ -60,10 +63,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         } else {
             f1.addView(mWebViewManager.getTop(currect));
         }/*当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来*/
+
         toolbaract();
         Log.d("lifecycle", "onCreate()");
+
         m = findViewById(R.id.search_edittext);
+
         useBookmarkPageActivityInterface();
+
         useMultPage_DialogFragmentInterface();
     }
 
@@ -172,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
     public void newTab() {
+        //cleanTab();
+
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         mWebViewManager.stop(currect);
         f1.removeView(mWebViewManager.getTop(0));
@@ -179,8 +188,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         newWebView(0);
         f1.addView(mWebViewManager.getTop(0));
-
         currect = 0;
+
         setTextForbar(currect);//更新工具栏上的文字
     }
 /*
@@ -282,9 +291,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //更新当前页面的webviewpageinfo信息
         updateInfo(title, url);*/
 
+        /*
         //历史记录加入数据库
         sAboutHistory = AboutHistory.get(MainActivity.this);
-        sAboutHistory.addToDataBase(mConverted_lists.getInfo(currect));
+        sAboutHistory.addToDataBase(mConverted_lists.getInfo(currect));*/
 
         String massage = mConverted_lists.getInfo(currect).getUrl();
         Log.d(TAG, "即将加入历史记录的内容" + massage);

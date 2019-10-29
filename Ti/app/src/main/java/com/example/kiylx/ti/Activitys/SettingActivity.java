@@ -17,7 +17,7 @@ public class SettingActivity extends AppCompatActivity implements PreferenceFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        getSupportFragmentManager().beginTransaction().add(R.id.ffff,new MainSettingFragment()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.ffff, new MainSettingFragment()).commit();
     }
 
 

@@ -25,7 +25,7 @@ import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
 
-public class HistoryActivity extends AppCompatActivity{
+public class HistoryActivity extends AppCompatActivity {
     HistoryAdapter mAdapter;
     ArrayList<WebPage_Info> mHistorys;
     View view;
@@ -38,45 +38,46 @@ public class HistoryActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        listView=findViewById(R.id.showHistory_1);
+        listView = findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 //初始化recyclerview为最近七天的数据
-        mDateli=new String[2];
-        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
-        updateUI(mDateli[0],mDateli[1]);
+        mDateli = new String[2];
+        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
+        updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
     }
+
     //监听chipgroup以更新recyclerview视图
-    private void CheckedChangeListener(){
+    private void CheckedChangeListener() {
         mChipGroup = findViewById(R.id.Date_ChipGroup);
         mChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup chipGroup, int i) {
 
-                switch(i){
+                switch (i) {
                     case R.id.thisweek:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
                         break;
                     case R.id.thismonth:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
                         break;
                     case R.id.month1:
-                        mDateli= TimeProcess.getWeekorMonth_start(KindsofDate.MONTH1,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH1, TimeProcess.getTime());
                         break;
                     case R.id.month2:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH2,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH2, TimeProcess.getTime());
                         break;
                     case R.id.month3:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH3,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH3, TimeProcess.getTime());
                         break;
                     case R.id.month4:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH4,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH4, TimeProcess.getTime());
                         break;
                     case R.id.month5:
-                        mDateli=TimeProcess.getWeekorMonth_start(KindsofDate.MONTH5,TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH5, TimeProcess.getTime());
                         break;
                 }
-                updateUI(mDateli[0],mDateli[1]);
+                updateUI(mDateli[0], mDateli[1]);
             }
         });
 
@@ -88,32 +89,33 @@ public class HistoryActivity extends AppCompatActivity{
         super.onStart();
     }
 
-    private void updateUI(String startDate,String endDate){
+    private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        sAboutHistory=AboutHistory.get(this);
-        mHistorys =sAboutHistory.getInfoFromDate(startDate,endDate);
-        if(mHistorys.isEmpty()){
+        sAboutHistory = AboutHistory.get(this);
+        mHistorys = sAboutHistory.getInfoFromDate(startDate, endDate);
+        if (mHistorys.isEmpty()) {
             return;
         }
-        if(null==mAdapter){
-            mAdapter=new HistoryAdapter(mHistorys);
+        if (null == mAdapter) {
+            mAdapter = new HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
-        }else{
+        } else {
             mAdapter.setLists(mHistorys);
             mAdapter.notifyDataSetChanged();
         }
 
 
     }
-    private void itemPopmenu(View v){
-        PopupMenu itemMenu=new PopupMenu(this,v);
+
+    private void itemPopmenu(View v) {
+        PopupMenu itemMenu = new PopupMenu(this, v);
         MenuInflater inflater = itemMenu.getMenuInflater();
-        inflater.inflate(R.menu.history_item_option,itemMenu.getMenu());
+        inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
         itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.open:
                         break;
                     case R.id.open1:
@@ -129,21 +131,23 @@ public class HistoryActivity extends AppCompatActivity{
         itemMenu.show();
     }
 
-    private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder>{
+    private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         ArrayList<WebPage_Info> lists;
-        HistoryAdapter(ArrayList<WebPage_Info> list){
-            this.lists=list;
-            boolean ta=lists.isEmpty();
-            Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空"+ta+lists.get(0).getUrl());
+
+        HistoryAdapter(ArrayList<WebPage_Info> list) {
+            this.lists = list;
+            boolean ta = lists.isEmpty();
+            Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
-        public void setLists(ArrayList<WebPage_Info> lists){
-            this.lists=lists;
+
+        public void setLists(ArrayList<WebPage_Info> lists) {
+            this.lists = lists;
         }
 
         @NonNull
         @Override
         public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item,parent,false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item, parent, false);
             Log.d("历史activity", "onCreateViewHolder函数被触发");
             return new HistoryViewHolder(v);
         }
@@ -160,18 +164,20 @@ public class HistoryActivity extends AppCompatActivity{
             return lists.size();
         }
     }
-    private class HistoryViewHolder extends ViewHolder implements View.OnClickListener{
+
+    private class HistoryViewHolder extends ViewHolder implements View.OnClickListener {
         TextView title;
         TextView url;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
-            title=itemView.findViewById(R.id.itemTitle);
-            url=itemView.findViewById(R.id.itemurl);
+            title = itemView.findViewById(R.id.itemTitle);
+            url = itemView.findViewById(R.id.itemurl);
             itemView.setOnClickListener(this);
         }
-        public void bind(WebPage_Info info){
+
+        public void bind(WebPage_Info info) {
             title.setText(info.getTitle());
             url.setText(info.getUrl());
             Log.d("历史activity", "bind函数被触发");

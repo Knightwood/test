@@ -92,14 +92,14 @@ public class CustomWebviewClient extends WebViewClient {
         //网页停止加载时，更新信息
         mNotifyWebViewUpdate=(NotifyWebViewUpdate) mContext;
         mNotifyWebViewUpdate.notifyWebViewUpdate(MainActivity.getCurrect());
-
+/*
         mAboutBookmark=AboutBookmark.get(mContext);
         isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));
         if (isBookmark){
             //如果网页已经被收藏，让收藏按键变色
         }else{
             Toast.makeText(mContext,"未收藏",Toast.LENGTH_LONG).show();
-        }
+        }*/
     }
     /**
      * WebView 加载页面资源时会回调，每一个资源产生的一次网络加载，除非本地有当前 url 对应有缓存，否则就会加载。

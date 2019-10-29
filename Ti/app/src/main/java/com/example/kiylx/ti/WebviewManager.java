@@ -7,13 +7,16 @@ import java.util.Observable;
 
 public class WebviewManager extends Observable {
     private WebPage_Info info;
-    public WebviewManager(){}
+
+    public WebviewManager() {
+    }
 
     public void setInfo(WebPage_Info info) {
         this.info = info;
         notifyChange(info);
     }
-    public void notifyChange(WebPage_Info arg){
+
+    public void notifyChange(WebPage_Info arg) {
         notifyObservers(arg);
     }
 

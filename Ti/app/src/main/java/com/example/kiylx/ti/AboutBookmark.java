@@ -19,87 +19,92 @@ public class AboutBookmark {
     private SQLiteDatabase mDatabase;
     private Context mContext;
 
-    private AboutBookmark(Context context){
-        mContext=context;
-        bookMarklists =new ArrayList<>();//暂时没有用
-        mDatabase=new FavoritePageBaseHelper(mContext,FavoritepageDbSchema.FavoriteTable.NAME,null,1).getWritableDatabase();
+    private AboutBookmark(Context context) {
+        mContext = context;
+        bookMarklists = new ArrayList<>();//暂时没有用
+        mDatabase = new FavoritePageBaseHelper(mContext, FavoritepageDbSchema.FavoriteTable.NAME, null, 1).getWritableDatabase();
     }
-    public static AboutBookmark get(Context context){
-        if(sAboutBookmark==null){
-            sAboutBookmark=new  AboutBookmark(context);
+
+    public static AboutBookmark get(Context context) {
+        if (sAboutBookmark == null) {
+            sAboutBookmark = new AboutBookmark(context);
         }
         return sAboutBookmark;
     }
 
-//==========================以下数据库操作=========================//
-    public void add(WebPage_Info info){
-        if(info==null||info.getUrl()==null){
+    //==========================以下数据库操作=========================//
+    public void add(WebPage_Info info) {
+        if (info == null || info.getUrl() == null) {
             return;
         }
         ContentValues values = getContentValues(info);
-        mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME,null,values);
+        mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME, null, values);
 
     }
-    public void updateItem(WebPage_Info info){
+
+    public void updateItem(WebPage_Info info) {
         //更新条目
         //如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
         String url = info.getUrl();
         ContentValues values = getContentValues(info);
-        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME,values, FavoritepageDbSchema.FavoriteTable.childs.url+"=?",new String[]{url});
+        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.url + "=?", new String[]{url});
 
     }
-    public ArrayList<WebPage_Info> getWebPageinfos(){
+
+    public ArrayList<WebPage_Info> getWebPageinfos() {
         //第一个参数来指示查询哪一列
 
-        ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
-        ItemCursorWrapper cursor= queryFavority(null,null);
-        try{
-            if(cursor.getCount()==0){
+        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+        ItemCursorWrapper cursor = queryFavority(null, null);
+        try {
+            if (cursor.getCount() == 0) {
                 return mlists;
             }
             cursor.moveToFirst();
-            while(!cursor.isAfterLast()){
+            while (!cursor.isAfterLast()) {
                 mlists.add(cursor.getFavoriterinfo());
                 cursor.moveToNext();
             }
-        }finally {
+        } finally {
             cursor.close();
         }
         return mlists;
     }
-    public ArrayList<WebPage_Info> getBookmarkitems(String str){
-        ArrayList<WebPage_Info> mlists=new ArrayList<>();//用来放查找结果
-        ItemCursorWrapper cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG + " =?",new String[]{str});
-        try{
-            if(cursor.getCount()==0){
+
+    public ArrayList<WebPage_Info> getBookmarkitems(String str) {
+        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG + " =?", new String[]{str});
+        try {
+            if (cursor.getCount() == 0) {
                 return mlists;
             }
             cursor.moveToFirst();
-            while(!cursor.isAfterLast()){
+            while (!cursor.isAfterLast()) {
                 mlists.add(cursor.getFavoriterinfo());
                 cursor.moveToNext();
             }
-        }finally {
+        } finally {
             cursor.close();
         }
         return mlists;
     }
-    public void delete(String url){
-        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url + " =?",new String[]{url});
+
+    public void delete(String url) {
+        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
     }
-    private static ContentValues getContentValues(WebPage_Info info){
+
+    private static ContentValues getContentValues(WebPage_Info info) {
         //存网页信息
         ContentValues values = new ContentValues();
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE,info.getTitle());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.url,info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG,info.getWebTags());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG, info.getWebTags());
 
         return values;
     }
 
-
-    private ItemCursorWrapper queryFavority(String whereClause, String[] whereArgs){
-        Cursor cursor =mDatabase.query(
+    private ItemCursorWrapper queryFavority(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
                 null,
                 whereClause,
@@ -110,32 +115,35 @@ public class AboutBookmark {
         );
         return new ItemCursorWrapper(cursor);
     }
-    public boolean isMarked(WebPage_Info info){
+
+    public boolean isMarked(WebPage_Info info) {
         //判断标准是网址，与数据库里网址一致即为收藏了
-        String url=info.getUrl();
-        ItemCursorWrapper cursor=queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?",new String[]{url});
-        try{
-            if(cursor.getCount()==0){
+        String url = info.getUrl();
+        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
+        try {
+            if (cursor.getCount() == 0) {
                 //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
                 return false;
             }
             return true;
-        }finally {
+        } finally {
             cursor.close();
         }
     }
 
     public ArrayList<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
-        if(str.equals("所有书签")){
+        if (str.equals("所有书签")) {
             return getWebPageinfos();
         }
         return getBookmarkitems(str);
     }
-    public void updateTagsforItems(String tag, String newTagname){
+
+    public void updateTagsforItems(String tag, String newTagname) {
         //根据tag批量更改条目的信息,更新书签记录的tag名称
 
     }
+
     public void deleteWithtag(String tag) {
         //根据tag这个标签删除相关的条目
     }

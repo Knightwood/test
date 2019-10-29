@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +31,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.min_set_view,null);
+        View v = inflater.inflate(R.layout.min_set_view, null);
         return v;
     }
 
@@ -52,21 +54,22 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     public void onStart() {
         super.onStart();
         Dialog dialog = getDialog();
-        if(dialog!=null&&dialog.getWindow()!=null){
+        if (dialog != null && dialog.getWindow() != null) {
             Window window = dialog.getWindow();
-            WindowManager.LayoutParams lp=window.getAttributes();
-            lp.gravity= Gravity.BOTTOM;
-            lp.width=WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height=WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255,255,255)));
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.gravity = Gravity.BOTTOM;
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);
             window.setAttributes(lp);
             //设置点击外部可以取消对话框
             setCancelable(true);
         }
     }
+
     @Override
-    public void onClick(View v){
+    public void onClick(View v) {
         v.setSelected(!v.isSelected());
         int id = v.getId();
         switch (id) {
@@ -117,5 +120,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), SettingActivity.class));
                 dismiss();
                 break;
+        }
     }
-}}
+}
