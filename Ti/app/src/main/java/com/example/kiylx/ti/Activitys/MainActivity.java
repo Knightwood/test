@@ -82,24 +82,15 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onStart() {
         super.onStart();
+        mWebViewManager.getTop(currect).onResume();
         Log.d("lifecycle", "onBookmarkt()");
-/*
-        sAboutHistory=AboutHistory.get(MainActivity.this);
-        ArrayList<WebPage_Info> items= genItem();
-        for (WebPage_Info i:items
-        ) {
-            sAboutHistory.addToDataBase(i);
-
-        }*/
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         int s = mWebViewManager.size();
-        mWebViewManager.getTop(currect).onResume();
         Log.d("lifecycle", "onResume()" + "webview数量" + s);
-
     }
 
     @Override
