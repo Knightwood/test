@@ -21,10 +21,18 @@ public class CustomWebviewClient extends WebViewClient {
     private SETINFOS mSETINFOS;
     private AboutBookmark mAboutBookmark;
     private Context mContext;
-    private NotifyWebViewUpdate mNotifyWebViewUpdate;
+    private static NotifyWebViewUpdate mNotifyWebViewUpdate;
 
     public interface SETINFOS {
        void setInfos(String title, String url);
+    }
+
+    /**
+     * @param minterface 实现了NotifyWebViewUpdate接口的实例
+     */
+    public static void setInterface(NotifyWebViewUpdate minterface){
+        CustomWebviewClient.mNotifyWebViewUpdate=minterface;
+
     }
 
     public CustomWebviewClient(Context context){
@@ -86,11 +94,7 @@ public class CustomWebviewClient extends WebViewClient {
         boolean isBookmark;
         super.onPageFinished(view, url);
 
-        /*mSETINFOS =(SETINFOS) mContext;
-        mSETINFOS.setInfos(view.getTitle(),url);*/
-
         //网页停止加载时，更新信息
-        mNotifyWebViewUpdate=(NotifyWebViewUpdate) mContext;
         mNotifyWebViewUpdate.notifyWebViewUpdate(view);
 /*
         mAboutBookmark=AboutBookmark.get(mContext);

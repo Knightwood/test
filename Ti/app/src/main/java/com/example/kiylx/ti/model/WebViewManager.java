@@ -42,6 +42,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
                     sWebViewManager = new WebViewManager(context);
+                    //传入实现了接口的实例变量
+                    CustomWebviewClient.setInterface(sWebViewManager);
                 }
             }
         }
