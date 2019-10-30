@@ -119,9 +119,18 @@ public class Converted_WebPage_Lists implements Observer {
                 delete(pos);
                 break;
             case UPDATEINFO:
-                delete(pos);
-                mCurrectList.add(pos,info);
+                updateinfo(info,pos);
                 break;
         }
+    }
+
+    private void updateinfo(WebPage_Info info, int pos) {
+        WebPage_Info minfo=null;
+
+        minfo= mCurrectList.get(pos);
+        minfo.setTitle(info.getTitle());
+        minfo.setUrl(info.getUrl());
+        minfo.setDate(info.getDate());
+        minfo.setFlags(info.getFlags());
     }
 }
