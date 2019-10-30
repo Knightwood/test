@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         setContentView(R.layout.activity_main);
 
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
-        sCUWL();
+        //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
+        mConverted_lists = Converted_WebPage_Lists.get(mWebViewManager);
 
         f1 = findViewById(R.id.Webview_group);
         mTextView = findViewById(R.id.search_edittext);
@@ -75,14 +76,13 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onRestart() {
         super.onRestart();
-        f1.addView(mWebViewManager.getTop(currect));
+        mWebViewManager.getTop(currect).onResume();
         Log.d("lifecycle", "onReBookmarkt()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mWebViewManager.getTop(currect).onResume();
         Log.d("lifecycle", "onBookmarkt()");
     }
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     protected void onStop() {
         super.onStop();
         mWebViewManager.getTop(currect).onPause();
-        f1.removeAllViews();//移除所有视图
+       //f1.removeAllViews();//移除所有视图
         Log.d("lifecycle", "onStop()");
     }
 
@@ -174,18 +174,18 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
     public void newTab() {
-        //cleanTab();
 
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
-        mWebViewManager.stop(currect);
-        f1.removeView(mWebViewManager.getTop(0));
-        //addWebviewtohome();
+        if(!mWebViewManager.isempty()){
+            mWebViewManager.stop(currect);
+            f1.removeView(mWebViewManager.getTop(currect));
+            currect = 0;
+        }
 
         newWebView(0);
-        f1.addView(mWebViewManager.getTop(0));
-        currect = 0;
+        f1.addView(mWebViewManager.getTop(currect));
 
-        setTextForbar(currect);//更新工具栏上的文字
+        //setTextForbar(currect);//更新工具栏上的文字
     }
 /*
     private void addWebviewtohome() {
@@ -314,10 +314,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         mConverted_lists.setFlags(currect, 1);
     }*/
 
-
+/*
     void sCUWL() {
-        mConverted_lists = Converted_WebPage_Lists.get();
-    }
+        mConverted_lists = Converted_WebPage_Lists.get(WebViewManager);
+    }*/
 /*
     private void delete_CUWL(int i) {
         //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致

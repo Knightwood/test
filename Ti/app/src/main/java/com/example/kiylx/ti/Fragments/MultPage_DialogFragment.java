@@ -117,7 +117,6 @@ public class MultPage_DialogFragment extends DialogFragment {
 
         void switchPage(int pos);
 
-        //int getCurrect();
     }
 
     public static void setInterface(MultPage_DialogF_interface minterface) {
@@ -135,7 +134,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         } else {
             mCurrect = MainActivity.getCurrect();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
-            //mWebSiteAdapter.setLists(lists);
+            mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
             mWebSiteAdapter.notifyDataSetChanged();
         }

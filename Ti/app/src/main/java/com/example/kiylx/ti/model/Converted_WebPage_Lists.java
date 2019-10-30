@@ -1,6 +1,8 @@
 package com.example.kiylx.ti.model;
 
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
@@ -111,12 +113,13 @@ public class Converted_WebPage_Lists implements Observer {
         switch (action){
             case ADD:
                 mCurrectList.add(pos,info);
+                Log.d(TAG, "updateItem: 数量"+mCurrectList.size());
                 break;
             case DELETE:
-                mCurrectList.remove(pos);
+                delete(pos);
                 break;
             case UPDATEINFO:
-                mCurrectList.remove(pos);
+                delete(pos);
                 mCurrectList.add(pos,info);
                 break;
         }

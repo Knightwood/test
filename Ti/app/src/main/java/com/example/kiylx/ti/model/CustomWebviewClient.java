@@ -91,7 +91,7 @@ public class CustomWebviewClient extends WebViewClient {
 
         //网页停止加载时，更新信息
         mNotifyWebViewUpdate=(NotifyWebViewUpdate) mContext;
-        mNotifyWebViewUpdate.notifyWebViewUpdate(MainActivity.getCurrect());
+        mNotifyWebViewUpdate.notifyWebViewUpdate(view);
 /*
         mAboutBookmark=AboutBookmark.get(mContext);
         isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));

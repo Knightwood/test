@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.model;
 
 import android.content.Context;
+import android.util.Log;
 import android.webkit.WebView;
 
 import com.example.kiylx.ti.AboutBookmark;
@@ -26,6 +27,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private volatile static WebViewManager sWebViewManager;
     private AboutHistory sAboutHistory;
     private Context mContext;
+    private static final String TAG = "WebViewManager";
 
     private WebViewManager(Context context) {
         if (mArrayList == null) {
@@ -50,23 +52,28 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param v    要添加的webview
      * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
      * @param flag 标识这是什么网页，-1表示这是新标签页
-     *             添加新标签页时，会用另一个版本的setTmpData设置新标签页的信息
-     *             然后调用updateWebView()时，传入null，这样tmpData就不会被再次更新
      */
     public void addToWebManager(WebView v, int i, int flag) {
         if (flag == -1) {
             //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
             //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
-            setTmpData("空白页", "about:newTab");
-            notifyupdate(null, 0, Action.ADD);
-
-        } else
-            insertWebView(v, i);
+            insertWebView(v, i, -1);
+        } else {
+            insertWebView(v, i, 0);
+        }
 
     }
 
-    private void insertWebView(WebView v, int i) {
+    /**
+     * @param v    要添加进mArrayList的webview
+     * @param i    要添加到的位置
+     * @param flag 如果是-1，标识这是新标签页，执行特定操作
+     */
+    private void insertWebView(WebView v, int i, int flag) {
         mArrayList.add(i, v);
+        if (flag == -1) {
+            notifyupdate(null, i, Action.ADD);
+        }else
         notifyupdate(v, i, Action.ADD);
     }
 
@@ -84,7 +91,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
-        notifyupdate(null, i, Action.DELETE);
+        notifyupdate(mArrayList.get(i), i, Action.DELETE);
     }
 
     public int size() {
@@ -124,36 +131,57 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
-     * @param pos    tpmDate指向的WebView在lists中的位置
+     * @param pos    tpmDate指向的WebView在lists中的位置,也就是即将加入到Converted_WebPage_Lists中的位置
      * @param action 动作：添加，删除或是更新数据
      * @return 获得SealedWebPageInfo
      * 获取封装好的WebPageInfo，后面将用它作为推送给观察者的数据
      */
     private SealedWebPageInfo getSealedData(int pos, Action action) {
+        Log.d(TAG, "getSealedData: 添加数据");
         return new SealedWebPageInfo(tmpData, pos, action);
     }
 
 
     /**
-     * @param pos WebView在list中的位置。
-     *            当网页载入了新的网址，WebView会更新，
-     *            所以，当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
+     * @param webView 传入webview，
+     *                然后在方法里找到WebView在list中的位置，再进行更新操作，
+     *                这样，就可以保证在切换webview时保证更新不会出错
+     *                且，这个方法是在网页加载完成时调用的，所以，只要判断不是在用户界面上的webview，就可以调用暂停webview以节省性能
+     *                <p>
+     *                <p>
+     *                网页加载完成时调用的更新方法！！！
+     *                当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
      */
     @Override
-    public void notifyWebViewUpdate(int pos) {
+    public void notifyWebViewUpdate(WebView webView) {
+        int pos = mArrayList.indexOf(webView);
         notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
+        if (MainActivity.getCurrect() != pos) {
+            stop(pos);
+        }
     }
 
     /**
      * @param arg    发生变化的Webview
      * @param i      webview在arraylist中的位置。
      * @param action 要执行的动作：添加，删除，或是更新
+     *               <p>
+     *               如果webview传入的是null，那意味着这是一个新标签页，调用另一版本setData
+     *               观察者模式的更新操作！！！
      *               网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
      *               并且，把被更新的网页信息加入历史记录数据库
      */
     public void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
-        setTmpData(arg);
+        if (arg == null) {
+            setTmpData("空白页", "about:newTab");
+        } else if (action == Action.DELETE) {
+            setTmpData(null);
+        } else {
+            setTmpData(arg);
+        }
+
+
         setChanged();
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
