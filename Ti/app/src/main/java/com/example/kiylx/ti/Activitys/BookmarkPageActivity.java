@@ -27,6 +27,7 @@ import com.example.kiylx.ti.AboutTag;
 import com.example.kiylx.ti.Fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.Fragments.EditBox_Dialog;
+import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -42,7 +43,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
     private String tagname;//指示当前是哪个tag,以及在taglists中的pos
-    private static SatrPageA_interface sSatrPageA_interface;
+    private static OpenOneWebpage mopenWeb;
     private TextView deleteTag_textview;
     private static final String TAG = "BookmarkActivity";
 
@@ -182,14 +183,14 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         getBookmarksWithTagChanged(tagname);
         updateUI();
     }
-
+/*
     public interface SatrPageA_interface {
         void loadUrl(String urlname, boolean flags);
         //flags,是否使用新的标签页打开网页
-    }
+    }*/
 
-    public static void setInterface(SatrPageA_interface minterface) {
-        BookmarkPageActivity.sSatrPageA_interface = minterface;
+    public static void setInterface(OpenOneWebpage minterface) {
+        BookmarkPageActivity.mopenWeb = minterface;
     }
 
     /**
@@ -321,7 +322,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                         case R.id.openPageinNewWindow:
                             finish();
                             //因为mainactivity里加载网页代码太烂，这里写true用新标签页打开会有bug
-                            sSatrPageA_interface.loadUrl(url_1, false);
+                            mopenWeb.loadUrl(url_1, true);
                     }
                     return false;
                 }
@@ -352,10 +353,10 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                     //点击item后访问网址
                     if (url_1.equals("about:newTab")) {
                         finish();
-                        sSatrPageA_interface.loadUrl(null, false);
+                        mopenWeb.loadUrl(null, false);
                     } else {
                         finish();
-                        sSatrPageA_interface.loadUrl(url_1, false);
+                        mopenWeb.loadUrl(url_1, false);
                     }
                     break;
                 case R.id.more_setting:

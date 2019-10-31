@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebViewManager;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.CustomWebchromeClient;
@@ -30,7 +31,6 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         Log.d("lifecycle", "onCreate()");
 
         //接口回调
-        useBookmarkPageActivityInterface();
+        openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
     }
 
@@ -255,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         return currect;
     }
 
-    public void useBookmarkPageActivityInterface() {
-        //来自BookmarkpageActivity，在点击某个收藏item后，让当前item加载收藏item的网址
-        BookmarkPageActivity.setInterface(new BookmarkPageActivity.SatrPageA_interface() {
+    /**
+     * 在点击某个收藏记录或是历史记录后，让当前webview或新的webview加载网址
+     */
+    public void openwebpage_fromhistoryORbookmark() {
+        BookmarkPageActivity.setInterface(new OpenOneWebpage() {
             @Override
             public void loadUrl(String urlname, boolean flags) {
                 if (flags) {
@@ -265,8 +267,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                     mWebViewManager.getTop(currect).loadUrl(urlname);
                 } else
                     mWebViewManager.getTop(currect).loadUrl(urlname);
+
             }
         });
+
     }
 
     public void useMultPage_DialogFragmentInterface() {
