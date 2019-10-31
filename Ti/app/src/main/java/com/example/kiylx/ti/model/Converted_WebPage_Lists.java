@@ -38,18 +38,6 @@ public class Converted_WebPage_Lists implements Observer {
         }
         return sConverted_webPage_lists;
     }
-/*
-    public void add(String title, String url, int flags) {
-        WebPage_Info info = new WebPage_Info(title, url, flags);
-        mCurrectList.add(0, info);
-        //在0处添加元素，与webview添加进clist的顺序保持一致
-    }
-
-    public void add(String title, String url, String tags, int flags) {
-        WebPage_Info info = new WebPage_Info(title, url, tags, flags,null);
-        mCurrectList.add(0, info);
-        //在0处添加元素，与webview添加进clist的顺序保持一致
-    }*/
 
     /**
      * @param pos 要添加到的位置

@@ -191,12 +191,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         //setTextForbar(currect);//更新工具栏上的文字
     }
-/*
-    private void addWebviewtohome() {
-        //作用是把数组第一个webview对象展示在面前
-        newWebView(0);
-        f1.addView(mWebViewManager.getTop(0));
-    }*/
 
     @Override
     public void delete_page(int position) {
@@ -290,14 +284,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
         Log.d("lifecycle", "webview标题" + url);
         mTextView.setText(url);//更新工具栏上的文字
-        /*
-        //更新当前页面的webviewpageinfo信息
-        updateInfo(title, url);*/
-
-        /*
-        //历史记录加入数据库
-        sAboutHistory = AboutHistory.get(MainActivity.this);
-        sAboutHistory.addToDataBase(mConverted_lists.getInfo(currect));*/
 
         String massage = mConverted_lists.getInfo(currect).getUrl();
         Log.d(TAG, "即将加入历史记录的内容" + massage);
@@ -311,25 +297,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             tmp.add(new WebPage_Info("title" + i, "null", datearr[i]));
         }
         return tmp;
-    }*/
-/*
-    void updateInfo(String title, String url) {
-        //将当前页面网址更新数据，并加入历史记录
-        mConverted_lists.setTitle(currect, title);
-        mConverted_lists.setUrl(currect, url);
-        mConverted_lists.setdate(currect);
-        //更改flags，标记为已载入网址
-        mConverted_lists.setWEB_feature(currect, 1);
-    }*/
-
-/*
-    void sCUWL() {
-        mConverted_lists = Converted_WebPage_Lists.get(WebViewManager);
-    }*/
-/*
-    private void delete_CUWL(int i) {
-        //从Clist里删除了webview，sCurrentUse_webPage_lists也要保持一致
-        mConverted_lists.delete(i);
     }*/
 
 

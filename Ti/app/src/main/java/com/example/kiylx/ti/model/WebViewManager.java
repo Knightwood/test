@@ -158,6 +158,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void notifyWebViewUpdate(WebView webView) {
 
         /*
+        遍历所有进行更新
         for(int pos=0;pos<mArrayList.size();pos++){
             notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
             Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(pos).getTitle());
