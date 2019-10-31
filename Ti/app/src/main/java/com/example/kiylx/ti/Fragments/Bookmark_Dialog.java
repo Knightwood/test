@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -42,7 +43,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private EditBox_Dialog mEditBoxDialog;
     private AboutTag mAboutTag;
     private ArrayAdapter<String> adapter;
-    private static final String ARGME="wholauncherI";
+    private static final String ARGME = "wholauncherI";
     private static int intentid;//谁启动了这个对话框
     private static RefreshBookMark_recyclerview refresh;
 
@@ -57,10 +58,10 @@ public class Bookmark_Dialog extends DialogFragment {
      * @return bookmark_dialog
      * id标识是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
      */
-    public static Bookmark_Dialog newInstance(int id){
+    public static Bookmark_Dialog newInstance(int id) {
 
-        Bookmark_Dialog  bookmark_dialog = new Bookmark_Dialog();
-        Bookmark_Dialog.intentid =id;
+        Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
+        Bookmark_Dialog.intentid = id;
         return bookmark_dialog;
     }
 
@@ -74,16 +75,16 @@ public class Bookmark_Dialog extends DialogFragment {
     /**
      * @param info WebPage_info,用作填充在对话框
      */
-    public void putInfo(WebPage_Info info){
+    public void putInfo(WebPage_Info info) {
         beBookmarked_info = info;
     }
 
     @Override
     public void onAttach(Context context) {
-        mContext=context;
+        mContext = context;
         super.onAttach(mContext);
         mAboutBookmark = AboutBookmark.get(mContext);
-        mAboutTag= AboutTag.get(mContext);
+        mAboutTag = AboutTag.get(mContext);
 
 
     }
@@ -91,7 +92,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        taglists=mAboutTag.getTagListfromDB();
+        taglists = mAboutTag.getTagListfromDB();
 
     }
 
@@ -100,11 +101,11 @@ public class Bookmark_Dialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //onCreateDialog在onCreate之后，onCreateView之前被调用
         //return super.onCreateDialog(savedInstanceState);
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.bookmark_webpage_dialog,null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.bookmark_webpage_dialog, null);
         setMassage(view);//填充网页信息
 
-        tagadd=view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
+        tagadd = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
         tagadd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,33 +113,35 @@ public class Bookmark_Dialog extends DialogFragment {
             }
         });
 
-        mSpinner =view.findViewById(R.id.select_Tags);
-        selectTags(mAboutTag.getPosfromLists(beBookmarked_info.getWebTags()));//设置tag的选项
+        mSpinner = view.findViewById(R.id.select_Tags);
+        //设置tag的选项
+        selectTags(mAboutTag.getPosfromLists(beBookmarked_info.getWebTags()));
 
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
-                //WebPage_Info tmp =getMessage(view);
-                //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
-                if(mAboutBookmark.isMarked(beBookmarked_info)){
-                    /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
-                     *网址未修改，那就更新标题和tag，
-                     *如果网址被修改，那就算是一个新的，之后插入数据库*/
-                    mAboutBookmark.updateItem(beBookmarked_info);
-                    /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
-                     *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
-                }else{
-                    //否则往收藏数据库添加收藏条目信息
-                    mAboutBookmark.add(beBookmarked_info);}
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
+                        //WebPage_Info tmp =getMessage(view);
+                        //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
+                        if (mAboutBookmark.isMarked(beBookmarked_info)) {
+                            /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
+                             *网址未修改，那就更新标题和tag，
+                             *如果网址被修改，那就算是一个新的，之后插入数据库*/
+                            mAboutBookmark.updateItem(beBookmarked_info);
+                            /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
+                             *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
+                        } else {
+                            //否则往收藏数据库添加收藏条目信息
+                            mAboutBookmark.add(beBookmarked_info);
+                        }
 
-                //如果intentid是2(BookmarkPageActivity)，更新视图
-                if(intentid==2){
-                    Log.d("网页tag", "onClick: "+ beBookmarked_info.getWebTags()+"intentid"+intentid);
-                    refresh.refresh(null);
-                }
-            }
+                        //如果intentid是2(BookmarkPageActivity)，更新视图
+                        if (intentid == 2) {
+                            Log.d("网页tag", "onClick: " + beBookmarked_info.getWebTags() + "intentid" + intentid);
+                            refresh.refresh(null);
+                        }
+                    }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -155,18 +158,19 @@ public class Bookmark_Dialog extends DialogFragment {
      * @param i 点击的条目在list中的位置
      *          选择某一个“标签”后
      */
-   private void selectTags(int i) {
+    private void selectTags(int i) {
         //填充微调框
-       if(adapter==null) {
-           adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, taglists);
-           adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-       }else{
-           adapter.notifyDataSetChanged();
-       }mSpinner.setAdapter(adapter);
+        if (adapter == null) {
+            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, taglists);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        } else {
+            adapter.notifyDataSetChanged();
+        }
+        mSpinner.setAdapter(adapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("tag序号", "onItemSelected: "+position+"数组大小"+mAboutTag.getSize());
+                Log.d("tag序号", "onItemSelected: " + position + "数组大小" + mAboutTag.getSize());
 
                 //选择某一个tag后更新webviewinfo信息
                 updateWebinfo(mAboutTag.getTagfromList(position));
@@ -190,11 +194,11 @@ public class Bookmark_Dialog extends DialogFragment {
      */
     private void newEditBox() {
         //启动编辑tag的fragment
-        mEditBoxDialog =EditBox_Dialog.getInstance();
-        FragmentManager fm =getFragmentManager();
+        mEditBoxDialog = EditBox_Dialog.getInstance();
+        FragmentManager fm = getFragmentManager();
         //EditBox设置目标fragment为Bookmark_Dialog Fragment。
-        mEditBoxDialog.setTargetFragment(Bookmark_Dialog.this,0);
-        mEditBoxDialog.show(fm,"编辑框");
+        mEditBoxDialog.setTargetFragment(Bookmark_Dialog.this, 0);
+        mEditBoxDialog.show(fm, "编辑框");
         //开启EditBox后关闭当前的Bookmark_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
     }
 
@@ -202,7 +206,7 @@ public class Bookmark_Dialog extends DialogFragment {
      * @param str “标签”名称
      *            更新beBookmarked_info的“标签”信息
      */
-    private void updateWebinfo(String str){
+    private void updateWebinfo(String str) {
         beBookmarked_info.setWebview_marked_name(str);
     }
 
@@ -212,20 +216,12 @@ public class Bookmark_Dialog extends DialogFragment {
      */
     private void setMassage(View v) {
 
-        EditText title=v.findViewById(R.id.edit_title);
+        EditText title = v.findViewById(R.id.edit_title);
         title.setText(beBookmarked_info.getTitle());
-        EditText url=v.findViewById(R.id.editUrl);
+        EditText url = v.findViewById(R.id.editUrl);
         url.setText(beBookmarked_info.getUrl());
 
-
     }
-    /*private int getPosinTaglists(String str){
-        //获取tag在lists中的位置，以此来设置spinner显示特定项
-        if (str.equals("")){
-            return 0;//如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
-        }
-        return taglists.indexOf(str);
-    }*/
 
     @Nullable
     @Override
@@ -237,21 +233,21 @@ public class Bookmark_Dialog extends DialogFragment {
 
     /**
      * @param requestCode 请求码
-     * @param resultCode 结果码
-     * @param data 数据
-     *             用于BookmarkPageActivity更新视图使用
-     *             只有一个fragment与之关联(EditBox_Dialog)，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
+     * @param resultCode  结果码
+     * @param data        数据
+     *                    用于BookmarkPageActivity更新视图使用
+     *                    只有一个fragment与之关联(EditBox_Dialog)，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!= Activity.RESULT_OK){
+        if (resultCode != Activity.RESULT_OK) {
             return;
         }
         //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
-        Log.d("唉","iggs");
+        Log.d("唉", "iggs");
         //用新的list更新界面
-        String tmptag=data.getStringExtra("newTagName");
+        String tmptag = data.getStringExtra("newTagName");
         selectTags(mAboutTag.getPosfromLists(tmptag));
 
     }
@@ -265,7 +261,7 @@ public class Bookmark_Dialog extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         Log.d("Bookmark_Dialog", "onDetach: ");
-        mContext=null;
+        mContext = null;
 
     }
 }

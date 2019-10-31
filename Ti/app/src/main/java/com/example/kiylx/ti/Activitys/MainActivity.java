@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebViewManager;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
@@ -33,7 +34,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultPage_DialogFragment.MultPage_DialogF_interface {
+public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
     static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     protected void onStop() {
         super.onStop();
         mWebViewManager.getTop(currect).onPause();
-       //f1.removeAllViews();//移除所有视图
+        //f1.removeAllViews();//移除所有视图
         Log.d("lifecycle", "onStop()");
     }
 
@@ -179,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     public void newTab() {
 
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
-        if(!mWebViewManager.isempty()){
+        if (!mWebViewManager.isempty()) {
             mWebViewManager.stop(currect);
             f1.removeView(mWebViewManager.getTop(currect));
             currect = 0;

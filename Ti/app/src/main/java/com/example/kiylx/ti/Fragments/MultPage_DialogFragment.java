@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -35,7 +36,7 @@ public class MultPage_DialogFragment extends DialogFragment {
     private RecyclerView mRecyclerView;
     private WebSiteAdapter mWebSiteAdapter;
     private int mCurrect;
-    private static MultPage_DialogF_interface minterface;
+    private static MultiDialog_Functions minterface;
 
     @Nullable
     @Override
@@ -110,16 +111,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         Log.d(TAG, "onDestroyView: ");
     }
 
-    public interface MultPage_DialogF_interface {
-        void click_newPagebutton();
-
-        void delete_page(int position);
-
-        void switchPage(int pos);
-
-    }
-
-    public static void setInterface(MultPage_DialogF_interface minterface) {
+    public static void setInterface(MultiDialog_Functions minterface) {
         MultPage_DialogFragment.minterface = minterface;
     }
 

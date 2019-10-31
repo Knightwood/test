@@ -31,7 +31,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private WebViewManager(Context context) {
         if (mArrayList == null) {
             mArrayList = new ArrayList<WebView>();
-            tmpData = new WebPage_Info(null, null, null,0,null);
+            tmpData = new WebPage_Info(null, null, null, 0, null);
             this.mContext = context;
         }
     }
@@ -75,8 +75,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         mArrayList.add(i, v);
         if (flag == -1) {
             notifyupdate(null, i, Action.ADD);
-        }else
-        notifyupdate(v, i, Action.ADD);
+        } else
+            notifyupdate(v, i, Action.ADD);
     }
 
     @Override
@@ -172,8 +172,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             stop(pos);
         }
 
-        for(int p=0;p<mArrayList.size();p++){
-            Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(p).getUrl());
+        for (int p = 0; p < mArrayList.size(); p++) {
+            Log.d(TAG, "notifyWebViewUpdate: " + mArrayList.get(p).getUrl());
 
         }
 
