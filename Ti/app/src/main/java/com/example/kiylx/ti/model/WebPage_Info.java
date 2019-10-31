@@ -4,24 +4,25 @@ public class WebPage_Info {
     //收集网页的信息，用于展示多窗口以及记录历史记录
     private String title;
     private String url;
-    private int flags=0;
+    private int WEB_feature =0;
     private String date;
-    private String webTag;
-    //flags：0，主页,不计入历史记录;
-    //所以除了0以外的flags都是可以计入历史记录的
-    // 1，将载入网址，可以计入历史记录;
-    // -1：网页被收藏;
-    // -2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null
+    private String webview_marked_name;
+    /*WEB_feature：0，主页,不计入历史记录;
+     *所以除了0以外的flags都是可以计入历史记录的
+     *1，将载入网址，可以计入历史记录;
+     *-1：网页被收藏;
+     *-2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null*/
+    //webview_marked_name,网页收藏时所用的标签
 
     /**
      * @param title 标题
      * @param url 网址
-     * @param flags 标识网页是什么类的，收藏，历史，为加载网址。以半废弃
+     * @param WEB_feature 标识网页是什么类的，收藏，历史，为加载网址。以半废弃
      */
-    public WebPage_Info(String title, String url, int flags) {
+    public WebPage_Info(String title, String url, int WEB_feature) {
         this.title = title;
         this.url = url;
-        this.flags=flags;
+        this.WEB_feature = WEB_feature;
         this.date=null;
     }
 
@@ -36,18 +37,22 @@ public class WebPage_Info {
         this.date=date;
     }
 
+    /*public WebPage_Info clone(WebPage_Info info){
+        WebPage_Info cloned=new WebPage_Info()
+    }*/
+
     /**
      * @param title 标题
      * @param url 网址
-     * @param webTag 网页的标签(tag),用于收藏网页时使用。
-     * @param flags 标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
+     * @param webview_marked_name 网页的标签(tag),用于收藏网页时使用。
+     * @param web_feature 标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
      */
-    public WebPage_Info(String title, String url, String webTag, int flags) {
+    public WebPage_Info(String title, String url, String webview_marked_name, int web_feature, String date) {
         this.title = title;
         this.url = url;
-        this.date=null;
-        this.webTag = webTag;
-        this.flags = flags;
+        this.date=date;
+        this.webview_marked_name = webview_marked_name;
+        this.WEB_feature = web_feature;
 
     }
 
@@ -67,12 +72,12 @@ public class WebPage_Info {
         this.url = url;
     }
 
-    public int getFlags() {
-        return flags;
+    public int getWEB_feature() {
+        return WEB_feature;
     }
 
-    public void setFlags(int flags) {
-        this.flags = flags;
+    public void setWEB_feature(int WEB_feature) {
+        this.WEB_feature = WEB_feature;
     }
 
     public void setDate(String s){
@@ -83,10 +88,10 @@ public class WebPage_Info {
     }
 
     public String getWebTags(){
-        return this.webTag;
+        return this.webview_marked_name;
     }
-    public void setWebTag(String s){
-        this.webTag =s;
+    public void setWebview_marked_name(String s){
+        this.webview_marked_name =s;
     }
 
 }

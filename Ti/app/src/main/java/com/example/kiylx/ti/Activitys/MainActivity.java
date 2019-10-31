@@ -49,10 +49,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //获取类的实例
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = Converted_WebPage_Lists.get(mWebViewManager);
 
+        //实例化某些view
         f1 = findViewById(R.id.Webview_group);
         mTextView = findViewById(R.id.search_edittext);
 
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         toolbaract();
         Log.d("lifecycle", "onCreate()");
 
+        //接口回调
         useBookmarkPageActivityInterface();
         useMultPage_DialogFragmentInterface();
     }
@@ -311,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         mConverted_lists.setUrl(currect, url);
         mConverted_lists.setdate(currect);
         //更改flags，标记为已载入网址
-        mConverted_lists.setFlags(currect, 1);
+        mConverted_lists.setWEB_feature(currect, 1);
     }*/
 
 /*

@@ -178,7 +178,7 @@ public class Bookmark_Dialog extends DialogFragment {
     }
 
     private void updateWebinfo(String str){
-        beBookmarked_info.setWebTag(str);
+        beBookmarked_info.setWebview_marked_name(str);
     }
 
     private void setMassage(View v) {

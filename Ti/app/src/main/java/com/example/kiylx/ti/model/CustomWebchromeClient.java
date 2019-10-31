@@ -7,7 +7,18 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
+
 public class CustomWebchromeClient extends WebChromeClient {
+    private static NotifyWebViewUpdate mNotifyWebViewUpdate;
+
+    public static void setInterface(NotifyWebViewUpdate minterface){
+        CustomWebchromeClient.mNotifyWebViewUpdate=minterface;
+
+    }
+
+
+
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         return super.onConsoleMessage(consoleMessage);
@@ -22,6 +33,9 @@ public class CustomWebchromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
+            if(newProgress==100){
+                mNotifyWebViewUpdate.notifyWebViewUpdate(view);
+            }
     }
 
     /**

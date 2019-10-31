@@ -201,7 +201,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             this.pos = pos;
             //获取点击的item的位置，也就是webview在list的位置，方便后面标记当前标签页
             String title = minfo.getTitle();
-            if (0 == minfo.getFlags()) {
+            if (0 == minfo.getWEB_feature()) {
                 title = getString(R.string.new_tab);
             }
             textView.setText(title);

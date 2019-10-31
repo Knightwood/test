@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
@@ -43,7 +42,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
                 if (sWebViewManager == null) {
                     sWebViewManager = new WebViewManager(context);
                     //传入实现了接口的实例变量
-                    CustomWebviewClient.setInterface(sWebViewManager);
+                    //CustomWebviewClient.setInterface(sWebViewManager);
+                    CustomWebchromeClient.setInterface(sWebViewManager);
                 }
             }
         }
@@ -115,7 +115,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         tmpData.setTitle(title);
         tmpData.setUrl(url);
         tmpData.setDate(TimeProcess.getTime());
-        tmpData.setFlags(1);
+        tmpData.setWEB_feature(1);
     }
 
     /**
@@ -128,7 +128,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
-        tmpData.setFlags(1);
+        tmpData.setWEB_feature(1);
 
     }
 
@@ -156,11 +156,28 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     @Override
     public void notifyWebViewUpdate(WebView webView) {
+
+        /*
+        for(int pos=0;pos<mArrayList.size();pos++){
+            notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
+            Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(pos).getTitle());
+            if (MainActivity.getCurrect() != pos) {
+                stop(pos);
+            }
+        }*/
+
         int pos = mArrayList.indexOf(webView);
         notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
         if (MainActivity.getCurrect() != pos) {
             stop(pos);
         }
+
+        for(int p=0;p<mArrayList.size();p++){
+            Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(p).getUrl());
+
+        }
+
+
     }
 
     /**
@@ -182,7 +199,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         } else {
             setTmpData(arg);
         }
-
 
         setChanged();
         //用封装的WebPageInfo执行推送

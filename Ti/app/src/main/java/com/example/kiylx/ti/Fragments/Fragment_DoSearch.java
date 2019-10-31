@@ -232,7 +232,7 @@ public class Fragment_DoSearch extends Fragment {
         public void bind(WebPage_Info info){
             view1.setText(info.getTitle());
             view2.setText(info.getUrl());
-            if(info.getFlags()==-1){
+            if(info.getWEB_feature()==-1){
                 //如果是被收藏网址，那就把图片替换位已收藏
                 view3.setImageResource(R.drawable.ic_star_black_24dp);
             }

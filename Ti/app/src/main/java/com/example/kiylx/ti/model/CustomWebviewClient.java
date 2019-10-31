@@ -30,10 +30,10 @@ public class CustomWebviewClient extends WebViewClient {
     /**
      * @param minterface 实现了NotifyWebViewUpdate接口的实例
      */
-    public static void setInterface(NotifyWebViewUpdate minterface){
+   /* public static void setInterface(NotifyWebViewUpdate minterface){
         CustomWebviewClient.mNotifyWebViewUpdate=minterface;
 
-    }
+    }*/
 
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
@@ -95,7 +95,7 @@ public class CustomWebviewClient extends WebViewClient {
         super.onPageFinished(view, url);
 
         //网页停止加载时，更新信息
-        mNotifyWebViewUpdate.notifyWebViewUpdate(view);
+        //mNotifyWebViewUpdate.notifyWebViewUpdate(view);
 /*
         mAboutBookmark=AboutBookmark.get(mContext);
         isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));

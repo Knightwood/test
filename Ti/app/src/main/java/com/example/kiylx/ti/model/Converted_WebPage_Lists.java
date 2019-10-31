@@ -46,9 +46,18 @@ public class Converted_WebPage_Lists implements Observer {
     }
 
     public void add(String title, String url, String tags, int flags) {
-        WebPage_Info info = new WebPage_Info(title, url, tags, flags);
+        WebPage_Info info = new WebPage_Info(title, url, tags, flags,null);
         mCurrectList.add(0, info);
         //在0处添加元素，与webview添加进clist的顺序保持一致
+    }
+
+    /**
+     * @param pos 要添加到的位置
+     * @param info 传入的webPage_info
+     */
+    private void insert(int pos,WebPage_Info info){
+        WebPage_Info item=new WebPage_Info(info.getTitle(), info.getUrl(), null, info.getWEB_feature(),info.getDate());
+        mCurrectList.add(pos,item);
     }
 
     public void delete(int index) {
@@ -80,7 +89,7 @@ public class Converted_WebPage_Lists implements Observer {
     }
 
     public void setFlags(int pos, int i) {
-        mCurrectList.get(pos).setFlags(i);
+        mCurrectList.get(pos).setWEB_feature(i);
     }
 
     public WebPage_Info getInfo(int i) {
@@ -112,15 +121,21 @@ public class Converted_WebPage_Lists implements Observer {
     private void updateItem(WebPage_Info info, int pos, Action action) {
         switch (action){
             case ADD:
-                mCurrectList.add(pos,info);
-                Log.d(TAG, "updateItem: 数量"+mCurrectList.size());
+                insert(pos,info);
+                Log.d(TAG, "updateItem: 添加后数量"+mCurrectList.size());
                 break;
             case DELETE:
                 delete(pos);
                 break;
             case UPDATEINFO:
+                for(WebPage_Info hi :mCurrectList){
+                    Log.d(TAG, "更新网页前: "+pos);
+                }
                 updateinfo(info,pos);
                 break;
+        }
+        for(WebPage_Info hi :mCurrectList){
+            Log.d(TAG, "更新网页时: "+hi.getUrl()+"***"+hi.getTitle());
         }
     }
 
@@ -131,6 +146,6 @@ public class Converted_WebPage_Lists implements Observer {
         minfo.setTitle(info.getTitle());
         minfo.setUrl(info.getUrl());
         minfo.setDate(info.getDate());
-        minfo.setFlags(info.getFlags());
+        minfo.setWEB_feature(info.getWEB_feature());
     }
 }
