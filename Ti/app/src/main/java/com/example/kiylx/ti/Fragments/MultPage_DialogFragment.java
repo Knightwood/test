@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,8 +24,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.databinding.MultiPageItemBinding;
 import com.example.kiylx.ti.model.Converted_WebPage_Lists;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -145,8 +148,8 @@ public class MultPage_DialogFragment extends DialogFragment {
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.multiPageitem, viewGroup, false);
-            return new WebsiteHolder(v);
+            MultiPageItemBinding pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.multi_page_item,viewGroup,false);
+            return new WebsiteHolder(pageitemBinding);
 
         }
 
@@ -170,21 +173,24 @@ public class MultPage_DialogFragment extends DialogFragment {
     }
 
     private class WebsiteHolder extends ViewHolder implements View.OnClickListener {
-        //控件
-        TextView textView;
-        ImageButton imageButton;
+
         //变量
         private int pos;
         private WebPage_Info minfo;
 
+        private MultiPageItemBinding mBinding;
 
-        WebsiteHolder(@NonNull View itemView) {
-            super(itemView);
-            textView = itemView.findViewById(R.id.website_item);
-            imageButton = itemView.findViewById(R.id.close_button);
+
+        WebsiteHolder(@NonNull MultiPageItemBinding binding) {
+            super(binding.getRoot());
+            mBinding=binding;
+
+            //绑定上viewmodel
+            mBinding.setInfos(new MultiPage_ViewModel());
             Log.d(TAG, "onClick: WebsiteHolder构造方法被触发");
-            textView.setOnClickListener(this);
-            imageButton.setOnClickListener(this);
+
+            mBinding.websiteItem.setOnClickListener(this);
+            mBinding.closeButton.setOnClickListener(this);
 
         }
 
@@ -196,9 +202,9 @@ public class MultPage_DialogFragment extends DialogFragment {
             if (0 == minfo.getWEB_feature()) {
                 title = getString(R.string.new_tab);
             }
-            textView.setText(title);
+            mBinding.getInfos().setTitle(title);
             if (pos == mCurrect)
-                textView.setTextColor(getResources().getColor(R.color.textColor));
+                mBinding.websiteItem.setTextColor(getResources().getColor(R.color.textColor));
             //通过拿到currect值，改变文字颜色。
             Log.d(TAG, "onClick: bind方法被触发");
 

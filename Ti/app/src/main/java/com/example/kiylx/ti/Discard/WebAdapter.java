@@ -47,7 +47,7 @@ public class WebAdapter extends BaseAdapter implements View.OnClickListener {
         LayoutInflater layoutInflater =LayoutInflater.from(context);
         ViewHolder holder;
         if(convertView==null){
-            convertView=layoutInflater.inflate(R.layout.multiPageitem,null);
+            convertView=layoutInflater.inflate(R.layout.multi_page_item,null);
             holder= new ViewHolder();
             holder.imageButton= convertView.findViewById(R.id.close_button);
             holder.textView=convertView.findViewById(R.id.website_item);
