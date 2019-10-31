@@ -31,7 +31,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.min_set_view, null);
+        View v = inflater.inflate(R.layout.dialog_min_set_view, null);
         return v;
     }
 

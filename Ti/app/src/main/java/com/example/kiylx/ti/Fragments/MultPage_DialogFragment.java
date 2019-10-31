@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.kiylx.ti.Activitys.MainActivity;
 import com.example.kiylx.ti.model.MultiPage_ViewModel;
@@ -44,7 +43,7 @@ public class MultPage_DialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_multpage_dialog, null);
+        View v = inflater.inflate(R.layout.diallog_multpage, null);
         mRecyclerView = v.findViewById(R.id.mult_item);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();//每次打开多窗口都会触发更新视图

@@ -102,7 +102,7 @@ public class Bookmark_Dialog extends DialogFragment {
         //onCreateDialog在onCreate之后，onCreateView之前被调用
         //return super.onCreateDialog(savedInstanceState);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.bookmark_webpage_dialog, null);
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
         setMassage(view);//填充网页信息
 
         tagadd = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联

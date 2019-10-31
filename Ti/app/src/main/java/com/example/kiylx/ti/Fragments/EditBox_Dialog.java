@@ -66,7 +66,7 @@ public class EditBox_Dialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder mbuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
-        final View view = LayoutInflater.from(getContext()).inflate(R.layout.edit_box, null);
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_box, null);
         view1 = view.findViewById(R.id.editTagBox);
         mbuilder.setView(view);
 

@@ -82,7 +82,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         Bookmark_Dialog.setRefresh(this);
 
         //删除tag按钮
-        deleteTag_textview = findViewById(R.id.delete_tagbutton);
+        deleteTag_textview = findViewById(R.id.edit_tags);
         deleteTag_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
