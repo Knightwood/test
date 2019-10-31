@@ -118,13 +118,19 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         }
     }
 
+    /**
+     * @param str “标签”
+     *            获取含有此标签的书签记录
+     */
     private void getBookmarksWithTagChanged(String str) {
-        //获取含有此标签的书签记录
+
         mBookmarkArrayList = mAboutBookmark.getBookmarkitems(str);
     }
 
+    /**
+     * 在spinner中选择一个项目，然后更新含有此标签的书签列表
+     */
     public void selectTagtoUpdate() {
-        //在spinner中选择一个项目，然后更新含有此标签的书签列表
         ArrayAdapter<String> madapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mTaglists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(madapter);
@@ -186,6 +192,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         BookmarkPageActivity.sSatrPageA_interface = minterface;
     }
 
+    /**
+     * @param v 要添加上popmenu的视图
+     */
     private void addMenutoEditTag(View v) {
         //用来控制tag编辑的几个菜单选项
         PopupMenu menu = new PopupMenu(BookmarkPageActivity.this, v);
@@ -214,6 +223,10 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         });
     }
 
+    /**
+     * @param arg 标签名称
+     *            填入标签名称，启动标签编辑对话框，修改标签名称
+     */
     private void editTag(String arg) {
         EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance(arg);
         FragmentManager fm = getSupportFragmentManager();
@@ -221,6 +234,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
     }
 
+    /**
+     * 启动“标签”编辑对话框，添加新的“标签”
+     */
     private void newTag() {
         EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance();
         FragmentManager fm = getSupportFragmentManager();
@@ -281,6 +297,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             imageView.setOnClickListener(this);
         }
 
+        /**
+         * @param v 要添加popmenu的视图
+         * @param title1 标题
+         * @param url1 网址
+         */
         void addPopMenu(View v, final String title1, final String url1) {
             PopupMenu popupMenu = new PopupMenu(BookmarkPageActivity.this, v);
             MenuInflater menuInflater = popupMenu.getMenuInflater();
@@ -309,6 +330,10 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         }
 
+        /**
+         * @param info WebPage_Info实例
+         *             绑定数据，把传入的对象数据和holder中定义的变量绑定，并把数据填充到布局
+         */
         public void bind(WebPage_Info info) {
             title_1 = info.getTitle();
             url_1 = info.getUrl();
@@ -342,11 +367,17 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             Log.d("收藏activity", "onclick函数被触发");
         }
 
-        void showBookmarkDialog(String str1, String str2, String str3) {
+        /**
+         * @param title 标题
+         * @param url 网址
+         * @param tag 标签
+         *            显示书签编辑对话框
+         */
+        void showBookmarkDialog(String title, String url, String tag) {
             Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2);
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
-            Bookmark_dialog.putInfo(new WebPage_Info(str1, str2, str3, -1));
+            Bookmark_dialog.putInfo(new WebPage_Info(title, url, tag, -1,null));
         }
     }
 }

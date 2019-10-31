@@ -31,7 +31,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private WebViewManager(Context context) {
         if (mArrayList == null) {
             mArrayList = new ArrayList<WebView>();
-            tmpData = new WebPage_Info(null, null, null);
+            tmpData = new WebPage_Info(null, null, null,0,null);
             this.mContext = context;
         }
     }

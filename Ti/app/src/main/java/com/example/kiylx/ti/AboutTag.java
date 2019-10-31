@@ -46,27 +46,48 @@ public class AboutTag {
             taglists.remove(str);
     }
 
+    /**
+     * @param str “标签”名称
+     * @return 返回“标签”在taglist中的位置
+     * 以此来设置spinner显示特定项
+     * 如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
+     */
     public int getPosfromLists(String str) {
-        //获取tag在lists中的位置，以此来设置spinner显示特定项
-        if (str.equals("")) {
-            return 0;//如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
+            if (str == null) {
+            return 0;
         }
         return taglists.indexOf(str);
     }
 
+    /**
+     * @param pos 位置
+     * @return 返回存储“标签”的list中pos这个位置存储的“标签”
+     */
     public String getTagfromList(int pos) {
         return taglists.get(pos);
     }
 
+    /**
+     * @return 获取的taglist的大小
+     */
     public int getSize() {
         return taglists.size();
     }
 
+    /**
+     * @param tag 要查询的“标签”名称
+     * @return 如果要查询的“标签”存在，返回真
+     * 查询是否有与形参“tag”重复的元素
+     */
     private boolean isExist(String tag) {
-        //查询是否有与形参“tag”重复的元素
+
         return taglists.contains(tag);
     }
 
+    /**
+     * @param oldTag 原“标签”
+     * @param newTag 要修改为的新“标签”
+     */
     private void updateTaginList(String oldTag, String newTag) {
         taglists.set(taglists.indexOf(oldTag), newTag);
     }

@@ -19,23 +19,25 @@ public class WebPage_Info {
      * @param url 网址
      * @param WEB_feature 标识网页是什么类的，收藏，历史，为加载网址。以半废弃
      */
+    /*
     public WebPage_Info(String title, String url, int WEB_feature) {
         this.title = title;
         this.url = url;
         this.WEB_feature = WEB_feature;
         this.date=null;
-    }
+    }*/
 
     /**
      * @param title 标题
      * @param url 网址
      * @param date 日期
      */
+    /*
     public WebPage_Info(String title, String url,String date) {
         this.title = title;
         this.url = url;
         this.date=date;
-    }
+    }*/
 
     /*public WebPage_Info clone(WebPage_Info info){
         WebPage_Info cloned=new WebPage_Info()
@@ -46,6 +48,7 @@ public class WebPage_Info {
      * @param url 网址
      * @param webview_marked_name 网页的标签(tag),用于收藏网页时使用。
      * @param web_feature 标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
+     * @param date 网页加载时间
      */
     public WebPage_Info(String title, String url, String webview_marked_name, int web_feature, String date) {
         this.title = title;

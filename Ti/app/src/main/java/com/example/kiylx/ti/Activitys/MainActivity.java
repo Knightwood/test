@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         Log.d(TAG, "即将加入历史记录的内容" + massage);
 
     }
-
+/*
     private ArrayList<WebPage_Info> genItem() {
         ArrayList<WebPage_Info> tmp = new ArrayList<>();
         String[] datearr = new String[]{"2019-10-13", "2019-10-06", "2019-07-01", "2019-09-08", "2019-09-11"};
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             tmp.add(new WebPage_Info("title" + i, "null", datearr[i]));
         }
         return tmp;
-    }
+    }*/
 /*
     void updateInfo(String title, String url) {
         //将当前页面网址更新数据，并加入历史记录
@@ -434,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             mWebViewManager.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
             //sCUWL();
-            mConverted_lists.setFlags(currect, 1);
+            mConverted_lists.setWEB_feature(currect, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
     }

@@ -52,17 +52,28 @@ public class Bookmark_Dialog extends DialogFragment {
 当点击确定后，把信息加入收藏夹数据库*/
 
 
+    /**
+     * @param id 标识是谁启动的intent的id
+     * @return bookmark_dialog
+     * id标识是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
+     */
     public static Bookmark_Dialog newInstance(int id){
-        //id表征是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
+
         Bookmark_Dialog  bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid =id;
         return bookmark_dialog;
     }
 
+    /**
+     * @param refresh 实现了RefreshBookMark_recyclerview中接口的对象
+     */
     public static void setRefresh(RefreshBookMark_recyclerview refresh) {
         Bookmark_Dialog.refresh = refresh;
     }
 
+    /**
+     * @param info WebPage_info,用作填充在对话框
+     */
     public void putInfo(WebPage_Info info){
         beBookmarked_info = info;
     }
@@ -140,6 +151,10 @@ public class Bookmark_Dialog extends DialogFragment {
 
     }
 
+    /**
+     * @param i 点击的条目在list中的位置
+     *          选择某一个“标签”后
+     */
    private void selectTags(int i) {
         //填充微调框
        if(adapter==null) {
@@ -163,10 +178,16 @@ public class Bookmark_Dialog extends DialogFragment {
 
             }
         });
+        //根据点击的位置，显示spinner中的选项
         mSpinner.setSelection(i);
 
     }
 
+    /**
+     * 开启编辑“标签”的对话框
+     * 并设置目标fragment
+     * EditBox的目标fragment是Bookmark_Dialog
+     */
     private void newEditBox() {
         //启动编辑tag的fragment
         mEditBoxDialog =EditBox_Dialog.getInstance();
@@ -177,12 +198,19 @@ public class Bookmark_Dialog extends DialogFragment {
         //开启EditBox后关闭当前的Bookmark_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
     }
 
+    /**
+     * @param str “标签”名称
+     *            更新beBookmarked_info的“标签”信息
+     */
     private void updateWebinfo(String str){
         beBookmarked_info.setWebview_marked_name(str);
     }
 
+    /**
+     * @param v 书签收藏对话框的布局
+     *          解析布局，把beBookmarked_info的信息填充到收藏对话框
+     */
     private void setMassage(View v) {
-        //拿到当前网页信息填充收藏框
 
         EditText title=v.findViewById(R.id.edit_title);
         title.setText(beBookmarked_info.getTitle());
@@ -207,6 +235,13 @@ public class Bookmark_Dialog extends DialogFragment {
 
     }
 
+    /**
+     * @param requestCode 请求码
+     * @param resultCode 结果码
+     * @param data 数据
+     *             用于BookmarkPageActivity更新视图使用
+     *             只有一个fragment与之关联(EditBox_Dialog)，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

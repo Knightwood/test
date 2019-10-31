@@ -123,6 +123,9 @@ public class EditBox_Dialog extends DialogFragment {
 
     }
 
+    /**
+     * 包含返回给Bookmark_Dialog的数据，因为已经设置过targetFragment,直接调用“目标fragment”的onActivityResult方法
+     */
     private void returnResult() {
         /*获取目标activity，调用目标activity的onActivityResult方法，传递数据*/
         if (getTargetFragment() == null) {
