@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.SearchProcess;
 
 import com.example.kiylx.ti.model.WebPage_Info;
 

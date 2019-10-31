@@ -1,14 +1,14 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Data_binding;
 
 /**
  * 用于多窗口更新文字，使用的databinding
  */
-public class pageViewModel {
+public class MultiPage_ViewModel {
     private String title;
     private String Url;
     private int pos;
 
-    public pageViewModel(String title,String Url,int pos){
+    public MultiPage_ViewModel(String title, String Url, int pos){
         this.title=title;
         this.pos=pos;
         this.Url=Url;

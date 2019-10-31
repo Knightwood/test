@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.model.KindsofDate;
-import com.example.kiylx.ti.model.TimeProcess;
+import com.example.kiylx.ti.DateProcess.KindsofDate;
+import com.example.kiylx.ti.DateProcess.TimeProcess;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 

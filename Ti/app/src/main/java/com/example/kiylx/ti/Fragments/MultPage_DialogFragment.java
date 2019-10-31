@@ -145,7 +145,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
+            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.multiPageitem, viewGroup, false);
             return new WebsiteHolder(v);
 
         }

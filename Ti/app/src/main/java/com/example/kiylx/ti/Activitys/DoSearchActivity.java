@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.kiylx.ti.model.ProcessRecordItem;
+import com.example.kiylx.ti.SearchProcess.ProcessRecordItem;
 import com.example.kiylx.ti.Fragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
