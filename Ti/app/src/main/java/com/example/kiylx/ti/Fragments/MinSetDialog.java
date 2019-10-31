@@ -8,8 +8,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,32 +26,96 @@ import com.example.kiylx.ti.Activitys.HistoryActivity;
 import com.example.kiylx.ti.Activitys.SettingActivity;
 import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
+import com.example.kiylx.ti.databinding.SettingItemBinding;
+import com.example.kiylx.ti.model.HomePageOptionsViewModel;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
-
+    DialogHomepageSettingBinding homepageSettingBinding;
+    private static final String TAG="MinSetDialog";
+    private listAdapter mAdapter;
+    String[] optionslist=new String[]{"前进","分享","在页面上查找","添加到收藏夹","添加到阅读列表","设置"};
+    private RecyclerView mRecyclerView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_min_set_view, null);
-        return v;
+        homepageSettingBinding = DataBindingUtil.inflate(inflater, R.layout.dialog_homepage_setting, null, false);
+        mRecyclerView= homepageSettingBinding.optionsRecyclerview;
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateUI(optionslist);
+        return homepageSettingBinding.getRoot();
+    }
+
+    private void updateUI(String[] lists) {
+        if (mAdapter==null){
+            mAdapter=new listAdapter(lists);
+        }else{
+            mAdapter.notifyDataSetChanged();
+        }
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+
+    public class listAdapter extends RecyclerView.Adapter<OptionViewHolder> {
+        private String[] options;
+        //SettingItemBinding mBinding;
+
+        public listAdapter(String[] lists) {
+            options = lists;
+            Log.d(TAG, "onCreateView: "+options[0]);
+        }
+
+        public void setOptionList(String[] list) {
+            this.options = list;
+        }
+
+        @NonNull
+        @Override
+        public OptionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            SettingItemBinding mBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.setting_item, parent, false);
+            return new OptionViewHolder(mBinding);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull OptionViewHolder holder, int position) {
+            holder.bind(options[position]);
+            Log.d(TAG, "onCreateView: "+optionslist[position]);
+        }
+
+        @Override
+        public int getItemCount() {
+            return options.length;
+        }
+    }
+
+    public class OptionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private SettingItemBinding mBinding;
+
+        public OptionViewHolder(@NonNull SettingItemBinding binding) {
+            super(binding.getRoot());
+            mBinding=binding;
+            mBinding.optionsName.setOnClickListener(this);
+            mBinding.setOptionViewModel(new HomePageOptionsViewModel());
+
+        }
+
+        public void bind(String optionName) {
+            mBinding.getOptionViewModel().setOptionsName(optionName);
+            Log.d(TAG, "bind: "+optionName);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "onClick: "+v.getId());
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //super.onViewCreated(view, savedInstanceState);
-        view.findViewById(R.id.a1).setOnClickListener(this);
-        view.findViewById(R.id.a2).setOnClickListener(this);
-        view.findViewById(R.id.a3).setOnClickListener(this);
-        view.findViewById(R.id.a4).setOnClickListener(this);
-        view.findViewById(R.id.a5).setOnClickListener(this);
-        view.findViewById(R.id.a6).setOnClickListener(this);
-        view.findViewById(R.id.a7).setOnClickListener(this);
-        view.findViewById(R.id.a8).setOnClickListener(this);
-        view.findViewById(R.id.a9).setOnClickListener(this);
-        view.findViewById(R.id.a10).setOnClickListener(this);
+
     }
 
     @Override

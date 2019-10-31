@@ -66,4 +66,5 @@
     <string name="editTag">编辑标签</string>
     <string name="deleteTag">删除标签</string>
     <string name="addTag">添加新标签</string>
+    <string name="read_record">阅读列表</string>
 </resources>

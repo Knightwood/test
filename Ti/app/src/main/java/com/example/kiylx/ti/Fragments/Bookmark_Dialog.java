@@ -6,6 +6,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,9 +16,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -94,6 +99,30 @@ public class Bookmark_Dialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         taglists = mAboutTag.getTagListfromDB();
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        /*
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            //指定显示位置
+            layoutParams.gravity = Gravity.BOTTOM;
+            //指定显示大小
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            //设置背景，不然无法扩展到屏幕边缘
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91, 90, 92)));
+            //显示消失动画
+            window.setWindowAnimations(R.style.animate_dialog);
+            //让属性设置生效
+            window.setAttributes(layoutParams);
+            //设置点击外部可以取消对话框
+            setCancelable(true);
+        }*/
     }
 
     @NonNull
