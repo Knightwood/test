@@ -27,17 +27,17 @@ import com.example.kiylx.ti.Activitys.SettingActivity;
 import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
-import com.example.kiylx.ti.databinding.SettingItemBinding;
+import com.example.kiylx.ti.databinding.OptionsItemBinding;
 import com.example.kiylx.ti.model.HomePageOptionsViewModel;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class MinSetDialog extends DialogFragment implements View.OnClickListener {
+public class MinSetDialog extends DialogFragment {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
-    DialogHomepageSettingBinding homepageSettingBinding;
+    private DialogHomepageSettingBinding homepageSettingBinding;
     private static final String TAG="MinSetDialog";
     private listAdapter mAdapter;
-    String[] optionslist=new String[]{"前进","分享","在页面上查找","添加到收藏夹","添加到阅读列表","设置"};
+    private String[] optionslist=new String[]{"前进","分享","在页面上查找","添加到收藏夹","添加到阅读列表","设置"};
     private RecyclerView mRecyclerView;
     @Nullable
     @Override
@@ -75,7 +75,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         @NonNull
         @Override
         public OptionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            SettingItemBinding mBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.setting_item, parent, false);
+            OptionsItemBinding mBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.options_item, parent, false);
             return new OptionViewHolder(mBinding);
         }
 
@@ -92,9 +92,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
 
     public class OptionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private SettingItemBinding mBinding;
+        private OptionsItemBinding mBinding;
 
-        public OptionViewHolder(@NonNull SettingItemBinding binding) {
+        public OptionViewHolder(@NonNull OptionsItemBinding binding) {
             super(binding.getRoot());
             mBinding=binding;
             mBinding.optionsName.setOnClickListener(this);
@@ -109,7 +109,10 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: "+v.getId());
+            Log.d(TAG, "点击选项 ");
+            switch (v.getId()){
+
+            }
         }
     }
 
@@ -136,58 +139,50 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        v.setSelected(!v.isSelected());
-        int id = v.getId();
-        switch (id) {
-            case R.id.a1:
-                //分享
-                dismiss();
-                break;
-            case R.id.a2:
-                //收藏
-                dismiss();
-                break;
-            case R.id.a3:
-                //隐身
-                dismiss();
-                Toast.makeText(getActivity(), "SoGO", LENGTH_SHORT).show();
-                break;
-            case R.id.a4:
-                //历史记录
-                Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
-                startActivity(history_intent);
-                dismiss();
-                break;
-            case R.id.a5:
-                //工具箱
-                dismiss();
-                break;
-            case R.id.a6:
-                //书签
-                Intent Bookmark_intent = new Intent(getContext(), BookmarkPageActivity.class);
-                startActivity(Bookmark_intent);
-                dismiss();
-                Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
-                break;
-            case R.id.a7:
-                //电脑模式
-                dismiss();
-                break;
-            case R.id.a8:
-                //下载
-                dismiss();
-                break;
-            case R.id.a9:
-                //夜间
-                dismiss();
-                break;
-            case R.id.a10:
-                //设置
-                startActivity(new Intent(getActivity(), SettingActivity.class));
-                dismiss();
-                break;
-        }
+    /**
+     * 启动历史记录
+     */
+    private void startHistory(){
+        Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
+        startActivity(history_intent);
+        dismiss();
     }
+
+    /**
+     * 启动设置页面
+     */
+    private void startSetting(){
+        startActivity(new Intent(getActivity(), SettingActivity.class));
+        dismiss();
+    }
+
+    /**
+     * 启动书签页面
+     */
+    private void startBookmarked(){
+        Intent Bookmark_intent = new Intent(getContext(), BookmarkPageActivity.class);
+        startActivity(Bookmark_intent);
+        dismiss();
+        Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
+    }
+
+    /**
+     * 分享
+     */
+    private void sharing(){
+
+    }
+    private void find(){
+
+    }
+    private void addtobookmark(){
+
+    }
+    private void addtoreading(){
+
+    }
+    private void download(){
+
+    }
+
 }

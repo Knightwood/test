@@ -1,9 +1,12 @@
 package com.example.kiylx.ti.model;
 
+import android.util.Log;
+
 /**
  * 用于多窗口更新文字，使用的databinding
  */
 public class MultiPage_ViewModel {
+    private static final String TAG="MultiPage_ViewModel";
     private String title;
     private String Url;
     private int pos;
@@ -33,5 +36,8 @@ public class MultiPage_ViewModel {
 
     public void setPos(int pos) {
         this.pos = pos;
+    }
+    public void ClickMethod(){
+        Log.d(TAG, "ClickMethod: 选项被点击了");
     }
 }
