@@ -28,17 +28,19 @@ import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.databinding.OptionsItemBinding;
+import com.example.kiylx.ti.model.ClickModel;
 import com.example.kiylx.ti.model.HomePageOptionsViewModel;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
-public class MinSetDialog extends DialogFragment {
+public class MinSetDialog extends DialogFragment implements  View.OnClickListener{
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
     private DialogHomepageSettingBinding homepageSettingBinding;
     private static final String TAG="MinSetDialog";
     //private listAdapter mAdapter;
     private String[] optionslist=new String[]{"隐身","电脑模式","分享","在页面上查找","添加到书签","设置"};
     private RecyclerView mRecyclerView;
+    private View mView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -117,7 +119,7 @@ public class MinSetDialog extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
+    homepageSettingBinding.setClickThing(new ClickModel(getActivity()));
     }
 
     @Override
@@ -137,51 +139,8 @@ public class MinSetDialog extends DialogFragment {
             setCancelable(true);
         }
     }
-
-    /**
-     * 启动历史记录
-     */
-    private void startHistory(){
-        Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
-        startActivity(history_intent);
-        dismiss();
-    }
-
-    /**
-     * 启动设置页面
-     */
-    private void startSetting(){
-        startActivity(new Intent(getActivity(), SettingActivity.class));
-        dismiss();
-    }
-
-    /**
-     * 启动书签页面
-     */
-    private void startBookmarked(){
-        Intent Bookmark_intent = new Intent(getContext(), BookmarkPageActivity.class);
-        startActivity(Bookmark_intent);
-        dismiss();
-        Toast.makeText(getActivity(), "QQ", LENGTH_SHORT).show();
-    }
-
-    /**
-     * 分享
-     */
-    private void sharing(){
+    @Override
+    public void onClick(View v) {
 
     }
-    private void find(){
-
-    }
-    private void addtobookmark(){
-
-    }
-    private void addtoreading(){
-
-    }
-    private void download(){
-
-    }
-
 }

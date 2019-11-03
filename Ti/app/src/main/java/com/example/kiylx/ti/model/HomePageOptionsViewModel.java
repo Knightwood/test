@@ -21,7 +21,5 @@ public class HomePageOptionsViewModel {
     public void setOptionsName(String optionsName) {
         this.optionsName = optionsName;
     }
-    public void ClickMethod(){
-        Log.d(TAGS, "ClickMethod: 选项被点击了");
-    }
+
 }
