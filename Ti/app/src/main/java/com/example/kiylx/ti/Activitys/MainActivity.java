@@ -330,16 +330,15 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                         Log.i(TAG, "onClick: 多窗口按钮被触发");
                         mult_dialog();
                         break;
-                    case R.id.action_Bookmark:
+                    /*case R.id.action_Bookmark:
                         Log.i(TAG, "onClick: 收藏按钮被触发");
                         showBookmarkDialog();
                         break;
-                    /*case R.id.action_flash:
+                    case R.id.action_flash:
                         Log.i(TAG, "onClick: 刷新按钮被触发");
                         mWebViewManager.getTop(currect).reload();
                         break;*/
                     case R.id.action_menu:
-
                         Log.i(TAG, "onClick: 菜单按钮被触发");
                         minset();
                     default:
@@ -350,14 +349,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         });
 
     }
-
+/*
     public void showBookmarkDialog() {
         WebPage_Info tmp = mConverted_lists.getInfo(currect);
         FragmentManager fm = getSupportFragmentManager();
         Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1);
         dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
         dialog.show(fm, "收藏当前网页");
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -376,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     private void minset() {
         //底部设置界面
         FragmentManager fm = getSupportFragmentManager();
-        MinSetDialog md = new MinSetDialog();
+        MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
         md.show(fm, "minSetDialog");
     }
 
@@ -405,7 +404,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             assert data != null;
             mWebViewManager.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
-            //sCUWL();
+
             mConverted_lists.setWEB_feature(currect, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }

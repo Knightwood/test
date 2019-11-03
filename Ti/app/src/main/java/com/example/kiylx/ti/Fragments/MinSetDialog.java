@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.example.kiylx.ti.Activitys.SettingActivity;
 import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 public class MinSetDialog extends DialogFragment implements  View.OnClickListener{
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
@@ -35,6 +37,16 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
     private String[] optionslist=new String[]{"隐身","电脑模式","分享","在页面上查找","添加到书签","设置"};
     private RecyclerView mRecyclerView;
     private View mView;
+    private static WebPage_Info info;
+
+    public static MinSetDialog newInstance(WebPage_Info info){
+        MinSetDialog fragment = new MinSetDialog();
+        MinSetDialog.info=info;
+
+        return fragment;
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,6 +91,7 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
             case R.id.hideSelf:
                 break;
             case R.id.addBookmark:
+                addtobookmark();
                 break;
             case R.id.menu:
                 startSetting();
@@ -126,6 +139,11 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
 
     }
     private void addtobookmark(){
+        WebPage_Info tmp = info;
+        FragmentManager fm = getFragmentManager();
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1);
+        dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
+        dialog.show(fm, "收藏当前网页");
 
     }
     private void addtoreading(){
