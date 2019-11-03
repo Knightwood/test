@@ -40,7 +40,7 @@ import java.util.Objects;
 public class Bookmark_Dialog extends DialogFragment {
     private static final String TAG = "Bookmark_Dialog";
     private AboutBookmark mAboutBookmark;
-    private WebPage_Info beBookmarked_info;
+    private static WebPage_Info beBookmarked_info;
     private TextView tagadd;
     private Spinner mSpinner;
     private Context mContext;
@@ -60,13 +60,15 @@ public class Bookmark_Dialog extends DialogFragment {
 
     /**
      * @param id 标识是谁启动的intent的id
+     * @param info 要添加进数据库的网页信息
      * @return bookmark_dialog
      * id标识是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
      */
-    public static Bookmark_Dialog newInstance(int id) {
+    public static Bookmark_Dialog newInstance(int id ,WebPage_Info info) {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
+        Bookmark_Dialog.beBookmarked_info =info;
         return bookmark_dialog;
     }
 
@@ -75,13 +77,6 @@ public class Bookmark_Dialog extends DialogFragment {
      */
     public static void setRefresh(RefreshBookMark_recyclerview refresh) {
         Bookmark_Dialog.refresh = refresh;
-    }
-
-    /**
-     * @param info WebPage_info,用作填充在对话框
-     */
-    public void putInfo(WebPage_Info info) {
-        beBookmarked_info = info;
     }
 
     @Override

@@ -141,8 +141,8 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
     private void addtobookmark(){
         WebPage_Info tmp = info;
         FragmentManager fm = getFragmentManager();
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1);
-        dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
+        //把当前网页信息传给收藏dialog
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1,tmp);
         dialog.show(fm, "收藏当前网页");
 
     }
