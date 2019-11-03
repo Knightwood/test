@@ -36,20 +36,20 @@ public class MinSetDialog extends DialogFragment {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
     private DialogHomepageSettingBinding homepageSettingBinding;
     private static final String TAG="MinSetDialog";
-    private listAdapter mAdapter;
-    private String[] optionslist=new String[]{"前进","分享","在页面上查找","添加到收藏夹","添加到阅读列表","设置"};
+    //private listAdapter mAdapter;
+    private String[] optionslist=new String[]{"隐身","电脑模式","分享","在页面上查找","添加到书签","设置"};
     private RecyclerView mRecyclerView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homepageSettingBinding = DataBindingUtil.inflate(inflater, R.layout.dialog_homepage_setting, null, false);
-        mRecyclerView= homepageSettingBinding.optionsRecyclerview;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI(optionslist);
+        //mRecyclerView= homepageSettingBinding.optionsRecyclerview;
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //updateUI(optionslist);
         return homepageSettingBinding.getRoot();
     }
 
-    private void updateUI(String[] lists) {
+    /*private void updateUI(String[] lists) {
         if (mAdapter==null){
             mAdapter=new listAdapter(lists);
         }else{
@@ -93,6 +93,7 @@ public class MinSetDialog extends DialogFragment {
 
     public class OptionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private OptionsItemBinding mBinding;
+        private int i;
 
         public OptionViewHolder(@NonNull OptionsItemBinding binding) {
             super(binding.getRoot());
@@ -110,11 +111,9 @@ public class MinSetDialog extends DialogFragment {
         @Override
         public void onClick(View v) {
             Log.d(TAG, "点击选项 ");
-            switch (v.getId()){
 
-            }
         }
-    }
+    }*/
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
