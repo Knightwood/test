@@ -40,7 +40,10 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         listView = findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
-//初始化recyclerview为最近七天的数据
+
+        sAboutHistory = AboutHistory.get(this);
+
+        //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
         updateUI(mDateli[0], mDateli[1]);
@@ -91,7 +94,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        sAboutHistory = AboutHistory.get(this);
+
         mHistorys = sAboutHistory.getInfoFromDate(startDate, endDate);
         if (mHistorys.isEmpty()) {
             return;
