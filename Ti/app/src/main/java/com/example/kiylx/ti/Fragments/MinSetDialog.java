@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -20,18 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.kiylx.ti.Activitys.HistoryActivity;
 import com.example.kiylx.ti.Activitys.SettingActivity;
 import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
-import com.example.kiylx.ti.databinding.OptionsItemBinding;
-import com.example.kiylx.ti.model.ClickModel;
-import com.example.kiylx.ti.model.HomePageOptionsViewModel;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class MinSetDialog extends DialogFragment implements  View.OnClickListener{
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
@@ -48,10 +42,100 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
         //mRecyclerView= homepageSettingBinding.optionsRecyclerview;
         //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //updateUI(optionslist);
+        homepageSettingBinding.setClicklister(this);
         return homepageSettingBinding.getRoot();
     }
 
-    /*private void updateUI(String[] lists) {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.gravity = Gravity.BOTTOM;
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
+            window.setWindowAnimations(R.style.animate_dialog);
+            window.setAttributes(lp);
+            //设置点击外部可以取消对话框
+            setCancelable(true);
+        }
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.findtext:
+                break;
+            case R.id.share:
+                break;
+            case R.id.pcMode:
+                break;
+            case R.id.hideSelf:
+                break;
+            case R.id.addBookmark:
+                break;
+            case R.id.menu:
+                startSetting();
+                break;
+            case R.id.button_download:
+                break;
+            case R.id.button_bookmark:
+                startBookmarked();
+                break;
+            case R.id.button_history:
+                startHistory();
+                break;
+
+        }
+        dismiss();
+        Log.d(TAG, "onClick: "+v.getId());
+    }
+    private void startHistory(){
+        Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
+        startActivity(history_intent);
+    }
+    /**
+     * 启动设置页面
+     */
+    private void startSetting(){
+        startActivity(new Intent(getActivity(), SettingActivity.class));
+
+    }
+
+    /**
+     * 启动书签页面
+     */
+    private void startBookmarked(){
+        Intent Bookmark_intent = new Intent(getActivity(), BookmarkPageActivity.class);
+        startActivity(Bookmark_intent);
+    }
+
+    /**
+     * 分享
+     */
+    private void sharing(){
+
+    }
+    private void find(){
+
+    }
+    private void addtobookmark(){
+
+    }
+    private void addtoreading(){
+
+    }
+    private void download(){
+
+    }
+}
+/*private void updateUI(String[] lists) {
         if (mAdapter==null){
             mAdapter=new listAdapter(lists);
         }else{
@@ -116,31 +200,3 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
 
         }
     }*/
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-    homepageSettingBinding.setClickThing(new ClickModel(getActivity()));
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null && dialog.getWindow() != null) {
-            Window window = dialog.getWindow();
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM;
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
-            window.setWindowAnimations(R.style.animate_dialog);
-            window.setAttributes(lp);
-            //设置点击外部可以取消对话框
-            setCancelable(true);
-        }
-    }
-    @Override
-    public void onClick(View v) {
-
-    }
-}
