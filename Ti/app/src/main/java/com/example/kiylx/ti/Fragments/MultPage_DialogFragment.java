@@ -43,7 +43,7 @@ public class MultPage_DialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.diallog_multpage, null);
+        View v = inflater.inflate(R.layout.dialog_multpage, null);
         mRecyclerView = v.findViewById(R.id.mult_item);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();//每次打开多窗口都会触发更新视图

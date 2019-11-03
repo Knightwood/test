@@ -59,16 +59,16 @@ public class Bookmark_Dialog extends DialogFragment {
 
 
     /**
-     * @param id 标识是谁启动的intent的id
+     * @param id   标识是谁启动的intent的id
      * @param info 要添加进数据库的网页信息
      * @return bookmark_dialog
      * id标识是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
      */
-    public static Bookmark_Dialog newInstance(int id ,WebPage_Info info) {
+    public static Bookmark_Dialog newInstance(int id, WebPage_Info info) {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
-        Bookmark_Dialog.beBookmarked_info =info;
+        Bookmark_Dialog.beBookmarked_info = info;
         return bookmark_dialog;
     }
 
@@ -99,7 +99,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        /*
+
         Dialog dialog = getDialog();
         if (dialog != null && dialog.getWindow() != null) {
             Window window = dialog.getWindow();
@@ -110,14 +110,14 @@ public class Bookmark_Dialog extends DialogFragment {
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
             layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
             //设置背景，不然无法扩展到屏幕边缘
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91, 90, 92)));
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效
             window.setAttributes(layoutParams);
             //设置点击外部可以取消对话框
             setCancelable(true);
-        }*/
+        }
     }
 
     @NonNull

@@ -29,19 +29,19 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.model.WebPage_Info;
 
-public class MinSetDialog extends DialogFragment implements  View.OnClickListener{
+public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
     private DialogHomepageSettingBinding homepageSettingBinding;
-    private static final String TAG="MinSetDialog";
+    private static final String TAG = "MinSetDialog";
     //private listAdapter mAdapter;
-    private String[] optionslist=new String[]{"隐身","电脑模式","分享","在页面上查找","添加到书签","设置"};
+    private String[] optionslist = new String[]{"隐身", "电脑模式", "分享", "在页面上查找", "添加到书签", "设置"};
     private RecyclerView mRecyclerView;
     private View mView;
     private static WebPage_Info info;
 
-    public static MinSetDialog newInstance(WebPage_Info info){
+    public static MinSetDialog newInstance(WebPage_Info info) {
         MinSetDialog fragment = new MinSetDialog();
-        MinSetDialog.info=info;
+        MinSetDialog.info = info;
 
         return fragment;
     }
@@ -79,9 +79,10 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
             setCancelable(true);
         }
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.findtext:
                 break;
             case R.id.share:
@@ -107,16 +108,18 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
 
         }
         dismiss();
-        Log.d(TAG, "onClick: "+v.getId());
+        Log.d(TAG, "onClick: " + v.getId());
     }
-    private void startHistory(){
+
+    private void startHistory() {
         Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
         startActivity(history_intent);
     }
+
     /**
      * 启动设置页面
      */
-    private void startSetting(){
+    private void startSetting() {
         startActivity(new Intent(getActivity(), SettingActivity.class));
 
     }
@@ -124,7 +127,7 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
     /**
      * 启动书签页面
      */
-    private void startBookmarked(){
+    private void startBookmarked() {
         Intent Bookmark_intent = new Intent(getActivity(), BookmarkPageActivity.class);
         startActivity(Bookmark_intent);
     }
@@ -132,24 +135,28 @@ public class MinSetDialog extends DialogFragment implements  View.OnClickListene
     /**
      * 分享
      */
-    private void sharing(){
+    private void sharing() {
 
     }
-    private void find(){
+
+    private void find() {
 
     }
-    private void addtobookmark(){
+
+    private void addtobookmark() {
         WebPage_Info tmp = info;
         FragmentManager fm = getFragmentManager();
         //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1,tmp);
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
         dialog.show(fm, "收藏当前网页");
 
     }
-    private void addtoreading(){
+
+    private void addtoreading() {
 
     }
-    private void download(){
+
+    private void download() {
 
     }
 }

@@ -370,10 +370,9 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark_recycl
          *            显示书签编辑对话框
          */
         void showBookmarkDialog(String title, String url, String tag) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2);
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, tag, -1,null));
             FragmentManager fm = getFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
-            Bookmark_dialog.putInfo(new WebPage_Info(title, url, tag, -1,null));
         }
     }
 }
