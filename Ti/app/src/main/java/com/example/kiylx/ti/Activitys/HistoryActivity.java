@@ -14,9 +14,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutHistory;
+import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.DateProcess.KindsofDate;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
@@ -34,6 +36,11 @@ public class HistoryActivity extends AppCompatActivity {
     ChipGroup mChipGroup;
     String[] mDateli;
     private static final String TAG="历史记录";
+    private static OpenOneWebpage sOpenOneWebpage;
+
+    public static void setInterface(OpenOneWebpage openOneWebpage) {
+        sOpenOneWebpage = openOneWebpage;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,6 +129,7 @@ public class HistoryActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
+
                         break;
                     case R.id.open1:
                         break;
@@ -173,16 +181,22 @@ public class HistoryActivity extends AppCompatActivity {
     private class HistoryViewHolder extends ViewHolder implements View.OnClickListener {
         TextView title;
         TextView url;
+        ImageView itemMenu;
+        String URL;
 
         public HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
-            itemView.setOnClickListener(this);
+            itemMenu=itemView.findViewById(R.id.more_setting);
+            title.setOnClickListener(this);
+            itemMenu.setOnClickListener(this);
+
         }
 
         public void bind(WebPage_Info info) {
+            URL=info.getUrl();
             title.setText(info.getTitle());
             url.setText(info.getUrl());
             Log.d("历史activity", "bind函数被触发");
@@ -190,7 +204,14 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.more_setting:
+                    itemPopmenu(v);
+                    break;
+                case R.id.itemTitle:
+                    sOpenOneWebpage.loadUrl(URL,true);
 
+            }
         }
     }
 }

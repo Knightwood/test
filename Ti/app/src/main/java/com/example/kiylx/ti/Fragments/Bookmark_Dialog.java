@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -50,7 +50,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private ArrayAdapter<String> adapter;
     private static final String ARGME = "wholauncherI";
     private static int intentid;//谁启动了这个对话框
-    private static RefreshBookMark_recyclerview refresh;
+    private static RefreshBookMark refresh;
 
 
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
@@ -75,7 +75,7 @@ public class Bookmark_Dialog extends DialogFragment {
     /**
      * @param refresh 实现了RefreshBookMark_recyclerview中接口的对象
      */
-    public static void setRefresh(RefreshBookMark_recyclerview refresh) {
+    public static void setRefresh(RefreshBookMark refresh) {
         Bookmark_Dialog.refresh = refresh;
     }
 

@@ -34,9 +34,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     private DialogHomepageSettingBinding homepageSettingBinding;
     private static final String TAG = "MinSetDialog";
     //private listAdapter mAdapter;
-    private String[] optionslist = new String[]{"隐身", "电脑模式", "分享", "在页面上查找", "添加到书签", "设置"};
-    private RecyclerView mRecyclerView;
-    private View mView;
+    //private String[] optionslist = new String[]{"隐身", "电脑模式", "分享", "在页面上查找", "添加到书签", "设置"};
+    //private RecyclerView mRecyclerView;
+    //private View mView;
     private static WebPage_Info info;
 
     public static MinSetDialog newInstance(WebPage_Info info) {
@@ -86,6 +86,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
             case R.id.findtext:
                 break;
             case R.id.share:
+                sharing();
                 break;
             case R.id.pcMode:
                 break;
@@ -136,6 +137,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      * 分享
      */
     private void sharing() {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TEXT, info.getUrl());
+        i.putExtra(Intent.EXTRA_SUBJECT, "网址");
+        startActivity(i);
 
     }
 
@@ -149,10 +155,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         //把当前网页信息传给收藏dialog
         Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
         dialog.show(fm, "收藏当前网页");
-
-    }
-
-    private void addtoreading() {
 
     }
 

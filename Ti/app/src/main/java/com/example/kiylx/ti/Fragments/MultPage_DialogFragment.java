@@ -119,8 +119,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 
 
     private void updateUI() {
-        Converted_WebPage_Lists mConverted_lists = Converted_WebPage_Lists.get();
-        ArrayList<WebPage_Info> lists = mConverted_lists.getPageList();
+        ArrayList<WebPage_Info> lists =Converted_WebPage_Lists.getPageList();
         Log.d(TAG, "updateUI: 多窗口处的数组大小"+lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);

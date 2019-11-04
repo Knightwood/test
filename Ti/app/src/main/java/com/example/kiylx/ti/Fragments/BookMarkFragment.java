@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -26,15 +24,14 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
-import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class BookMarkFragment extends Fragment implements RefreshBookMark_recyclerview {
+public class BookMarkFragment extends Fragment implements RefreshBookMark {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;

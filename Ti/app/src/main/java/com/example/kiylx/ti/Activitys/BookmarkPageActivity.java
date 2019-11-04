@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,13 +27,13 @@ import com.example.kiylx.ti.Fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.Fragments.EditBox_Dialog;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
-import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark_recyclerview {
+public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
@@ -178,11 +177,6 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         getBookmarksWithTagChanged(tagname);
         updateUI();
     }
-/*
-    public interface SatrPageA_interface {
-        void loadUrl(String urlname, boolean flags);
-        //flags,是否使用新的标签页打开网页
-    }*/
 
     public static void setInterface(OpenOneWebpage minterface) {
         BookmarkPageActivity.mopenWeb = minterface;

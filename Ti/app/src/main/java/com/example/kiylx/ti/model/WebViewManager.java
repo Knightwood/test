@@ -54,15 +54,15 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     /**
      * @param v    要添加的webview
      * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
-     * @param flag 标识这是什么网页，-1表示这是新标签页
+     * @param flag 标识这是什么网页，0表示这是新标签页
      */
     public void addToWebManager(WebView v, int i, int flag) {
-        if (flag == -1) {
+        if (flag == 0) {
             //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
             //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
-            insertWebView(v, i, -1);
-        } else {
             insertWebView(v, i, 0);
+        } else {
+            insertWebView(v, i, 1);
         }
 
     }
@@ -70,11 +70,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     /**
      * @param v    要添加进mArrayList的webview
      * @param i    要添加到的位置
-     * @param flag 如果是-1，标识这是新标签页，执行特定操作
+     * @param flag 如果是0，标识这是新标签页，执行特定操作
      */
     private void insertWebView(WebView v, int i, int flag) {
         mArrayList.add(i, v);
-        if (flag == -1) {
+        if (flag == 0) {
             notifyupdate(null, i, Action.ADD);
         } else
             notifyupdate(v, i, Action.ADD);
@@ -94,7 +94,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private void removeWebView(int i) {
         this.mArrayList.remove(i);
-        notifyupdate(mArrayList.get(i), i, Action.DELETE);
+        notifyupdate(null, i, Action.DELETE);
     }
 
     public int size() {
@@ -116,7 +116,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         tmpData.setTitle(title);
         tmpData.setUrl(url);
         tmpData.setDate(TimeProcess.getTime());
-        tmpData.setWEB_feature(1);
+        tmpData.setWEB_feature(0);
     }
 
     /**
@@ -194,7 +194,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     public void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
-        if (arg == null) {
+        if (action == Action.ADD) {
             setTmpData("空白页", "about:newTab");
         } else if (action == Action.DELETE) {
             setTmpData(null);
@@ -205,10 +205,12 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         setChanged();
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
-
-        //历史记录加入数据库
-        sAboutHistory = AboutHistory.get(mContext);
-        sAboutHistory.addToDataBase(tmpData);
+        //如果不是新标签页就加入数据库
+        if (tmpData.getWEB_feature()!=0) {
+            //历史记录加入数据库
+            sAboutHistory = AboutHistory.get(mContext);
+            sAboutHistory.addToDataBase(tmpData);
+        }
 
     }
 

@@ -20,7 +20,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class EditBox_Dialog extends DialogFragment {
     private String oldtagname;//保存没被修改的标签，在修改标签时会用到
     private String tmp2;
     private static final String TAG = "EditBox_Dialog";
-    private RefreshBookMark_recyclerview flashBookmark;
+    private RefreshBookMark flashBookmark;
 
 
     public static EditBox_Dialog getInstance() {
@@ -162,7 +162,7 @@ public class EditBox_Dialog extends DialogFragment {
 
     }
 
-    public void setFlashBookmark(RefreshBookMark_recyclerview flashBookmark) {
+    public void setFlashBookmark(RefreshBookMark flashBookmark) {
         this.flashBookmark = flashBookmark;
     }
 }

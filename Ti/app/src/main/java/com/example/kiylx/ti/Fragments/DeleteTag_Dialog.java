@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.AboutBookmark;
 import com.example.kiylx.ti.AboutTag;
-import com.example.kiylx.ti.INTERFACE.RefreshBookMark_recyclerview;
+import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class DeleteTag_Dialog extends DialogFragment {
     private AboutTag aboutTag;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
-    private static RefreshBookMark_recyclerview refresh;
+    private static RefreshBookMark refresh;
 
 
     public static DeleteTag_Dialog getInstance(String tagname){
@@ -88,7 +88,7 @@ public class DeleteTag_Dialog extends DialogFragment {
         //把有相关标签的书签批量更改它的标签
         aboutBookmark.updateTagsforItems(tag,newTagname);
     }
-    public static void setInterface(RefreshBookMark_recyclerview minterface){
+    public static void setInterface(RefreshBookMark minterface){
         DeleteTag_Dialog.refresh =minterface;
     }
 

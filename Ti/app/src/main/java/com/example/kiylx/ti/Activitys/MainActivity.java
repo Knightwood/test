@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.Fragments.HistoryFragment;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebViewManager;
@@ -167,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
         web.setWebChromeClient(new CustomWebchromeClient());
-        mWebViewManager.addToWebManager(web, i, -1);
+        mWebViewManager.addToWebManager(web, i, 0);
 
     }
 
@@ -255,6 +256,17 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
      */
     public void openwebpage_fromhistoryORbookmark() {
         BookmarkPageActivity.setInterface(new OpenOneWebpage() {
+            @Override
+            public void loadUrl(String urlname, boolean flags) {
+                if (flags) {
+                    newTab();
+                    mWebViewManager.getTop(currect).loadUrl(urlname);
+                } else
+                    mWebViewManager.getTop(currect).loadUrl(urlname);
+
+            }
+        });
+        HistoryActivity.setInterface(new OpenOneWebpage() {
             @Override
             public void loadUrl(String urlname, boolean flags) {
                 if (flags) {
