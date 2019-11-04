@@ -29,9 +29,9 @@ public class WebPage_Info {
     public WebPage_Info(String title, String url, String webview_marked_name, int web_feature, String date) {
         this.title = title;
         this.url = url;
-        this.date = date;
         this.webview_marked_name = webview_marked_name;
         this.WEB_feature = web_feature;
+        this.date = date;
 
     }
 

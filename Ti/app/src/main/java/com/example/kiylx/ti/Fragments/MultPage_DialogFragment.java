@@ -121,6 +121,7 @@ public class MultPage_DialogFragment extends DialogFragment {
     private void updateUI() {
         Converted_WebPage_Lists mConverted_lists = Converted_WebPage_Lists.get();
         ArrayList<WebPage_Info> lists = mConverted_lists.getPageList();
+        Log.d(TAG, "updateUI: 多窗口处的数组大小"+lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
@@ -186,10 +187,9 @@ public class MultPage_DialogFragment extends DialogFragment {
 
             //绑定上viewmodel
             mBinding.setInfos(new MultiPage_ViewModel());
+            mBinding.setClickon(this);
             Log.d(TAG, "onClick: WebsiteHolder构造方法被触发");
 
-            mBinding.websiteItem.setOnClickListener(this);
-            mBinding.closeButton.setOnClickListener(this);
 
         }
 
@@ -213,15 +213,13 @@ public class MultPage_DialogFragment extends DialogFragment {
         public void onClick(View v) {
             switch ((v.getId())) {
                 case R.id.close_button:
-                    Log.d(TAG, "onClick: 多窗口关闭按钮被触发" + pos);
-
+                    Log.d("多窗口关闭点击", "onClick:" + pos);
                     minterface.delete_page(pos);
                     updateUI();
                     //删除完页面要更新视图
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");
-
                     minterface.switchPage(pos);
                     dismiss();
                     break;

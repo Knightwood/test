@@ -33,6 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
     AboutHistory sAboutHistory;
     ChipGroup mChipGroup;
     String[] mDateli;
+    private static final String TAG="历史记录";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
                         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
                         break;
                     case R.id.thismonth:
-                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISMONTH, TimeProcess.getTime());
                         break;
                     case R.id.month1:
                         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH1, TimeProcess.getTime());
@@ -94,11 +95,12 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
+        Log.d(TAG, "updateUI: "+startDate+"/"+endDate);
 
         mHistorys = sAboutHistory.getInfoFromDate(startDate, endDate);
-        if (mHistorys.isEmpty()) {
+        /*if (mHistorys.isEmpty()) {
             return;
-        }
+        }*/
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
