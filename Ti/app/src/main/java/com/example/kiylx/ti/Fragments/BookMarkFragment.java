@@ -30,6 +30,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BookMarkFragment extends Fragment implements RefreshBookMark {
     private RecyclerView mRecyclerView;
@@ -120,8 +121,8 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
     /**
      * 在spinner中选择一个项目，然后更新含有此标签的书签列表
      */
-    public void selectTagtoUpdate() {
-        ArrayAdapter<String> madapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mTaglists);
+    private void selectTagtoUpdate() {
+        ArrayAdapter<String> madapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, mTaglists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(madapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -277,7 +278,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         ImageView imageView;
         String title_1, url_1, tag_1;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);

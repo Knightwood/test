@@ -161,7 +161,7 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
 
-        public void setLists(ArrayList<WebPage_Info> lists) {
+        void setLists(ArrayList<WebPage_Info> lists) {
             this.lists = lists;
         }
 
@@ -192,7 +192,7 @@ public class HistoryActivity extends AppCompatActivity {
         ImageView itemMenu;
         String URL;
 
-        public HistoryViewHolder(@NonNull View itemView) {
+        HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);

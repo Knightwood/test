@@ -50,7 +50,7 @@ public class AboutBookmark {
 
     }
 
-    public ArrayList<WebPage_Info> getWebPageinfos() {
+    private ArrayList<WebPage_Info> getWebPageinfos() {
         //第一个参数来指示查询哪一列
 
         ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
@@ -120,16 +120,17 @@ public class AboutBookmark {
         String url = info.getUrl();
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
         try {
-            if (cursor.getCount() == 0) {
-                //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
-                return false;
-            }
-            return true;
+            //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
+            return cursor.getCount() != 0;
         } finally {
             cursor.close();
         }
     }
 
+    /**
+     * @param str tag
+     * @return 返回tag下的书签列表或返回所有书签
+     */
     public ArrayList<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
         if (str.equals("所有书签")) {

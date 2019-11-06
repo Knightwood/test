@@ -15,14 +15,10 @@ import java.util.ArrayList;
 
 public class AboutHistory implements HistoryInterface {
     private static AboutHistory sAboutHistory;
-    private ArrayList<WebPage_Info> mArrayList;
     private SQLiteDatabase mDatabase;
-    private Context mContext;
 
     private AboutHistory(Context context) {
-        mContext = context;
-        mArrayList = new ArrayList<>();
-        mDatabase = new HistoryBaseHelper(mContext).getWritableDatabase();
+        mDatabase = new HistoryBaseHelper(context).getWritableDatabase();
     }
 
     public static AboutHistory get(Context context) {
@@ -32,7 +28,7 @@ public class AboutHistory implements HistoryInterface {
         return sAboutHistory;
     }
 
-    public ArrayList<WebPage_Info> getHistoryInfos() {
+    private ArrayList<WebPage_Info> getHistoryInfos() {
         ArrayList<WebPage_Info> infos = new ArrayList<>();
 
         ItemCursorWrapper cursor = queryHistory(null, null);
@@ -57,13 +53,20 @@ public class AboutHistory implements HistoryInterface {
         mDatabase.insert(HistoryTable.NAME, null, values);
     }
 
-    void delete() {
+    /**
+     * @param info webviewpageinfo
+     *             要删除的历史记录信息
+     */
+    private void remove(WebPage_Info info) {
     }
 
-    void deleteAll() {
+    /**
+     * 删除所有历史记录
+     */
+    private void removeAll() {
     }
 
-    private ArrayList<WebPage_Info> getInfoFromDate(String startDate, String endDate) {
+    private ArrayList<WebPage_Info> getlistswithDate(String startDate, String endDate) {
         //查询并返回一个时间段内的所有条目
         ArrayList<WebPage_Info> temp = new ArrayList<>();
         ItemCursorWrapper cursor = queryHistoryfromDate(startDate, endDate);
@@ -78,14 +81,6 @@ public class AboutHistory implements HistoryInterface {
         }
         return temp;
 
-    }
-
-    private static ContentValues getContentValues(WebPage_Info info) {
-        ContentValues values = new ContentValues();
-        values.put(HistoryTable.Childs.TITLE, info.getTitle());
-        values.put(HistoryTable.Childs.URL, info.getUrl());
-        values.put(HistoryTable.Childs.DATE, info.getDate());
-        return values;
     }
 
     private ItemCursorWrapper queryHistory(String whereClause, String[] whereArgs) {
@@ -106,28 +101,58 @@ public class AboutHistory implements HistoryInterface {
         return new ItemCursorWrapper(cursor);
     }
 
-    @Override
-    public WebPage_Info getData() {
-        return null;
+    private static ContentValues getContentValues(WebPage_Info info) {
+        ContentValues values = new ContentValues();
+        values.put(HistoryTable.Childs.TITLE, info.getTitle());
+        values.put(HistoryTable.Childs.URL, info.getUrl());
+        values.put(HistoryTable.Childs.DATE, info.getDate());
+        return values;
     }
 
+
+//以下是实现的接口
+
+    /**
+     * @return 返回所有历史记录
+     */
     @Override
     public ArrayList<WebPage_Info> getDataLists() {
-        return null;
+        return getHistoryInfos();
     }
 
+    /**
+     * @param startdate 开始日期
+     * @param endDate   结束日期
+     * @return 返回开始到结束日期的历史记录
+     */
     @Override
-    public ArrayList<WebPage_Info> getDataLists(String startdate,String endDate) {
-        return getInfoFromDate(startdate,endDate);
+    public ArrayList<WebPage_Info> getDataLists(String startdate, String endDate) {
+        return getlistswithDate(startdate, endDate);
     }
 
+    /**
+     * @param info 要添加进lists中的WebPage_Info
+     */
     @Override
     public void addData(WebPage_Info info) {
-
+        addToDataBase(info);
     }
 
+    /**
+     * @param info 要删除lists中的WebPage_Info
+     */
     @Override
-    public void updateData(WebPage_Info info) {
-
+    public void delete(WebPage_Info info) {
+        remove(info);
     }
+
+    /**
+     * 删除所有历史记录
+     */
+    @Override
+    public void deleteAll() {
+        removeAll();
+    }
+
+
 }

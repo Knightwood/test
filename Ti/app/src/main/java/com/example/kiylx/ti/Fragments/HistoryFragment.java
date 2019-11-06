@@ -27,23 +27,24 @@ import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HistoryFragment extends Fragment {
-    HistoryFragment.HistoryAdapter mAdapter;
+    private HistoryFragment.HistoryAdapter mAdapter;
     private ArrayList<WebPage_Info> mHistorys;
     View view;
     private RecyclerView listView;
     private AboutHistory sAboutHistory;
     private ChipGroup mChipGroup;
-    String[] mDateli;
-    View v;
+    private String[] mDateli;
+    private View v;
     private HistoryInterface m_historyInterface;
     private static OpenOneWebpage sOpenOneWebpage;
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
     }
-    public void setM_historyInterface(HistoryInterface m_historyInterface) {
+    private void setM_historyInterface(HistoryInterface m_historyInterface) {
         this.m_historyInterface = m_historyInterface;
     }
 
@@ -124,7 +125,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void itemPopmenu(View v) {
-        PopupMenu itemMenu = new PopupMenu(getActivity(), v);
+        PopupMenu itemMenu = new PopupMenu(Objects.requireNonNull(getActivity()), v);
         MenuInflater inflater = itemMenu.getMenuInflater();
         inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
         itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -184,7 +185,7 @@ public class HistoryFragment extends Fragment {
         TextView title;
         TextView url;
 
-        public HistoryViewHolder(@NonNull View itemView) {
+        HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);

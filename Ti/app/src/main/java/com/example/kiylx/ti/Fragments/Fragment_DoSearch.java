@@ -197,7 +197,7 @@ public class Fragment_DoSearch extends Fragment {
     private class SearchrecordAdapter extends RecyclerView.Adapter<SearchItemHolder>{
         private ArrayList<WebPage_Info> lists;
 
-        public SearchrecordAdapter(ArrayList<WebPage_Info> lists) {
+        SearchrecordAdapter(ArrayList<WebPage_Info> lists) {
             this.lists = lists;
         }
 
@@ -222,7 +222,7 @@ public class Fragment_DoSearch extends Fragment {
         TextView view1;
         TextView view2;
         ImageView view3;
-        public SearchItemHolder(@NonNull View itemView) {
+        SearchItemHolder(@NonNull View itemView) {
             super(itemView);
             view1=itemView.findViewById(R.id.itemTitle);
             view2=itemView.findViewById(R.id.itemurl);

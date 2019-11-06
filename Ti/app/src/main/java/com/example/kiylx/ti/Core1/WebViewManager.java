@@ -28,19 +28,15 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     //存储当前使用的webview的网址等数据，用来向观察者推送更新。
     private WebPage_Info tmpData;
     private volatile static WebViewManager sWebViewManager;
-    private AboutHistory sAboutHistory;
-    private Context mContext;
     private static final String TAG = "WebViewManager";
     private HistoryInterface m_historyInterface;
 
     private WebViewManager(Context context) {
-        sAboutHistory = AboutHistory.get(mContext);
-        m_historyInterface = sAboutHistory;
+        m_historyInterface = AboutHistory.get(context);
 
         if (mArrayList == null) {
-            mArrayList = new ArrayList<WebView>();
+            mArrayList = new ArrayList<>();
             tmpData = new WebPage_Info(null, null, null, 0, null);
-            this.mContext = context;
         }
     }
 
@@ -198,7 +194,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      *               网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
      *               并且，把被更新的网页信息加入历史记录数据库
      */
-    public void notifyupdate(WebView arg, int i, Action action) {
+    private void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         if (action == Action.ADD) {
             setTmpData("空白页", "about:newTab");

@@ -22,7 +22,7 @@ public class AboutTag {
     所以，必要时需要判断taglist是不是空的再决定是否从数据库里拿数据放进去*/
     /*添加或是删除时，会让数据库和taglists保持一致，因为其他类的lists也是taglist的引用，所以不需要做额外工作*/
 
-    public AboutTag(Context context) {
+    private AboutTag(Context context) {
 
         mDatabase = new TagOpenHelper(context, TagDbSchema.TagTable.NAME, null, 1).getWritableDatabase();
         taglists = new ArrayList<>();
@@ -36,12 +36,12 @@ public class AboutTag {
         return sAboutTag;
     }
 
-    public void addTagintoLists(String str) {
+    private void addTagintoLists(String str) {
         if (!str.equals("未分类"))
             taglists.add(str);
     }
 
-    public void deleteTagfromLists(String str) {
+    private void deleteTagfromLists(String str) {
         if (!str.equals("未分类"))
             taglists.remove(str);
     }

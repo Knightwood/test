@@ -79,6 +79,7 @@ public class Bookmark_Dialog extends DialogFragment {
         Bookmark_Dialog.refresh = refresh;
     }
 
+    @NonNull
     @Override
     public void onAttach(Context context) {
         mContext = context;

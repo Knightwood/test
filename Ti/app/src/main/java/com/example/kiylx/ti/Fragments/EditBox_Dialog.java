@@ -49,6 +49,7 @@ public class EditBox_Dialog extends DialogFragment {
         return editBox_dialog;
     }
 
+    @NonNull
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

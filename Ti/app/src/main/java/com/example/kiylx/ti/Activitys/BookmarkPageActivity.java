@@ -276,7 +276,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         ImageView imageView;
         String title_1, url_1, tag_1;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);

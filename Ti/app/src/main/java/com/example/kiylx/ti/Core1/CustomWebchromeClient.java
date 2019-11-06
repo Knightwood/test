@@ -27,8 +27,8 @@ public class CustomWebchromeClient extends WebChromeClient {
     /**
      * 当前 WebView 加载网页进度
      *
-     * @param view
-     * @param newProgress
+     * @param view WebView
+     * @param newProgress 进度
      */
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
@@ -41,8 +41,8 @@ public class CustomWebchromeClient extends WebChromeClient {
     /**
      * Js 中调用 alert() 函数，产生的对话框
      *
-     * @param view
-     * @param url
+     * @param view Webview
+     * @param url url
      * @param message
      * @param result
      * @return

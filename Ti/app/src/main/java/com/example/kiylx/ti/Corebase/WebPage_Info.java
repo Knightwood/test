@@ -4,7 +4,7 @@ public class WebPage_Info {
     //收集网页的信息，用于展示多窗口以及记录历史记录
     private String title;
     private String url;
-    private int WEB_feature = 0;
+    private int WEB_feature;
     private String date;
     private String webview_marked_name;
     /*WEB_feature：0，主页,不计入历史记录;

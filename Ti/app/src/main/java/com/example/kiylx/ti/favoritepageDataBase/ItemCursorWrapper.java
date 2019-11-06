@@ -19,8 +19,7 @@ public class ItemCursorWrapper extends CursorWrapper {
         String url = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.url));
         String web_tags = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.TAG));
 
-        WebPage_Info info = new WebPage_Info(title,url,web_tags,-1,null);
-        return info;
+        return new WebPage_Info(title,url,web_tags,-1,null);
     }
 
 }
