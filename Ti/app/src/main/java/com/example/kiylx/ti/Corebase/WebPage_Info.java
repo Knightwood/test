@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Corebase;
 
 public class WebPage_Info {
     //收集网页的信息，用于展示多窗口以及记录历史记录

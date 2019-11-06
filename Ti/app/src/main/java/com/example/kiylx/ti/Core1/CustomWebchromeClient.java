@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Core1;
 
 import android.graphics.Bitmap;
 import android.webkit.ConsoleMessage;

@@ -20,18 +20,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.kiylx.ti.Fragments.HistoryFragment;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
-import com.example.kiylx.ti.model.WebViewManager;
-import com.example.kiylx.ti.model.Converted_WebPage_Lists;
-import com.example.kiylx.ti.model.CustomWebchromeClient;
-import com.example.kiylx.ti.model.CustomWebviewClient;
+import com.example.kiylx.ti.Core1.WebViewManager;
+import com.example.kiylx.ti.Core1.Converted_WebPage_Lists;
+import com.example.kiylx.ti.Core1.CustomWebchromeClient;
+import com.example.kiylx.ti.Core1.CustomWebviewClient;
 import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Fragments.Bookmark_Dialog;
-import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.Objects;
 
@@ -168,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
         web.setWebChromeClient(new CustomWebchromeClient());
-        mWebViewManager.addToWebManager(web, i, 0);
+        mWebViewManager.addInWebManager(web, i, 0);
 
     }
 
@@ -302,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     }
 /*
+//测试方法
     private ArrayList<WebPage_Info> genItem() {
         ArrayList<WebPage_Info> tmp = new ArrayList<>();
         String[] datearr = new String[]{"2019-10-13", "2019-10-06", "2019-07-01", "2019-09-08", "2019-09-11"};

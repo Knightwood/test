@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -20,14 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.example.kiylx.ti.Activitys.HistoryActivity;
 import com.example.kiylx.ti.Activitys.SettingActivity;
 import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/

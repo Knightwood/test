@@ -1,18 +1,19 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Core1;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.kiylx.ti.Corebase.WebPage_Info;
+import com.example.kiylx.ti.INTERFACE.HistoryInterface;
 import com.example.kiylx.ti.historydatabase.HistoryBaseHelper;
 import com.example.kiylx.ti.historydatabase.HistoryDbSchema.HistoryTable;
 import com.example.kiylx.ti.historydatabase.ItemCursorWrapper;
-import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 
-public class AboutHistory {
+public class AboutHistory implements HistoryInterface {
     private static AboutHistory sAboutHistory;
     private ArrayList<WebPage_Info> mArrayList;
     private SQLiteDatabase mDatabase;
@@ -29,19 +30,6 @@ public class AboutHistory {
             sAboutHistory = new AboutHistory(context);
         }
         return sAboutHistory;
-    }
-
-    public WebPage_Info getHistoryInfo(String mtitle) {
-        ItemCursorWrapper cursor = queryHistory(HistoryTable.Childs.TITLE + "=?", new String[]{mtitle});
-        try {
-            if (cursor.getCount() == 0) {
-                return null;
-            }
-            cursor.moveToFirst();
-            return cursor.getWebPageInfo();
-        } finally {
-            cursor.close();
-        }
     }
 
     public ArrayList<WebPage_Info> getHistoryInfos() {
@@ -69,17 +57,13 @@ public class AboutHistory {
         mDatabase.insert(HistoryTable.NAME, null, values);
     }
 
-    void update(WebPage_Info info) {
-
-    }
-
     void delete() {
     }
 
     void deleteAll() {
     }
 
-    public ArrayList<WebPage_Info> getInfoFromDate(String startDate, String endDate) {
+    private ArrayList<WebPage_Info> getInfoFromDate(String startDate, String endDate) {
         //查询并返回一个时间段内的所有条目
         ArrayList<WebPage_Info> temp = new ArrayList<>();
         ItemCursorWrapper cursor = queryHistoryfromDate(startDate, endDate);
@@ -122,4 +106,28 @@ public class AboutHistory {
         return new ItemCursorWrapper(cursor);
     }
 
+    @Override
+    public WebPage_Info getData() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<WebPage_Info> getDataLists() {
+        return null;
+    }
+
+    @Override
+    public ArrayList<WebPage_Info> getDataLists(String startdate,String endDate) {
+        return getInfoFromDate(startdate,endDate);
+    }
+
+    @Override
+    public void addData(WebPage_Info info) {
+
+    }
+
+    @Override
+    public void updateData(WebPage_Info info) {
+
+    }
 }

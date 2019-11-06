@@ -1,4 +1,4 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Core1;
 
 import android.content.ContentValues;
 import android.content.Context;

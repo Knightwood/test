@@ -4,15 +4,14 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Core1.AboutHistory;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.Assert.*;
 
 public class AboutHistoryTest {
     AboutHistory mAboutHistory;
@@ -70,7 +69,7 @@ public class AboutHistoryTest {
         ArrayList<WebPage_Info> tmp=new ArrayList<>();
         String[] datearr = new String[]{"2019-06-03","2019-06-05","2019-07-01","2019-09-08","2019-09-11"};
         for (int i=0;i<10;i++){
-            tmp.add(new WebPage_Info("title"+1,"null",datearr[i]));
+            tmp.add(new WebPage_Info("title"+1,"null",null,1,datearr[i]));
         }
         return tmp;
     }

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Core1;
 
 import android.webkit.WebSettings;
 import android.webkit.WebView;

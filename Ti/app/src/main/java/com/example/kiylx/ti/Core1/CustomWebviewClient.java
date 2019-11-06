@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Core1;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,29 +11,17 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.example.kiylx.ti.AboutBookmark;
-import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.Core1.AboutBookmark;
 import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
 
 public class CustomWebviewClient extends WebViewClient {
-    private SETINFOS mSETINFOS;
-    private AboutBookmark mAboutBookmark;
     private Context mContext;
-    private static NotifyWebViewUpdate mNotifyWebViewUpdate;
 
     public interface SETINFOS {
-       void setInfos(String title, String url);
+        void setInfos(String title, String url);
     }
 
-    /**
-     * @param minterface 实现了NotifyWebViewUpdate接口的实例
-     */
-   /* public static void setInterface(NotifyWebViewUpdate minterface){
-        CustomWebviewClient.mNotifyWebViewUpdate=minterface;
-
-    }*/
 
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
@@ -88,14 +76,11 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
-        // 加入历史记录
+
         // 判断网址是否被收藏
         // 更新工具栏上的文字
         boolean isBookmark;
         super.onPageFinished(view, url);
-
-        //网页停止加载时，更新信息
-        //mNotifyWebViewUpdate.notifyWebViewUpdate(view);
 /*
         mAboutBookmark=AboutBookmark.get(mContext);
         isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));

@@ -17,12 +17,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.kiylx.ti.AboutHistory;
+import com.example.kiylx.ti.Core1.AboutHistory;
+import com.example.kiylx.ti.INTERFACE.HistoryInterface;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.DateProcess.KindsofDate;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -37,9 +38,13 @@ public class HistoryActivity extends AppCompatActivity {
     String[] mDateli;
     private static final String TAG="历史记录";
     private static OpenOneWebpage sOpenOneWebpage;
+    private HistoryInterface m_historyInterface;
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
+    }
+    public void setM_historyInterface(HistoryInterface m_historyInterface) {
+        this.m_historyInterface = m_historyInterface;
     }
 
     @Override
@@ -50,6 +55,7 @@ public class HistoryActivity extends AppCompatActivity {
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 
         sAboutHistory = AboutHistory.get(this);
+        setM_historyInterface(sAboutHistory);
 
         //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
@@ -104,7 +110,9 @@ public class HistoryActivity extends AppCompatActivity {
         //str1:开始日期。str2:结束日期
         Log.d(TAG, "updateUI: "+startDate+"/"+endDate);
 
-        mHistorys = sAboutHistory.getInfoFromDate(startDate, endDate);
+       //用统一的接口获取数据
+        mHistorys= m_historyInterface.getDataLists(startDate, endDate);
+
         /*if (mHistorys.isEmpty()) {
             return;
         }*/

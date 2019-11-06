@@ -22,12 +22,12 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.kiylx.ti.AboutBookmark;
-import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.Core1.AboutBookmark;
+import com.example.kiylx.ti.Core1.AboutTag;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 import java.util.ArrayList;
 

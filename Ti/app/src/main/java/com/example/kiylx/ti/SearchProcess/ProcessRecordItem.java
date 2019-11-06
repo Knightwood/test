@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.SearchProcess;
 
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 import java.util.ArrayList;
 import java.util.regex.Pattern;

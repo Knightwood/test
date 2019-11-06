@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.Fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,12 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.kiylx.ti.AboutHistory;
-import com.example.kiylx.ti.Activitys.HistoryActivity;
+import com.example.kiylx.ti.Core1.AboutHistory;
 import com.example.kiylx.ti.DateProcess.KindsofDate;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
+import com.example.kiylx.ti.INTERFACE.HistoryInterface;
+import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
@@ -38,6 +37,15 @@ public class HistoryFragment extends Fragment {
     private ChipGroup mChipGroup;
     String[] mDateli;
     View v;
+    private HistoryInterface m_historyInterface;
+    private static OpenOneWebpage sOpenOneWebpage;
+
+    public static void setInterface(OpenOneWebpage openOneWebpage) {
+        sOpenOneWebpage = openOneWebpage;
+    }
+    public void setM_historyInterface(HistoryInterface m_historyInterface) {
+        this.m_historyInterface = m_historyInterface;
+    }
 
     @Nullable
     @Override
@@ -46,6 +54,9 @@ public class HistoryFragment extends Fragment {
         v=inflater.inflate(R.layout.fragment_history,null);
         listView = v.findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        sAboutHistory = AboutHistory.get(getActivity());
+        setM_historyInterface(sAboutHistory);
 //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
@@ -94,8 +105,9 @@ public class HistoryFragment extends Fragment {
 
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        sAboutHistory = AboutHistory.get(getActivity());
-        mHistorys = sAboutHistory.getInfoFromDate(startDate, endDate);
+
+        mHistorys = m_historyInterface.getDataLists(startDate,endDate);
+
         if (mHistorys.isEmpty()) {
             return;
         }

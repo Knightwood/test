@@ -1,15 +1,14 @@
-package com.example.kiylx.ti;
+package com.example.kiylx.ti.Core1;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.BaseAdapter;
 
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
 import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
 import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
-import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 

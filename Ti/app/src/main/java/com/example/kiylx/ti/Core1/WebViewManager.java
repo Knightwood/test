@@ -1,13 +1,16 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Core1;
 
 import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.AboutHistory;
 import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
+import com.example.kiylx.ti.INTERFACE.HistoryInterface;
 import com.example.kiylx.ti.INTERFACE.NotifyWebViewUpdate;
+import com.example.kiylx.ti.model.Action;
+import com.example.kiylx.ti.Corebase.SealedWebPageInfo;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -28,8 +31,12 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private AboutHistory sAboutHistory;
     private Context mContext;
     private static final String TAG = "WebViewManager";
+    private HistoryInterface m_historyInterface;
 
     private WebViewManager(Context context) {
+        sAboutHistory = AboutHistory.get(mContext);
+        m_historyInterface = sAboutHistory;
+
         if (mArrayList == null) {
             mArrayList = new ArrayList<WebView>();
             tmpData = new WebPage_Info(null, null, null, 0, null);
@@ -43,7 +50,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
                 if (sWebViewManager == null) {
                     sWebViewManager = new WebViewManager(context);
                     //传入实现了接口的实例变量
-                    //CustomWebviewClient.setInterface(sWebViewManager);
+
                     CustomWebchromeClient.setInterface(sWebViewManager);
                 }
             }
@@ -56,13 +63,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
      * @param flag 标识这是什么网页，0表示这是新标签页
      */
-    public void addToWebManager(WebView v, int i, int flag) {
+    public void addInWebManager(WebView v, int i, int flag) {
         if (flag == 0) {
             //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
             //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
-            insertWebView(v, i, 0);
+            insert_1(v, i, 0);
         } else {
-            insertWebView(v, i, 1);
+            insert_1(v, i, 1);
         }
 
     }
@@ -72,7 +79,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param i    要添加到的位置
      * @param flag 如果是0，标识这是新标签页，执行特定操作
      */
-    private void insertWebView(WebView v, int i, int flag) {
+    private void insert_1(WebView v, int i, int flag) {
         mArrayList.add(i, v);
         if (flag == 0) {
             notifyupdate(null, i, Action.ADD);
@@ -159,7 +166,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void notifyWebViewUpdate(WebView webView) {
 
         /*
-        遍历所有进行更新
+    //方1，遍历所有进行更新
         for(int pos=0;pos<mArrayList.size();pos++){
             notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
             Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(pos).getTitle());
@@ -167,7 +174,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
                 stop(pos);
             }
         }*/
-
+    //方2
         int pos = mArrayList.indexOf(webView);
         notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
         if (MainActivity.getCurrect() != pos) {
@@ -178,7 +185,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             Log.d(TAG, "notifyWebViewUpdate: " + mArrayList.get(p).getUrl());
 
         }
-
 
     }
 
@@ -206,10 +212,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
         //如果不是新标签页就加入数据库
-        if (tmpData.getWEB_feature()!=0) {
+        if (tmpData.getWEB_feature() != 0) {
             //历史记录加入数据库
-            sAboutHistory = AboutHistory.get(mContext);
-            sAboutHistory.addToDataBase(tmpData);
+
+            m_historyInterface.addData(tmpData);
+
         }
 
     }

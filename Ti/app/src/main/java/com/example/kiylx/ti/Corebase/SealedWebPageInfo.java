@@ -1,4 +1,7 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Corebase;
+
+import com.example.kiylx.ti.Corebase.WebPage_Info;
+import com.example.kiylx.ti.model.Action;
 
 /**
  * WebViewManager发出更新时，有添加，删除，和更新内容三种行为。

@@ -18,8 +18,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.example.kiylx.ti.AboutBookmark;
-import com.example.kiylx.ti.AboutTag;
+import com.example.kiylx.ti.Core1.AboutBookmark;
+import com.example.kiylx.ti.Core1.AboutTag;
 import com.example.kiylx.ti.INTERFACE.RefreshBookMark;
 import com.example.kiylx.ti.R;
 

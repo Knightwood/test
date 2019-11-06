@@ -1,9 +1,12 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.Core1;
 
 
 import android.util.Log;
 
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
+import com.example.kiylx.ti.model.Action;
+import com.example.kiylx.ti.Corebase.SealedWebPageInfo;
 
 import java.util.ArrayList;
 import java.util.Observable;

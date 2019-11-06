@@ -27,8 +27,8 @@ import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
-import com.example.kiylx.ti.model.Converted_WebPage_Lists;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.Core1.Converted_WebPage_Lists;
+import com.example.kiylx.ti.Corebase.WebPage_Info;
 
 import java.util.ArrayList;
 
