@@ -81,7 +81,7 @@ public class DeleteTag_Dialog extends DialogFragment {
 
     private void deleteAll(String tag) {
         //把有这个标签的书签尽数删除
-        aboutBookmark.deleteWithtag(tag);
+        aboutBookmark.deleteBookMarkfromTag(tag);
     }
 
     private void updateBookmark(String tag,String newTagname) {

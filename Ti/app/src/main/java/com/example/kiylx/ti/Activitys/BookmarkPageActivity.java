@@ -61,7 +61,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         //获取收藏item列表，并默认展示未tag的列表
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
-        mBookmarkArrayList = mAboutBookmark.getBookmarkitems("未分类");
+        mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
         mSpinner = findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
         selectTagtoUpdate();//展示spinner
@@ -118,7 +118,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      */
     private void getBookmarksWithTagChanged(String str) {
 
-        mBookmarkArrayList = mAboutBookmark.getBookmarkitems(str);
+        mBookmarkArrayList = mAboutBookmark.getBookmarks(str);
     }
 
     /**
