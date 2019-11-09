@@ -2,7 +2,6 @@ package com.example.kiylx.ti.DownloadCore;
 
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.webkit.DownloadListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +24,8 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     private boolean isPaused = false;
     private int lastProgress;
 
-    public DownloadTask(DownloadListener listener) {
-        this.listener=listener;
+    public DownloadTask(DownloadListener mlistener) {
+        this.listener=mlistener;
     }
 
     @Override
@@ -124,18 +123,50 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
 
     }
 
-    private long getContentLength(String downloadUrl) {
+    private long getContentLength(String downloadUrl)throws IOException{
+        OkHttpClient client =new OkHttpClient();
+        Request request=new Request.Builder()
+                .url(downloadUrl)
+                .build();
+        Response response = client.newCall(request).execute();
+        if (response!=null&&response.isSuccessful()){
+            long contentLength = response.body().contentLength();
+            response.close();
+            return contentLength;
+        }
+        return 0;
+
     }
 
 
     @Override
-    protected void onPostExecute(Integer integer) {
-        super.onPostExecute(integer);
+    protected void onPostExecute(Integer status) {
+        switch (status) {
+            case TYPE_SUCCESS:
+                listener.onSuccess();
+                break;
+            case TYPE_FAILED:
+                listener.onFailed();
+                break;
+            case TYPE_PAUSED:
+                listener.onPaused();
+                break;
+            case TYPE_CANCELED:
+                listener.onCanceled();
+            default:
+                break;
+        }
     }
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        super.onProgressUpdate(values);
+        int progrss =values[0];
+        if (progrss>lastProgress){
+            //调用服务里实现的接口刷新下载通知
+            listener.onProgress(progrss);
+            //刷新lastProgress的数值，一开始lastProgress只是0，每次刷新进度，它的值都会被修改
+            lastProgress=progrss;
+        }
     }
 
 }
