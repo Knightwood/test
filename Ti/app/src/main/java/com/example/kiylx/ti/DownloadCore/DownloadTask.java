@@ -24,6 +24,10 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     private boolean isPaused = false;
     private int lastProgress;
 
+    /**
+     * @param mlistener DownloadListener;
+     *                  接受一个DownloadListener，在下载的不同阶段调用它的方法，以便更新通知
+     */
     public DownloadTask(DownloadListener mlistener) {
         this.listener=mlistener;
     }
@@ -169,4 +173,11 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
         }
     }
 
+    public void pauseDownload() {
+        isPaused=true;
+    }
+
+    public void canaelDownload() {
+        isCanceled=true;
+    }
 }
