@@ -76,18 +76,50 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                 savedFile.seek(downloadedLength);// 跳过已下载的字节
 
                 byte[] b =new byte[1024];
+                int total=0;
+                int len;
 
+                //从流中读入数据，存入数组b，如果读到最后，返回-1
+                while((len=in.read(b))!=-1){
+                    if (isCanceled){
+                        return TYPE_CANCELED;
+                    }else if (isPaused){
+                        return TYPE_PAUSED;
+                    }else{
+                        //len每次都会是1024，total是总的长度，total用于计算下载进度
+                        total+=len;
+                        //savedFile是RandomAccessFile对象，从上面跳过的位置处开始，从数组b的0位置读取，把数据写入文件，
+                        savedFile.write(b,0,len);
+
+                        //计算进度
+                        int progress = (int) ((total + downloadedLength) * 100 / contentLength);
+                        //刷新进度显示
+                        publishProgress(progress);
+                    }
+                }
+                //流已经读尽了，关闭回应，返回成功
+                response.close();
+                return TYPE_SUCCESS;
 
             }
 
         }catch (Exception e){
             e.printStackTrace();
+        }finally {
+            try {
+                if (in!=null){
+                    in.close();
+                }
+                if (savedFile!=null){
+                    savedFile.close();
+                }
+                if (isCanceled&&file!=null){
+                    file.delete();
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
-
-
-
-
-
         return TYPE_FAILED;
 
     }
