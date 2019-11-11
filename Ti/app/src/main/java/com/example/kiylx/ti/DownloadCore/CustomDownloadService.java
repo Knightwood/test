@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.DownloadCore;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -14,18 +13,28 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.kiylx.ti.Notification.CustomNotificationChannel;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
-import com.example.kiylx.ti.activitys.DownloadActivity;
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.R;
 
 import java.io.File;
 
-public class DownloadService extends Service {
+public class CustomDownloadService extends Service {
     DownloadTask mDownloadTask;
     String downloadUrl;
+    //获取通知管理器
+    NotificationManager nm;
 
-    public DownloadService() {
+    public CustomDownloadService() {
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //创建通知管理器以及设置通知渠道
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        CustomNotificationChannel.getChannel(nm);
     }
 
     private DownloadListener mDownloadListener = new DownloadListener() {
@@ -39,8 +48,8 @@ public class DownloadService extends Service {
             mDownloadTask = null;
             // 下载成功时将前台服务通知关闭，并创建一个下载成功的通知
             stopForeground(true);
-            getNotificationManager().notify(1, getNotification("Download Success", -1));
-            Toast.makeText(DownloadService.this, "Download Success", Toast.LENGTH_SHORT).show();
+            getNotificationManager().notify(1, getNotification("下载成功", -1));
+            Toast.makeText(CustomDownloadService.this, "Download Success", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -48,21 +57,21 @@ public class DownloadService extends Service {
             mDownloadTask = null;
             // 下载失败时将前台服务通知关闭，并创建一个下载失败的通知
             stopForeground(true);
-            getNotificationManager().notify(1, getNotification("Download Failed", -1));
-            Toast.makeText(DownloadService.this, "Download Failed", Toast.LENGTH_SHORT).show();
+            getNotificationManager().notify(1, getNotification("下载失败", -1));
+            Toast.makeText(CustomDownloadService.this, "Download Failed", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onPaused() {
             mDownloadTask = null;
-            Toast.makeText(DownloadService.this, "Paused", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CustomDownloadService.this, "暂停中", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCanceled() {
             mDownloadTask = null;
             stopForeground(true);
-            Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CustomDownloadService.this, "已取消", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -77,23 +86,18 @@ public class DownloadService extends Service {
 
     public class DownloadBinder extends Binder {
 
-        public void setNotification1() {
-            NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            NotificationChannel chan1 = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                chan1 = new NotificationChannel("static", "Primary Channel", NotificationManager.IMPORTANCE_HIGH);
-                nm.createNotificationChannel(chan1);
-            }
-
+        public void getNotification111() {
+            //把通知加入通知管理器，发出通知
             nm.notify(1, sNotification());
         }
 
         public Notification sNotification() {
+//这个intent用于点击通知的时候启动某个activity
+            Intent intent1 = new Intent(CustomDownloadService.this, BookmarkPageActivity.class);
+            PendingIntent pi = PendingIntent.getActivity(CustomDownloadService.this, 0, intent1, 0);
 
-            Intent intent1 = new Intent(DownloadService.this, BookmarkPageActivity.class);
-            PendingIntent pi = PendingIntent.getActivity(DownloadService.this, 0, intent1, 0);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(DownloadService.this, "static");
+            //构建某个渠道的通知实例
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(CustomDownloadService.this, CustomNotificationChannel.DOWNLOAD);
             builder.setSmallIcon(R.mipmap.ic_launcher);
             builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             builder.setContentIntent(pi);
@@ -103,8 +107,8 @@ public class DownloadService extends Service {
 
         }
 
-        public DownloadService getService() {
-            return DownloadService.this;
+        public CustomDownloadService getService() {
+            return CustomDownloadService.this;
         }
 
         public void startDownload(String url) {
@@ -113,8 +117,8 @@ public class DownloadService extends Service {
                 mDownloadTask = new DownloadTask(mDownloadListener);
                 mDownloadTask.execute(downloadUrl);
 
-                startForeground(1, getNotification("Downloading...", 0));
-                Toast.makeText(DownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                startForeground(1, getNotification("下载中...", 0));
+                Toast.makeText(CustomDownloadService.this, "Downloading...", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -140,21 +144,21 @@ public class DownloadService extends Service {
                     //通知
                     getNotificationManager().cancel(1);
                     stopForeground(true);
-                    Toast.makeText(DownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CustomDownloadService.this, "Canceled", Toast.LENGTH_SHORT).show();
                 }
             }
         }
     }
 
-    private NotificationManager getNotificationManager() {
-        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    private NotificationManager getNotificationManager() throws NullPointerException{
+        return this.nm;
     }
 
     private Notification getNotification(String title, int progress) {
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, 0);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CustomNotificationChannel.DOWNLOAD);
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         builder.setContentIntent(pi);

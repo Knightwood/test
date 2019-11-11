@@ -1,33 +1,26 @@
 package com.example.kiylx.ti.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
+
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.example.kiylx.ti.DownloadCore.DownloadService;
-import com.example.kiylx.ti.Notification.NotificationChannels;
+import com.example.kiylx.ti.DownloadCore.CustomDownloadService;
 import com.example.kiylx.ti.R;
 
 public class DownloadActivity extends AppCompatActivity {
-    private DownloadService.DownloadBinder downloadBinder;
+    private CustomDownloadService.DownloadBinder downloadBinder;
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder=(DownloadService.DownloadBinder) service;
+            downloadBinder=(CustomDownloadService.DownloadBinder) service;
         }
 
         @Override
@@ -44,11 +37,11 @@ public class DownloadActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                downloadBinder.setNotification1();
+                downloadBinder.getNotification111();
             }
         });
 
-        Intent intent = new Intent(DownloadActivity.this,DownloadService.class);
+        Intent intent = new Intent(DownloadActivity.this,CustomDownloadService.class);
         startService(intent);
         bindService(intent,connection,BIND_AUTO_CREATE);
 
