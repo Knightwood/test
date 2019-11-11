@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.favoritepageDataBase;
+package com.example.kiylx.ti.FavoritePageDataBase;
 
 public class TagDbSchema {
     public static final class TagTable{

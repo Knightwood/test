@@ -6,7 +6,7 @@
     style="@style/Widget.MaterialComponents.Chip.Action"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitys.BookmarkPageActivity">
+    tools:context=".activitys.BookmarkPageActivity">
     <!--
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView2"

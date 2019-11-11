@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.example.kiylx.ti.INTERFACE.HistoryInterface;
-import com.example.kiylx.ti.historydatabase.HistoryBaseHelper;
-import com.example.kiylx.ti.historydatabase.HistoryDbSchema.HistoryTable;
-import com.example.kiylx.ti.historydatabase.ItemCursorWrapper;
+import com.example.kiylx.ti.HistoryDataBase.HistoryBaseHelper;
+import com.example.kiylx.ti.HistoryDataBase.HistoryDbSchema.HistoryTable;
+import com.example.kiylx.ti.HistoryDataBase.ItemCursorWrapper;
 
 import java.util.ArrayList;
 

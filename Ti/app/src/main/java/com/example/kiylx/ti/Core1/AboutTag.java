@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.kiylx.ti.favoritepageDataBase.TagDbSchema;
-import com.example.kiylx.ti.favoritepageDataBase.TagItemCursorWrapper;
-import com.example.kiylx.ti.favoritepageDataBase.TagOpenHelper;
+import com.example.kiylx.ti.FavoritePageDataBase.TagDbSchema;
+import com.example.kiylx.ti.FavoritePageDataBase.TagItemCursorWrapper;
+import com.example.kiylx.ti.FavoritePageDataBase.TagOpenHelper;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.favoritepageDataBase;
+package com.example.kiylx.ti.FavoritePageDataBase;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

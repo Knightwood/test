@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.Corebase.WebPage_Info;
-import com.example.kiylx.ti.favoritepageDataBase.FavoritePageBaseHelper;
-import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema;
-import com.example.kiylx.ti.favoritepageDataBase.ItemCursorWrapper;
+import com.example.kiylx.ti.FavoritePageDataBase.FavoritePageBaseHelper;
+import com.example.kiylx.ti.FavoritePageDataBase.FavoritepageDbSchema;
+import com.example.kiylx.ti.FavoritePageDataBase.ItemCursorWrapper;
 
 import java.util.ArrayList;
 

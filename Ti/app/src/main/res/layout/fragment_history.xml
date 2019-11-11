@@ -5,7 +5,7 @@
     android:id="@+id/backgroud_1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activitys.HistoryActivity">
+    tools:context=".activitys.HistoryActivity">
 
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"

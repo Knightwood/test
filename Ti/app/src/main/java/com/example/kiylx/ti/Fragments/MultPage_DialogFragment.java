@@ -22,7 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
-import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.R;

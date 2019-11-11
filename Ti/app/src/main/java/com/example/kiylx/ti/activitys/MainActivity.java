@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Activitys;
+package com.example.kiylx.ti.activitys;
 
 import android.content.Intent;
 

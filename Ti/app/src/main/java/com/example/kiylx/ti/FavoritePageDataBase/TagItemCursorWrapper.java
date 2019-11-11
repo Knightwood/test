@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.favoritepageDataBase;
+package com.example.kiylx.ti.FavoritePageDataBase;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;

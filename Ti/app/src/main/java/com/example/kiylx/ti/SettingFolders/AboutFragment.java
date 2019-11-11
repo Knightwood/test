@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.settingFolders;
+package com.example.kiylx.ti.SettingFolders;
 
 
 import android.os.Bundle;

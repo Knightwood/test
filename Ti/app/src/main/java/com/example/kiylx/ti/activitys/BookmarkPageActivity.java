@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Activitys;
+package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

@@ -14,22 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activitys.DownloadActivity"></activity>
+        <activity android:name=".activitys.DownloadActivity"/>
 
         <service
             android:name=".DownloadCore.DownloadService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".Activitys.BookmarkPageActivity" />
+        <activity android:name=".activitys.BookmarkPageActivity" />
         <activity
-            android:name=".Activitys.HistoryActivity"
+            android:name=".activitys.HistoryActivity"
             android:theme="@style/AppTheme1" />
-        <activity android:name=".Activitys.SettingActivity" />
+        <activity android:name=".activitys.SettingActivity" />
         <activity
-            android:name=".Activitys.DoSearchActivity"
+            android:name=".activitys.DoSearchActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".Activitys.MainActivity">
+        <activity android:name=".activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

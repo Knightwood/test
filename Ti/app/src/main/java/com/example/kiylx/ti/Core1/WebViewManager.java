@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.Activitys.MainActivity;
+import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.Corebase.WebPage_Info;
 import com.example.kiylx.ti.DateProcess.TimeProcess;
 import com.example.kiylx.ti.INTERFACE.HistoryInterface;

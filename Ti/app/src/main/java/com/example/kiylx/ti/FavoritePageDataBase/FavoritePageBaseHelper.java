@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.favoritepageDataBase;
+package com.example.kiylx.ti.FavoritePageDataBase;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import com.example.kiylx.ti.favoritepageDataBase.FavoritepageDbSchema.FavoriteTable;
+import com.example.kiylx.ti.FavoritePageDataBase.FavoritepageDbSchema.FavoriteTable;
 
 public class FavoritePageBaseHelper extends SQLiteOpenHelper {
 

@@ -20,9 +20,10 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.kiylx.ti.Activitys.HistoryActivity;
-import com.example.kiylx.ti.Activitys.SettingActivity;
-import com.example.kiylx.ti.Activitys.BookmarkPageActivity;
+import com.example.kiylx.ti.activitys.DownloadActivity;
+import com.example.kiylx.ti.activitys.HistoryActivity;
+import com.example.kiylx.ti.activitys.SettingActivity;
+import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.Corebase.WebPage_Info;
@@ -97,6 +98,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 startSetting();
                 break;
             case R.id.button_download:
+                startDownload();
                 break;
             case R.id.button_bookmark:
                 startBookmarked();
@@ -108,6 +110,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         }
         dismiss();
         Log.d(TAG, "onClick: " + v.getId());
+    }
+
+    private void startDownload() {
+        Intent intent = new Intent(getActivity(), DownloadActivity.class);
+        startActivity(intent);
     }
 
     private void startHistory() {
