@@ -9,7 +9,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import android.os.Bundle;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.SettingFolders.MainSettingFragment;
+import com.example.kiylx.ti.settingFolders.MainSettingFragment;
 
 public class SettingActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 

@@ -3,16 +3,20 @@
 
     <Preference
         android:key="conventional"
-        android:title="常规"/>
+        android:title="常规"
+        android:fragment="com.example.kiylx.ti.settingFolders.ConventionalFragment"/>
     <Preference
         android:key="advanced"
-        android:title="高级"/>
+        android:title="高级"
+        android:fragment="com.example.kiylx.ti.settingFolders.AdvancedFragment"/>
     <Preference
         android:key="theme"
-        android:title="主题"/>
+        android:title="主题"
+        android:fragment="com.example.kiylx.ti.settingFolders.ThemeFragment"/>
     <Preference
         android:key="privacy"
-        android:title="隐私"/>
+        android:title="隐私"
+        android:fragment="com.example.kiylx.ti.settingFolders.PrivacyFragment"/>
     <Preference
         android:key="beta"
         android:title="实验室"/>
@@ -25,7 +29,8 @@
             app:key="feedback"
             app:summary="发送反馈"
             app:title="发送反馈"
-            app:fragment="com.example.kiylx.ti.settingFolders.SecondFragment"/>
+            android:icon="@drawable/ic_report_problem_black_24dp"
+      />
 
     </PreferenceCategory>
 

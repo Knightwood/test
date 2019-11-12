@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.SettingFolders;
+package com.example.kiylx.ti.settingFolders;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,12 +13,9 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class MainSettingFragment extends PreferenceFragmentCompat implements
-        Preference.OnPreferenceChangeListener,
-        SharedPreferences.OnSharedPreferenceChangeListener
-        {
-    private static final String TAG ="SETTING";
+public class MainSettingFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private static final String TAG = "SETTING";
 
     @Override
     public void onAttach(Context context) {
