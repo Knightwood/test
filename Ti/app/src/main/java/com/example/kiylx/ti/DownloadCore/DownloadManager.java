@@ -1,11 +1,17 @@
 package com.example.kiylx.ti.DownloadCore;
 
+import com.example.kiylx.ti.Corebase.DownloadInfo;
+
+import java.util.Deque;
 import java.util.LinkedList;
 
 public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
-    private LinkedList mLinkedList;
+
+    private Deque<DownloadInfo> readyDownload;
+    private Deque<DownloadInfo> downloading;
+    private Deque<DownloadInfo> pausedownload;
 
     public static DownloadManager getInstance(){
         if (mDownloadManager==null){
@@ -15,10 +21,14 @@ public class DownloadManager {
                 }
             }
         }
+        return mDownloadManager;
     }
 
     private DownloadManager(){
-mLinkedList=new LinkedList();
+        downloading=new LinkedList<>();
+        pausedownload=new LinkedList<>();
+        readyDownload=new LinkedList<>();
+
     }
 
     public void startDownload(){
