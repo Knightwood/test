@@ -1,9 +1,5 @@
 package com.example.kiylx.ti.Corebase;
 
-import com.example.kiylx.ti.DownloadCore.DownloadTask;
-
-import java.util.LinkedList;
-
 public class DownloadInfo {
     private String url;
     private String fileName;
@@ -17,6 +13,10 @@ public class DownloadInfo {
      * 文件块的下载范围的结束
      */
     private long rangeEnd;
+
+    public long splitStart[]=null;
+    public long splitEnd[]=null;
+
     private long fileLength;
     /**
      * 当前已下载的大小
@@ -94,5 +94,13 @@ public class DownloadInfo {
 
     public void setRangeStart(long rangeStart) {
         this.rangeStart = rangeStart;
+    }
+
+    public int getThreadNum() {
+        return threadNum;
+    }
+
+    public void setThreadNum(int threadNum) {
+        this.threadNum = threadNum;
     }
 }

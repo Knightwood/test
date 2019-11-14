@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.DownloadCore;
+package com.example.kiylx.ti.Discard;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.example.kiylx.ti.DownloadCore.DownloadListener;
 import com.example.kiylx.ti.Notification.CustomNotificationChannel;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.activitys.MainActivity;

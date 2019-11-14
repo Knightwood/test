@@ -20,6 +20,7 @@
             android:name=".DownloadCore.DownloadService"
             android:enabled="true"
             android:exported="true" />
+        <service android:name=".DownloadCore.DownloadServices" />
 
         <activity android:name=".activitys.BookmarkPageActivity" />
         <activity

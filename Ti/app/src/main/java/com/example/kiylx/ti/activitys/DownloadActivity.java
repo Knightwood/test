@@ -11,7 +11,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.kiylx.ti.DownloadCore.CustomDownloadService;
+import com.example.kiylx.ti.Discard.CustomDownloadService;
 import com.example.kiylx.ti.R;
 
 public class DownloadActivity extends AppCompatActivity {
