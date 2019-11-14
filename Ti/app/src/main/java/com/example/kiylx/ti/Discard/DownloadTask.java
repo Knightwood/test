@@ -1,7 +1,9 @@
-package com.example.kiylx.ti.DownloadCore;
+package com.example.kiylx.ti.Discard;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+
+import com.example.kiylx.ti.DownloadCore.DownloadListener;
 
 import java.io.File;
 import java.io.IOException;

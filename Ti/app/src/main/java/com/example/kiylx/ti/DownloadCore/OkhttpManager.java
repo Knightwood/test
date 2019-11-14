@@ -9,19 +9,19 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class CustomOkhttpManager {
+public class OkhttpManager {
     private OkHttpClient mOkHttpClient;
-    private static CustomOkhttpManager mcustomHttpManager;
+    private static OkhttpManager mHttpManager;
 
-    private CustomOkhttpManager() {
+    private OkhttpManager() {
         mOkHttpClient = new OkHttpClient();
     }
 
-    public static CustomOkhttpManager getMcustomHttpManager() {
-        if (mcustomHttpManager == null) {
-            mcustomHttpManager = new CustomOkhttpManager();
+    public static OkhttpManager getInstance() {
+        if (mHttpManager == null) {
+            mHttpManager = new OkhttpManager();
         }
-        return mcustomHttpManager;
+        return mHttpManager;
     }
 
     public Call getCall(String url) {
@@ -37,6 +37,25 @@ public class CustomOkhttpManager {
                 .addHeader("Range", "bytes=" + "-" + info.getRangeStart() + "-" + info.getRangeEnd())
                 .build();
         return mOkHttpClient.newCall(request).execute();
+    }
+
+    /**
+     * @param url 下载地址
+     * @return 返回下载文件大小
+     * @throws IOException
+     */
+    public long getFileLength(String url)throws IOException{
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+        Response response=mOkHttpClient.newCall(request).execute();
+        if (response!=null&&response.isSuccessful()){
+            return response.body().contentLength();
+        }
+        else {
+            return -1;
+        }
+
     }
 
 
