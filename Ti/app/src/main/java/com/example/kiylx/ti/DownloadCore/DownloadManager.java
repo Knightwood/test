@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -66,24 +67,39 @@ public class DownloadManager {
     private void processInfo(DownloadInfo info) throws IOException {
         int corenum = info.getThreadNum();
         info.setFileLength(mOkhttpManager.getFileLength(info.getUrl()));
-        long start = 0;
-        long size = info.getFileLength() / corenum;
+
+        long blocksize = (info.getFileLength() / corenum) - 1;
 
         //建立数组准备存储分块信息
         info.splitEnd = new long[++corenum];
         info.splitStart = new long[++corenum];
-
+//开始块和结束块。
         for (int i = 0; i < corenum; i++) {
-            info.splitStart[i] = start;
-            info.splitEnd[i] = start + size;
-            start += size;
+            info.splitStart[i] = i * blocksize;
+            info.splitEnd[i] = (i + 1) * blocksize - 1;
 
         }
     }
 
-    public void startDownload(DownloadInfo info) throws IOException {
+    /**
+     * @param info    文件下载信息
+     * @param blockid 文件分块
+     * @throws IOException
+     */
+    public void startDownload(DownloadInfo info, int blockid) throws IOException {
+        //处理信息
         processInfo(info);
-        Response response=mOkhttpManager.getResponse(info);
+        Response response = mOkhttpManager.getResponse(info, blockid);
+        File file =new File(info.getPath()+info.getFileName());
+        if (file.exists()){
+
+        }
+
+        int i = info.getThreadNum();
+        for (int j = 0; j < i; j++) {
+            TaskPool.getInstance().getExecutorService().execute(new CustomDownloadTask(info,j));
+        }
+
 
     }
 

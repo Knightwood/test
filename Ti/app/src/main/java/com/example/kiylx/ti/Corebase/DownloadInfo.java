@@ -4,15 +4,11 @@ public class DownloadInfo {
     private String url;
     private String fileName;
     private String path;
+
+    private boolean pause;
+    private boolean cancel;
+
     private int threadNum;
-    /**
-     * 文件块的下载范围的开始
-     */
-    private long rangeStart;
-    /**
-     * 文件块的下载范围的结束
-     */
-    private long rangeEnd;
 
     public long splitStart[]=null;
     public long splitEnd[]=null;
@@ -35,6 +31,9 @@ public class DownloadInfo {
         this.path = path;
         this.fileName=fileName;
         this.threadNum=threadNum;
+        //初始化暂停和取消的标志
+        this.pause=false;
+        this.cancel=false;
     }
 
 
@@ -80,27 +79,27 @@ public class DownloadInfo {
     }
 
 
-    public long getRangeEnd() {
-        return rangeEnd;
-    }
-
-    public void setRangeEnd(long rangeEnd) {
-        this.rangeEnd = rangeEnd;
-    }
-
-    public long getRangeStart() {
-        return rangeStart;
-    }
-
-    public void setRangeStart(long rangeStart) {
-        this.rangeStart = rangeStart;
-    }
-
     public int getThreadNum() {
         return threadNum;
     }
 
     public void setThreadNum(int threadNum) {
         this.threadNum = threadNum;
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    public boolean isCancel() {
+        return cancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        this.cancel = cancel;
     }
 }

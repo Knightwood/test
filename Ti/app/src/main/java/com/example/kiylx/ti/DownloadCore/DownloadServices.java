@@ -43,7 +43,6 @@ public class DownloadServices extends Service {
         }
 
         public void startDownload(DownloadInfo info){
-
         }
         public void pauseDownload(DownloadInfo info){
 

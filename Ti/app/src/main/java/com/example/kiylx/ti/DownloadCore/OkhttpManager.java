@@ -31,10 +31,16 @@ public class OkhttpManager {
         return mOkHttpClient.newCall(request);
     }
 
-    public Response getResponse(DownloadInfo info) throws IOException {
+    /**
+     * @param info 下载信息
+     * @param blockid 块标号
+     * @return 返回response
+     * @throws IOException
+     */
+    public Response getResponse(DownloadInfo info,int blockid) throws IOException {
         Request request = new Request.Builder()
                 .url(info.getUrl())
-                .addHeader("Range", "bytes=" + "-" + info.getRangeStart() + "-" + info.getRangeEnd())
+                .addHeader("Range", "bytes=" + "-" + info.splitStart[blockid] + "-" + info.splitEnd[blockid])
                 .build();
         return mOkHttpClient.newCall(request).execute();
     }

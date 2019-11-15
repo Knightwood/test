@@ -19,10 +19,10 @@ public class TaskPool {
     private static final int CORE_POOL_SIZE = THREAD_SIZE;
     //线程池
     private ExecutorService mExecutorService;
-    //private final Deque<DownloadTask> readyTasks = new ArrayDeque<>();
-    private final Deque<DownloadTask> runningTasks = new ArrayDeque<>();
-    //private final Deque<DownloadTask> stopTasks = new ArrayDeque<>();
-    private DownloadTask downloadTask;
+    //private final Deque<CustomDownloadTask> readyTasks = new ArrayDeque<>();
+    private final Deque<CustomDownloadTask> runningTasks = new ArrayDeque<>();
+    //private final Deque<CustomDownloadTask> stopTasks = new ArrayDeque<>();
+    private CustomDownloadTask downloadTask;
 
     private TaskPool() {
     }
