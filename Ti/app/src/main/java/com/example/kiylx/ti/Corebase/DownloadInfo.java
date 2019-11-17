@@ -5,8 +5,8 @@ public class DownloadInfo {
     private String fileName;
     private String path;
 
-    private boolean pause;
-    private boolean cancel;
+    private boolean pause=false;
+    private boolean cancel=false;
 
     private int threadNum;
 

@@ -6,6 +6,7 @@ import com.example.kiylx.ti.Corebase.DownloadInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -82,33 +83,34 @@ public class DownloadManager {
     }
 
     /**
-     * @param info    文件下载信息
-     * @param blockid 文件分块
+     * @param info 文件下载信息
      * @throws IOException
      */
-    public void startDownload(DownloadInfo info, int blockid) throws IOException {
+    public void startDownload(DownloadInfo info) throws IOException {
         //处理信息
         processInfo(info);
-        Response response = mOkhttpManager.getResponse(info, blockid);
-        File file =new File(info.getPath()+info.getFileName());
-        if (file.exists()){
 
+        File file = new File(info.getPath() + info.getFileName());
+        if (!file.exists()) {
+            RandomAccessFile rf = new RandomAccessFile(file, "rw");
+            rf.setLength(info.getFileLength());
+            rf.close();
         }
 
         int i = info.getThreadNum();
         for (int j = 0; j < i; j++) {
-            TaskPool.getInstance().getExecutorService().execute(new CustomDownloadTask(info,j));
+            TaskPool.getInstance().getExecutorService().execute(new DownloadTaskRunnable(info, j));
         }
 
 
     }
 
-    public void pauseDownload() {
-
+    public void pauseDownload(DownloadInfo info) {
+        info.setPause(true);
     }
 
-    public void cancelDownload() {
-
+    public void cancelDownload(DownloadInfo info) {
+        info.setCancel(true);
     }
 
 }
