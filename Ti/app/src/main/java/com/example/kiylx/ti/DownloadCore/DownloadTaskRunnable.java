@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.DownloadCore;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.INTERFACE.DOWNLOAD_TASK_FUN;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +21,7 @@ public class DownloadTaskRunnable implements Runnable {
     private int blockid;
     private DownloadInfo mDownloadInfo;
     private OkhttpManager mOkhttpManager;
+    private DOWNLOAD_TASK_FUN mTASK_fun;
 
 
     private RandomAccessFile rf;
@@ -27,10 +29,11 @@ public class DownloadTaskRunnable implements Runnable {
     private Response response;
     private InputStream in = null;
 
-    public DownloadTaskRunnable(DownloadInfo info, int blockid) {
+    public DownloadTaskRunnable(DownloadInfo info, int blockid,DOWNLOAD_TASK_FUN Interface) {
         this.mDownloadInfo = info;
         this.blockid = blockid;
         mOkhttpManager = OkhttpManager.getInstance();
+        mTASK_fun = Interface;
 
     }
 
@@ -76,16 +79,20 @@ public class DownloadTaskRunnable implements Runnable {
                 //从流中读取的数据长度
                 int len;
                 while ((len = in.read(b)) != -1) {
+
+
                     if (mDownloadInfo.isPause()) {
-
+                        mTASK_fun.pausedDownload();
                     } else if (mDownloadInfo.isCancel()) {
-
+                        mTASK_fun.canceledDownload();
+                    }else{
+                        rf.write(b, 0, len);
+                        //计算出总的下载长度
+                        lengthNow += len;
                     }
-                    rf.write(b, 0, len);
-                    //计算出总的下载长度
-                    lengthNow += len;
 
                 }
+                mTASK_fun.downloadSucess();
 
             }
 
@@ -94,9 +101,9 @@ public class DownloadTaskRunnable implements Runnable {
             e.printStackTrace();
         } catch (NullPointerException e) {
             e.printStackTrace();
+        }finally {
+            closeThings();
         }
 
     }
-
-
 }

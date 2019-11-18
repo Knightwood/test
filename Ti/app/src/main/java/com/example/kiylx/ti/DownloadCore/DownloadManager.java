@@ -3,9 +3,11 @@ package com.example.kiylx.ti.DownloadCore;
 import android.os.Environment;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.INTERFACE.DOWNLOAD_TASK_FUN;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PipedReader;
 import java.io.RandomAccessFile;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -16,6 +18,7 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
+
 
     private Deque<DownloadInfo> readyDownload;
     private Deque<DownloadInfo> downloading;
@@ -40,6 +43,28 @@ public class DownloadManager {
         mOkhttpManager = OkhttpManager.getInstance();
 
     }
+
+    private DOWNLOAD_TASK_FUN mTASK_fun=new DOWNLOAD_TASK_FUN() {
+        @Override
+        public long updateProcess() {
+            return 0;
+        }
+
+        @Override
+        public boolean pausedDownload() {
+            return false;
+        }
+
+        @Override
+        public boolean canceledDownload() {
+            return false;
+        }
+
+        @Override
+        public boolean downloadSucess() {
+            return false;
+        }
+    };
 
     /**
      * @param url      下载地址
@@ -99,7 +124,7 @@ public class DownloadManager {
 
         int i = info.getThreadNum();
         for (int j = 0; j < i; j++) {
-            TaskPool.getInstance().getExecutorService().execute(new DownloadTaskRunnable(info, j));
+            TaskPool.getInstance().getExecutorService().execute(new DownloadTaskRunnable(info, j,mTASK_fun));
         }
 
 
