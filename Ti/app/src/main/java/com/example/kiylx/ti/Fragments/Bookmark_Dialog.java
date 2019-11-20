@@ -125,23 +125,9 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //onCreateDialog在onCreate之后，onCreateView之前被调用
-        //return super.onCreateDialog(savedInstanceState);
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
-        setMassage(view);//填充网页信息
-
-        tagadd = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
-        tagadd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newEditBox();
-            }
-        });
-
-        mSpinner = view.findViewById(R.id.select_Tags);
-        //设置tag的选项
-        selectTags(mAboutTag.getPosfromLists(beBookmarked_info.getWebTags()));
-
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
                     @Override
@@ -175,6 +161,19 @@ public class Bookmark_Dialog extends DialogFragment {
 
             }
         });
+
+        setMassage(view);//填充网页信息
+        tagadd = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
+        tagadd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newEditBox();
+            }
+        });
+        mSpinner = view.findViewById(R.id.select_Tags);
+        //设置tag的选项
+        selectTags(mAboutTag.getPosfromLists(beBookmarked_info.getWebTags()));
+
         return builder.create();
 
     }

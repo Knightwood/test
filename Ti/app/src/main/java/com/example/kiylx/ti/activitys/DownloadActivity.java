@@ -15,6 +15,7 @@ import com.example.kiylx.ti.Discard.CustomDownloadService;
 import com.example.kiylx.ti.R;
 
 public class DownloadActivity extends AppCompatActivity {
+
     private CustomDownloadService.DownloadBinder downloadBinder;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -33,14 +34,8 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
-        Button button=findViewById(R.id.button2333);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                downloadBinder.getNotification111();
-            }
-        });
 
+//绑定服务
         Intent intent = new Intent(DownloadActivity.this,CustomDownloadService.class);
         startService(intent);
         bindService(intent,connection,BIND_AUTO_CREATE);

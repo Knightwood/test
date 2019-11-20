@@ -68,4 +68,6 @@
     <string name="addTag">添加新标签</string>
     <string name="read_record">阅读列表</string>
     <string name="findText">在页面上查找</string>
+    <string name="startDownloadButton">开始和暂停下载</string>
+    <string name="deleteDownloadButton">删除下载任务</string>
 </resources>
