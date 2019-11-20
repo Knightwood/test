@@ -13,10 +13,8 @@ import okhttp3.Response;
 
 public class DownloadTaskRunnable implements Runnable {
 
-    public static final int TYPE_SUCCESS = 0;
-    public static final int TYPE_FAILED = 1;
-    public static final int TYPE_PAUSED = 2;
-    public static final int TYPE_CANCELED = 3;
+
+    private static final String TAG = "下载信息";
 
     private int blockid;
     private DownloadInfo mDownloadInfo;
@@ -29,7 +27,7 @@ public class DownloadTaskRunnable implements Runnable {
     private Response response;
     private InputStream in = null;
 
-    public DownloadTaskRunnable(DownloadInfo info, int blockid,DOWNLOAD_TASK_FUN Interface) {
+    public DownloadTaskRunnable(DownloadInfo info, int blockid, DOWNLOAD_TASK_FUN Interface) {
         this.mDownloadInfo = info;
         this.blockid = blockid;
         mOkhttpManager = OkhttpManager.getInstance();
@@ -42,7 +40,9 @@ public class DownloadTaskRunnable implements Runnable {
      */
     private void initFile() {
         try {
-            response = mOkhttpManager.getResponse(mDownloadInfo, blockid);
+            response = OkhttpManager.getInstance().getResponse(mDownloadInfo, blockid);
+            System.out.println("fileName=" + mDownloadInfo.getFileName() + " 每个线程负责下载文件大小contentLength=" + response.body().contentLength()
+                    + " 开始位置start=" + mDownloadInfo.splitStart[blockid] + "结束位置end=" + mDownloadInfo.splitEnd[blockid] + " threadId=" + blockid);
             file = new File(mDownloadInfo.getPath() + mDownloadInfo.getFileName());
             rf = new RandomAccessFile(file, "rw");
             rf.seek(mDownloadInfo.splitStart[blockid]);
@@ -52,6 +52,9 @@ public class DownloadTaskRunnable implements Runnable {
 
     }
 
+    /**
+     * 线程之行结束的清理
+     */
     private void closeThings() {
         try {
             if (response != null) {
@@ -59,6 +62,9 @@ public class DownloadTaskRunnable implements Runnable {
             }
             if (rf != null) {
                 rf.close();
+            }
+            if (in != null) {
+                in.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,30 +75,30 @@ public class DownloadTaskRunnable implements Runnable {
     public void run() {
         try {
             initFile();
+
             if (response != null) {
                 this.in = response.body().byteStream();
 
                 byte b[] = new byte[1024];
 
                 //是记录现在开始下载的长度
-                long lengthNow = mDownloadInfo.splitStart[blockid];
+                //long lengthNow = mDownloadInfo.splitStart[blockid];
                 //从流中读取的数据长度
                 int len;
                 while ((len = in.read(b)) != -1) {
 
-
                     if (mDownloadInfo.isPause()) {
-                        mTASK_fun.pausedDownload();
+                        mTASK_fun.pausedDownload(mDownloadInfo);
                     } else if (mDownloadInfo.isCancel()) {
-                        mTASK_fun.canceledDownload();
-                    }else{
+                        mTASK_fun.canceledDownload(mDownloadInfo);
+                    } else {
                         rf.write(b, 0, len);
                         //计算出总的下载长度
-                        lengthNow += len;
+                        mDownloadInfo.splitStart[blockid] += len;
                     }
 
                 }
-                mTASK_fun.downloadSucess();
+                mTASK_fun.downloadSucess(mDownloadInfo);
 
             }
 
@@ -101,7 +107,7 @@ public class DownloadTaskRunnable implements Runnable {
             e.printStackTrace();
         } catch (NullPointerException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             closeThings();
         }
 

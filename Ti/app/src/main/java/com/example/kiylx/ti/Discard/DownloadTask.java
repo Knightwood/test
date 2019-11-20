@@ -93,7 +93,7 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
                     }else{
                         //len每次都会是1024，total是总的长度，total用于计算下载进度
                         total+=len;
-                        //savedFile是RandomAccessFile对象，从上面跳过的位置处开始，从数组b的0位置读取，把数据写入文件，
+                        //savedFile是RandomAccessFile对象，从上面跳过的位置处开始，从数组b的0位置读取，把数据写入文件
                         savedFile.write(b,0,len);
 
                         //计算进度

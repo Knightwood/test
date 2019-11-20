@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 
+import java.io.IOException;
+
 public class DownloadServices extends Service {
     private DownloadBinder mDownloadBinder=new DownloadBinder();
     private DownloadManager mDownloadManager;
@@ -22,13 +24,7 @@ public class DownloadServices extends Service {
 
     class DownloadBinder extends Binder{
 
-        /**
-         * @param url 下载地址
-         * @return 返回由下载地址生成的默认文件信息
-         */
-        public DownloadInfo getINfo(String url){
-            return mDownloadManager.generateDownloadInfo(url,null,null,8);
-        }
+
 
         /**
          * @param info 文件信息
@@ -36,19 +32,31 @@ public class DownloadServices extends Service {
          * @param filePath 修改的文件存储路径
          * @return 被修改后的文件信息
          */
-        public DownloadInfo setInfo(DownloadInfo info,String fileName,String filePath){
+        public DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath){
             info.setFileName(fileName);
             info.setPath(filePath);
             return info;
         }
 
         public void startDownload(DownloadInfo info){
+            try{
+                mDownloadManager.startDownload(info);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
         }
         public void pauseDownload(DownloadInfo info){
+            mDownloadManager.pauseDownload(info);
 
         }
         public int canaelDownload(DownloadInfo info){
+            mDownloadManager.cancelDownload(info);
             return -1;
+        }
+        public long getRate(DownloadInfo info){
+           return mDownloadManager.getProgressRate(info);
+
         }
     }
 

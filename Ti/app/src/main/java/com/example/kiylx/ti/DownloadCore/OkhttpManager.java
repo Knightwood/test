@@ -37,10 +37,10 @@ public class OkhttpManager {
      * @return 返回response
      * @throws IOException
      */
-    public Response getResponse(DownloadInfo info,int blockid) throws IOException {
+    public Response getResponse(DownloadInfo info, int blockid) throws IOException {
         Request request = new Request.Builder()
                 .url(info.getUrl())
-                .addHeader("Range", "bytes=" + "-" + info.splitStart[blockid] + "-" + info.splitEnd[blockid])
+                .addHeader("Range", "bytes=" + info.splitStart[blockid] + "-" + info.splitEnd[blockid])
                 .build();
         return mOkHttpClient.newCall(request).execute();
     }
@@ -48,20 +48,22 @@ public class OkhttpManager {
     /**
      * @param url 下载地址
      * @return 返回下载文件大小
-     * @throws IOException
      */
-    public long getFileLength(String url)throws IOException{
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        Response response=mOkHttpClient.newCall(request).execute();
-        if (response!=null&&response.isSuccessful()){
-            return response.body().contentLength();
-        }
-        else {
-            return -1;
-        }
+    public long getFileLength(String url) throws IOException{
 
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Response response=mOkHttpClient.newCall(request).execute();
+            if (response!=null&&response.isSuccessful()){
+                long length=response.body().contentLength();
+                response.close();
+                return length;
+            }
+            else {
+                return -1;
+            }
     }
 
 

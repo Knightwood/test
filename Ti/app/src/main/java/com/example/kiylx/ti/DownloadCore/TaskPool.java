@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.DownloadCore;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -19,10 +18,10 @@ public class TaskPool {
     private static final int CORE_POOL_SIZE = THREAD_SIZE;
     //线程池
     private ExecutorService mExecutorService;
-    //private final Deque<CustomDownloadTask> readyTasks = new ArrayDeque<>();
-    private final Deque<CustomDownloadTask> runningTasks = new ArrayDeque<>();
-    //private final Deque<CustomDownloadTask> stopTasks = new ArrayDeque<>();
-    private CustomDownloadTask downloadTask;
+    //private final Deque<DownloadTaskRunnable> readyTasks = new ArrayDeque<>();
+    private final ArrayList<DownloadTaskRunnable> runningTasks = new ArrayList<>();
+    //private final Deque<DownloadTaskRunnable> stopTasks = new ArrayDeque<>();
+    private DownloadTaskRunnable downloadTask;
 
     private TaskPool() {
     }
@@ -38,7 +37,7 @@ public class TaskPool {
         return sTaskPool;
     }
 
-    public synchronized ExecutorService getExecutorService() {
+    private synchronized ExecutorService getExecutorService() {
         if (mExecutorService == null) {
             mExecutorService = new ThreadPoolExecutor(
                     CORE_POOL_SIZE,
@@ -48,6 +47,15 @@ public class TaskPool {
                     new SynchronousQueue<Runnable>());
         }
         return mExecutorService;
+    }
+    public void executeTask(DownloadTaskRunnable runnable){
+        //runningTasks.add(runnable);
+        getExecutorService().execute(runnable);
+    }
+
+    public boolean closeTask(DownloadTaskRunnable runnable){
+       runningTasks.get(runningTasks.indexOf(runnable));
+       return true;
     }
 
 
