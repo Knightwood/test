@@ -90,9 +90,12 @@ public class DownloadTaskRunnable implements Runnable {
                 while ((len = in.read(b)) != -1) {
 
                     //下载暂停或是取消
-                    if (mDownloadInfo.isPause()||mDownloadInfo.isCancel()) {
+                    if (mDownloadInfo.isPause()) {
                         mTASK_fun.pausedDownload(mDownloadInfo);
-                    } else {
+                    }
+                    else {
+                        //这里应该再添加一些resumeDownload的处理
+
                         rf.write(b, 0, len);
                         //计算出总的下载长度
                         mDownloadInfo.splitStart[blockid] += len;

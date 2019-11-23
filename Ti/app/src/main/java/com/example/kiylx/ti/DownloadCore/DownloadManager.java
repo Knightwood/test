@@ -120,7 +120,7 @@ public class DownloadManager {
             return true;
         }
     };
-
+//--------------------------------------------------------------------
     /**
      * @param info downloadinfo
      * @return 加工信息，生成文件分块下载信息等。
@@ -176,16 +176,38 @@ public class DownloadManager {
 
     }
 
+    /**
+     * @param info 下载信息
+     *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
+     */
     public void pauseDownload(DownloadInfo info) {
         info.setPause(true);
     }
 
+    /**
+     * @param info 下载信息
+     *           修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *             取消下载的流程实现暂停，然后再删除文件
+     */
     public void cancelDownload(DownloadInfo info) {
+        pauseDownload(info);
         info.setCancel(true);
     }
 
+    private void deleteFile(DownloadInfo info) {
+    }
+
+    /**
+     * @param info 下载信息
+     *             继续下载
+     *             判断downloading列表是否满了，如果满了，放进ready列表
+     */
     public void resumeDownload(DownloadInfo info) {
         info.setPause(false);
+        if (downloading.size()==downloadNumLimit){
+            pausedownload.remove(info);
+            readyDownload.add(info);
+        }
     }
 
     /**

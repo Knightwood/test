@@ -8,7 +8,6 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
-import com.example.kiylx.ti.activitys.DownloadActivity;
 
 import java.io.IOException;
 
