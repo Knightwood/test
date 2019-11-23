@@ -8,6 +8,7 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.activitys.DownloadActivity;
 
 import java.io.IOException;
 
@@ -22,9 +23,7 @@ public class DownloadServices extends Service {
 
     }
 
-    class DownloadBinder extends Binder{
-
-
+    public class DownloadBinder extends Binder{
 
         /**
          * @param info 文件信息
@@ -45,6 +44,9 @@ public class DownloadServices extends Service {
                 e.printStackTrace();
             }
 
+        }
+        public void resumeDownload(DownloadInfo info){
+            mDownloadManager.resumeDownload(info);
         }
         public void pauseDownload(DownloadInfo info){
             mDownloadManager.pauseDownload(info);

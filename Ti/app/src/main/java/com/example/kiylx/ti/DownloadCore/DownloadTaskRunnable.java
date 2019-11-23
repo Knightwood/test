@@ -41,8 +41,10 @@ public class DownloadTaskRunnable implements Runnable {
     private void initFile() {
         try {
             response = OkhttpManager.getInstance().getResponse(mDownloadInfo, blockid);
+
             System.out.println("fileName=" + mDownloadInfo.getFileName() + " 每个线程负责下载文件大小contentLength=" + response.body().contentLength()
                     + " 开始位置start=" + mDownloadInfo.splitStart[blockid] + "结束位置end=" + mDownloadInfo.splitEnd[blockid] + " threadId=" + blockid);
+
             file = new File(mDownloadInfo.getPath() + mDownloadInfo.getFileName());
             rf = new RandomAccessFile(file, "rw");
             rf.seek(mDownloadInfo.splitStart[blockid]);
@@ -87,10 +89,9 @@ public class DownloadTaskRunnable implements Runnable {
                 int len;
                 while ((len = in.read(b)) != -1) {
 
-                    if (mDownloadInfo.isPause()) {
+                    //下载暂停或是取消
+                    if (mDownloadInfo.isPause()||mDownloadInfo.isCancel()) {
                         mTASK_fun.pausedDownload(mDownloadInfo);
-                    } else if (mDownloadInfo.isCancel()) {
-                        mTASK_fun.canceledDownload(mDownloadInfo);
                     } else {
                         rf.write(b, 0, len);
                         //计算出总的下载长度

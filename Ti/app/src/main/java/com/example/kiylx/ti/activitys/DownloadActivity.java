@@ -2,6 +2,7 @@ package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ComponentName;
@@ -12,27 +13,40 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
-import com.example.kiylx.ti.Discard.CustomDownloadService;
+import com.example.kiylx.ti.DownloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadActivity extends AppCompatActivity {
 
-    private CustomDownloadService.DownloadBinder downloadBinder;
+    /**
+     * 放下载的列表的recyclerview
+     */
+    private RecyclerView rootview;
+    private DownloadViewAdapter mAdapter;
+    /**
+     * 存放下载的信息的列表
+     */
+    private List<DownloadInfo> downloadList;
+
+    private DownloadServices.DownloadBinder downloadBinder;
+
+    public DownloadActivity() {
+        super();
+        downloadList = new ArrayList<>();
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (CustomDownloadService.DownloadBinder) service;
+            downloadBinder = (DownloadServices.DownloadBinder) service;
         }
 
         @Override
@@ -46,8 +60,12 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
 
-//绑定服务
-        Intent intent = new Intent(DownloadActivity.this, CustomDownloadService.class);
+        //downloadList=从存储中获取下载信息
+        //更新视图
+        updateUI();
+
+        //绑定服务
+        Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
         startService(intent);
         bindService(intent, connection, BIND_AUTO_CREATE);
 
@@ -55,6 +73,14 @@ public class DownloadActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
+        rootview.setLayoutManager(new LinearLayoutManager(DownloadActivity.this));
+        if (mAdapter == null) {
+            mAdapter = new DownloadViewAdapter();
+        } else {
+            mAdapter.setLists(downloadList);
+            mAdapter.notifyDataSetChanged();
+        }
+        rootview.setAdapter(mAdapter);
 
     }
 
@@ -95,6 +121,8 @@ public class DownloadActivity extends AppCompatActivity {
         String fileName;
         String DownloadURL;
 
+        DownloadInfo mDownloadInfo;
+
         TextView filenameView;
         TextView URlview;
         ImageButton startDownload;
@@ -102,25 +130,33 @@ public class DownloadActivity extends AppCompatActivity {
 
         public DownloadViewHolder(@NonNull View itemView) {
             super(itemView);
-            startDownload = itemView.findViewById(R.id.startDownload);
+            startDownload = itemView.findViewById(R.id.resumeDownload);
             deleteView = itemView.findViewById(R.id.deleteDownloadinfo);
             filenameView = itemView.findViewById(R.id.downloadTtitle);
             URlview = itemView.findViewById(R.id.downloadUrl);
 
-            itemView.setOnClickListener(this);
-
+            startDownload.setOnClickListener(this);
+            deleteView.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
-switch (v.getId()){
-    case R.id.downloadTtitle:
-        break;
-}
+            switch (v.getId()) {
+                case R.id.resumeDownload:
+                    downloadBinder.resumeDownload(mDownloadInfo);
+                    break;
+                case R.id.deleteDownloadinfo:
+                    downloadBinder.canaelDownload(mDownloadInfo);
+                    break;
+            }
         }
 
         public void binding(DownloadInfo info) {
+            mDownloadInfo = info;
+            fileName = info.getFileName();
+            DownloadURL = info.getUrl();
+
         }
     }
 

@@ -15,4 +15,5 @@ public interface DOWNLOAD_TASK_FUN {
     boolean canceledDownload(DownloadInfo info);
 
     boolean downloadSucess(DownloadInfo info);
+
 }

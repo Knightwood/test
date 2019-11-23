@@ -14,14 +14,21 @@ public class DownloadInfo {
     private int completeNum=0;
     /**
      * 这个变量用于下载暂停时统计线程数量，
-     * 达到所用的线程数量就意味着这个文件的下载线程就都暂停了，可以进行其他的操作。
+     * 达到下载文件分配的线程数量（threadNum）就意味着这个文件的下载线程就都暂停了，可以进行其他的操作。
      */
     private int threadUse;
 
+    /**
+     * 当前文件下载是否已暂停
+     */
     private boolean pause=false;
+    /**
+     * 当前文件下载是否已取消
+     */
     private boolean cancel=false;
     /**
-     * 所用多少线程下载，若当前任务正在下载，那设置中更改线程数量不会被应用到这个正在下载或
+     * 下载这个文件而分配的线程数量。
+     * 若当前任务正在下载，那设置中更改线程数量不会被应用到这个正在下载或
      * 正在暂停状态的任务
      */
     private int threadNum;
@@ -34,14 +41,22 @@ public class DownloadInfo {
      */
     private long fileLength;
     /**
-     * 当前已下载的大小
+     * 当前总文件已下载的大小
      */
     private long totalProcress;
 
     /**
-     * 下载过程中文件分块大小
+     * 下载时根据分配线程数量（threadNum）决定的文件分块大小
      */
     private long blockSize;
+
+    /**
+     * 是否下载完成的标记
+     */
+    private  boolean downloadSuccess;
+
+
+
 
     /**
      * @param url 下载地址
@@ -138,8 +153,16 @@ public class DownloadInfo {
         return completeNum;
     }
 
+    /**
+     * manager中。文件的每个下载线程在下载完成后会调用这个方法，
+     * 当completeNum增加到下载文件所分配的线程数的时候，意味着所有分块已经下载完成。
+     * 可以将downloadSuccess标记为true
+     */
     public void setCompleteNum() {
-        this.completeNum+=1;
+
+        if ((this.completeNum+=1)==this.threadNum){
+            this.downloadSuccess =true;
+        }
     }
 
     public long getBlockSize() {
@@ -156,5 +179,13 @@ public class DownloadInfo {
         }else
         this.threadUse += 1;
         return this.threadUse;
+    }
+
+    public boolean isDownloadSuccess() {
+        return downloadSuccess;
+    }
+
+    private void setDownloadSuccess(boolean downloadSuccess) {
+        this.downloadSuccess = downloadSuccess;
     }
 }
