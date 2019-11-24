@@ -11,12 +11,12 @@ public class DownloadInfo {
      * completeNum等于threadNum，则，下载完成。这里所用来判断的threadNum是downloadinfo中的，为防止
      * 在设置中更改下载线程数量而导致出错
      */
-    private int completeNum=0;
+    private int blockCompleteNum =0;
     /**
      * 这个变量用于下载暂停时统计线程数量，
      * 达到下载文件分配的线程数量（threadNum）就意味着这个文件的下载线程就都暂停了，可以进行其他的操作。
      */
-    private int threadUse;
+    private int blockPauseNum;
 
     /**
      * 当前文件下载是否已暂停
@@ -26,6 +26,10 @@ public class DownloadInfo {
      * 当前文件下载是否已取消
      */
     private boolean cancel=false;
+    /**
+     * 与暂停标记互斥，startdownload会检查resume标记决定是继续下载还是全新的开始
+     */
+    private  boolean resume=false;
     /**
      * 下载这个文件而分配的线程数量。
      * 若当前任务正在下载，那设置中更改线程数量不会被应用到这个正在下载或
@@ -138,6 +142,7 @@ public class DownloadInfo {
     }
 
     public void setPause(boolean pause) {
+        this.resume= !pause;
         this.pause = pause;
     }
 
@@ -149,8 +154,8 @@ public class DownloadInfo {
         this.cancel = cancel;
     }
 
-    public int getCompleteNum() {
-        return completeNum;
+    public int getBlockCompleteNum() {
+        return blockCompleteNum;
     }
 
     /**
@@ -160,7 +165,7 @@ public class DownloadInfo {
      */
     public void setCompleteNum() {
 
-        if ((this.completeNum+=1)==this.threadNum){
+        if ((this.blockCompleteNum +=1)==this.threadNum){
             this.downloadSuccess =true;
         }
     }
@@ -173,12 +178,27 @@ public class DownloadInfo {
         this.blockSize = blockSize;
     }
 
-    public int setThreadUse(int i) {
+    /**
+     * @return  真或假
+     * 所有分块，下载暂停时都会会累加blockPauseNum，
+     * 直到等于文件下载所分配的线程数时返回true
+     */
+    public  boolean getblockPauseNum(){
+        if (this.blockPauseNum==this.threadNum){
+         return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * @param i 标记是否重置，若是0以外的数字，把1累加给blockPauseNum
+     */
+    public void setblockPauseNum(int i) {
         if (i==0){
-            this.threadUse=0;
+            this.blockPauseNum =0;
         }else
-        this.threadUse += 1;
-        return this.threadUse;
+        this.blockPauseNum += 1;
     }
 
     public boolean isDownloadSuccess() {
@@ -187,5 +207,11 @@ public class DownloadInfo {
 
     private void setDownloadSuccess(boolean downloadSuccess) {
         this.downloadSuccess = downloadSuccess;
+    }
+    public void setResume(boolean b){
+        this.resume=b;
+    }
+    public boolean isResume() {
+        return resume;
     }
 }

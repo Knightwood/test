@@ -2,9 +2,12 @@ package com.example.kiylx.ti.DownloadCore;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -42,6 +45,7 @@ public class OkhttpManager {
                 .url(info.getUrl())
                 .addHeader("Range", "bytes=" + info.splitStart[blockid] + "-" + info.splitEnd[blockid])
                 .build();
+
         return mOkHttpClient.newCall(request).execute();
     }
 

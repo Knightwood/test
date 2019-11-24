@@ -61,31 +61,18 @@ public class DownloadManager {
          * 文件的多个线程下载都已经暂停，把其从正在下载中移除，放入暂停下载
          */
         @Override
-        public synchronized boolean pausedDownload(DownloadInfo info) {
-            int i = info.setThreadUse(1);
-            if (i == info.getThreadNum()) {
-                downloading.remove(info);
-                pausedownload.add(info);
-            }
-            return true;
-        }
-
-        /**
-         * @param info 下载信息
-         * @return
-         * 每条线程都会调用，那么每次一个线程调用，当threaduse累加等于线程数时
-         * 文件的多个线程下载都已经取消，此时删除文件
-         */
-        @Override
-        public synchronized boolean canceledDownload(DownloadInfo info) {
-
-            int i = info.setThreadUse(1);
-            if (i == info.getThreadNum()) {
-                downloading.remove(info);
-                //删除文件
-                File file = new File(info.getPath() + info.getFileName());
-                if (file.exists() && file.isFile()) {
-                    file.delete();
+        public synchronized boolean downloadPaused(DownloadInfo info) {
+            info.setblockPauseNum(1);
+            //所有下载文件的线程已经暂停
+            if (info.getblockPauseNum()) {
+                //如果文件取消下载
+                if (info.isCancel()){
+                    downloading.remove(info);
+                    deleteFile(info);
+                }else{
+                    //如果只是暂停
+                    downloading.remove(info);
+                    pausedownload.add(info);
                 }
             }
             return true;
@@ -151,28 +138,33 @@ public class DownloadManager {
      * @throws IOException
      */
     public void startDownload(DownloadInfo info) throws IOException {
-
-        //限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
-        if (downloading.size() == downloadNumLimit) {
-            //加入准备下载
-            readyDownload.add(0, info);
-        } else {
-            //处理信息
-            processInfo(info);
-
-            //File file = new File(info.getPath() + info.getFileName());
-
+        if (info.isResume()){
             int i = info.getThreadNum();
             for (int j = 0; j < i; j++) {
                 TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
             }
+        }else{
+            //全新开始的下载
+            //限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
+            if (downloading.size() == downloadNumLimit) {
+                //加入准备下载
+                readyDownload.add(0, info);
+            } else {
+                //处理信息
+                processInfo(info);
 
-            //加入下载队列
-            downloading.add(info);
+                int i = info.getThreadNum();
+                for (int j = 0; j < i; j++) {
+                    TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+                }
+
+                //加入下载队列
+                downloading.add(info);
+            }
         }
 
         //重置threadUse
-        info.setThreadUse(0);
+        info.setblockPauseNum(0);
 
     }
 
@@ -190,11 +182,18 @@ public class DownloadManager {
      *             取消下载的流程实现暂停，然后再删除文件
      */
     public void cancelDownload(DownloadInfo info) {
-        pauseDownload(info);
         info.setCancel(true);
+        pauseDownload(info);
+
     }
 
     private void deleteFile(DownloadInfo info) {
+        //删除文件
+        File file = new File(info.getPath() + info.getFileName());
+        if (file.exists() && file.isFile()) {
+            file.delete();
+        }
+        //+还要根据cancel标记决定是否要删除记录
     }
 
     /**
@@ -204,9 +203,18 @@ public class DownloadManager {
      */
     public void resumeDownload(DownloadInfo info) {
         info.setPause(false);
+
+        pausedownload.remove(info);
         if (downloading.size()==downloadNumLimit){
-            pausedownload.remove(info);
             readyDownload.add(info);
+        }else{
+            downloading.add(info);
+            try{
+                startDownload(info);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+
         }
     }
 
