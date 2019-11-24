@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;;
 import java.util.List;
 
-
 public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
@@ -110,7 +109,8 @@ public class DownloadManager {
 //--------------------------------------------------------------------
     /**
      * @param info downloadinfo
-     * @return 加工信息，生成文件分块下载信息等。
+     * @return
+     * 加工信息，生成文件分块下载信息等。
      */
     private void processInfo(DownloadInfo info) throws IOException {
         //用于文件下载的线程数
@@ -187,8 +187,11 @@ public class DownloadManager {
 
     }
 
+    /**
+     * @param info 下载信息
+     *             删除文件
+     */
     private void deleteFile(DownloadInfo info) {
-        //删除文件
         File file = new File(info.getPath() + info.getFileName());
         if (file.exists() && file.isFile()) {
             file.delete();

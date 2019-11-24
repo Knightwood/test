@@ -7,11 +7,12 @@
 
     <TextView
         android:id="@+id/downloadTtitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="25dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="8dp"
         android:text="@string/xiazai"
+        android:textAlignment="textStart"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.48"
@@ -23,31 +24,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.75" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/resumeDownload"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
         android:contentDescription="@string/startDownloadButton"
         android:src="@drawable/download_button_action"
         app:layout_constraintBottom_toBottomOf="parent"
+
+
+        app:layout_constraintEnd_toStartOf="@+id/deleteDownloadinfo"
         app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-        />
-
-    <ImageView
+    <ImageButton
         android:id="@+id/deleteDownloadinfo"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="4dp"
         android:contentDescription="@string/deleteDownloadButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,19 +27,28 @@ import java.util.Objects;
 
 public class DownloadWindow extends DialogFragment {
 
-    private View downloadWindow;
+
     private DownloadInfo mDownloadInfo;
 
-    private TextView fileNameView;
+    View mView;
+    private EditText fileNameView;
     private TextView fileUrlView;
 
     private DownloadWindow(DownloadInfo info) {
         this.mDownloadInfo = info;
     }
 
-    public DownloadWindow getInstance(DownloadInfo info) {
+    public static DownloadWindow getInstance(DownloadInfo info) {
 
         return new DownloadWindow(info);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //下面两种写法都可以，就是getLayoutInflater()不要忘了在前面加上 getActivity().
+        //mView = LayoutInflater.from(getActivity()).inflate(R.layout.downloadwindow, null);
+        mView = getActivity().getLayoutInflater().inflate(R.layout.downloadwindow, null);
     }
 
     @NonNull
@@ -45,7 +56,7 @@ public class DownloadWindow extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
 
-        builder.setView(downloadWindow)
+        builder.setView(mView)
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -60,37 +71,9 @@ public class DownloadWindow extends DialogFragment {
                 });
 
         //设置界面信息
-        setInfo(null);
+        setInfo(mView);
 
         return builder.create();
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        downloadWindow = getLayoutInflater().inflate(R.layout.downloadwindow, null);
-        fileNameView = this.downloadWindow.findViewById(R.id.filename_d);
-        fileUrlView = this.downloadWindow.findViewById(R.id.fileurl_d);
-
-        fileNameView.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                fileNameView.removeTextChangedListener(this);
-                setInfo(s.toString());
-                fileNameView.addTextChangedListener(this);
-            }
-        });
     }
 
     @Override
@@ -116,13 +99,39 @@ public class DownloadWindow extends DialogFragment {
         }
     }
 
-    private void setInfo(String fileName) {
+    private void setInfo(View v) {
 
+        /*
         if (mDownloadInfo == null) {
             //处理错误
+        }*/
+        if (fileNameView == null && fileUrlView == null) {
+            fileNameView = v.findViewById(R.id.filename_d1);
+            fileUrlView = v.findViewById(R.id.fileurl_d2);
         }
-        fileNameView.setText(fileName == null ? fileName : mDownloadInfo.getFileName());
 
-        fileUrlView.setText(mDownloadInfo.getUrl());
+        fileNameView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //fileNameView.removeTextChangedListener(this);
+                mDownloadInfo.setFileName(s.toString());
+                //fileNameView.addTextChangedListener(this);
+            }
+        });
+        String filename = mDownloadInfo.getFileName();
+        String url = mDownloadInfo.getUrl();
+        fileNameView.setText(filename);
+        fileUrlView.setText(url);
     }
 }

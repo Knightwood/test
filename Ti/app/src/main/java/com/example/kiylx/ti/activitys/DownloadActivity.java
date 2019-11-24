@@ -2,6 +2,7 @@ package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,11 +14,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 import com.example.kiylx.ti.DownloadCore.DownloadServices;
+import com.example.kiylx.ti.Fragments.DownloadWindow;
 import com.example.kiylx.ti.R;
 
 
@@ -41,6 +44,9 @@ public class DownloadActivity extends AppCompatActivity {
     public DownloadActivity() {
         super();
         downloadList = new ArrayList<>();
+        downloadList.add(new DownloadInfo("www.baidu.com/ko3",null,null,8));
+        downloadList.add(new DownloadInfo("www.baidu.com/ko2",null,null,8));
+        downloadList.add(new DownloadInfo("www.baidu.com/ko1",null,null,8));
     }
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -59,6 +65,7 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
+        rootview=findViewById(R.id.downloadRecyclerview);
 
         //downloadList=从存储中获取下载信息
         //更新视图
@@ -69,6 +76,17 @@ public class DownloadActivity extends AppCompatActivity {
         startService(intent);
         bindService(intent, connection, BIND_AUTO_CREATE);
 
+        Button bui=findViewById(R.id.ceshianniu);
+        bui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko",null,null,8));
+                FragmentManager fragmentManager=getSupportFragmentManager();
+                dof.show(fragmentManager,"下载");
+            }
+        });
+
+
 
     }
 
@@ -76,6 +94,7 @@ public class DownloadActivity extends AppCompatActivity {
         rootview.setLayoutManager(new LinearLayoutManager(DownloadActivity.this));
         if (mAdapter == null) {
             mAdapter = new DownloadViewAdapter();
+            mAdapter.setLists(downloadList);
         } else {
             mAdapter.setLists(downloadList);
             mAdapter.notifyDataSetChanged();
@@ -102,7 +121,7 @@ public class DownloadActivity extends AppCompatActivity {
         @NonNull
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = getLayoutInflater().inflate(R.layout.download_item, parent);
+            View v = getLayoutInflater().inflate(R.layout.download_item, parent,false);
             return new DownloadViewHolder(v);
         }
 
