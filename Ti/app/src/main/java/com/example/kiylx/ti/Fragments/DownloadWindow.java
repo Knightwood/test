@@ -60,7 +60,7 @@ public class DownloadWindow extends DialogFragment {
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+registeredService(mDownloadInfo);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -133,5 +133,14 @@ public class DownloadWindow extends DialogFragment {
         String url = mDownloadInfo.getUrl();
         fileNameView.setText(filename);
         fileUrlView.setText(url);
+    }
+
+    /**
+     * @param info 下载信息
+     *             注册服务到mainactivity并传入下载信息，开始下载。
+     */
+    //下载服务注册===================
+    private void registeredService(DownloadInfo info) {
+
     }
 }

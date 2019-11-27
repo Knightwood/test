@@ -162,10 +162,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         dialog.show(fm, "收藏当前网页");
 
     }
-
-    private void download() {
-
-    }
 }
 /*private void updateUI(String[] lists) {
         if (mAdapter==null){

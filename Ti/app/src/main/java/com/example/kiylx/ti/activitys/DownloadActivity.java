@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 import com.example.kiylx.ti.DownloadCore.DownloadServices;
 import com.example.kiylx.ti.Fragments.DownloadWindow;
+import com.example.kiylx.ti.INTERFACE.RegisterDownloadService;
 import com.example.kiylx.ti.R;
 
 
@@ -38,12 +39,13 @@ public class DownloadActivity extends AppCompatActivity {
      * 存放下载的信息的列表
      */
     private List<DownloadInfo> downloadList;
-
     private DownloadServices.DownloadBinder downloadBinder;
+
 
     public DownloadActivity() {
         super();
         downloadList = new ArrayList<>();
+
         downloadList.add(new DownloadInfo("www.baidu.com/ko3",null,null,8));
         downloadList.add(new DownloadInfo("www.baidu.com/ko2",null,null,8));
         downloadList.add(new DownloadInfo("www.baidu.com/ko1",null,null,8));
@@ -72,9 +74,7 @@ public class DownloadActivity extends AppCompatActivity {
         updateUI();
 
         //绑定服务
-        Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
-        startService(intent);
-        bindService(intent, connection, BIND_AUTO_CREATE);
+        bindService();
 
         Button bui=findViewById(R.id.ceshianniu);
         bui.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +88,12 @@ public class DownloadActivity extends AppCompatActivity {
 
 
 
+    }
+
+    private void bindService() {
+        Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
+        startService(intent);
+        bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
     private void updateUI() {

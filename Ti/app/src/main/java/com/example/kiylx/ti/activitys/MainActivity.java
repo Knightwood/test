@@ -1,12 +1,15 @@
 package com.example.kiylx.ti.activitys;
 
+import android.content.ComponentName;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.DownloadCore.DownloadServices;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.Core1.WebViewManager;
@@ -28,6 +32,7 @@ import com.example.kiylx.ti.Core1.CustomWebchromeClient;
 import com.example.kiylx.ti.Core1.CustomWebviewClient;
 import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
+import com.example.kiylx.ti.INTERFACE.RegisterDownloadService;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -35,13 +40,17 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
+
     static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
-    WebViewManager mWebViewManager;
-    FrameLayout f1;
-    Converted_WebPage_Lists mConverted_lists;
-    TextView mTextView;
-    //AboutHistory sAboutHistory;
     private long mExitTime;//拿来判断按返回键间隔
+
+    WebViewManager mWebViewManager;
+    Converted_WebPage_Lists mConverted_lists;
+    private DownloadServices.DownloadBinder mDownloadBinder;
+
+    FrameLayout f1;
+    TextView mTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -280,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     public void useMultPage_DialogFragmentInterface() {
         MultPage_DialogFragment.setInterface(this);
     }
-
+//工具栏====================================
     void setTextForbar(int i) {
         //以下三行把工具栏的的文字更新
         //sCUWL();
@@ -375,27 +384,36 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
 
+    /**
+     * 展示多窗口
+     */
     private void mult_dialog() {
-        //展示多窗口
+
         FragmentManager fm = getSupportFragmentManager();
         MultPage_DialogFragment md = new MultPage_DialogFragment();
         md.show(fm, "fragment_multPage_dialog");
     }
 
+    /**
+     * 底部设置界面
+     */
     private void minset() {
-        //底部设置界面
+
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
         md.show(fm, "minSetDialog");
     }
 
-    //搜索框代码
+    //搜索框代码=========================================
     public void searchBar(View v) {
         search_dialog();
     }
 
+    /**
+     * 展示搜索框
+     */
     private void search_dialog() {
-        //展示搜索框
+
         Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
@@ -419,6 +437,25 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
     }
+    //下载服务======================================
+    private void bindService(){
+        Intent intent=new Intent(MainActivity.this, DownloadServices.class);
+        startService(intent);
+        bindService(intent,connection,BIND_AUTO_CREATE);
+    }
+    private ServiceConnection connection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+         mDownloadBinder= (DownloadServices.DownloadBinder)service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+    };
+
+
 
 /*
     public void adapter(){
@@ -429,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
     */
 
-    //webview的设置
+    //webview的设置================================
     void set1(WebView ti) {
 
         ti.canGoBack();
