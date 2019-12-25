@@ -456,16 +456,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     };
 
 
-
-/*
-    public void adapter(){
-        adapter = new WebAdapter(MainActivity.this, webList_data);
-        pagelist = findViewById(R.id.pagelist);
-        pagelist.setAdapter(adapter);
-
-    }
-    */
-
     //webview的设置================================
     void set1(WebView ti) {
 

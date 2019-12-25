@@ -25,6 +25,9 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
+/**
+ * 开始一个下载任务的弹窗
+ */
 public class DownloadWindow extends DialogFragment {
 
 

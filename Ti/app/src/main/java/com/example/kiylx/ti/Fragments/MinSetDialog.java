@@ -28,6 +28,9 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.Corebase.WebPage_Info;
 
+/**
+ * 主界面的功能界面
+ */
 public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
     private DialogHomepageSettingBinding homepageSettingBinding;

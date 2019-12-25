@@ -28,6 +28,9 @@ import com.example.kiylx.ti.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 下载管理界面
+ */
 public class DownloadActivity extends AppCompatActivity {
 
     /**
@@ -51,10 +54,11 @@ public class DownloadActivity extends AppCompatActivity {
         downloadList.add(new DownloadInfo("www.baidu.com/ko1",null,null,8));
     }
 
+    //与service通信的中间件
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadServices.DownloadBinder) service;
+            downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
         }
 
         @Override
@@ -73,9 +77,10 @@ public class DownloadActivity extends AppCompatActivity {
         //更新视图
         updateUI();
 
-        //绑定服务
-        bindService();
+        //开启下载服务
+        startDownoadService();
 
+        //测试按钮
         Button bui=findViewById(R.id.ceshianniu);
         bui.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +95,11 @@ public class DownloadActivity extends AppCompatActivity {
 
     }
 
-    private void bindService() {
+    /**
+     * 开启下载服务，并绑定服务（混合绑定），以此保证服务在后台运行：
+     * 即使downloadActivivty结束也可以继续在后台运行
+     */
+    private void startDownoadService() {
         Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
         startService(intent);
         bindService(intent, connection, BIND_AUTO_CREATE);
@@ -166,6 +175,9 @@ public class DownloadActivity extends AppCompatActivity {
         }
 
         @Override
+        /**
+         * 控制下载行为
+         */
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.resumeDownload:
