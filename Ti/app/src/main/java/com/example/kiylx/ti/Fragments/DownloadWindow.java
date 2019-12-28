@@ -45,8 +45,12 @@ public class DownloadWindow extends DialogFragment {
 
         return new DownloadWindow(info);
     }
-    public static void setMinterface(DownloadInterfaceImpl minterface){
-        DownloadWindow.minterface =minterface;
+
+    /**
+     * @param minterface 传入实现了DownloadInterfaceImpl接口的实例
+     */
+    public static void setMinterface(DownloadInterfaceImpl minterface) {
+        DownloadWindow.minterface = minterface;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class DownloadWindow extends DialogFragment {
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-registeredService(mDownloadInfo);
+                        startDownload(mDownloadInfo);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -145,8 +149,8 @@ registeredService(mDownloadInfo);
      * @param info 下载信息
      *             注册服务到mainactivity并传入下载信息，开始下载。
      */
-    //下载服务注册===================
-    private void registeredService(DownloadInfo info) {
-
+    //开始下载===================
+    private void startDownload(DownloadInfo info) {
+minterface.startDownoadService(info);
     }
 }

@@ -24,8 +24,10 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.DownloadCore.DownloadListener2;
 import com.example.kiylx.ti.DownloadCore.DownloadServices;
 import com.example.kiylx.ti.DownloadCore.MydownloadListener;
+import com.example.kiylx.ti.Fragments.DownloadWindow;
 import com.example.kiylx.ti.INTERFACE.DownloadInterfaceImpl;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
@@ -40,7 +42,7 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions, DownloadInterfaceImpl {
+public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
 
@@ -97,6 +99,15 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onStart() {
         super.onStart();
+        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
+            @Override
+            public void startDownoadService(DownloadInfo info) {
+                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
+                startService(intent);
+                bindService(intent, connection, BIND_AUTO_CREATE);
+                mDownloadBinder.startDownload(info);
+            }
+        });
         Log.d("lifecycle", "onBookmarkt()");
     }
 
@@ -441,13 +452,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
     }
 
-    @Override
-    public void startDownoadService(DownloadInfo info) {
-        Intent intent = new Intent(MainActivity.this, DownloadServices.class);
-        startService(intent);
-        bindService(intent, connection, BIND_AUTO_CREATE);
-        mDownloadBinder.startDownload(info);
-    }
 
     private ServiceConnection connection=new ServiceConnection() {
         @Override
@@ -467,7 +471,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         ti.canGoBack();
         ti.canGoForward();
-        ti.setDownloadListener(new MydownloadListener(MainActivity.this));
+
+        //系统的下载器
+        //ti.setDownloadListener(new MydownloadListener(MainActivity.this));
+        //内置下载器
+        ti.setDownloadListener(new DownloadListener2(MainActivity.this));
+
         WebSettings settings = ti.getSettings();
         // webview启用javascript支持 用于访问页面中的javascript
         settings.setJavaScriptEnabled(true);
