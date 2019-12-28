@@ -1,6 +1,9 @@
 package com.example.kiylx.ti.DownloadCore;
 
-public interface DownloadListener {
+/**
+ * 提供给service调用下载器方法的接口。
+ */
+public interface DownloadMethodListener {
     void onProgress(int progress);
 
     void onSuccess();

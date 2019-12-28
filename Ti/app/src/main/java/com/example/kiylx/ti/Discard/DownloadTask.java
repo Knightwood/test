@@ -3,7 +3,7 @@ package com.example.kiylx.ti.Discard;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.example.kiylx.ti.DownloadCore.DownloadListener;
+import com.example.kiylx.ti.DownloadCore.DownloadMethodListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,16 +21,16 @@ public class DownloadTask extends AsyncTask<String, Integer, Integer> {
     public static final int TYPE_PAUSED = 2;
     public static final int TYPE_CANCELED = 3;
 
-    private DownloadListener listener;
+    private DownloadMethodListener listener;
     private boolean isCanceled = false;
     private boolean isPaused = false;
     private int lastProgress;
 
     /**
-     * @param mlistener DownloadListener;
+     * @param mlistener DownloadMethodListener;
      *                  接受一个DownloadListener，在下载的不同阶段调用它的方法，以便更新通知
      */
-    public DownloadTask(DownloadListener mlistener) {
+    public DownloadTask(DownloadMethodListener mlistener) {
         this.listener=mlistener;
     }
 

@@ -23,7 +23,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.Corebase.DownloadInfo;
 import com.example.kiylx.ti.DownloadCore.DownloadServices;
+import com.example.kiylx.ti.DownloadCore.MydownloadListener;
+import com.example.kiylx.ti.INTERFACE.DownloadInterfaceImpl;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
 import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
 import com.example.kiylx.ti.Core1.WebViewManager;
@@ -37,7 +40,7 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions {
+public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions, DownloadInterfaceImpl {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
 
@@ -437,12 +440,15 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
     }
-    //下载服务======================================
-    private void bindService(){
-        Intent intent=new Intent(MainActivity.this, DownloadServices.class);
+
+    @Override
+    public void startDownoadService(DownloadInfo info) {
+        Intent intent = new Intent(MainActivity.this, DownloadServices.class);
         startService(intent);
-        bindService(intent,connection,BIND_AUTO_CREATE);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+        mDownloadBinder.startDownload(info);
     }
+
     private ServiceConnection connection=new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -461,6 +467,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         ti.canGoBack();
         ti.canGoForward();
+        ti.setDownloadListener(new MydownloadListener(MainActivity.this));
         WebSettings settings = ti.getSettings();
         // webview启用javascript支持 用于访问页面中的javascript
         settings.setJavaScriptEnabled(true);
@@ -498,6 +505,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         settings.setDatabaseEnabled(true);
 
     }
+
+
 
 /*
     @Override

@@ -60,13 +60,16 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param flag 标识这是什么网页，0表示这是新标签页
      */
     public void addInWebManager(WebView v, int i, int flag) {
-        if (flag == 0) {
-            //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
-            //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
+        //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
+        //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
+        insert_1(v,i,flag==0? 0:1);
+
+        /*if (flag == 0) {
+
             insert_1(v, i, 0);
         } else {
             insert_1(v, i, 1);
-        }
+        }*/
 
     }
 
@@ -137,7 +140,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
-     * @param pos    tpmDate指向的WebView在lists中的位置,也就是即将加入到Converted_WebPage_Lists中的位置
+     * @param pos    tmpDate指向的WebView在lists中的位置,也就是即将加入到Converted_WebPage_Lists中的位置
      * @param action 动作：添加，删除或是更新数据
      * @return 获得SealedWebPageInfo
      * 获取封装好的WebPageInfo，后面将用它作为推送给观察者的数据
@@ -162,7 +165,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void notifyWebViewUpdate(WebView webView) {
 
         /*
-    //方1，遍历所有进行更新
+    //方1，遍历所有，进行更新
         for(int pos=0;pos<mArrayList.size();pos++){
             notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
             Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(pos).getTitle());

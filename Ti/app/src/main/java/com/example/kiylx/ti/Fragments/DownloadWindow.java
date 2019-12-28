@@ -21,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.INTERFACE.DownloadInterfaceImpl;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -29,8 +30,7 @@ import java.util.Objects;
  * 开始一个下载任务的弹窗
  */
 public class DownloadWindow extends DialogFragment {
-
-
+    private static DownloadInterfaceImpl minterface;
     private DownloadInfo mDownloadInfo;
 
     View mView;
@@ -44,6 +44,9 @@ public class DownloadWindow extends DialogFragment {
     public static DownloadWindow getInstance(DownloadInfo info) {
 
         return new DownloadWindow(info);
+    }
+    public static void setMinterface(DownloadInterfaceImpl minterface){
+        DownloadWindow.minterface =minterface;
     }
 
     @Override

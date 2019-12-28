@@ -42,8 +42,9 @@ public class DownloadInfo {
 
     /**
      * 需要下载文件的总大小，其从response中获取
+     * 或者从调用它的方法中给予
      */
-    private long fileLength;
+    private long contentLength;
     /**
      * 当前总文件已下载的大小
      */
@@ -69,7 +70,7 @@ public class DownloadInfo {
      * @param threadNum 下载这个文件的线程数
      *                  rangeStart和rangeEnd由线程数和文件长度计算得来
      */
-    public DownloadInfo(String url, String path,String fileName, int threadNum){
+    public DownloadInfo(String url, String path,String fileName, int threadNum,long contentLength){
         this.url=url;
 
         if (fileName == null) {
@@ -79,11 +80,27 @@ public class DownloadInfo {
             //默认路径
             this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         }
+        this.contentLength =contentLength;
 
         this.threadNum=threadNum;
         //初始化暂停和取消的标志
         this.pause=false;
         this.cancel=false;
+    }
+
+    /**
+     * 只有一个下载地址的构造函数
+     * */
+    public DownloadInfo(String url){
+        this(url,null,null,8,0);
+    }
+
+    /**
+     * @param url 下载地址
+     * @param contentLength 下载文件的文件长度
+     */
+    public DownloadInfo(String url,long contentLength){
+        this(url,null,null,8,contentLength);
     }
 
 
@@ -120,12 +137,12 @@ public class DownloadInfo {
         this.totalProcress = totalProcress;
     }
 
-    public long getFileLength() {
-        return fileLength;
+    public long getContentLength() {
+        return contentLength;
     }
 
-    public void setFileLength(long fileLength) {
-        this.fileLength = fileLength;
+    public void setContentLength(long contentLength) {
+        this.contentLength = contentLength;
     }
 
 

@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.kiylx.ti.DownloadCore.DownloadListener;
+import com.example.kiylx.ti.DownloadCore.DownloadMethodListener;
 import com.example.kiylx.ti.Notification.CustomNotificationChannel;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.activitys.MainActivity;
@@ -38,7 +38,7 @@ public class CustomDownloadService extends Service {
         CustomNotificationChannel.getChannel(nm);
     }
 
-    private DownloadListener mDownloadListener = new DownloadListener() {
+    private DownloadMethodListener mDownloadMethodListener = new DownloadMethodListener() {
         @Override
         public void onProgress(int progress) {
             getNotificationManager().notify(1, getNotification("Downloading...", progress));
@@ -115,7 +115,7 @@ public class CustomDownloadService extends Service {
         public void startDownload(String url) {
             if (mDownloadTask == null) {
                 downloadUrl = url;
-                mDownloadTask = new DownloadTask(mDownloadListener);
+                mDownloadTask = new DownloadTask(mDownloadMethodListener);
                 mDownloadTask.execute(downloadUrl);
 
                 startForeground(1, getNotification("下载中...", 0));

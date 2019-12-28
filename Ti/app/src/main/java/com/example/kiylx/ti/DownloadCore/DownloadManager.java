@@ -115,11 +115,12 @@ public class DownloadManager {
     private void processInfo(DownloadInfo info) throws IOException {
         //用于文件下载的线程数
         int threadNum = info.getThreadNum();
-        info.setFileLength(mOkhttpManager.getFileLength(info.getUrl()));
-        System.out.println(" 文件总大小" + info.getFileLength());
+        //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
+        info.setContentLength(info.getContentLength()==0?mOkhttpManager.getFileLength(info.getUrl()):info.getContentLength());
+        System.out.println(" 文件总大小" + info.getContentLength());
 
         //文件的分块大小
-        long blocksize = info.getFileLength() / threadNum;
+        long blocksize = info.getContentLength() / threadNum;
         info.setBlockSize(blocksize);
 
         //建立数组准备存储分块信息
@@ -130,7 +131,7 @@ public class DownloadManager {
             info.splitStart[i] = i * blocksize;
             info.splitEnd[i] = (i + 1) * blocksize - 1;
         }
-        info.splitEnd[threadNum - 1] = info.getFileLength();
+        info.splitEnd[threadNum - 1] = info.getContentLength();
     }
 
     /**
@@ -232,7 +233,7 @@ public class DownloadManager {
         for (int i = 0; i < info.getThreadNum(); i++) {
             unDownloadPart += info.splitEnd[i] - info.splitStart[i];
         }
-        return 1 - (unDownloadPart / info.getFileLength());
+        return 1 - (unDownloadPart / info.getContentLength());
     }
 
 }

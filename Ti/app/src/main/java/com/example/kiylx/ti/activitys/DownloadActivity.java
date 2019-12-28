@@ -49,9 +49,9 @@ public class DownloadActivity extends AppCompatActivity {
         super();
         downloadList = new ArrayList<>();
 
-        downloadList.add(new DownloadInfo("www.baidu.com/ko3",null,null,8));
-        downloadList.add(new DownloadInfo("www.baidu.com/ko2",null,null,8));
-        downloadList.add(new DownloadInfo("www.baidu.com/ko1",null,null,8));
+        downloadList.add(new DownloadInfo("www.baidu.com/ko3"));
+        downloadList.add(new DownloadInfo("www.baidu.com/ko2"));
+        downloadList.add(new DownloadInfo("www.baidu.com/ko1"));
     }
 
     //与service通信的中间件
@@ -78,14 +78,16 @@ public class DownloadActivity extends AppCompatActivity {
         updateUI();
 
         //开启下载服务
-        startDownoadService();
+        //startDownoadService();
+        //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
+        boundDownloadService();
 
-        //测试按钮
+        //测试开始下载任务的按钮
         Button bui=findViewById(R.id.ceshianniu);
         bui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko",null,null,8));
+                DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
                 FragmentManager fragmentManager=getSupportFragmentManager();
                 dof.show(fragmentManager,"下载");
             }
@@ -102,6 +104,14 @@ public class DownloadActivity extends AppCompatActivity {
     private void startDownoadService() {
         Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
         startService(intent);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+    }
+
+    /**
+     * 绑定下载服务，以此控制下载服务中的下载。
+     */
+    private void boundDownloadService(){
+        Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
