@@ -58,12 +58,14 @@ public class DownloadServices extends Service {
         }
         @Override
         public void startDownload(DownloadInfo info){
+            if(mDownloadManager==null){
+                mDownloadManager=DownloadManager.getInstance();
+            }
             try{
                 mDownloadManager.startDownload(info);
             }catch (IOException e){
                 e.printStackTrace();
             }
-
         }
         @Override
         public void resumeDownload(DownloadInfo info){

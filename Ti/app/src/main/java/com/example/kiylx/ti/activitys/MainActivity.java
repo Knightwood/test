@@ -87,6 +87,15 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //接口回调
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
+        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
+            @Override
+            public void startDownoadService(DownloadInfo info) {
+                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
+                startService(intent);
+                bindService(intent, connection, BIND_AUTO_CREATE);
+                mDownloadBinder.startDownload(info);
+            }
+        });
     }
 
     @Override
@@ -99,15 +108,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onStart() {
         super.onStart();
-        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
-            @Override
-            public void startDownoadService(DownloadInfo info) {
-                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
-                startService(intent);
-                bindService(intent, connection, BIND_AUTO_CREATE);
-                mDownloadBinder.startDownload(info);
-            }
-        });
+
         Log.d("lifecycle", "onBookmarkt()");
     }
 

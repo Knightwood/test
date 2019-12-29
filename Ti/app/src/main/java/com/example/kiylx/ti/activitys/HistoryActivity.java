@@ -36,13 +36,14 @@ public class HistoryActivity extends AppCompatActivity {
     AboutHistory sAboutHistory;
     ChipGroup mChipGroup;
     String[] mDateli;
-    private static final String TAG="历史记录";
+    private static final String TAG = "历史记录";
     private static OpenOneWebpage sOpenOneWebpage;
     private HistoryInterface m_historyInterface;
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
     }
+
     public void setM_historyInterface(HistoryInterface m_historyInterface) {
         this.m_historyInterface = m_historyInterface;
     }
@@ -108,14 +109,14 @@ public class HistoryActivity extends AppCompatActivity {
 
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        Log.d(TAG, "updateUI: "+startDate+"/"+endDate);
+        Log.d(TAG, "updateUI: " + startDate + "/" + endDate);
 
-       //用统一的接口获取数据
-        mHistorys= m_historyInterface.getDataLists(startDate, endDate);
-
-        /*if (mHistorys.isEmpty()) {
+        //用统一的接口获取数据
+        mHistorys = m_historyInterface.getDataLists(startDate, endDate);
+        //没有历史记录的话什么也不做
+        if (mHistorys.isEmpty()) {
             return;
-        }*/
+        }
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
@@ -197,14 +198,14 @@ public class HistoryActivity extends AppCompatActivity {
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
-            itemMenu=itemView.findViewById(R.id.more_setting);
+            itemMenu = itemView.findViewById(R.id.more_setting);
             title.setOnClickListener(this);
             itemMenu.setOnClickListener(this);
 
         }
 
         public void bind(WebPage_Info info) {
-            URL=info.getUrl();
+            URL = info.getUrl();
             title.setText(info.getTitle());
             url.setText(info.getUrl());
             Log.d("历史activity", "bind函数被触发");
@@ -212,12 +213,12 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.more_setting:
                     itemPopmenu(v);
                     break;
                 case R.id.itemTitle:
-                    sOpenOneWebpage.loadUrl(URL,true);
+                    sOpenOneWebpage.loadUrl(URL, true);
 
             }
         }
