@@ -51,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     WebViewManager mWebViewManager;
     Converted_WebPage_Lists mConverted_lists;
-    private DownloadServices.DownloadBinder mDownloadBinder;
+    public DownloadServices.DownloadBinder mDownloadBinder;
+    public DownloadInfo downloadInfo;//下载信息
 
     FrameLayout f1;
     TextView mTextView;
@@ -87,15 +88,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //接口回调
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
-        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
-            @Override
-            public void startDownoadService(DownloadInfo info) {
-                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
-                startService(intent);
-                bindService(intent, connection, BIND_AUTO_CREATE);
-                mDownloadBinder.startDownload(info);
-            }
-        });
+        downloadWindow_startDownload();
     }
 
     @Override
@@ -453,11 +446,28 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
     }
 
+    /**
+     * 设置接口，让开始下载任务的dialog可以调用这个方法来开启并绑定服务。
+     */
+    private void downloadWindow_startDownload() {
+        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
+
+            @Override
+            public void startDownoadService(DownloadInfo info) {
+                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
+                startService(intent);
+                bindService(intent, connection, BIND_AUTO_CREATE);
+                downloadInfo=info;
+
+            }
+        });
+    }
 
     private ServiceConnection connection=new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
          mDownloadBinder= (DownloadServices.DownloadBinder)service;
+         mDownloadBinder.startDownload(downloadInfo);//绑定服务，开始下载
         }
 
         @Override

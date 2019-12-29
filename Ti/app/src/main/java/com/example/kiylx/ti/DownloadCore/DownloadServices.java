@@ -16,7 +16,7 @@ import java.io.IOException;
  * 下载服务
  */
 public class DownloadServices extends Service {
-    private DownloadBinder mDownloadBinder=new DownloadBinder();
+    private DownloadBinder mDownloadBinder;
     private DownloadManager mDownloadManager;
 
     @Override
@@ -33,6 +33,7 @@ public class DownloadServices extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        this.mDownloadBinder=new DownloadBinder();
         mDownloadManager=DownloadManager.getInstance();
 
     }
