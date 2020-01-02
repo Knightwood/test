@@ -20,6 +20,13 @@ public class DownloadServices extends Service {
     private DownloadManager mDownloadManager;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+        this.mDownloadBinder=new DownloadBinder();
+        mDownloadManager=DownloadManager.getInstance();
+
+    }
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
     }
@@ -28,14 +35,6 @@ public class DownloadServices extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return mDownloadBinder;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        this.mDownloadBinder=new DownloadBinder();
-        mDownloadManager=DownloadManager.getInstance();
-
     }
 
     @Override

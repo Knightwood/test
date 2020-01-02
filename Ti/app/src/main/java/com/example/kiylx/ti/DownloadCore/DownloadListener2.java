@@ -18,6 +18,14 @@ public class DownloadListener2 implements DownloadListener {
         this.mContext=context;
     }
 
+    /**
+     * @param url 下载地址
+     * @param userAgent 标识
+     * @param contentDisposition 文件描述
+     * @param mimetype 不知道做什么的
+     * @param contentLength 文件长度
+     *                      拿到信息，打开一个下载dialog界面。
+     */
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
         DownloadInfo info=new DownloadInfo(url,contentLength);

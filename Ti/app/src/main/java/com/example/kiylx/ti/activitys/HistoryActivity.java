@@ -37,8 +37,8 @@ public class HistoryActivity extends AppCompatActivity {
     ChipGroup mChipGroup;
     String[] mDateli;
     private static final String TAG = "历史记录";
-    private static OpenOneWebpage sOpenOneWebpage;
-    private HistoryInterface m_historyInterface;
+    private static OpenOneWebpage sOpenOneWebpage;//打开网页的接口
+    private HistoryInterface m_historyInterface;//获取历史记录的接口
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
@@ -219,6 +219,7 @@ public class HistoryActivity extends AppCompatActivity {
                     break;
                 case R.id.itemTitle:
                     sOpenOneWebpage.loadUrl(URL, true);
+                    finish();
 
             }
         }
