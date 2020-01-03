@@ -15,7 +15,7 @@ public class DownloadManagerTest {
     @Before
     public void setUp() throws Exception {
         manager=DownloadManager.getInstance();
-        info1=new DownloadInfo("https://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe",null,null,8);
+        info1=new DownloadInfo("https://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe");
     }
 
     @Test

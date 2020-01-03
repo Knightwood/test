@@ -1,6 +1,11 @@
 package com.example.kiylx.ti.DownloadCore;
 
+import android.content.Context;
+
+import androidx.room.Room;
+
 import com.example.kiylx.ti.Corebase.DownloadInfo;
+import com.example.kiylx.ti.DownloadInfo_storage.downloadInfoDatabase;
 import com.example.kiylx.ti.INTERFACE.DOWNLOAD_TASK_FUN;
 
 import java.io.File;
@@ -12,6 +17,7 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
+    private downloadInfoDatabase mDatabase;//下载信息数据库
 
 
     private List<DownloadInfo> readyDownload;
@@ -19,6 +25,7 @@ public class DownloadManager {
     private List<DownloadInfo> pausedownload;
 
     private int downloadNumLimit = 0;
+    private Context mContext;
 
     public static DownloadManager getInstance() {
         if (mDownloadManager == null) {
@@ -32,6 +39,7 @@ public class DownloadManager {
         return mDownloadManager;
     }
 
+
     /**
      * 超过这个限制，把任务加入readydownload
      */
@@ -41,7 +49,6 @@ public class DownloadManager {
         downloadNumLimit = 5;
 
         downloading = new ArrayList<>();
-
         pausedownload = new ArrayList<>();
         readyDownload = new ArrayList<>();
         mOkhttpManager = OkhttpManager.getInstance();
@@ -106,7 +113,7 @@ public class DownloadManager {
             return true;
         }
     };
-//--------------------------------------------------------------------
+//--------------------------------------以上是接口方法多线程会调用它，以下是一些下载方法------------------------------//
     /**
      * @param info downloadinfo
      * @return
@@ -235,5 +242,12 @@ public class DownloadManager {
         }
         return 1 - (unDownloadPart / info.getContentLength());
     }
+
+    public void setContext(Context context){
+        this.mContext=context;
+    }
+private void getDatabase(){
+        mDatabase= Room.databaseBuilder(mContext,downloadInfoDatabase.class,"downloadinfo_db").build();
+}
 
 }

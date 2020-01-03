@@ -2,9 +2,10 @@ package com.example.kiylx.ti.DownloadInfo_storage;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "downloadInfo_tab")
+@Entity(tableName = "downloadInfo_tab",indices = {@Index(value = {"url"})})
 
 public class DownloadEntity {
 
