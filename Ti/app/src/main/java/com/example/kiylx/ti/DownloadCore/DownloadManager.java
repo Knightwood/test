@@ -2,10 +2,13 @@ package com.example.kiylx.ti.DownloadCore;
 
 import android.content.Context;
 
+import androidx.databinding.DataBindingUtil;
 import androidx.room.Room;
 
 import com.example.kiylx.ti.Corebase.DownloadInfo;
-import com.example.kiylx.ti.DownloadInfo_storage.downloadInfoDatabase;
+import com.example.kiylx.ti.DownloadInfo_storage.DatabaseUtil;
+import com.example.kiylx.ti.DownloadInfo_storage.DownloadEntity;
+import com.example.kiylx.ti.DownloadInfo_storage.DownloadInfoDatabase;
 import com.example.kiylx.ti.INTERFACE.DOWNLOAD_TASK_FUN;
 
 import java.io.File;
@@ -17,7 +20,7 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
-    private downloadInfoDatabase mDatabase;//下载信息数据库
+    //private DownloadInfoDatabase mDatabase;//下载信息数据库
 
 
     private List<DownloadInfo> readyDownload;
@@ -72,10 +75,10 @@ public class DownloadManager {
             //所有下载文件的线程已经暂停
             if (info.getblockPauseNum()) {
                 //如果文件取消下载
-                if (info.isCancel()){
+                if (info.isCancel()) {
                     downloading.remove(info);
                     deleteFile(info);
-                }else{
+                } else {
                     //如果只是暂停
                     downloading.remove(info);
                     pausedownload.add(info);
@@ -114,16 +117,16 @@ public class DownloadManager {
         }
     };
 //--------------------------------------以上是接口方法多线程会调用它，以下是一些下载方法------------------------------//
+
     /**
      * @param info downloadinfo
-     * @return
-     * 加工信息，生成文件分块下载信息等。
+     * @return 加工信息，生成文件分块下载信息等。
      */
     private void processInfo(DownloadInfo info) throws IOException {
         //用于文件下载的线程数
         int threadNum = info.getThreadNum();
         //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
-        info.setContentLength(info.getContentLength()==0?mOkhttpManager.getFileLength(info.getUrl()):info.getContentLength());
+        info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
         System.out.println(" 文件总大小" + info.getContentLength());
 
         //文件的分块大小
@@ -146,12 +149,12 @@ public class DownloadManager {
      * @throws IOException
      */
     public void startDownload(DownloadInfo info) throws IOException {
-        if (info.isResume()){
+        if (info.isResume()) {
             int i = info.getThreadNum();
             for (int j = 0; j < i; j++) {
                 TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
             }
-        }else{
+        } else {
             //全新开始的下载
             //限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
             if (downloading.size() == downloadNumLimit) {
@@ -186,7 +189,7 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     *           修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *             修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
      *             取消下载的流程实现暂停，然后再删除文件
      */
     public void cancelDownload(DownloadInfo info) {
@@ -216,13 +219,13 @@ public class DownloadManager {
         info.setPause(false);
 
         pausedownload.remove(info);
-        if (downloading.size()==downloadNumLimit){
+        if (downloading.size() == downloadNumLimit) {
             readyDownload.add(info);
-        }else{
+        } else {
             downloading.add(info);
-            try{
+            try {
                 startDownload(info);
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -243,11 +246,24 @@ public class DownloadManager {
         return 1 - (unDownloadPart / info.getContentLength());
     }
 
-    public void setContext(Context context){
-        this.mContext=context;
+    public void setContext(Context context) {
+        this.mContext = context;
     }
-private void getDatabase(){
-        mDatabase= Room.databaseBuilder(mContext,downloadInfoDatabase.class,"downloadinfo_db").build();
-}
+    /*废弃
+    private void getDatabase() {
+        mDatabase = DownloadInfoDatabase.getInstance(mContext);
+    }*/
+
+    private void insertData(DownloadInfo info) {
+        DatabaseUtil.getDao(mContext).insertAll();
+    }
+
+    private void update() {
+        DatabaseUtil.getDao(mContext).update();
+    }
+
+    private void delete() {
+        //DatabaseUtil.getDao(mContext).delete(info);
+    }
 
 }

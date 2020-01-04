@@ -37,6 +37,10 @@ public class DownloadInfo {
      */
     private int threadNum;
 
+    /**
+     * 下载时根据分配线程数量（threadNum）决定的文件分块大小
+     */
+    private long blockSize;
     public long splitStart[]=null;
     public long splitEnd[]=null;
 
@@ -49,11 +53,6 @@ public class DownloadInfo {
      * 当前总文件已下载的大小
      */
     private long totalProcress;
-
-    /**
-     * 下载时根据分配线程数量（threadNum）决定的文件分块大小
-     */
-    private long blockSize;
 
     /**
      * 是否下载完成的标记
