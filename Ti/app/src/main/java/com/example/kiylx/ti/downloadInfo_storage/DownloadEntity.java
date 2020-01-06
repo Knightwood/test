@@ -12,7 +12,7 @@ public class DownloadEntity {
 
     public DownloadEntity(String url, String filename, String path,
                           int blockCompleteNum, int blockPauseNum, String pause,
-                          int threadNum, long contentLength, long totalProcress,
+                          int threadNum, long contentLength, double totalProcress,
                           long blockSize, String downloadSuccess) {
         this.url = url;
         this.filename = filename;
@@ -64,7 +64,7 @@ public class DownloadEntity {
     public long contentLength;
 
     @ColumnInfo(name = "total_procress")
-    public long totalProcress;
+    public double totalProcress;
 
     @ColumnInfo(name = "block_size")
     public long blockSize;

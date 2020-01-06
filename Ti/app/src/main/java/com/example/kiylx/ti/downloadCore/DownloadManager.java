@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -70,7 +69,7 @@ public class DownloadManager {
         public synchronized boolean downloadPaused(DownloadInfo info) {
             info.setblockPauseNum(1);
             //所有下载文件的线程已经暂停
-            if (info.getblockPauseNum()) {
+            if (info.getblockPause()) {
                 //如果文件取消下载
                 if (info.isCancel()) {
                     downloading.remove(info);
@@ -297,7 +296,7 @@ public class DownloadManager {
     private void getDatabase() {
         mDatabase = DownloadInfoDatabase.getInstance(mContext);
     }*/
-
+//-----------------------数据库操作---------------------//
     private void insertData(DownloadInfo info) {
         DatabaseUtil.getDao(mContext).insertAll();
     }

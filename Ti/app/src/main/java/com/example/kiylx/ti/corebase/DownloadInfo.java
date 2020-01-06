@@ -155,6 +155,13 @@ public class DownloadInfo {
         return pause;
     }
 
+    /**
+     * 存进数据库时所需的转换操作，把真假的布尔值转换为string值
+     */
+    public String getPauseFlags() {
+        return isPause() ? "true" : "false";
+    }
+
     public void setPause(boolean pause) {
         this.pause = pause;
     }
@@ -197,8 +204,15 @@ public class DownloadInfo {
      * 所有分块，下载暂停时都会会累加blockPauseNum，
      * 直到等于文件下载所分配的线程数时返回true
      */
-    public boolean getblockPauseNum() {
+    public boolean getblockPause() {
         return this.blockPauseNum == this.threadNum;
+    }
+
+    /**
+     * @return 返回暂停分块数量
+     */
+    public int getBlockPauseNum() {
+        return this.blockPauseNum;
     }
 
     /**
@@ -215,14 +229,15 @@ public class DownloadInfo {
         return downloadSuccess;
     }
 
+    /**
+     * @return 存进数据库时的转换，布尔值转换为string类型
+     */
+    public String getDownloadSuccess() {
+        return downloadSuccess ? "true" : "false";
+    }
+
     private void setSuccessFlags(boolean flag) {
         this.downloadSuccess = flag;
     }
-    /*
-    public void setResume(boolean b){
-        this.resume=b;
-    }
-    public boolean isResume() {
-        return resume;
-    }*/
+
 }
