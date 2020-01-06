@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.model;
 
-import com.example.kiylx.ti.Corebase.WebPage_Info;
+import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import org.junit.Before;
 

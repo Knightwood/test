@@ -2,7 +2,6 @@ package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,10 +17,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.kiylx.ti.Corebase.DownloadInfo;
-import com.example.kiylx.ti.DownloadCore.DownloadServices;
-import com.example.kiylx.ti.Fragments.DownloadWindow;
-import com.example.kiylx.ti.INTERFACE.RegisterDownloadService;
+import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 
 

@@ -1,73 +1,75 @@
-package com.example.kiylx.ti.activitys;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+package com.example.kiylx.ti.myFragments;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutHistory;
+import com.example.kiylx.ti.dateProcess.KindsofDate;
+import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.dateProcess.KindsofDate;
-import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class HistoryActivity extends AppCompatActivity {
-    HistoryAdapter mAdapter;
-    ArrayList<WebPage_Info> mHistorys;
+public class HistoryFragment extends Fragment {
+    private HistoryFragment.HistoryAdapter mAdapter;
+    private ArrayList<WebPage_Info> mHistorys;
     View view;
-    RecyclerView listView;
-    AboutHistory sAboutHistory;
-    ChipGroup mChipGroup;
-    String[] mDateli;
-    private static final String TAG = "历史记录";
-    private static OpenOneWebpage sOpenOneWebpage;//打开网页的接口
-    private HistoryInterface m_historyInterface;//获取历史记录的接口
+    private RecyclerView listView;
+    private AboutHistory sAboutHistory;
+    private ChipGroup mChipGroup;
+    private String[] mDateli;
+    private View v;
+    private HistoryInterface m_historyInterface;
+    private static OpenOneWebpage sOpenOneWebpage;
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
     }
-
-    public void setM_historyInterface(HistoryInterface m_historyInterface) {
+    private void setM_historyInterface(HistoryInterface m_historyInterface) {
         this.m_historyInterface = m_historyInterface;
     }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_history);
-        listView = findViewById(R.id.showHistory_1);
-        listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //return super.onCreateView(inflater, container, savedInstanceState);
+        v=inflater.inflate(R.layout.fragment_history,null);
+        listView = v.findViewById(R.id.showHistory_1);
+        listView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        sAboutHistory = AboutHistory.get(this);
+        sAboutHistory = AboutHistory.get(getActivity());
         setM_historyInterface(sAboutHistory);
-
-        //初始化recyclerview为最近七天的数据
+//初始化recyclerview为最近七天的数据
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
         updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
+        return v;
+
     }
 
     //监听chipgroup以更新recyclerview视图
     private void CheckedChangeListener() {
-        mChipGroup = findViewById(R.id.Date_ChipGroup);
+        mChipGroup = v.findViewById(R.id.Date_ChipGroup);
         mChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup chipGroup, int i) {
@@ -77,7 +79,7 @@ public class HistoryActivity extends AppCompatActivity {
                         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
                         break;
                     case R.id.thismonth:
-                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISMONTH, TimeProcess.getTime());
+                        mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
                         break;
                     case R.id.month1:
                         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH1, TimeProcess.getTime());
@@ -102,23 +104,16 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        Log.d(TAG, "updateUI: " + startDate + "/" + endDate);
 
-        //用统一的接口获取数据
-        mHistorys = m_historyInterface.getDataLists(startDate, endDate);
-        //没有历史记录的话什么也不做
+        mHistorys = m_historyInterface.getDataLists(startDate,endDate);
+
         if (mHistorys.isEmpty()) {
             return;
         }
         if (null == mAdapter) {
-            mAdapter = new HistoryAdapter(mHistorys);
+            mAdapter = new HistoryFragment.HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
         } else {
@@ -130,7 +125,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void itemPopmenu(View v) {
-        PopupMenu itemMenu = new PopupMenu(this, v);
+        PopupMenu itemMenu = new PopupMenu(Objects.requireNonNull(getActivity()), v);
         MenuInflater inflater = itemMenu.getMenuInflater();
         inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
         itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -138,7 +133,6 @@ public class HistoryActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-
                         break;
                     case R.id.open1:
                         break;
@@ -153,7 +147,7 @@ public class HistoryActivity extends AppCompatActivity {
         itemMenu.show();
     }
 
-    private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
+    private class HistoryAdapter extends RecyclerView.Adapter<HistoryFragment.HistoryViewHolder> {
         ArrayList<WebPage_Info> lists;
 
         HistoryAdapter(ArrayList<WebPage_Info> list) {
@@ -168,14 +162,14 @@ public class HistoryActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public HistoryFragment.HistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item, parent, false);
             Log.d("历史activity", "onCreateViewHolder函数被触发");
-            return new HistoryViewHolder(v);
+            return new HistoryFragment.HistoryViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull HistoryViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull HistoryFragment.HistoryViewHolder holder, int position) {
             holder.bind(lists.get(position));
             Log.d("历史activity", " onBindViewHolder函数被触发");
         }
@@ -187,25 +181,19 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    private class HistoryViewHolder extends ViewHolder implements View.OnClickListener {
+    private class HistoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         TextView url;
-        ImageView itemMenu;
-        String URL;
 
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
-            itemMenu = itemView.findViewById(R.id.more_setting);
-            title.setOnClickListener(this);
-            itemMenu.setOnClickListener(this);
-
+            itemView.setOnClickListener(this);
         }
 
         public void bind(WebPage_Info info) {
-            URL = info.getUrl();
             title.setText(info.getTitle());
             url.setText(info.getUrl());
             Log.d("历史activity", "bind函数被触发");
@@ -213,15 +201,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.more_setting:
-                    itemPopmenu(v);
-                    break;
-                case R.id.itemTitle:
-                    sOpenOneWebpage.loadUrl(URL, true);
-                    finish();
 
-            }
         }
     }
 }

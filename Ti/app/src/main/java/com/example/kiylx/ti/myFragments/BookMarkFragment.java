@@ -1,12 +1,14 @@
-package com.example.kiylx.ti.activitys;
+package com.example.kiylx.ti.myFragments;
+
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -22,21 +24,19 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.AboutTag;
-import com.example.kiylx.ti.myFragments.DeleteTag_Dialog;
-import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
-import com.example.kiylx.ti.myFragments.EditBox_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark {
+public class BookMarkFragment extends Fragment implements RefreshBookMark {
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
-    private RecyclerAdapter adapter;
+    private BookMarkFragment.RecyclerAdapter adapter;
     private AboutTag mAboutTag;
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
@@ -44,31 +44,27 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     private static OpenOneWebpage mopenWeb;
     private TextView deleteTag_textview;
     private static final String TAG = "BookmarkActivity";
+    private View mView;
 
 
+    @Nullable
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bookmark_page);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mView=inflater.inflate(R.layout.fragment_history,null);
         //获取tag列表
-        mAboutTag = AboutTag.get(BookmarkPageActivity.this);
+        mAboutTag = AboutTag.get(getActivity());
         mTaglists = mAboutTag.getTagListfromDB();
 
         //获取收藏item列表，并默认展示未tag的列表
-        mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
+        mAboutBookmark = AboutBookmark.get(getActivity());
         mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
-        mSpinner = findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
+        mSpinner = mView.findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
         selectTagtoUpdate();//展示spinner
 
         //展示recyclerview
-        mRecyclerView = findViewById(R.id.show_BookmarkItem);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(BookmarkPageActivity.this));//展示具体收藏item的recyclerview
+        mRecyclerView = mView.findViewById(R.id.show_BookmarkItem);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));//展示具体收藏item的recyclerview
 
         //更新lists，然后更新视图
         tagname = mTaglists.get(0);//一开始就初始化tag名称防止出错
@@ -80,7 +76,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         Bookmark_Dialog.setRefresh(this);
 
         //删除tag按钮
-        deleteTag_textview = findViewById(R.id.edit_tags);
+        deleteTag_textview = mView.findViewById(R.id.edit_tags);
         deleteTag_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,8 +84,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
             }
         });
-
+        return mView;
     }
+
 
     private void updateUI() {
         /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
@@ -103,7 +100,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         }
         mRecyclerView.setVisibility(View.VISIBLE);*/
         if (null == adapter) {
-            adapter = new RecyclerAdapter(mBookmarkArrayList);//这里的lists是包含未分类
+            adapter = new BookMarkFragment.RecyclerAdapter(mBookmarkArrayList);//这里的lists是包含未分类
             mRecyclerView.setAdapter(adapter);
             Log.d("收藏activity", "onClick: 创建adapter函数被触发");
         } else {
@@ -124,8 +121,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     /**
      * 在spinner中选择一个项目，然后更新含有此标签的书签列表
      */
-    public void selectTagtoUpdate() {
-        ArrayAdapter<String> madapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mTaglists);
+    private void selectTagtoUpdate() {
+        ArrayAdapter<String> madapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, mTaglists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(madapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -176,9 +173,14 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         getBookmarksWithTagChanged(tagname);
         updateUI();
     }
+/*
+    public interface SatrPageA_interface {
+        void loadUrl(String urlname, boolean flags);
+        //flags,是否使用新的标签页打开网页
+    }*/
 
     public static void setInterface(OpenOneWebpage minterface) {
-        BookmarkPageActivity.mopenWeb = minterface;
+        BookMarkFragment.mopenWeb = minterface;
     }
 
     /**
@@ -186,7 +188,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      */
     private void addMenutoEditTag(View v) {
         //用来控制tag编辑的几个菜单选项
-        PopupMenu menu = new PopupMenu(BookmarkPageActivity.this, v);
+        PopupMenu menu = new PopupMenu(getActivity(), v);
         MenuInflater inflater = menu.getMenuInflater();
         inflater.inflate(R.menu.tagmanager_menu, menu.getMenu());
         menu.show();
@@ -218,7 +220,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      */
     private void editTag(String arg) {
         EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance(arg);
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         editBox_dialog.show(fm, "编辑tag");
 
     }
@@ -228,18 +230,18 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      */
     private void newTag() {
         EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance();
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         editBox_dialog.show(fm, "新建一个tag");
 
     }
 
     private void deleteTag(String arg) {
         DeleteTag_Dialog fr = DeleteTag_Dialog.getInstance(arg);
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         fr.show(fm, "删除标签dialog");
     }
 
-    public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
+    public class RecyclerAdapter extends RecyclerView.Adapter<BookMarkFragment.ViewHolder> {
         private ArrayList<WebPage_Info> mList;
 
         RecyclerAdapter(ArrayList<WebPage_Info> lists) {
@@ -253,13 +255,13 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public BookMarkFragment.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.history_item, parent, false);
-            return new ViewHolder(v);
+            return new BookMarkFragment.ViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull BookMarkFragment.ViewHolder holder, int position) {
             holder.bind(mList.get(position));
 
         }
@@ -292,7 +294,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
          * @param url1 网址
          */
         void addPopMenu(View v, final String title1, final String url1) {
-            PopupMenu popupMenu = new PopupMenu(BookmarkPageActivity.this, v);
+            PopupMenu popupMenu = new PopupMenu(getActivity(), v);
             MenuInflater menuInflater = popupMenu.getMenuInflater();
             menuInflater.inflate(R.menu.bookmark_item_options, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -308,7 +310,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                             updateUI();
                             break;
                         case R.id.openPageinNewWindow:
-                            finish();
+                            //finish();
+                            onDetach();
                             //因为mainactivity里加载网页代码太烂，这里写true用新标签页打开会有bug
                             mopenWeb.loadUrl(url_1, true);
                     }
@@ -340,10 +343,12 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                 case R.id.itemTitle:
                     //点击item后访问网址
                     if (url_1.equals("about:newTab")) {
-                        finish();
+                        onDetach();
+                        //finish();
                         mopenWeb.loadUrl(null, false);
                     } else {
-                        finish();
+                        onDetach();
+                        //finish();
                         mopenWeb.loadUrl(url_1, false);
                     }
                     break;
@@ -364,7 +369,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
          */
         void showBookmarkDialog(String title, String url, String tag) {
             Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, tag, -1,null));
-            FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }
     }

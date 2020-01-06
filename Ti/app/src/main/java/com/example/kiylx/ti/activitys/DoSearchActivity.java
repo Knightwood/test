@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.kiylx.ti.SearchProcess.ProcessRecordItem;
-import com.example.kiylx.ti.Fragments.Fragment_DoSearch;
+import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
+import com.example.kiylx.ti.myFragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
 public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInteractionListener {

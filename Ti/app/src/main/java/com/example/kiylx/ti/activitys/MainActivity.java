@@ -23,19 +23,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.example.kiylx.ti.Corebase.DownloadInfo;
-import com.example.kiylx.ti.DownloadCore.DownloadListener2;
-import com.example.kiylx.ti.DownloadCore.DownloadServices;
-import com.example.kiylx.ti.Fragments.DownloadWindow;
-import com.example.kiylx.ti.INTERFACE.DownloadInterfaceImpl;
-import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
-import com.example.kiylx.ti.INTERFACE.OpenOneWebpage;
-import com.example.kiylx.ti.Core1.WebViewManager;
-import com.example.kiylx.ti.Core1.Converted_WebPage_Lists;
-import com.example.kiylx.ti.Core1.CustomWebchromeClient;
-import com.example.kiylx.ti.Core1.CustomWebviewClient;
-import com.example.kiylx.ti.Fragments.MinSetDialog;
-import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
+import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.downloadCore.DownloadServices;
+import com.example.kiylx.ti.myFragments.DownloadWindow;
+import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
+import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
+import com.example.kiylx.ti.myInterface.OpenOneWebpage;
+import com.example.kiylx.ti.core1.WebViewManager;
+import com.example.kiylx.ti.core1.Converted_WebPage_Lists;
+import com.example.kiylx.ti.core1.CustomWebchromeClient;
+import com.example.kiylx.ti.core1.CustomWebviewClient;
+import com.example.kiylx.ti.myFragments.MinSetDialog;
+import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;

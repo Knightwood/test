@@ -1,7 +1,7 @@
 package com.example.kiylx.ti.model;
 
-import com.example.kiylx.ti.DateProcess.KindsofDate;
-import com.example.kiylx.ti.DateProcess.TimeProcess;
+import com.example.kiylx.ti.dateProcess.KindsofDate;
+import com.example.kiylx.ti.dateProcess.TimeProcess;
 
 import org.junit.Test;
 
@@ -21,8 +21,9 @@ public class TimeProcessTest {
     @Test
     public void getWeekorMonth_Bookmarkt() {
         for(KindsofDate i:KindsofDate.values()){
-            tmp= TimeProcess.getWeekorMonth_Bookmarkt(i.toString(),"2019-10-11");
-            System.out.println("开始时间"+tmp);
+            String[] tmp1=null;
+            tmp1= TimeProcess.getWeekorMonth_start (i,"2019-10-11");
+            System.out.println("开始时间"+tmp1);
             getlastday1();
         }
     }

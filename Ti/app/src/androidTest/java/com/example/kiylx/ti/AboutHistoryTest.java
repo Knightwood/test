@@ -4,8 +4,8 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.example.kiylx.ti.Core1.AboutHistory;
-import com.example.kiylx.ti.Corebase.WebPage_Info;
+import com.example.kiylx.ti.core1.AboutHistory;
+import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import org.junit.After;
 import org.junit.Before;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 public class AboutHistoryTest {
-    AboutHistory mAboutHistory;
+    private AboutHistory mAboutHistory;
     Context mContext;
     @Before
     public void setUp() throws Exception {
