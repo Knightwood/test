@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -13,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadManager {
-    private static final String TAG="下载管理器";
+    private static final String TAG = "下载管理器";
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
     //private DownloadInfoDatabase mDatabase;//下载信息数据库
-
 
     private List<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
@@ -45,12 +45,12 @@ public class DownloadManager {
      */
     private DownloadManager() {
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        //还没写配置文件，这里用5暂时代替
-        downloadNumLimit = 5;
+        downloadNumLimit = 5;//还没写配置文件，这里用5暂时代替
 
         downloading = new ArrayList<>();
         pausedownload = new ArrayList<>();
         readyDownload = new ArrayList<>();
+
         mOkhttpManager = OkhttpManager.getInstance();
 
     }
@@ -94,14 +94,15 @@ public class DownloadManager {
         @Override
         public synchronized boolean downloadSucess(DownloadInfo info) {
 
-            info.setCompleteNum();
+            info.setCompleteNum();//这个方法,每个分块都下载成功就会设置成功标志为真
             if (info.isDownloadSuccess()) {
                 //下载完成，触发通知
                 //并且，把downloading中的此downloadinfo移除，且把完成信息放入“持久化存储”
+
                 //调入新的下载任务开始下载
                 if (!readyDownload.isEmpty()) {
                     try {
-                        startDownload(readyDownload.get(0));
+                        startDownload(getOne());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -117,8 +118,22 @@ public class DownloadManager {
 //--------------------------------------以上是接口方法多线程会调用它，以下是一些下载方法------------------------------//
 
     /**
+     * @return 返回一个准备下载的条目。
+     */
+   private DownloadInfo getOne(){
+       DownloadInfo tmp;
+        if (readyDownload.isEmpty()){
+            return null;
+        }else{
+            int i=readyDownload.size()-1;
+            tmp=readyDownload.get(i);
+            readyDownload.remove(i);
+        }
+        return tmp;
+    }
+    /**
      * @param info downloadinfo
-     *  加工信息，生成文件分块下载信息等。
+     *             加工信息，生成文件分块下载信息等。
      */
     private void processInfo(DownloadInfo info) throws IOException {
         //用于文件下载的线程数
@@ -147,7 +162,8 @@ public class DownloadManager {
      * @throws IOException 抛出异常
      */
     void startDownload(DownloadInfo info) throws IOException {
-        if (info.isResume()) {
+        if (!info.isPause()) {//暂停为假则就应该开始下载
+            downloading.add(info);
             int i = info.getThreadNum();
             for (int j = 0; j < i; j++) {
                 TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
@@ -158,6 +174,7 @@ public class DownloadManager {
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
                 readyDownload.add(0, info);
+                info.setPause(true);
             } else {
                 //处理信息
                 processInfo(info);
@@ -181,14 +198,59 @@ public class DownloadManager {
      * @param info 下载信息
      *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
      *             传入为null则遍历所有正在下载的进行暂停
+     *             <p>
+     *             “暂停标志”为 真，则“恢复标志”为 假。
+     *             这两个互斥，暂停时不会是恢复状态，恢复时不会是暂停状态。
      */
     void pauseDownload(DownloadInfo info) {
-        if (info==null){
-            for (int i = 0; i <downloading.size(); i++) {
+        if (info == null) {
+            for (int i = 0; i < downloading.size(); i++) {
                 downloading.get(i).setPause(true);
             }
-        }else
-        info.setPause(true);
+        } else {
+            info.setPause(true);
+        }
+    }
+
+    /**
+     * @param info 下载信息
+     *             继续下载
+     *             判断downloading列表是否满了，如果满了，放进ready列表
+     */
+    void resumeDownload(DownloadInfo info) {
+        if (info == null) {
+            for (int i = 0; i < pausedownload.size(); i++) {
+                resume_all(pausedownload.get(i));
+            }
+        } else {
+            resume_all(info);
+        }
+
+    }
+
+    /**
+     * 恢复下载的逻辑部分，可以处理单个的下载条目的恢复下载的过程。
+     * 由上面的resumeDownload分别处理更精细的逻辑
+     *
+     * 如果下载列表已达最大数量，直接把条目加入准备下载列表。若有条目下载成功，会在下载成功的方法里把准备列表中的一个开始下载
+     * 否则，设置pause标志为假，加入正在下载列表，开始下载
+     */
+    private void resume_all(DownloadInfo info) {
+
+        pausedownload.remove(info);//移除暂停列表中的这个条目
+        //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载
+        if (downloading.size() == downloadNumLimit) {
+            readyDownload.add(info);
+        } else {
+            info.setPause(false);//暂停标志设为假
+            downloading.add(info);
+            try {
+                startDownload(info);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     /**
@@ -216,34 +278,11 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     *             继续下载
-     *             判断downloading列表是否满了，如果满了，放进ready列表
-     */
-    void resumeDownload(DownloadInfo info) {
-        info.setPause(false);//暂停标志设为假
-
-        pausedownload.remove(info);//移除暂停列表中的这个条目
-        //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载
-        if (downloading.size() == downloadNumLimit) {
-            readyDownload.add(info);
-        } else {
-            downloading.add(info);
-            try {
-                startDownload(info);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
-    /**
-     * @param info 下载信息
      * @return 返回下载进度
      * 文件的下载线程数就是文件分块的标号，
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
-    long getProgressRate(DownloadInfo info) {
+    long getPercentage(DownloadInfo info) {
         long unDownloadPart = 0;
         for (int i = 0; i < info.getThreadNum(); i++) {
             unDownloadPart += info.splitEnd[i] - info.splitStart[i];

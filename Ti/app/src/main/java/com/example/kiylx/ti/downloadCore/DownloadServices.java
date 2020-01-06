@@ -83,7 +83,7 @@ public class DownloadServices extends Service {
         }
         @Override
         public long getRate(DownloadInfo info){
-           return mDownloadManager.getProgressRate(info);
+           return mDownloadManager.getPercentage(info);
 
         }
     }

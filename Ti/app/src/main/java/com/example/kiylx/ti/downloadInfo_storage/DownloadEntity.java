@@ -12,7 +12,7 @@ public class DownloadEntity {
 
     public DownloadEntity(String url, String filename, String path,
                           int blockCompleteNum, int blockPauseNum, String pause,
-                          String resume, int threadNum, long contentLength, long totalProcress,
+                          int threadNum, long contentLength, long totalProcress,
                           long blockSize, String downloadSuccess) {
         this.url = url;
         this.filename = filename;
@@ -20,7 +20,6 @@ public class DownloadEntity {
         this.blockCompleteNum = blockCompleteNum;
         this.blockPauseNum = blockPauseNum;
         this.pause = pause;
-        this.resume = resume;
         this.threadNum = threadNum;
        // this.splitStart = splitStart;long[] splitStart,
         //                          long[] splitEnd,
@@ -51,9 +50,6 @@ public class DownloadEntity {
 
     @ColumnInfo(name = "pause_flag",typeAffinity = ColumnInfo.TEXT,defaultValue = "false")
     public String pause;
-
-    @ColumnInfo(name = "resume_flag")
-    public String resume;
 
     @ColumnInfo(name = "thread_num",typeAffinity = ColumnInfo.INTEGER)
     public int threadNum;
