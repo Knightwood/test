@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.DownloadInfo_storage;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Index;
@@ -10,10 +11,9 @@ import androidx.room.PrimaryKey;
 public class DownloadEntity {
 
     public DownloadEntity(String url, String filename, String path,
-                          int blockCompleteNum, int blockPauseNum, boolean pause,
-                          boolean resume, int threadNum, long[] splitStart,
-                          long[] splitEnd, long contentLength, long totalProcress,
-                          long blockSize, boolean downloadSuccess) {
+                          int blockCompleteNum, int blockPauseNum, String pause,
+                          String resume, int threadNum, long contentLength, long totalProcress,
+                          long blockSize, String downloadSuccess) {
         this.url = url;
         this.filename = filename;
         this.path = path;
@@ -22,8 +22,9 @@ public class DownloadEntity {
         this.pause = pause;
         this.resume = resume;
         this.threadNum = threadNum;
-        this.splitStart = splitStart;
-        this.splitEnd = splitEnd;
+       // this.splitStart = splitStart;long[] splitStart,
+        //                          long[] splitEnd,
+       // this.splitEnd = splitEnd;
         this.contentLength = contentLength;
         this.totalProcress = totalProcress;
         this.blockSize = blockSize;
@@ -33,6 +34,7 @@ public class DownloadEntity {
     }
 
     @PrimaryKey
+    @NonNull
     public String url;//下载地址
 
     @ColumnInfo(name = "file_name",typeAffinity = ColumnInfo.TEXT)
@@ -48,19 +50,19 @@ public class DownloadEntity {
     public int blockPauseNum;
 
     @ColumnInfo(name = "pause_flag",typeAffinity = ColumnInfo.TEXT,defaultValue = "false")
-    public boolean pause;
+    public String pause;
 
     @ColumnInfo(name = "resume_flag")
-    public boolean resume;
+    public String resume;
 
     @ColumnInfo(name = "thread_num",typeAffinity = ColumnInfo.INTEGER)
     public int threadNum;
 
-    @ColumnInfo(name = "split_start")
+    /*@ColumnInfo(name = "split_start")
     public long[] splitStart;
 
     @ColumnInfo(name = "split_end")
-    public long[] splitEnd;
+    public long[] splitEnd;*/
 
     @ColumnInfo(name = "content_len")
     public long contentLength;
@@ -72,6 +74,6 @@ public class DownloadEntity {
     public long blockSize;
 
     @ColumnInfo(name = "download_success")
-    public boolean downloadSuccess;
+    public String downloadSuccess;
 
 }

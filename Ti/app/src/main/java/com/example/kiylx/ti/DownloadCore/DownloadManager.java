@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.DownloadCore;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.room.Room;
@@ -17,6 +18,7 @@ import java.util.ArrayList;;
 import java.util.List;
 
 public class DownloadManager {
+    private static final String TAG="下载管理器";
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
@@ -84,6 +86,7 @@ public class DownloadManager {
                     pausedownload.add(info);
                 }
             }
+            Log.d(TAG, "下载暂停成功");
             return true;
         }
 
@@ -182,8 +185,14 @@ public class DownloadManager {
     /**
      * @param info 下载信息
      *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
+     *             传入为null则遍历所有正在下载的进行暂停
      */
     public void pauseDownload(DownloadInfo info) {
+        if (info==null){
+            for (int i = 0; i <downloading.size(); i++) {
+                downloading.get(i).setPause(true);
+            }
+        }else
         info.setPause(true);
     }
 
@@ -216,9 +225,10 @@ public class DownloadManager {
      *             判断downloading列表是否满了，如果满了，放进ready列表
      */
     public void resumeDownload(DownloadInfo info) {
-        info.setPause(false);
+        info.setPause(false);//暂停标志设为假
 
-        pausedownload.remove(info);
+        pausedownload.remove(info);//移除暂停列表中的这个条目
+        //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载
         if (downloading.size() == downloadNumLimit) {
             readyDownload.add(info);
         } else {

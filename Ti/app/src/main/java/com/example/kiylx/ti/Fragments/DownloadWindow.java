@@ -151,6 +151,6 @@ public class DownloadWindow extends DialogFragment {
      */
     //开始下载===================
     private void startDownload(DownloadInfo info) {
-minterface.startDownoadService(info);
+        minterface.startDownoadService(info);
     }
 }

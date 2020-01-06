@@ -26,7 +26,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.kiylx.ti.Corebase.DownloadInfo;
 import com.example.kiylx.ti.DownloadCore.DownloadListener2;
 import com.example.kiylx.ti.DownloadCore.DownloadServices;
-import com.example.kiylx.ti.DownloadCore.MydownloadListener;
 import com.example.kiylx.ti.Fragments.DownloadWindow;
 import com.example.kiylx.ti.INTERFACE.DownloadInterfaceImpl;
 import com.example.kiylx.ti.INTERFACE.MultiDialog_Functions;
@@ -37,7 +36,6 @@ import com.example.kiylx.ti.Core1.CustomWebchromeClient;
 import com.example.kiylx.ti.Core1.CustomWebviewClient;
 import com.example.kiylx.ti.Fragments.MinSetDialog;
 import com.example.kiylx.ti.Fragments.MultPage_DialogFragment;
-import com.example.kiylx.ti.INTERFACE.RegisterDownloadService;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
@@ -484,7 +482,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         ti.canGoForward();
 
         //系统的下载器
-        //ti.setDownloadListener(new MydownloadListener(MainActivity.this));
+        //ti.setDownloadListener(new DownloadListener1(MainActivity.this));
         //内置下载器
         ti.setDownloadListener(new DownloadListener2(MainActivity.this));
 

@@ -9,12 +9,12 @@ import android.webkit.DownloadListener;
 /**
  * 调用系统自带的下载器下载
  */
-public class MydownloadListener implements DownloadListener {
+public class DownloadListener1 implements DownloadListener {
     private Context mContext;
 
     private static final String TAG ="下载监听";
 
-    public MydownloadListener(Context mContext) {
+    public DownloadListener1(Context mContext) {
         this.mContext = mContext;
     }
 

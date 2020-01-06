@@ -87,9 +87,11 @@ public class DownloadActivity extends AppCompatActivity {
         bui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
-                FragmentManager fragmentManager=getSupportFragmentManager();
-                dof.show(fragmentManager,"下载");
+                //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
+                //FragmentManager fragmentManager=getSupportFragmentManager();
+                //dof.show(fragmentManager,"下载");
+                boolean as=false;
+                downloadBinder.pauseDownload(null);
             }
         });
 

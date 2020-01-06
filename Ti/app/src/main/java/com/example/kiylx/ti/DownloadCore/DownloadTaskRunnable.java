@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.Objects;
 
 import okhttp3.Response;
 
@@ -80,9 +81,9 @@ public class DownloadTaskRunnable implements Runnable {
             initFile();//初始化处理
 
             if (response != null) {
-                this.in = response.body().byteStream();
+                this.in = Objects.requireNonNull(response.body()).byteStream();
 
-                byte b[] = new byte[1024];
+                byte[] b = new byte[1024];
 
                 //从流中读取的数据长度
                 int len;
