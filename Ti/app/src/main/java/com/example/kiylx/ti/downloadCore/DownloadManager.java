@@ -277,16 +277,17 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     * @return 返回下载进度
+     * @return 返回下载进度,float类型
      * 文件的下载线程数就是文件分块的标号，
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
-    long getPercentage(DownloadInfo info) {
-        long unDownloadPart = 0;
+    float getPercentage(DownloadInfo info) {
+        long unDownloadPart = 0;//未下载的部分
         for (int i = 0; i < info.getThreadNum(); i++) {
-            unDownloadPart += info.splitEnd[i] - info.splitStart[i];
+            unDownloadPart += (info.splitEnd[i] - info.splitStart[i]);
         }
-        return 1 - (unDownloadPart / info.getContentLength());
+        info.setTotalLength(info.getContentLength()-unDownloadPart);//设置已下载的长度
+        return (float)(1 - (unDownloadPart / info.getContentLength()));
     }
 
     public void setContext(Context context) {

@@ -50,9 +50,10 @@ public class DownloadInfo {
      */
     private long contentLength;
     /**
-     * 当前总文件已下载的大小
+     * 当前文件已下载的大小,
+     * 需要百分比的话，用contentLength和totalLength自行计算，结果要转成float类型
      */
-    private long totalProcress;
+    private long totalLength;
 
     /**
      * 是否下载完成的标记
@@ -126,12 +127,12 @@ public class DownloadInfo {
     }
 
 
-    public double getTotalProcress() {
-        return totalProcress;
+    public double getTotalLength() {
+        return totalLength;
     }
 
-    public void setTotalProcress(long totalProcress) {
-        this.totalProcress = totalProcress;
+    public void setTotalLength(long totalLength) {
+        this.totalLength = totalLength;
     }
 
     public long getContentLength() {
