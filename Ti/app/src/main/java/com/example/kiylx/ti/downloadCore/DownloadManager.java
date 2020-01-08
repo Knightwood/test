@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -135,26 +136,27 @@ public class DownloadManager {
      * @param info downloadinfo
      *             加工信息，生成文件分块下载信息等。
      */
-    private void processInfo(DownloadInfo info) throws IOException {
-        //用于文件下载的线程数
+    public void processInfo(DownloadInfo info) throws IOException {
+            //用于文件下载的线程数
         int threadNum = info.getThreadNum();
-        //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
+            //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
         System.out.println(" 文件总大小" + info.getContentLength());
 
-        //文件的分块大小
+            //文件的分块大小
         long blocksize = info.getContentLength() / threadNum;
         info.setBlockSize(blocksize);
 
-        //建立数组准备存储分块信息
+            //建立数组准备存储分块信息
         info.splitEnd = new long[threadNum];
         info.splitStart = new long[threadNum];
-//开始块和结束块。
+            //开始块和结束块。
         for (int i = 0; i < threadNum; i++) {
             info.splitStart[i] = i * blocksize;
             info.splitEnd[i] = (i + 1) * blocksize - 1;
         }
-        info.splitEnd[threadNum - 1] = info.getContentLength();
+            //文件结尾
+        info.splitEnd[threadNum - 1] = info.getContentLength()-1;
     }
 
     /**
@@ -285,10 +287,12 @@ public class DownloadManager {
     float getPercentage(DownloadInfo info) {
         long unDownloadPart = 0;//未下载的部分
         for (int i = 0; i < info.getThreadNum(); i++) {
-            unDownloadPart += (info.splitEnd[i] - info.splitStart[i]);
+            unDownloadPart += (info.splitEnd[i] - info.splitStart[i]+1);
         }
-        info.setTotalLength(info.getContentLength()-unDownloadPart);//设置已下载的长度
-        return (float)(1 - (unDownloadPart / info.getContentLength()));
+            //设置已下载的长度
+        info.setTotalLength(info.getContentLength()-unDownloadPart);
+            //返回已下载百分比
+        return (float) (info.getTotalLength() / info.getContentLength());
     }
 
     public void setContext(Context context) {
@@ -309,6 +313,49 @@ public class DownloadManager {
 
     private void delete(DownloadInfo info) {
         DatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformInfo(info));
+    }
+    //---------------------在线程里存储进数据库-----------------------//
+    private class StorgeTask extends AsyncTask<DownloadInfo,Integer, Long> {
+        // 类中参数为3种泛型类型
+// 整体作用：控制AsyncTask子类执行线程任务时各个阶段的返回类型
+// 具体说明：
+        // a. Params：开始异步任务执行时传入的参数类型，对应excute（）中传递的参数
+        // b. Progress：异步任务执行过程中，返回下载进度值的类型
+        // c. Result：异步任务执行完成后，返回的结果类型，与doInBackground()的返回值类型保持一致
+// 注：
+        // a. 使用时并不是所有类型都被使用
+        // b. 若无被使用，可用java.lang.Void类型代替
+        // c. 若有不同业务，需额外再写1个AsyncTask的子类
+
+        @Override
+        protected Long doInBackground(DownloadInfo... downloadInfos) {
+            try{
+                Thread.sleep(2*1000);//2秒更新一次数据
+                update(downloadInfos[0]);
+                //publishProgress(downloadInfos[0].getTotalLength());
+            }catch (InterruptedException e){
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+
+        }
     }
 
 }

@@ -76,7 +76,7 @@ public class DownloadInfo {
         }
         if (this.path == null) {
             //默认路径
-            this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+            //this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         }
         this.contentLength = contentLength;
 

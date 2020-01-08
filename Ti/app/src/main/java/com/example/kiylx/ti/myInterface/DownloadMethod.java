@@ -18,5 +18,5 @@ public interface DownloadMethod {
     void resumeDownload(DownloadInfo info);
     void pauseDownload(DownloadInfo info);
     int canaelDownload(DownloadInfo info);
-    long getRate(DownloadInfo info);
+    float getRate(DownloadInfo info);
 }

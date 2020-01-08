@@ -25,17 +25,10 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import java.util.ArrayList;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Fragment_DoSearch.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Fragment_DoSearch#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Fragment_DoSearch extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+
     private static final String ARG_PARAM1 = "param1";
     //private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "fragmentLifeCycle";
