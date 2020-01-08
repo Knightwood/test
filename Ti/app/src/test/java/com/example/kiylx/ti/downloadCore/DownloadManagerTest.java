@@ -6,6 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class DownloadManagerTest {
     private DownloadManager manager;
@@ -41,5 +45,16 @@ public class DownloadManagerTest {
         }
 
         System.out.println("文件总长度："+info1.getContentLength()+"下载部分"+info1.getTotalLength()/info1.getContentLength());
+    }
+
+    @Test
+    public void fuck(){
+        List<String> list_tmp=new ArrayList<>();
+        //list_tmp.add("a");
+        list_tmp.addAll(Arrays.asList("a","b","c","d"));
+        Iterator<String> iterator=list_tmp.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
     }
 }

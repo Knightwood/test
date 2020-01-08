@@ -127,7 +127,7 @@ public class DownloadInfo {
     }
 
 
-    public double getTotalLength() {
+    public long getTotalLength() {
         return totalLength;
     }
 

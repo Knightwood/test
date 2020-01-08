@@ -12,6 +12,7 @@ import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DownloadManager {
@@ -19,7 +20,7 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
-    //private DownloadInfoDatabase mDatabase;//下载信息数据库
+    private static StorgeTask mStorgeTask;
 
     private List<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
@@ -52,8 +53,10 @@ public class DownloadManager {
         pausedownload = new ArrayList<>();
         readyDownload = new ArrayList<>();
 
+        //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
-
+        //存入数据库和通知更新进度的线程
+        mStorgeTask = new StorgeTask();
     }
 
     /**
@@ -121,42 +124,43 @@ public class DownloadManager {
     /**
      * @return 返回一个准备下载的条目。
      */
-   private DownloadInfo getOne(){
-       DownloadInfo tmp;
-        if (readyDownload.isEmpty()){
+    private DownloadInfo getOne() {
+        DownloadInfo tmp;
+        if (readyDownload.isEmpty()) {
             return null;
-        }else{
-            int i=readyDownload.size()-1;
-            tmp=readyDownload.get(i);
+        } else {
+            int i = readyDownload.size() - 1;
+            tmp = readyDownload.get(i);
             readyDownload.remove(i);
         }
         return tmp;
     }
+
     /**
      * @param info downloadinfo
      *             加工信息，生成文件分块下载信息等。
      */
     public void processInfo(DownloadInfo info) throws IOException {
-            //用于文件下载的线程数
+        //用于文件下载的线程数
         int threadNum = info.getThreadNum();
-            //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
+        //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
         System.out.println(" 文件总大小" + info.getContentLength());
 
-            //文件的分块大小
+        //文件的分块大小
         long blocksize = info.getContentLength() / threadNum;
         info.setBlockSize(blocksize);
 
-            //建立数组准备存储分块信息
+        //建立数组准备存储分块信息
         info.splitEnd = new long[threadNum];
         info.splitStart = new long[threadNum];
-            //开始块和结束块。
+        //开始块和结束块。
         for (int i = 0; i < threadNum; i++) {
             info.splitStart[i] = i * blocksize;
             info.splitEnd[i] = (i + 1) * blocksize - 1;
         }
-            //文件结尾
-        info.splitEnd[threadNum - 1] = info.getContentLength()-1;
+        //文件结尾
+        info.splitEnd[threadNum - 1] = info.getContentLength() - 1;
     }
 
     /**
@@ -164,20 +168,22 @@ public class DownloadManager {
      * @throws IOException 抛出异常
      */
     void startDownload(DownloadInfo info) throws IOException {
-        if (!info.isPause()) {//暂停为假则就应该开始下载
+        if (!info.isPause()) {
+                //暂停为假则就应该开始下载
             downloading.add(info);
             int i = info.getThreadNum();
             for (int j = 0; j < i; j++) {
                 TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
             }
         } else {
-            //全新开始的下载
-            //限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
+                //注：全新开始的下载
+            //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
                 readyDownload.add(0, info);
                 info.setPause(true);
             } else {
+                //注：还没到下载数量限制，这是第一次开始下载
                 //处理信息
                 processInfo(info);
 
@@ -188,9 +194,13 @@ public class DownloadManager {
 
                 //加入下载队列
                 downloading.add(info);
+                //第一次开始下载就该存入数据库
+                insertData(info);
             }
         }
-
+        //执行更新线程，只要开始下载就要开始更新
+        //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
+        mStorgeTask.execute(downloading);
         //重置threadUse
         info.setblockPauseNum(0);
 
@@ -233,7 +243,7 @@ public class DownloadManager {
     /**
      * 恢复下载的逻辑部分，可以处理单个的下载条目的恢复下载的过程。
      * 由上面的resumeDownload分别处理更精细的逻辑
-     *
+     * <p>
      * 如果下载列表已达最大数量，直接把条目加入准备下载列表。若有条目下载成功，会在下载成功的方法里把准备列表中的一个开始下载
      * 否则，设置pause标志为假，加入正在下载列表，开始下载
      */
@@ -280,24 +290,25 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     * @return 返回下载进度,float类型
+     * @return 返回下载进度, float类型
      * 文件的下载线程数就是文件分块的标号，
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
     float getPercentage(DownloadInfo info) {
         long unDownloadPart = 0;//未下载的部分
         for (int i = 0; i < info.getThreadNum(); i++) {
-            unDownloadPart += (info.splitEnd[i] - info.splitStart[i]+1);
+            unDownloadPart += (info.splitEnd[i] - info.splitStart[i] + 1);
         }
-            //设置已下载的长度
-        info.setTotalLength(info.getContentLength()-unDownloadPart);
-            //返回已下载百分比
+        //设置已下载的长度
+        info.setTotalLength(info.getContentLength() - unDownloadPart);
+        //返回已下载百分比
         return (float) (info.getTotalLength() / info.getContentLength());
     }
 
     public void setContext(Context context) {
         this.mContext = context;
     }
+
     /*废弃
     private void getDatabase() {
         mDatabase = DownloadInfoDatabase.getInstance(mContext);
@@ -307,15 +318,23 @@ public class DownloadManager {
         DatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformInfo(info));
     }
 
-    private void update(DownloadInfo info) {
+    private void updateData(DownloadInfo info) {
         DatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformInfo(info));
     }
 
     private void delete(DownloadInfo info) {
         DatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformInfo(info));
     }
+
+    /**
+     * 在downloading列表不为空的时候不停的更新里面 “ 每一个条目 ” 的数据。
+     * 1.不断地把下载条目的下载进度记录进数据库，
+     * 2.通知每一个下载条目的下载进度，用于下载界面的进度条更新
+     */
     //---------------------在线程里存储进数据库-----------------------//
-    private class StorgeTask extends AsyncTask<DownloadInfo,Integer, Long> {
+
+
+    private class StorgeTask extends AsyncTask<List<DownloadInfo>, Integer, Integer> {
         // 类中参数为3种泛型类型
 // 整体作用：控制AsyncTask子类执行线程任务时各个阶段的返回类型
 // 具体说明：
@@ -327,34 +346,51 @@ public class DownloadManager {
         // b. 若无被使用，可用java.lang.Void类型代替
         // c. 若有不同业务，需额外再写1个AsyncTask的子类
 
+
+        /**
+         * @param lists 可变参数，类型是List<DownloadInfo>
+         * @return 返回 ？？
+         *
+         * StorgeTask的泛型参数第一个是List<DownloadInfo>类型，
+         * 但是DoinBackground接受的是一个可变长参数，所以可以只传入一个参数：downloading列表。
+         */
+        /*
+        * 在声明具有模糊类型（比如：泛型）的可变参数的构造函数或方法时，
+        * Java编译器会报unchecked警告。
+        * 鉴于这些情况，如果程序员断定声明的构造函数和方法的主体不会对其varargs参数执行潜在的不安全的操作，
+        * 可使用@SafeVarargs进行标记，这样的话，Java编译器就不会报unchecked警告。
+        * 使用的时候要注意：@SafeVarargs注解，对于非static或非final声明的方法，不适用，会编译不通过。
+        * 方法未声明为static或final方法，不能使用@SafeVarargs,如果要抑制unchecked警告，可以使用@SuppressWarnings注解。
+        * */
+        @SuppressWarnings("unchecked")
         @Override
-        protected Long doInBackground(DownloadInfo... downloadInfos) {
-            try{
-                Thread.sleep(2*1000);//2秒更新一次数据
-                update(downloadInfos[0]);
-                //publishProgress(downloadInfos[0].getTotalLength());
-            }catch (InterruptedException e){
-                e.printStackTrace();
+        protected Integer doInBackground(List<DownloadInfo>... lists) {
+
+            //注：迭代器，用于遍历downloading列表
+            Iterator<DownloadInfo> iterator =lists[0].iterator();
+
+            while (iterator.hasNext()) {
+                try {
+                    Thread.sleep(2 * 1000);//2秒更新一次数据
+                    updateData(iterator.next());
+                    //publishProgress((int)downloadInfos[0].getTotalLength());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
-            return null;
+            return 1;
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
 
         }
 
         @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
         }
     }
 
