@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.corebase;
 
-import android.os.Environment;
-
 public class DownloadInfo {
     private String url;
     private String fileName;
@@ -29,6 +27,11 @@ public class DownloadInfo {
      * 当前文件下载是否已取消
      */
     private boolean cancel = false;
+    /**
+     * 文件从暂停状态到下载状态时会因为下载数量限制放进准备下载列表中，
+     * 所以放置一个waitDownload标志，表示不是暂停，正等待下载。
+     */
+    private boolean waitDownload =false;
 
     /**
      * 下载这个文件而分配的线程数量。
@@ -241,4 +244,11 @@ public class DownloadInfo {
         this.downloadSuccess = flag;
     }
 
+    public boolean isWaitDownload() {
+        return waitDownload;
+    }
+
+    public void setWaitDownload(boolean waitDownload) {
+        this.waitDownload = waitDownload;
+    }
 }

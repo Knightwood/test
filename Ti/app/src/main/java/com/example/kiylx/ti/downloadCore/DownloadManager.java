@@ -75,15 +75,9 @@ public class DownloadManager {
             info.setblockPauseNum(1);
             //所有下载文件的线程已经暂停
             if (info.getblockPause()) {
-                //如果文件取消下载
-                if (info.isCancel()) {
-                    downloading.remove(info);
-                    deleteFile(info);
-                } else {
-                    //如果只是暂停
-                    downloading.remove(info);
-                    pausedownload.add(info);
-                }
+                //暂停,一种情况是正在下载时暂停，另一种是准备下载时暂停
+                downloading.remove(info);
+                pausedownload.add(info);
             }
             Log.d(TAG, "下载暂停成功");
             return true;
@@ -145,7 +139,6 @@ public class DownloadManager {
         int threadNum = info.getThreadNum();
         //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
-        System.out.println(" 文件总大小" + info.getContentLength());
 
         //文件的分块大小
         long blocksize = info.getContentLength() / threadNum;
@@ -154,6 +147,7 @@ public class DownloadManager {
         //建立数组准备存储分块信息
         info.splitEnd = new long[threadNum];
         info.splitStart = new long[threadNum];
+
         //开始块和结束块。
         for (int i = 0; i < threadNum; i++) {
             info.splitStart[i] = i * blocksize;
@@ -168,15 +162,15 @@ public class DownloadManager {
      * @throws IOException 抛出异常
      */
     void startDownload(DownloadInfo info) throws IOException {
-        if (!info.isPause()) {
-                //暂停为假则就应该开始下载
+        if (!info.isPause() && info.isWaitDownload()) {
+            //暂停为假,准备下载为真(钢构件的下载任务中暂停也是假，准备下载是假)则就应该开始下载
             downloading.add(info);
             int i = info.getThreadNum();
             for (int j = 0; j < i; j++) {
                 TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
             }
         } else {
-                //注：全新开始的下载
+            //注：全新开始的下载
             //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
@@ -208,18 +202,34 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
+     * @param all  是否暂停全部任务。若all为true，此时，参数info是没用的，所以传入null也是可以的。
+     *             <p>
      *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
      *             传入为null则遍历所有正在下载的进行暂停
      *             <p>
      *             “暂停标志”为 真，则“恢复标志”为 假。
      *             这两个互斥，暂停时不会是恢复状态，恢复时不会是暂停状态。
+     *             <p>
+     *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是准备下载状态。
      */
-    void pauseDownload(DownloadInfo info) {
-        if (info == null) {
+    void pauseDownload(DownloadInfo info, boolean all) {
+        if (all) {
+            for (int i = 0; i < readyDownload.size(); i++) {
+                pausedownload.add(readyDownload.get(i));
+                readyDownload.remove(i);
+            }
             for (int i = 0; i < downloading.size(); i++) {
                 downloading.get(i).setPause(true);
             }
         } else {
+            if (info.isWaitDownload()) {
+                info.setPause(true);
+                info.setWaitDownload(false);
+
+                downloading.remove(info);
+                pausedownload.add(info);
+
+            }
             info.setPause(true);
         }
     }
@@ -266,26 +276,53 @@ public class DownloadManager {
     }
 
     /**
-     * @param info 下载信息
-     *             修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
-     *             取消下载的流程实现暂停，然后再删除文件
+     * @param info       下载信息
+     * @param deleteFile 是否删除文件
+     * @param all        是否取消全部任务
+     *                   <p>
+     *                   修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *                   取消下载的流程实现暂停，然后再删除文件
+     *                   1.正在下载：调用暂停，然后删除文件。
+     *                   2.暂停，直接删除文文件。
+     *                   3.准备下载，调用暂停，然后删除。
+     *                   <p>
+     *                   先暂停，然后从暂停列表中移除info，根据标志，决定是否删除文件。设置取消标志而不是从数据库删除条目。
+     *                   然后再次调用时，若cancel是true，文件也不存在，删除数据库记录
      */
-    void cancelDownload(DownloadInfo info) {
-        info.setCancel(true);
-        pauseDownload(info);
+    void cancelDownload(DownloadInfo info, boolean deleteFile, boolean all) {
 
+        if (info != null && info.isCancel()) {
+            //如果有取消标志，意味着文件已经删除，也没有在任何一个“下载状态”中，所以直接从数据库删除条目
+            delete(info);
+        } else {
+            if (all) {
+                //暂停全部任务。参数info是没用的，所以传入null也是可以的。
+                pauseDownload(info, true);
+            }
+            if (!info.isPause()) {
+                //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
+                pauseDownload(info, false);
+            }
+
+            pausedownload.remove(info);
+            info.setCancel(true);
+            if (deleteFile) {
+                deleteFile(info);
+            }
+        }
     }
 
     /**
      * @param info 下载信息
      *             删除文件
      */
-    private void deleteFile(DownloadInfo info) {
+    private boolean deleteFile(DownloadInfo info) {
         File file = new File(info.getPath() + info.getFileName());
         if (file.exists() && file.isFile()) {
-            file.delete();
+            return file.delete();
         }
         //+还要根据cancel标记决定是否要删除记录
+        return false;
     }
 
     /**
@@ -350,24 +387,24 @@ public class DownloadManager {
         /**
          * @param lists 可变参数，类型是List<DownloadInfo>
          * @return 返回 ？？
-         *
+         * <p>
          * StorgeTask的泛型参数第一个是List<DownloadInfo>类型，
          * 但是DoinBackground接受的是一个可变长参数，所以可以只传入一个参数：downloading列表。
          */
         /*
-        * 在声明具有模糊类型（比如：泛型）的可变参数的构造函数或方法时，
-        * Java编译器会报unchecked警告。
-        * 鉴于这些情况，如果程序员断定声明的构造函数和方法的主体不会对其varargs参数执行潜在的不安全的操作，
-        * 可使用@SafeVarargs进行标记，这样的话，Java编译器就不会报unchecked警告。
-        * 使用的时候要注意：@SafeVarargs注解，对于非static或非final声明的方法，不适用，会编译不通过。
-        * 方法未声明为static或final方法，不能使用@SafeVarargs,如果要抑制unchecked警告，可以使用@SuppressWarnings注解。
-        * */
+         * 在声明具有模糊类型（比如：泛型）的可变参数的构造函数或方法时，
+         * Java编译器会报unchecked警告。
+         * 鉴于这些情况，如果程序员断定声明的构造函数和方法的主体不会对其varargs参数执行潜在的不安全的操作，
+         * 可使用@SafeVarargs进行标记，这样的话，Java编译器就不会报unchecked警告。
+         * 使用的时候要注意：@SafeVarargs注解，对于非static或非final声明的方法，不适用，会编译不通过。
+         * 方法未声明为static或final方法，不能使用@SafeVarargs,如果要抑制unchecked警告，可以使用@SuppressWarnings注解。
+         * */
         @SuppressWarnings("unchecked")
         @Override
         protected Integer doInBackground(List<DownloadInfo>... lists) {
 
             //注：迭代器，用于遍历downloading列表
-            Iterator<DownloadInfo> iterator =lists[0].iterator();
+            Iterator<DownloadInfo> iterator = lists[0].iterator();
 
             while (iterator.hasNext()) {
                 try {

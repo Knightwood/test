@@ -21,7 +21,7 @@ public class TaskPool {
     //private final Deque<DownloadTaskRunnable> readyTasks = new ArrayDeque<>();
     private final ArrayList<DownloadTaskRunnable> runningTasks = new ArrayList<>();
     //private final Deque<DownloadTaskRunnable> stopTasks = new ArrayDeque<>();
-    private DownloadTaskRunnable downloadTask;
+    //private DownloadTaskRunnable downloadTask;
 
     private TaskPool() {
     }
