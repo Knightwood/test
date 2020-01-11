@@ -78,7 +78,7 @@ public class DownloadServices extends Service {
         }
         @Override
         public int canaelDownload(DownloadInfo info){
-            mDownloadManager.cancelDownload(info);
+            mDownloadManager.cancelDownload(info,false);
             return -1;
         }
         @Override

@@ -15,6 +15,8 @@ public class InfoTransformToEntitiy {
                 info.getBlockCompleteNum(),
                 info.getBlockPauseNum(),
                 info.getPauseFlags(),
+                info.getCancelFlags(),
+                info.getWaitDownloadFlags(),
                 info.getThreadNum(),
                 tString(info.splitStart),
                 tString(info.splitEnd),
@@ -23,6 +25,7 @@ public class InfoTransformToEntitiy {
                 info.getBlockSize(),
                 info.getDownloadSuccess());
     }
+
 
     /**
      * @param l long数组

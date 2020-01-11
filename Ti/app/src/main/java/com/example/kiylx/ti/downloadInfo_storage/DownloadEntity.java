@@ -17,6 +17,8 @@ public class DownloadEntity {
      * @param blockCompleteNum 分块下载时已完成下载的分块数量
      * @param blockPauseNum    分块下载时调用“暂停：时分块暂停的数量
      * @param pause            暂停标志
+     * @param cancel 取消下载
+     * @param  waitDownload 等待下载
      * @param threadNum        所用的线程数
      * @param splitStart       分块下载的开始位置
      * @param splitEnd         分块下载的结束位置
@@ -27,6 +29,7 @@ public class DownloadEntity {
      */
     public DownloadEntity(@NonNull String url, String filename, String path,
                           int blockCompleteNum, int blockPauseNum, String pause,
+                          String cancel,String waitDownload,
                           int threadNum, String splitStart, String splitEnd,
                           long contentLength, float totalLength,
                           long blockSize, String downloadSuccess) {
@@ -36,6 +39,8 @@ public class DownloadEntity {
         this.blockCompleteNum = blockCompleteNum;
         this.blockPauseNum = blockPauseNum;
         this.pause = pause;
+        this.cancel=cancel;
+        this.waitDownload=waitDownload;
         this.threadNum = threadNum;
         this.splitStart = splitStart;
         this.splitEnd = splitEnd;
@@ -65,6 +70,12 @@ public class DownloadEntity {
 
     @ColumnInfo(name = "pause_flag", typeAffinity = ColumnInfo.TEXT, defaultValue = "false")
     public String pause;
+
+    @ColumnInfo(name = "cancel_download",typeAffinity = ColumnInfo.TEXT,defaultValue = "false")
+    public String cancel;
+
+    @ColumnInfo(name = "wait_download",typeAffinity = ColumnInfo.TEXT,defaultValue = "false")
+    public String waitDownload;
 
     @ColumnInfo(name = "thread_num", typeAffinity = ColumnInfo.INTEGER)
     public int threadNum;

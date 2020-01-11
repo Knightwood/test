@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadInfo_storage.DatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
@@ -13,7 +15,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class DownloadManager {
     private static final String TAG = "下载管理器";
@@ -22,7 +26,7 @@ public class DownloadManager {
     private OkhttpManager mOkhttpManager;
     private static StorgeTask mStorgeTask;
 
-    private List<DownloadInfo> readyDownload;
+    private Queue<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
     private List<DownloadInfo> pausedownload;
 
@@ -51,12 +55,13 @@ public class DownloadManager {
 
         downloading = new ArrayList<>();
         pausedownload = new ArrayList<>();
-        readyDownload = new ArrayList<>();
+        readyDownload = new LinkedList<>();
 
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
         mStorgeTask = new StorgeTask();
+
     }
 
     /**
@@ -100,7 +105,7 @@ public class DownloadManager {
                 //调入新的下载任务开始下载
                 if (!readyDownload.isEmpty()) {
                     try {
-                        startDownload(getOne());
+                        startDownload(readyDownload.poll());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -115,20 +120,6 @@ public class DownloadManager {
     };
 //--------------------------------------以上是接口方法多线程会调用它，以下是一些下载方法------------------------------//
 
-    /**
-     * @return 返回一个准备下载的条目。
-     */
-    private DownloadInfo getOne() {
-        DownloadInfo tmp;
-        if (readyDownload.isEmpty()) {
-            return null;
-        } else {
-            int i = readyDownload.size() - 1;
-            tmp = readyDownload.get(i);
-            readyDownload.remove(i);
-        }
-        return tmp;
-    }
 
     /**
      * @param info downloadinfo
@@ -174,7 +165,7 @@ public class DownloadManager {
             //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
-                readyDownload.add(0, info);
+                readyDownload.offer(info);
                 info.setPause(true);
             } else {
                 //注：还没到下载数量限制，这是第一次开始下载
@@ -202,7 +193,6 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     * @param all  是否暂停全部任务。若all为true，此时，参数info是没用的，所以传入null也是可以的。
      *             <p>
      *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
      *             传入为null则遍历所有正在下载的进行暂停
@@ -212,25 +202,25 @@ public class DownloadManager {
      *             <p>
      *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是准备下载状态。
      */
-    void pauseDownload(DownloadInfo info, boolean all) {
-        if (all) {
-            for (int i = 0; i < readyDownload.size(); i++) {
-                pausedownload.add(readyDownload.get(i));
-                readyDownload.remove(i);
-            }
-            for (int i = 0; i < downloading.size(); i++) {
-                downloading.get(i).setPause(true);
-            }
-        } else {
-            if (info.isWaitDownload()) {
-                info.setPause(true);
-                info.setWaitDownload(false);
+    void pauseDownload(DownloadInfo info) {
+        if (info.isWaitDownload()) {
+            //info.setPause(true);
+            info.setWaitDownload(false);
 
-                downloading.remove(info);
-                pausedownload.add(info);
+            downloading.remove(info);
+            pausedownload.add(info);
 
-            }
-            info.setPause(true);
+        }
+        info.setPause(true);
+
+    }
+
+    void pauseAll() {
+        for (int i = 0; i < readyDownload.size(); i++) {
+            pausedownload.add(readyDownload.poll());
+        }
+        for (int i = 0; i < downloading.size(); i++) {
+            downloading.get(i).setPause(true);
         }
     }
 
@@ -278,7 +268,6 @@ public class DownloadManager {
     /**
      * @param info       下载信息
      * @param deleteFile 是否删除文件
-     * @param all        是否取消全部任务
      *                   <p>
      *                   修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
      *                   取消下载的流程实现暂停，然后再删除文件
@@ -289,21 +278,16 @@ public class DownloadManager {
      *                   先暂停，然后从暂停列表中移除info，根据标志，决定是否删除文件。设置取消标志而不是从数据库删除条目。
      *                   然后再次调用时，若cancel是true，文件也不存在，删除数据库记录
      */
-    void cancelDownload(DownloadInfo info, boolean deleteFile, boolean all) {
+    void cancelDownload(@NonNull DownloadInfo info, boolean deleteFile) {
 
-        if (info != null && info.isCancel()) {
+        if (info.isCancel()) {
             //如果有取消标志，意味着文件已经删除，也没有在任何一个“下载状态”中，所以直接从数据库删除条目
             delete(info);
         } else {
-            if (all) {
-                //暂停全部任务。参数info是没用的，所以传入null也是可以的。
-                pauseDownload(info, true);
-            }
             if (!info.isPause()) {
                 //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
-                pauseDownload(info, false);
+                pauseDownload(info);
             }
-
             pausedownload.remove(info);
             info.setCancel(true);
             if (deleteFile) {
@@ -313,16 +297,29 @@ public class DownloadManager {
     }
 
     /**
+     * 取消全部下载
+     */
+    void canaelAll() {
+        //暂停全部任务。
+        pauseAll();
+        //删除文件
+        for (int i = 0; i < pausedownload.size(); i++) {
+            deleteFile(pausedownload.get(i));
+        }
+        //清除暂停下载列表
+        pausedownload.clear();
+
+    }
+
+    /**
      * @param info 下载信息
      *             删除文件
      */
-    private boolean deleteFile(DownloadInfo info) {
+    private void deleteFile(DownloadInfo info) {
         File file = new File(info.getPath() + info.getFileName());
         if (file.exists() && file.isFile()) {
-            return file.delete();
+            file.delete();
         }
-        //+还要根据cancel标记决定是否要删除记录
-        return false;
     }
 
     /**

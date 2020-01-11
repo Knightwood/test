@@ -53,8 +53,18 @@ public class DownloadManagerTest {
         //list_tmp.add("a");
         list_tmp.addAll(Arrays.asList("a","b","c","d"));
         Iterator<String> iterator=list_tmp.iterator();
+
         while (iterator.hasNext()){
             System.out.println(iterator.next());
+            iterator.remove();
+            System.out.println(iterator.hasNext());
+            //结果：a,b,c,d
         }
+        /*for (int i = 0; i <list_tmp.size() ; i++) {
+            System.out.println(list_tmp.get(i));
+            list_tmp.remove(i);
+            //结果：a,c
+        }*/
+
     }
 }

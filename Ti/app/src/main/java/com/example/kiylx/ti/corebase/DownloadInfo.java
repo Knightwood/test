@@ -251,4 +251,18 @@ public class DownloadInfo {
     public void setWaitDownload(boolean waitDownload) {
         this.waitDownload = waitDownload;
     }
+
+    /**
+     * @return 把取消标志转换为String，用于数据库
+     */
+    public String getCancelFlags() {
+        return this.isCancel()? "true":"false";
+    }
+
+    /**
+     * @return 把等待下载标志转换为String，用于数据库
+     */
+    public String getWaitDownloadFlags() {
+        return this.isWaitDownload()? "true":"false";
+    }
 }
