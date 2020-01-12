@@ -37,7 +37,7 @@ public class HistoryFragment extends Fragment {
     private AboutHistory sAboutHistory;
     private ChipGroup mChipGroup;
     private String[] mDateli;
-    private View v;
+    private View mRootView;
     private HistoryInterface m_historyInterface;
     private static OpenOneWebpage sOpenOneWebpage;
 
@@ -52,8 +52,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        v=inflater.inflate(R.layout.fragment_history,null);
-        listView = v.findViewById(R.id.showHistory_1);
+        mRootView =inflater.inflate(R.layout.fragment_history,null);
+        listView = mRootView.findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         sAboutHistory = AboutHistory.get(getActivity());
@@ -63,13 +63,13 @@ public class HistoryFragment extends Fragment {
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
         updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
-        return v;
+        return mRootView;
 
     }
 
     //监听chipgroup以更新recyclerview视图
     private void CheckedChangeListener() {
-        mChipGroup = v.findViewById(R.id.Date_ChipGroup);
+        mChipGroup = mRootView.findViewById(R.id.Date_ChipGroup);
         mChipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ChipGroup chipGroup, int i) {

@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.downloadFragments.DownloadbaseFragment;
+import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 
 
 import java.util.ArrayList;
@@ -230,6 +232,11 @@ public class DownloadActivity extends AppCompatActivity {
             DownloadURL = info.getUrl();
 
         }
+    }
+
+    public void test1(){
+        DownloadingFragment fragment=DownloadingFragment.getInstance();
+        fragment.setLists(null);
     }
 
 

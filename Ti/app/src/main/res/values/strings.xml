@@ -74,4 +74,7 @@
     <string name="downloadurl">下载地址</string>
     <string name="CancelallDownload">全部取消</string>
     <string name="startAllDownload">全部开始</string>
+    <string name="downloading">正在下载</string>
+    <string name="downloadFinish">已完成</string>
+    <string name="downloadCancel">已取消</string>
 </resources>
