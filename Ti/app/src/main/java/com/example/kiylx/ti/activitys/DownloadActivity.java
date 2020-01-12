@@ -2,6 +2,7 @@ package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +12,8 @@ import android.content.ServiceConnection;
 
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +27,7 @@ import com.example.kiylx.ti.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 下载管理界面
@@ -88,14 +92,36 @@ public class DownloadActivity extends AppCompatActivity {
                 //FragmentManager fragmentManager=getSupportFragmentManager();
                 //dof.show(fragmentManager,"下载");
                 boolean as=false;
-                downloadBinder.pauseDownload(null);
+                downloadBinder.pauseAll();
             }
         });
 
-
+//工具栏
+        Toolbar toolbar=findViewById(R.id.downloadContoltoolbar);
+        setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
+        toolbar.inflateMenu(R.menu.control_download_toolbat_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.allCancel:
+                        downloadBinder.cancelAll();
+                        break;
+                    case R.id.allStart:
+                        downloadBinder.startAll();
+                        break;
+                }
+                return false;
+            }
+        });
 
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.control_download_toolbat_menu, menu);
+        return true;
+    }
     /**
      * 开启下载服务，并绑定服务（混合绑定），以此保证服务在后台运行：
      * 即使downloadActivivty结束也可以继续在后台运行

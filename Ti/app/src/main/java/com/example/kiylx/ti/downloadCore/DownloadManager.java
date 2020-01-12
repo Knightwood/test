@@ -202,7 +202,7 @@ public class DownloadManager {
      *             <p>
      *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是准备下载状态。
      */
-    void pauseDownload(DownloadInfo info) {
+    void pauseDownload(@NonNull DownloadInfo info) {
         if (info.isWaitDownload()) {
             //info.setPause(true);
             info.setWaitDownload(false);
@@ -229,15 +229,16 @@ public class DownloadManager {
      *             继续下载
      *             判断downloading列表是否满了，如果满了，放进ready列表
      */
-    void resumeDownload(DownloadInfo info) {
-        if (info == null) {
-            for (int i = 0; i < pausedownload.size(); i++) {
-                resume_all(pausedownload.get(i));
-            }
-        } else {
-            resume_all(info);
-        }
+    void resumeDownload(@NonNull DownloadInfo info) {
 
+        resume(info);
+
+    }
+
+    void resumeAll() {
+        for (int i = 0; i < pausedownload.size(); i++) {
+            resume(pausedownload.get(i));
+        }
     }
 
     /**
@@ -247,7 +248,7 @@ public class DownloadManager {
      * 如果下载列表已达最大数量，直接把条目加入准备下载列表。若有条目下载成功，会在下载成功的方法里把准备列表中的一个开始下载
      * 否则，设置pause标志为假，加入正在下载列表，开始下载
      */
-    private void resume_all(DownloadInfo info) {
+    private void resume(DownloadInfo info) {
 
         pausedownload.remove(info);//移除暂停列表中的这个条目
         //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载

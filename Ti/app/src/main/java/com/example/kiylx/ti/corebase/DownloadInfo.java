@@ -31,7 +31,7 @@ public class DownloadInfo {
      * 文件从暂停状态到下载状态时会因为下载数量限制放进准备下载列表中，
      * 所以放置一个waitDownload标志，表示不是暂停，正等待下载。
      */
-    private boolean waitDownload =false;
+    private boolean waitDownload = false;
 
     /**
      * 下载这个文件而分配的线程数量。
@@ -256,13 +256,13 @@ public class DownloadInfo {
      * @return 把取消标志转换为String，用于数据库
      */
     public String getCancelFlags() {
-        return this.isCancel()? "true":"false";
+        return this.isCancel() ? "true" : "false";
     }
 
     /**
      * @return 把等待下载标志转换为String，用于数据库
      */
     public String getWaitDownloadFlags() {
-        return this.isWaitDownload()? "true":"false";
+        return this.isWaitDownload() ? "true" : "false";
     }
 }

@@ -72,4 +72,6 @@
     <string name="deleteDownloadButton">删除下载任务</string>
     <string name="fileName">文件名称</string>
     <string name="downloadurl">下载地址</string>
+    <string name="CancelallDownload">全部取消</string>
+    <string name="startAllDownload">全部开始</string>
 </resources>

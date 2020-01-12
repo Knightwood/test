@@ -22,10 +22,11 @@ public class DownloadServices extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.mDownloadBinder=new DownloadBinder();
-        mDownloadManager=DownloadManager.getInstance();
+        this.mDownloadBinder = new DownloadBinder();
+        mDownloadManager = DownloadManager.getInstance();
 
     }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         return super.onStartCommand(intent, flags, startId);
@@ -45,45 +46,69 @@ public class DownloadServices extends Service {
     public class DownloadBinder extends Binder implements DownloadMethod {
 
         /**
-         * @param info 文件信息
+         * @param info     文件信息
          * @param fileName 修改的文件名称
          * @param filePath 修改的文件存储路径
          * @return 被修改后的文件信息
          */
         @Override
-        public DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath){
+        public DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath) {
             info.setFileName(fileName);
             info.setPath(filePath);
             return info;
         }
+
         @Override
-        public void startDownload(DownloadInfo info){
-            if(mDownloadManager==null){
-                mDownloadManager=DownloadManager.getInstance();
+        public void startDownload(DownloadInfo info) {
+            if (mDownloadManager == null) {
+                mDownloadManager = DownloadManager.getInstance();
             }
-            try{
+            try {
                 mDownloadManager.startDownload(info);
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
         @Override
-        public void resumeDownload(DownloadInfo info){
-            mDownloadManager.resumeDownload(info);
-        }
-        @Override
-        public void pauseDownload(DownloadInfo info){
-            mDownloadManager.pauseDownload(info);
+        public void startAll() {
 
         }
+
         @Override
-        public int canaelDownload(DownloadInfo info){
-            mDownloadManager.cancelDownload(info,false);
-            return -1;
+        public void resumeDownload(DownloadInfo info) {
+            mDownloadManager.resumeDownload(info);
         }
+
         @Override
-        public float getRate(DownloadInfo info){
-           return mDownloadManager.getPercentage(info);
+        public void resumeAll() {
+            mDownloadManager.resumeAll();
+        }
+
+        @Override
+        public void pauseDownload(DownloadInfo info) {
+            mDownloadManager.pauseDownload(info);
+        }
+
+        @Override
+        public void pauseAll() {
+            mDownloadManager.pauseAll();
+        }
+
+        @Override
+        public void canaelDownload(DownloadInfo info) {
+            mDownloadManager.cancelDownload(info, false);
+
+        }
+
+        @Override
+        public void cancelAll() {
+            mDownloadManager.canaelAll();
+        }
+
+        @Override
+        public float getRate(DownloadInfo info) {
+            return mDownloadManager.getPercentage(info);
 
         }
     }

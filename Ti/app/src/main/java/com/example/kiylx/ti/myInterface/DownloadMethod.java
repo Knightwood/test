@@ -15,8 +15,12 @@ public interface DownloadMethod {
      */
     DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath);
     void startDownload(DownloadInfo info);
+    void startAll();
     void resumeDownload(DownloadInfo info);
+    void resumeAll();
     void pauseDownload(DownloadInfo info);
-    int canaelDownload(DownloadInfo info);
+    void pauseAll();
+    void canaelDownload(DownloadInfo info);
+    void cancelAll();
     float getRate(DownloadInfo info);
 }
