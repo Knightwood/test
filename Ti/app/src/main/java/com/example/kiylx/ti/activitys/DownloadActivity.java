@@ -3,6 +3,7 @@ package com.example.kiylx.ti.activitys;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +24,6 @@ import android.widget.TextView;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadFragments.DownloadbaseFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 
 
@@ -236,7 +236,9 @@ public class DownloadActivity extends AppCompatActivity {
 
     public void test1(){
         DownloadingFragment fragment=DownloadingFragment.getInstance();
-        fragment.setLists(null);
+        fragment.setDownloadInfoArrayList(null);
+        FragmentManager manager=getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
     }
 
 

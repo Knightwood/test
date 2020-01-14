@@ -19,6 +19,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <LinearLayout
+        android:id="@+id/downloadfragmentcontainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/downloadBottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/downloadContoltoolbar"></LinearLayout>
+
     <Button
         android:id="@+id/ceshianniu"
         android:layout_width="wrap_content"
@@ -31,17 +41,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/downloadRecyclerview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_width="307dp"
+        android:layout_height="250dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/downloadBottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/downloadContoltoolbar">
+        app:layout_constraintTop_toBottomOf="@+id/downloadContoltoolbar"
+        tools:visibility="gone">
 
     </androidx.recyclerview.widget.RecyclerView>
 

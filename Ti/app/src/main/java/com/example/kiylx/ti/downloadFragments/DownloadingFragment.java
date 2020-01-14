@@ -10,4 +10,7 @@ public class DownloadingFragment extends DownloadbaseFragment {
     public DownloadingFragment() {
 
     }
+
+
+
 }
