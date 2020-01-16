@@ -220,8 +220,10 @@ public class Bookmark_Dialog extends DialogFragment {
         //启动编辑tag的fragment
         mEditBoxDialog = EditBox_Dialog.getInstance();
         FragmentManager fm = getFragmentManager();
+
         //EditBox设置目标fragment为Bookmark_Dialog Fragment。
         mEditBoxDialog.setTargetFragment(Bookmark_Dialog.this, 0);
+
         mEditBoxDialog.show(fm, "编辑框");
         //开启EditBox后关闭当前的Bookmark_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
     }

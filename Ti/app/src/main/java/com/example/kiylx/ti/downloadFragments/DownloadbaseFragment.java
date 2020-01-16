@@ -44,6 +44,8 @@ public class DownloadbaseFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         mRootView = inflater.inflate(getresId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
+        updateUI();
+
         return mRootView;
     }
 
@@ -109,10 +111,15 @@ public class DownloadbaseFragment extends Fragment {
             this.mDownloadInfo = info;
             bind1(mView,mDownloadInfo);
         }
-        public void bind1(View v,DownloadInfo info){
 
-        };
     }
 
+    /**
+     * @param v 条目视图
+     * @param info 绑定到视图的数据
+     */
+    public void bind1(View v,DownloadInfo info){
+
+    }
 
 }

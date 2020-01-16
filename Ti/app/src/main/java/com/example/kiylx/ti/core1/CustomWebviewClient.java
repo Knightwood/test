@@ -80,7 +80,7 @@ public class CustomWebviewClient extends WebViewClient {
         super.onPageFinished(view, url);
 /*
         mAboutBookmark=AboutBookmark.get(mContext);
-        isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getUrl(),1));
+        isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getFileUrl(),1));
         if (isBookmark){
             //如果网页已经被收藏，让收藏按键变色
         }else{

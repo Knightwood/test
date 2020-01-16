@@ -235,8 +235,7 @@ public class DownloadActivity extends AppCompatActivity {
     }
 
     public void test1(){
-        DownloadingFragment fragment=DownloadingFragment.getInstance();
-        fragment.setDownloadInfoArrayList(null);
+        DownloadingFragment fragment=DownloadingFragment.getInstance(null);
         FragmentManager manager=getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
     }
