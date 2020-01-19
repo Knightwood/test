@@ -9,12 +9,16 @@ import android.view.ViewGroup;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.databinding.DownloadItemBinding;
+import com.example.kiylx.ti.model.DownloadControlViewModel;
+import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 import java.util.ArrayList;
 
@@ -82,8 +86,9 @@ public class DownloadbaseFragment extends Fragment {
         @NonNull
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
-            return new DownloadViewHolder(v);
+            //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
+            DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
+            return new DownloadViewHolder(itemBinding);
         }
 
         @Override
@@ -99,17 +104,35 @@ public class DownloadbaseFragment extends Fragment {
 
     public class DownloadViewHolder extends RecyclerView.ViewHolder {
         DownloadInfo mDownloadInfo;
-        View mView;
+        private DownloadItemBinding mBinding;
 
-        public DownloadViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mView=itemView;
+        public DownloadViewHolder(@NonNull DownloadItemBinding itemBinding) {
+            super(itemBinding.getRoot());
+            this.mBinding=itemBinding;
+
+            //绑定上viewModel
+            mBinding.setControl(new DownloadControlViewModel(new DownloadClickMethod() {
+                @Override
+                public void download() {
+
+                }
+
+                @Override
+                public void pause() {
+
+                }
+
+                @Override
+                public void cancel() {
+
+                }
+            }));
         }
 
 
         public void bindView(DownloadInfo info) {
             this.mDownloadInfo = info;
-            bind1(mView,mDownloadInfo);
+            bind1(mBinding.getRoot(),mDownloadInfo);
         }
 
     }

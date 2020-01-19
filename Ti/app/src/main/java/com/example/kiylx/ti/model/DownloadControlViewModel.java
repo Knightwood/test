@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.model;
 
-import android.view.View;
+import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 public class DownloadControlViewModel {
     private long totalDownload;
@@ -11,6 +11,13 @@ public class DownloadControlViewModel {
      * false时调用pause方法
      */
     public boolean cheak;
+
+    private DownloadClickMethod mInterface;
+
+    public DownloadControlViewModel(DownloadClickMethod method) {
+        this.mInterface = method;
+    }
+
 
     public long getTotalDownload() {
         return totalDownload;
@@ -36,14 +43,16 @@ public class DownloadControlViewModel {
         this.fileUrl = fileUrl;
     }
 
-    public interface ClickMethod {
-        void tr(View view);
+    public void downloadandpause() {
+        if (cheak) {
+            mInterface.download();
+        } else {
+            mInterface.pause();
+        }
+    }
 
-        void download();
-
-        void pause();
-
-        void cancel();
+    public void cancelDownload() {
+        mInterface.cancel();
     }
 
 
