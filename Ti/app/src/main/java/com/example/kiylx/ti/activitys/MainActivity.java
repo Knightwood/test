@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(connection);
         Log.d("lifecycle", "onDestroy()");
     }
 
@@ -473,6 +474,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         }
     };
+
 
 
     //webview的设置================================

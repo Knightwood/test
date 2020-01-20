@@ -21,33 +21,38 @@ import com.example.kiylx.ti.model.DownloadControlViewModel;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DownloadbaseFragment extends Fragment {
 
     private View mRootView;
     RecyclerView viewContainer;
-    private ArrayList<DownloadInfo> mDownloadInfoArrayList;
+    private List<DownloadInfo> mDownloadInfoArrayList;
     private listAdapter mAdapter;
+    private DownloadClickMethod mClickMethod;
 
     @LayoutRes
     private int getresId() {
         return R.layout.downloadbasefragments;
     }
 
-    public DownloadbaseFragment() {
+    public DownloadbaseFragment(DownloadClickMethod method) {
         super();
+        this.mClickMethod=method;
     }
 
-    public void setDownloadInfoArrayList(ArrayList<DownloadInfo> list) {
+    public void setDownloadInfoArrayList(List<DownloadInfo> list) {
         this.mDownloadInfoArrayList = list;
+
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        mRootView = inflater.inflate(getresId(), null);
+        mRootView = inflater.inflate(getresId(),null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
+
         updateUI();
 
         return mRootView;
@@ -76,10 +81,10 @@ public class DownloadbaseFragment extends Fragment {
     }
 
     private class listAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
-        private ArrayList<DownloadInfo> mLists;//recyclerview所用的数据
+        private List<DownloadInfo> mLists;//recyclerview所用的数据
 
 
-        void setLists(ArrayList<DownloadInfo> list) {
+        void setLists(List<DownloadInfo> list) {
             this.mLists = list;
         }
 
@@ -111,28 +116,17 @@ public class DownloadbaseFragment extends Fragment {
             this.mBinding=itemBinding;
 
             //绑定上viewModel
-            mBinding.setControl(new DownloadControlViewModel(new DownloadClickMethod() {
-                @Override
-                public void download() {
-
-                }
-
-                @Override
-                public void pause() {
-
-                }
-
-                @Override
-                public void cancel() {
-
-                }
-            }));
+            //mClickMethod是item布局控制实际下载方法的途径，由fragment依附的DownloadActivity实现
+            mBinding.setControl(new DownloadControlViewModel(mClickMethod));
         }
 
 
         public void bindView(DownloadInfo info) {
             this.mDownloadInfo = info;
-            bind1(mBinding.getRoot(),mDownloadInfo);
+            //设置数据
+            mBinding.getControl().setDownloadInfo(mDownloadInfo);
+
+            //bind1(mBinding.getRoot(),mDownloadInfo);
         }
 
     }

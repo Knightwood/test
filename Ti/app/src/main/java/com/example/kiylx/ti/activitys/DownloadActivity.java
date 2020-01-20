@@ -25,6 +25,7 @@ import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
+import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
-        rootview=findViewById(R.id.downloadRecyclerview);
+        rootview = findViewById(R.id.downloadRecyclerview);
 
         //downloadList=从存储中获取下载信息
         //更新视图
@@ -86,27 +87,27 @@ public class DownloadActivity extends AppCompatActivity {
         boundDownloadService();
 
         //测试开始下载任务的按钮
-        Button bui=findViewById(R.id.ceshianniu);
+        Button bui = findViewById(R.id.ceshianniu);
         bui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
                 //FragmentManager fragmentManager=getSupportFragmentManager();
                 //dof.show(fragmentManager,"下载");
-                boolean as=false;
+                boolean as = false;
                 downloadBinder.pauseAll();
             }
         });
 
 //工具栏
-        Toolbar toolbar=findViewById(R.id.downloadContoltoolbar);
+        Toolbar toolbar = findViewById(R.id.downloadContoltoolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         toolbar.inflateMenu(R.menu.control_download_toolbat_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.allCancel:
                         downloadBinder.cancelAll();
                         break;
@@ -119,11 +120,13 @@ public class DownloadActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.control_download_toolbat_menu, menu);
         return true;
     }
+
     /**
      * 开启下载服务，并绑定服务（混合绑定），以此保证服务在后台运行：
      * 即使downloadActivivty结束也可以继续在后台运行
@@ -137,7 +140,7 @@ public class DownloadActivity extends AppCompatActivity {
     /**
      * 绑定下载服务，以此控制下载服务中的下载。
      */
-    private void boundDownloadService(){
+    private void boundDownloadService() {
         Intent intent = new Intent(DownloadActivity.this, DownloadServices.class);
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
@@ -155,6 +158,13 @@ public class DownloadActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
+    }
+
+    //=========================下载列表适配器======================================//
     private class DownloadViewAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
         List<DownloadInfo> infos;
 
@@ -173,7 +183,7 @@ public class DownloadActivity extends AppCompatActivity {
         @NonNull
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = getLayoutInflater().inflate(R.layout.download_item, parent,false);
+            View v = getLayoutInflater().inflate(R.layout.download_item, parent, false);
             return new DownloadViewHolder(v);
         }
 
@@ -187,7 +197,7 @@ public class DownloadActivity extends AppCompatActivity {
             return this.infos.size();
         }
     }
-
+    //=========================viewholder======================================//
     private class DownloadViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         String fileName;
         String DownloadURL;
@@ -211,6 +221,13 @@ public class DownloadActivity extends AppCompatActivity {
 
         }
 
+        public void binding(DownloadInfo info) {
+            mDownloadInfo = info;
+            fileName = info.getFileName();
+            DownloadURL = info.getUrl();
+
+        }
+
         @Override
         /**
          * 控制下载行为
@@ -226,18 +243,32 @@ public class DownloadActivity extends AppCompatActivity {
             }
         }
 
-        public void binding(DownloadInfo info) {
-            mDownloadInfo = info;
-            fileName = info.getFileName();
-            DownloadURL = info.getUrl();
 
-        }
     }
 
-    public void test1(){
-        DownloadingFragment fragment=DownloadingFragment.getInstance(null);
-        FragmentManager manager=getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
+    public void test1() {
+
+        DownloadClickMethod controlMethod = new DownloadClickMethod() {
+            @Override
+            public void download(DownloadInfo info) {
+                downloadBinder.startDownload(info);
+            }
+
+            @Override
+            public void pause(DownloadInfo info) {
+                downloadBinder.pauseDownload(info);
+            }
+
+            @Override
+            public void cancel(DownloadInfo info) {
+                downloadBinder.canaelDownload(info);
+            }
+        };
+        DownloadingFragment fragment = DownloadingFragment.getInstance(downloadList, controlMethod);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+
+
     }
 
 

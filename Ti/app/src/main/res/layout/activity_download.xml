@@ -19,22 +19,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <LinearLayout
+
+    <FrameLayout
         android:id="@+id/downloadfragmentcontainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/downloadBottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/downloadContoltoolbar"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/downloadContoltoolbar">
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/ceshianniu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="268dp"
-        android:layout_marginTop="496dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="28dp"
         android:text="Button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/downloadRecyclerview" />

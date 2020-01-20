@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.myInterface;
 
+import com.example.kiylx.ti.corebase.DownloadInfo;
+
 /**
  * 这是下载的条目中的databinding所用到的。
  * xml中的按钮调用viewmodel中的方法，再由viewmodel调用这个接口中的方法。
@@ -9,9 +11,9 @@ package com.example.kiylx.ti.myInterface;
  */
 public interface DownloadClickMethod {
 
-    void download();
+    void download(DownloadInfo info);
 
-    void pause();
+    void pause(DownloadInfo info);
 
-    void cancel();
+    void cancel(DownloadInfo info);
 }
