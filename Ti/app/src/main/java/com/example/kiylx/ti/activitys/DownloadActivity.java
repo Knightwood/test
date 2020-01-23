@@ -26,6 +26,8 @@ import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import java.util.ArrayList;
@@ -47,6 +49,8 @@ public class DownloadActivity extends AppCompatActivity {
      */
     private List<DownloadInfo> downloadList;
     private DownloadServices.DownloadBinder downloadBinder;
+    private DownloadClickMethod controlMethod;
+    private int selectPage;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
 
     public DownloadActivity() {
@@ -76,10 +80,29 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         rootview = findViewById(R.id.downloadRecyclerview);
+        //下载条目xml控制下载所调用的方法
+        controlMethod = new DownloadClickMethod() {
+            @Override
+            public void download(DownloadInfo info) {
+                downloadBinder.startDownload(info);
+            }
 
+            @Override
+            public void pause(DownloadInfo info) {
+                downloadBinder.pauseDownload(info);
+            }
+
+            @Override
+            public void cancel(DownloadInfo info) {
+                downloadBinder.canaelDownload(info);
+            }
+        };
         //downloadList=从存储中获取下载信息
-        //更新视图
-        updateUI();
+
+        //更新列表视图--废弃
+        //updateUI();
+
+        downloadingFragment();
 
         //开启下载服务
         //startDownoadService();
@@ -118,7 +141,28 @@ public class DownloadActivity extends AppCompatActivity {
                 return false;
             }
         });
-
+//底栏
+        BottomNavigationView bottomView=findViewById(R.id.downloadBottomNavigation);
+        bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.downloading:
+                        if (selectPage!=0)
+                        downloadingFragment();
+                        break;
+                    case R.id.downloadFinish:
+                        if (selectPage!=1)
+                        finishFragment();
+                        break;
+                    case R.id.cancel:
+                        if (selectPage!=2)
+                        cancelFragment();
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -246,29 +290,27 @@ public class DownloadActivity extends AppCompatActivity {
 
     }
 
-    public void test1() {
-
-        DownloadClickMethod controlMethod = new DownloadClickMethod() {
-            @Override
-            public void download(DownloadInfo info) {
-                downloadBinder.startDownload(info);
-            }
-
-            @Override
-            public void pause(DownloadInfo info) {
-                downloadBinder.pauseDownload(info);
-            }
-
-            @Override
-            public void cancel(DownloadInfo info) {
-                downloadBinder.canaelDownload(info);
-            }
-        };
+    /**
+     * 开启正在下载fragment
+     */
+    public void downloadingFragment() {
+        selectPage=0;
         DownloadingFragment fragment = DownloadingFragment.getInstance(downloadList, controlMethod);
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
 
-
+    }
+    /**
+     * 开启完成下载的fragment
+     */
+    public void finishFragment(){
+        selectPage=1;
+    }
+    /**
+     * 开启取消下载fragment
+     */
+    public void cancelFragment(){
+        selectPage=2;
     }
 
 
