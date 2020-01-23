@@ -24,6 +24,8 @@ import android.widget.TextView;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.downloadFragments.CancelDownloadFragment;
+import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
@@ -305,12 +307,18 @@ public class DownloadActivity extends AppCompatActivity {
      */
     public void finishFragment(){
         selectPage=1;
+        DownloadFinishFragment fragment = new DownloadFinishFragment(null);
+        FragmentManager manager=getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
     }
     /**
      * 开启取消下载fragment
      */
     public void cancelFragment(){
         selectPage=2;
+        CancelDownloadFragment fragment = new CancelDownloadFragment(null);
+        FragmentManager manager=getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
     }
 
 

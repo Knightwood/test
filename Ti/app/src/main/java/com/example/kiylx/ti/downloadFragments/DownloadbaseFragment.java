@@ -69,6 +69,9 @@ public class DownloadbaseFragment extends Fragment {
     }
 
     private void updateUI() {
+        if (mDownloadInfoArrayList==null){
+            return;
+        }
         viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         if (mAdapter == null) {
             mAdapter = new listAdapter();
