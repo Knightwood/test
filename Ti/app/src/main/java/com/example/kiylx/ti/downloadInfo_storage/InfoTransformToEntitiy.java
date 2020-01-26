@@ -21,7 +21,7 @@ public class InfoTransformToEntitiy {
                 tString(info.splitStart),
                 tString(info.splitEnd),
                 info.getContentLength(),
-                (float) (info.getTotalLength() / info.getContentLength()),
+                (float) (info.getCurrentLength() / info.getContentLength()),
                 info.getBlockSize(),
                 info.getDownloadSuccess());
     }

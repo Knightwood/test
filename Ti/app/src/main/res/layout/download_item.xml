@@ -19,15 +19,14 @@ loc:49:31 - 49:87
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp">
+        android:layout_height="70dp">
 
         <TextView
             android:id="@+id/downloadTtitle"
             android:layout_width="0dp"
             android:layout_height="25dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/xiazai"
+            android:singleLine="true"
+            android:text="@{control.filename}"
             android:textAlignment="textStart"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -72,20 +71,21 @@ loc:49:31 - 49:87
             android:id="@+id/downloadProgressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="0dp"
+            android:max="100"
+            android:progress="@{control.procress}"
             app:layout_constraintBottom_toTopOf="@+id/downloadUrl"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/downloadTtitle" />
 
         <TextView
             android:id="@+id/downloadUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fileUrl"
+            android:singleLine="true"
+            android:text="@{control.fileUrl}"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent" />

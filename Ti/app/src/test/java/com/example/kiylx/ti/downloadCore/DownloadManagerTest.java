@@ -38,13 +38,13 @@ public class DownloadManagerTest {
     }
     @Test
     public void getRate(){
-        System.out.println("完成百分比："+manager.getPercentage(info1)+"当前已下载长度："+info1.getTotalLength());
+        System.out.println("完成百分比："+manager.getPercentage(info1)+"当前已下载长度："+info1.getCurrentLength());
 
         for (int i = 0; i < 8; i++) {
             System.out.println(info1.splitStart[i]+"--"+info1.splitEnd[i]);
         }
 
-        System.out.println("文件总长度："+info1.getContentLength()+"下载部分"+info1.getTotalLength()/info1.getContentLength());
+        System.out.println("文件总长度："+info1.getContentLength()+"下载部分"+info1.getCurrentLength()/info1.getContentLength());
     }
 
     @Test

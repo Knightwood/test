@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.corebase;
 
+import android.os.Environment;
+
 public class DownloadInfo {
     private String url;
     private String fileName;
@@ -56,7 +58,7 @@ public class DownloadInfo {
      * 当前文件已下载的大小,
      * 需要百分比的话，用contentLength和totalLength自行计算，结果要转成float类型
      */
-    private long totalLength;
+    private long currentLength;
 
     /**
      * 是否下载完成的标记
@@ -79,7 +81,7 @@ public class DownloadInfo {
         }
         if (this.path == null) {
             //默认路径
-            //this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+            this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
         }
         this.contentLength = contentLength;
 
@@ -130,12 +132,12 @@ public class DownloadInfo {
     }
 
 
-    public long getTotalLength() {
-        return totalLength;
+    public long getCurrentLength() {
+        return currentLength;
     }
 
-    public void setTotalLength(long totalLength) {
-        this.totalLength = totalLength;
+    public void setCurrentLength(long currentLength) {
+        this.currentLength = currentLength;
     }
 
     public long getContentLength() {
@@ -264,5 +266,21 @@ public class DownloadInfo {
      */
     public String getWaitDownloadFlags() {
         return this.isWaitDownload() ? "true" : "false";
+    }
+
+    /**
+     * @return 返回下载进度, float类型
+     * 文件的下载线程数就是文件分块的标号，
+     * 那么分块的结束减去分块的开始就是未下载的部分
+     */
+    public float getProcress() {
+        long unDownloadPart = 0;//未下载的部分
+        for (int i = 0; i < this.getThreadNum(); i++) {
+            unDownloadPart += (this.splitEnd[i] - this.splitStart[i] + 1);
+        }
+        //设置已下载的长度
+        this.setCurrentLength(this.getContentLength() - unDownloadPart);
+        //返回已下载百分比
+        return (float) (this.getCurrentLength() / this.getContentLength());
     }
 }

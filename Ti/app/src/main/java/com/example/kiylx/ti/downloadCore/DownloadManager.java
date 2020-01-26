@@ -18,7 +18,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
+/*
+* 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
+* 要增加一个观察者模式推送各个下载list给downloadactivity
+* 要增加代码更新item的xml的进度条
+* 增加前台服务，不再写绑定到mainactivity等啰嗦的代码*/
 public class DownloadManager {
     private static final String TAG = "下载管理器";
 
@@ -60,7 +64,7 @@ public class DownloadManager {
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
-        mStorgeTask = new StorgeTask();
+        //-mStorgeTask = new StorgeTask();
 
     }
 
@@ -180,12 +184,12 @@ public class DownloadManager {
                 //加入下载队列
                 downloading.add(info);
                 //第一次开始下载就该存入数据库
-                insertData(info);
+               //-insertData(info);
             }
         }
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
-        mStorgeTask.execute(downloading);
+        //-mStorgeTask.execute(downloading);
         //重置threadUse
         info.setblockPauseNum(0);
 
@@ -283,7 +287,7 @@ public class DownloadManager {
 
         if (info.isCancel()) {
             //如果有取消标志，意味着文件已经删除，也没有在任何一个“下载状态”中，所以直接从数据库删除条目
-            delete(info);
+            //-delete(info);
         } else {
             if (!info.isPause()) {
                 //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
@@ -330,18 +334,24 @@ public class DownloadManager {
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
     float getPercentage(DownloadInfo info) {
-        long unDownloadPart = 0;//未下载的部分
+        /*long unDownloadPart = 0;//未下载的部分
         for (int i = 0; i < info.getThreadNum(); i++) {
             unDownloadPart += (info.splitEnd[i] - info.splitStart[i] + 1);
         }
         //设置已下载的长度
-        info.setTotalLength(info.getContentLength() - unDownloadPart);
+        info.setCurrentLength(info.getContentLength() - unDownloadPart);
         //返回已下载百分比
-        return (float) (info.getTotalLength() / info.getContentLength());
+        return (float) (info.getCurrentLength() / info.getContentLength());*/
+
+        return info.getProcress();
     }
 
     public void setContext(Context context) {
         this.mContext = context;
+    }
+
+    public List<DownloadInfo> getDownloading(){
+        return downloading;
     }
 
     /*废弃
@@ -407,8 +417,8 @@ public class DownloadManager {
             while (iterator.hasNext()) {
                 try {
                     Thread.sleep(2 * 1000);//2秒更新一次数据
-                    updateData(iterator.next());
-                    //publishProgress((int)downloadInfos[0].getTotalLength());
+                    //-updateData(iterator.next());
+                    //publishProgress((int)downloadInfos[0].getCurrentLength());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

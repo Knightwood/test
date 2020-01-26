@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.downloadCore.DownloadManager;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.CancelDownloadFragment;
@@ -53,15 +54,15 @@ public class DownloadActivity extends AppCompatActivity {
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
     private int selectPage;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
-
+    private DownloadManager downloadManager=DownloadManager.getInstance();
 
     public DownloadActivity() {
         super();
         downloadList = new ArrayList<>();
 
-        downloadList.add(new DownloadInfo("www.baidu.com/ko3"));
-        downloadList.add(new DownloadInfo("www.baidu.com/ko2"));
-        downloadList.add(new DownloadInfo("www.baidu.com/ko1"));
+        //downloadList.add(new DownloadInfo("https://mobile-asset.majsoul.com/Downloads/android/majsoul_1_7_2.apk"));
+        //downloadList.add(new DownloadInfo("www.baidu.com/ko2"));
+        //downloadList.add(new DownloadInfo("www.baidu.com/ko1"));
     }
 
     //与service通信的中间件
@@ -103,7 +104,7 @@ public class DownloadActivity extends AppCompatActivity {
 
         //更新列表视图--废弃
         //updateUI();
-
+downloadList=downloadManager.getDownloading();
         downloadingFragment();
 
         //开启下载服务
@@ -207,7 +208,7 @@ public class DownloadActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(connection);
+        //-unbindService(connection);
     }
 
     //=========================下载列表适配器======================================//

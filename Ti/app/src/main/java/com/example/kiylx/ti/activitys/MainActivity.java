@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(connection);
+        //-unbindService(connection);
         Log.d("lifecycle", "onDestroy()");
     }
 
