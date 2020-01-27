@@ -1,4 +1,5 @@
 package com.example.kiylx;
+
 import java.util.List;
 
 import android.content.Context;
@@ -13,61 +14,66 @@ import android.widget.TextView;
 
 
 public class AppInfosAdapter extends BaseAdapter {
-     Context context;
-     List<AppInfo> appInfos;
-    public AppInfosAdapter(Context context, List<AppInfo> appInfos){
-    super();
-    this.context = context;
-    this.appInfos =appInfos;
+    Context context;
+    List<AppInfo> appInfos;
+
+    public AppInfosAdapter(Context context, List<AppInfo> appInfos) {
+        super();
+        this.context = context;
+        this.appInfos = appInfos;
     }
+
     @Override
-    public int getCount(){
-        int count =0;
-        if(appInfos!= null){
+    public int getCount() {
+        int count = 0;
+        if (appInfos != null) {
             return appInfos.size();
         }
         return count;
 
     }
+
     @Override
-    public Object getItem(int position){
-    return null;
+    public Object getItem(int position) {
+        return null;
     }
+
     @Override
-    public long getItemId(int position){
+    public long getItemId(int position) {
         return 0;
     }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
         ViewHolder holder;
-        if(convertView == null ){
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.app_info_item, null);
             holder = new ViewHolder();
-            holder.textView =convertView.findViewById(R.id.app_name);
-            holder.imageView =convertView.findViewById(R.id.app_icon);
+            holder.textView = convertView.findViewById(R.id.app_name);
+            holder.imageView = convertView.findViewById(R.id.app_icon);
             holder.button = convertView.findViewById(R.id.button_1);
             convertView.setTag(holder);
-        }
-        else{
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-            holder.imageView.setBackground(appInfos.get(position).getDrawable());
-            holder.textView.setText(appInfos.get(position).getAppName());
-            holder.button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("appInfoActivity", "click");
-                }
-            });
+        holder.imageView.setBackground(appInfos.get(position).getDrawable());
+        holder.textView.setText(appInfos.get(position).getAppName());
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("appInfoActivity", "click");
+            }
+        });
 
 
         return convertView;
 
 
     }
-    private class ViewHolder{
+
+    private class ViewHolder {
         ImageView imageView;
         TextView textView;
         Button button;

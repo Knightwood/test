@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
@@ -55,6 +57,23 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
+     * @param i pos，webview要添加进的位置，默认传0
+     *          新建一个webview并放进WebViewManager（webview2类型）
+     */
+    public void newWebView(int i, Context applicationContext, AppCompatActivity appCompatActivity) {
+        //新建webview并放进数组
+        //WebView web = new WebView(applicationContext);
+
+        WebView web = new WebView2(applicationContext);
+        WebiVewSetting.set1(web, appCompatActivity);
+        //给new出来的webview执行设置
+        web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
+        web.setWebChromeClient(new CustomWebchromeClient());
+        this.addInWebManager(web, i, 0);
+
+    }
+
+    /**
      * @param v    要添加的webview
      * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
      * @param flag 标识这是什么网页，0表示这是新标签页
@@ -62,7 +81,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void addInWebManager(WebView v, int i, int flag) {
         //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
         //把网页信息保存进去，flags记为0，表示是一个newTab，不计入历史记录
-        insert_1(v,i,flag==0? 0:1);
+        insert_1(v, i, flag == 0 ? 0 : 1);
 
         /*if (flag == 0) {
 
@@ -107,9 +126,24 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         return this.mArrayList.size();
     }
 
+    /**
+     * @param i webview列表的指定位置，默认传入0
+     * @return 列表中的webview
+     */
     public WebView getTop(int i) {
-        //返回第一个元素，但是也可以指定i的值获取其他位置的元素
+
         return mArrayList.get(i);
+    }
+
+    /**
+     * @param i webview列表的指定位置，默认传入0
+     * @return 列表中的webview
+     * <p>
+     * 这个方法是返回自定义的webview子类类型。
+     */
+    public WebView2 getTop2(int i) {
+
+        return (WebView2) mArrayList.get(i);
     }
 
 
@@ -173,7 +207,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
                 stop(pos);
             }
         }*/
-    //方2
+        //方2
         int pos = mArrayList.indexOf(webView);
         notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
         if (MainActivity.getCurrect() != pos) {

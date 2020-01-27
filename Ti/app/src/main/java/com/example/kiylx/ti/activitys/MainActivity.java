@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     }
 
+
     @Override
     public void click_newPagebutton() {
         //新建标签页
@@ -200,10 +201,10 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             currect = 0;
         }
 
-        newWebView(0);
+        //废弃newWebView(0);
+        mWebViewManager.newWebView(0,getApplicationContext(),MainActivity.this);
         f1.addView(mWebViewManager.getTop(currect));
-
-        //setTextForbar(currect);//更新工具栏上的文字
+        //+setTextForbar(currect);//更新工具栏上的文字
     }
 
     @Override
@@ -523,6 +524,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         settings.setDefaultTextEncodingName("utf-8");
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
+        //打开新的窗口
+        settings.setSupportMultipleWindows(false);
 
     }
 

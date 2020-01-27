@@ -1,9 +1,12 @@
 package com.example.kiylx.ti.core1;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Message;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
@@ -103,4 +106,13 @@ public class CustomWebchromeClient extends WebChromeClient {
         super.onReceivedTitle(view, title);
     }
 
+    @Override
+    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+        return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+    }
+
+    @Override
+    public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
+        return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+    }
 }

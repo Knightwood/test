@@ -22,7 +22,8 @@ import java.util.Queue;
 * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
 * 要增加一个观察者模式推送各个下载list给downloadactivity
 * 要增加代码更新item的xml的进度条
-* 增加前台服务，不再写绑定到mainactivity等啰嗦的代码*/
+* 增加前台服务，不再写绑定到mainactivity等啰嗦的代码
+* 关于下载list为null的情况的处理*/
 public class DownloadManager {
     private static final String TAG = "下载管理器";
 

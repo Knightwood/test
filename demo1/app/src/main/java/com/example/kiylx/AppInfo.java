@@ -5,13 +5,17 @@ import android.graphics.drawable.Drawable;
 public class AppInfo {
     String appName;
     Drawable drawable;
-    public AppInfo(){}
-    public AppInfo(String appName){
+
+    public AppInfo() {
+    }
+
+    public AppInfo(String appName) {
         this.appName = appName;
     }
-    public AppInfo(String appName, Drawable drawable){
+
+    public AppInfo(String appName, Drawable drawable) {
         this.appName = appName;
-        this.drawable =drawable;
+        this.drawable = drawable;
     }
 
     public String getAppName() {
