@@ -170,11 +170,11 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     private void reasumeWebview() {
     }
 
-    /**
+    /*
      * @param i pos，webview要添加进的位置
      *          新建一个webview并放进WebViewManager
-     */
-    private void newWebView(int i) {
+     *
+       private void newWebView(int i) {
         //新建webview并放进数组
         WebView web = new WebView(getApplicationContext());
         set1(web);
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         web.setWebChromeClient(new CustomWebchromeClient());
         mWebViewManager.addInWebManager(web, i, 0);
 
-    }
+    }*/
 
 
     @Override
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
 
         //废弃newWebView(0);
-        mWebViewManager.newWebView(0,getApplicationContext(),MainActivity.this);
+        mWebViewManager.newWebView(0, getApplicationContext(), MainActivity.this);
         f1.addView(mWebViewManager.getTop(currect));
         //+setTextForbar(currect);//更新工具栏上的文字
     }
@@ -297,7 +297,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     public void useMultPage_DialogFragmentInterface() {
         MultPage_DialogFragment.setInterface(this);
     }
-//工具栏====================================
+
+    //工具栏====================================
     void setTextForbar(int i) {
         //以下三行把工具栏的的文字更新
         //sCUWL();
@@ -457,17 +458,17 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 Intent intent = new Intent(MainActivity.this, DownloadServices.class);
                 startService(intent);
                 bindService(intent, connection, BIND_AUTO_CREATE);
-                downloadInfo=info;
+                downloadInfo = info;
 
             }
         });
     }
 
-    private ServiceConnection connection=new ServiceConnection() {
+    private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-         mDownloadBinder= (DownloadServices.DownloadBinder)service;
-         mDownloadBinder.startDownload(downloadInfo);//绑定服务，开始下载
+            mDownloadBinder = (DownloadServices.DownloadBinder) service;
+            mDownloadBinder.startDownload(downloadInfo);//绑定服务，开始下载
         }
 
         @Override
@@ -475,7 +476,6 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
         }
     };
-
 
 
     //webview的设置================================

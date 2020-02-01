@@ -62,9 +62,10 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     public void newWebView(int i, Context applicationContext, AppCompatActivity appCompatActivity) {
         //新建webview并放进数组
-        //WebView web = new WebView(applicationContext);
 
-        WebView web = new WebView2(applicationContext);
+//WebView web = new WebView(applicationContext);
+        WebView web = new CustomActionWebView(applicationContext);
+
         WebiVewSetting.set1(web, appCompatActivity);
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
@@ -141,9 +142,9 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * <p>
      * 这个方法是返回自定义的webview子类类型。
      */
-    public WebView2 getTop2(int i) {
+    public CustomActionWebView getTop2(int i) {
 
-        return (WebView2) mArrayList.get(i);
+        return (CustomActionWebView) mArrayList.get(i);
     }
 
 
