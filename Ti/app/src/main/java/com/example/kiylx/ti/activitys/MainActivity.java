@@ -27,6 +27,7 @@ import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.myFragments.DownloadWindow;
+import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
@@ -48,12 +49,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     private long mExitTime;//拿来判断按返回键间隔
 
     WebViewManager mWebViewManager;
-    Converted_WebPage_Lists mConverted_lists;
+    Converted_WebPage_Lists mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
 
     FrameLayout f1;
-    TextView mTextView;
+    TextView mTextView;//主界面的工具栏里的搜索框
 
 
     @Override
@@ -201,8 +202,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             currect = 0;
         }
 
-        //废弃newWebView(0);
         mWebViewManager.newWebView(0, getApplicationContext(), MainActivity.this);
+        mWebViewManager.getTop2(currect).setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
+            }
+        });
+
         f1.addView(mWebViewManager.getTop(currect));
         //+setTextForbar(currect);//更新工具栏上的文字
     }

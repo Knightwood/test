@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 
 /**
- * WebViewManager用来存储webview，管理webview。当webview发生更新，包括添加或是删除或是webview自身发生更新，
+ * WebViewManager用来存储webview对象，管理webview。当webview发生更新，包括添加或是删除或是webview自身发生更新，
  * 使用观察者模式更新Converted_WebPage_Lists中的数据。
  * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
  * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
@@ -63,13 +63,19 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void newWebView(int i, Context applicationContext, AppCompatActivity appCompatActivity) {
         //新建webview并放进数组
 
-//WebView web = new WebView(applicationContext);
-        WebView web = new CustomActionWebView(applicationContext);
+//注：new一个webview
+        CustomActionWebView web = new CustomActionWebView(applicationContext);
+
+        web.setActionList();
 
         WebiVewSetting.set1(web, appCompatActivity);
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
         web.setWebChromeClient(new CustomWebchromeClient());
+
+        //添加js，用来展开菜单的方法。
+        web.MenuJSInterface();
+
         this.addInWebManager(web, i, 0);
 
     }
@@ -106,6 +112,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             notifyupdate(v, i, Action.ADD);
     }
 
+    /**
+     * 标记观察者更新
+     *
+     * 还可以处理更多的东西，但我没写。
+     */
     @Override
     protected synchronized void setChanged() {
         super.setChanged();
@@ -153,7 +164,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param url   URL
      *              这是为生成新标签页准备的方法。
      */
-    private void setTmpData(String title, String url) {
+    private void setTmpData_newPage(String title, String url) {
         tmpData.setTitle(title);
         tmpData.setUrl(url);
         tmpData.setDate(TimeProcess.getTime());
@@ -235,10 +246,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         if (action == Action.ADD) {
-            setTmpData("空白页", "about:newTab");
+            //添加
+            setTmpData_newPage("空白页", "about:newTab");
         } else if (action == Action.DELETE) {
+            //删除
             setTmpData(null);
         } else {
+            //更新
             setTmpData(arg);
         }
 

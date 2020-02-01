@@ -109,16 +109,17 @@ public class CustomActionWebView extends WebView {
         }
     }
 
-    public void linkJSInterface() {
+    public void MenuJSInterface() {
         addJavascriptInterface(new ActionSelectInterface(this), "JSInterface");
     }
 
     /**
      * 设置弹出action列表
-     * @param actionList
      */
-    public void setActionList(List<String> actionList) {
-        mActionList = actionList;
+    public void setActionList() {
+        mActionList.add("复制");
+        mActionList.add("搜索");
+        mActionList.add("分享");
     }
 
     /**
