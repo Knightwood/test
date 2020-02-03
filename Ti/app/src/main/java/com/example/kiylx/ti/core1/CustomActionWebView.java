@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 
@@ -153,7 +154,9 @@ public class CustomActionWebView extends WebView {
         public void callback(final String value, final String title) {
             if(mActionSelectListener != null) {
                 mActionSelectListener.onClick(title, value);
+                Toast.makeText(getContext(), "触发了长按", Toast.LENGTH_SHORT).show();
             }
         }
     }
+    /*揭开总之凝缩抽中oibfvQ'IFN【去oibfqOIBQHFGQoigdhQYDqw*/
 }
