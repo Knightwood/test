@@ -137,7 +137,8 @@ public class CrimeListFragment extends Fragment {
         //工具栏上的显示
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
-        String subtitle = getString(crimeCount,R.string.subtitle_format);
+
+        String subtitle = getString(R.string.subtitle_format, crimeCount);
 
         if(!mSubtitleVisible){
             subtitle=null;
