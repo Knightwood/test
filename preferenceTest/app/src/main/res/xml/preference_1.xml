@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:key="first_category"
+        android:title="第一个分组">
+        <ListPreference
+            android:entries="@array/single_selection"
+            android:entryValues="@array/single_selection_value"
+            android:key="列表"
+            android:title="列表标题" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="second_category"
+        android:title="第二个分组">
+        <CheckBoxPreference
+            android:key="switch"
+            android:title="开关"/>
+            <!--android:defaultValue="true" app:isPreferenceVisible="false"-->
+
+        <Preference
+            android:dependency="switch"
+            android:key="pref_key_sms_delete_limit"
+            android:summary="关联的选项"
+            android:title="pref_title_sms_delete" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:key="button_voicemail_setting_key"
+        android:title="又一个分组">
+        <EditTextPreference
+            android:key="bmji"
+            android:title="文本编辑" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        android:key="third_category"
+        android:title="第三个分组">
+
+        <SwitchPreference
+            android:key="切换开关"
+            android:title="switch_key"
+        />
+        <Preference
+            app:key="feedback"
+            app:summary="Report technical issues or suggest new features"
+            app:title="Send feedback"
+            app:fragment="com.crystal.preferencetest.PreferenceFragment_2"/>
+    </PreferenceCategory>
+
+
+</PreferenceScreen>
