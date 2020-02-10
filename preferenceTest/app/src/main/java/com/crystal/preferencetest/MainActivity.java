@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity implements PreferenceFragmen
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.preference_container,new PreferenceFragment_1()).commit();
 
-        PreferenceManager.setDefaultValues(this, R.xml.preference_1, false);
+        //PreferenceManager.setDefaultValues(this, R.xml.preference_1, false);
     }
 
 

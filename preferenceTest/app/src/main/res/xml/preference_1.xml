@@ -77,8 +77,10 @@
         <Preference
             app:key="click"
             app:title="点击方法测试"/>
+    </PreferenceCategory>
 
-    <SwitchPreference
+    <PreferenceCategory>
+        <SwitchPreference
             android:key="切换开关"
             android:title="switch_key" />
 
@@ -87,7 +89,25 @@
             app:summary="Report technical issues or suggest new features"
             app:title="Send feedback"
             app:fragment="com.crystal.preferencetest.PreferenceFragment_2"/>
+    </PreferenceCategory>
+<!--initialExpandedChildrenCount启用展开式 Preference 行为的整数值。此值表示 PreferenceGroup 中所显示子级的最大数量。
+系统会收起所有多余子级，用户可以点按展开按钮查看。默认情况下，此值为 Integer.MAX_VALUE，且系统会显示所有子级。-->
+    <PreferenceCategory app:key="savedata" app:title="存取数据的分组" app:initialExpandedChildrenCount="0">
+        <EditTextPreference
+            app:key="data1"
+            app:title="data12"
+            app:summary="123456"
+            app:useSimpleSummaryProvider="true"/>
+
+        <EditTextPreference
+            app:key="data2"
+            app:summary="33333"
+            app:useSimpleSummaryProvider="true"/>
+
 
     </PreferenceCategory>
+
+
+
 
 </PreferenceScreen>

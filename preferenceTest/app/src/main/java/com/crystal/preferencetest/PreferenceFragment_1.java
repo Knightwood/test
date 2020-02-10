@@ -1,18 +1,23 @@
 package com.crystal.preferencetest;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceDataStore;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 /**
  * @创建者 kiylx
@@ -29,6 +34,26 @@ public class PreferenceFragment_1 extends PreferenceFragmentCompat {
         startactivity();
         openWeb();
         clickmethod();
+        readData();
+    }
+
+    private void readData() {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String name = sharedPreferences.getString("data1", "");
+
+        Log.d("datasave",name);
+    }
+
+    /**
+     * 这个利用了PreferenceDataStore
+     */
+    private void readData2(){
+        DataStore store=new DataStore();
+        EditTextPreference edit3=findPreference("data2");
+        if (edit3!=null){
+            edit3.setPreferenceDataStore(store);
+        }
     }
 
     private void clickmethod() {
@@ -148,4 +173,19 @@ private void openWeb(){
             }
         }
     }
+
+    public class DataStore extends PreferenceDataStore{
+        @Override
+        public void putString(String key, @Nullable String value) {
+            super.putString(key, value);
+        }
+
+        @Nullable
+        @Override
+        public String getString(String key, @Nullable String defValue) {
+            return super.getString(key, defValue);
+        }
+    }
+
+
 }
