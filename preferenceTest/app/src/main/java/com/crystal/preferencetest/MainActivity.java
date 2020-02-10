@@ -8,7 +8,7 @@ import androidx.preference.PreferenceManager;
 
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity /*implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback*/ {
+public class MainActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,14 +17,13 @@ public class MainActivity extends AppCompatActivity /*implements PreferenceFragm
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.preference_container,new PreferenceFragment_1()).commit();
 
-        //PreferenceManager.setDefaultValues(this, R.xml.preference_1, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preference_1, false);
     }
-
 
 
      // 在preference中设置了fragment的项会调用这个方法，不重写会有默认的实现
 
-   /* @Override
+    @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         // Instantiate the new Fragment
         final Bundle args = pref.getExtras();
@@ -39,6 +38,6 @@ public class MainActivity extends AppCompatActivity /*implements PreferenceFragm
                 .addToBackStack(null)
                 .commit();
         return true;
-    }*/
+    }
 
 }
