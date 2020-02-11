@@ -6,6 +6,9 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
 
+/**
+ * 常规的设置
+ */
 public class ConventionalFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {

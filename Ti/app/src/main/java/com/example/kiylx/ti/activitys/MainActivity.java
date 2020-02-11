@@ -486,7 +486,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
 
     //webview的设置================================
-    void set1(WebView ti) {
+    /*void set1(WebView ti) {
 
         ti.canGoBack();
         ti.canGoForward();
@@ -501,12 +501,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         settings.setJavaScriptEnabled(true);
         //设置WebView缓存模式 默认断网情况下不缓存
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        /*
+        *//*
          * LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
          * LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
          * LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
          * LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
-         */
+         *//*
         //断网情况下加载本地缓存
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         //让WebView支持DOM storage API
@@ -534,7 +534,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         //打开新的窗口
         settings.setSupportMultipleWindows(false);
 
-    }
+    }*/
 
 
 

@@ -134,8 +134,15 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         notifyupdate(null, i, Action.DELETE);
     }
 
+    /**
+     * @return 返回存储webview对象的list的大小
+     */
     public int size() {
         return this.mArrayList.size();
+    }
+
+    public void loadurl(){
+
     }
 
     /**
@@ -149,7 +156,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     /**
      * @param i webview列表的指定位置，默认传入0
-     * @return 列表中的webview
+     * @return 列表中的webview(转制为CustomActionWebView类型)
      * <p>
      * 这个方法是返回自定义的webview子类类型。
      */
