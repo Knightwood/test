@@ -307,15 +307,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     //工具栏====================================
     void setTextForbar(int i) {
-        //以下三行把工具栏的的文字更新
-        //sCUWL();
+        //工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
         String mt = mConverted_lists.getTitle(i);
         mTextView.setText(mt);
     }
 
     @Override
     public void setInfos(String title, String url) {
-        //网页加载完成时，更新存着所有打开的网页的list中当前页面的信息
+        //网页加载完成时被调用，更新存着所有打开的网页的list中当前页面的信息，以及底栏的文字
         Log.d("lifecycle", "webview标题" + url);
         mTextView.setText(url);//更新工具栏上的文字
 
@@ -420,7 +419,9 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         md.show(fm, "minSetDialog");
     }
 
-    //搜索框代码=========================================
+    /**
+     * 搜索框代码,由activity_main.xml中的搜索框调用
+     */
     public void searchBar(View v) {
         search_dialog();
     }

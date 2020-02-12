@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<EditTextPreference
-    app:key="home_page"
-    app:title="设置主页"
-    app:summary="about:newTab"
-    app:useSimpleSummaryProvider="true"/>
+    <EditTextPreference
+        app:key="home_page"
+        app:summary="about:newTab"
+        app:title="设置主页"
+        app:useSimpleSummaryProvider="true" />
     <Preference
+        app:fragment="com.example.kiylx.ti.settingFolders.SearchEngineSetting_Fragment"
         app:key="search_engine"
-        app:title="设置搜索引擎"
-        app:fragment="com.example.kiylx.ti.settingFolders.SearchEngineSetting_Fragment"/>
+        app:title="设置搜索引擎" />
     <ListPreference
-        app:key="explorer_flags"
-        app:title="浏览器标识"
         app:entries="@array/explorer_flags"
-        app:entryValues="@array/explorer_flags_values" />
+        app:entryValues="@array/explorer_flags_values"
+        app:key="explorer_flags"
+        app:title="浏览器标识" />
 
 </PreferenceScreen>

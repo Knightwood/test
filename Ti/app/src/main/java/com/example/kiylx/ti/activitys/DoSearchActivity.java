@@ -12,38 +12,34 @@ import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 import com.example.kiylx.ti.myFragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
-public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInteractionListener {
+public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInterfaceListener {
     private static final String TAG = "DoSearchActivity";
     private static final String TEXR_OR_URL = "text_or_url";
-    private String searchEngine = " https://mijisou.com/search?q=";
 
-    //private static final String CURL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_do_search);
-        addFragment();
+        replaceFragment();
     }
 
-    private void addFragment() {
-        //Fragment_DoSearch mfragment_Do_search = new Fragment_DoSearch();
-        Fragment_DoSearch mfragment_Do_search = Fragment_DoSearch.newInstance(getIntent().getStringExtra("current url"));
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.add(R.id.dosearch_root, mfragment_Do_search);
-        fragmentTransaction.commit();
+    private void replaceFragment() {
+        Fragment_DoSearch mfragment = Fragment_DoSearch.newInstance(getIntent().getStringExtra("current url"));
+        getSupportFragmentManager().beginTransaction().replace(R.id.dosearch_root, mfragment).commit();
     }
 
+    /**
+     * @param s 字符串
+     *          传入字符串，处理好，组装好intent。
+     *          当被调用时，setResult并结束这个activity
+     */
     @Override
-    public void onFragmentInteraction(String s) {
-        ProcessRecordItem tmp = new ProcessRecordItem();
+    public void analysisText(String s) {
+
         Intent intent = new Intent();
-        if (tmp.processString(s)) {
-            intent.putExtra(TEXR_OR_URL, s);
-        } else {
-            s = searchEngine + s;
-            intent.putExtra(TEXR_OR_URL, s);
-        }
+
+        intent.putExtra(TEXR_OR_URL, ProcessRecordItem.processString(s));
         setResult(RESULT_OK, intent);
         finish();
     }

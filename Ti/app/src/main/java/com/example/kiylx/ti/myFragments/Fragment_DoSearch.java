@@ -27,56 +27,48 @@ import java.util.ArrayList;
 
 
 public class Fragment_DoSearch extends Fragment {
-
-
-    private static final String ARG_PARAM1 = "param1";
-    //private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "fragmentLifeCycle";
-    private ArrayList<WebPage_Info> mPage_infos =new ArrayList<>();
+
+    private static final String ARG_PARAM1 = "param1";//这是创建fragment时要保存在bundle中数据的名称，存着的值是一个字符串（它是网址或是普通的文字）
+    private ArrayList<WebPage_Info> webPage_infoArrayList =new ArrayList<>();//用输入文字匹配之后的网址列表
     private ProcessRecordItem mProcessRecordItem;//处理字符串的类
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    //mParam1用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
-    //private String mParam2;
-
+    private String mCurrentURL;//用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
     private String searchbarTEXT;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
-    private EditText searchbox;
+
+    private EditText searchbox;//搜索框
+
     private RecyclerView mRecyclerView;
     private SearchrecordAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
+    private OnFragmentInterfaceListener mListener;
 
     public Fragment_DoSearch() {
-        // Required empty public constructor
+
     }
 
+
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * //@param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_DoSearch.
+     * @param param1
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
     public static Fragment_DoSearch newInstance(String param1) {
         Fragment_DoSearch fragment = new Fragment_DoSearch();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM1, param1);
+        fragment.setArguments(bundle);
+
         return fragment;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInterfaceListener) {
+            mListener = (OnFragmentInterfaceListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFragmentInterfaceListener");
         }
         Log.d(TAG, "onAttach: ");
     }
@@ -85,8 +77,8 @@ public class Fragment_DoSearch extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            //mParam2 = getArguments().getString(ARG_PARAM2);
+            mCurrentURL = getArguments().getString(ARG_PARAM1);
+
         }
         if(null== mProcessRecordItem)
         mProcessRecordItem =new ProcessRecordItem();
@@ -96,7 +88,7 @@ public class Fragment_DoSearch extends Fragment {
     @Override
     public View onCreateView(@Nullable LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View v =inflater.inflate(R.layout.fragment_search_page, container, false);
 
         searchbox =v.findViewById(R.id.search_column);
@@ -107,15 +99,16 @@ public class Fragment_DoSearch extends Fragment {
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
-        if(mParam1!=null)
-        searchbox.setText(mParam1);//如果当前网页不是null，那就填充网址
+        if(mCurrentURL !=null)
+        searchbox.setText(mCurrentURL);//如果当前网页不是null，那就填充网址
+        searchbox.selectAll();//让文字被全选
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    // 开始搜索的方法
     public void beginSearch(String s) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(s);
+            mListener.analysisText(s);
         }
     }
 
@@ -125,6 +118,10 @@ public class Fragment_DoSearch extends Fragment {
         mListener = null;
         Log.d(TAG, "onDetach: ");
     }
+
+    /**
+     * 搜索框文字编辑完后按下回车键
+     */
     private void enter_key(){
         searchbox.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -132,7 +129,7 @@ public class Fragment_DoSearch extends Fragment {
                 if(keyCode==KeyEvent.KEYCODE_ENTER){
                     Log.d(TAG, "onKeyDown: ");
                     //监听回车键，按下的时候就开始执行搜索操作。
-                    mListener.onFragmentInteraction(searchbarTEXT);
+                    mListener.analysisText(searchbarTEXT);
                     return true;
                 }
                 return false;
@@ -157,7 +154,7 @@ public class Fragment_DoSearch extends Fragment {
             public void afterTextChanged(Editable s) {
             //把文本与历史记录进行对比，筛选出符合的信息，刷新listview
                 searchbarTEXT =searchbox.getText().toString();
-                mPage_infos = mProcessRecordItem.formatList(searchbarTEXT);
+                webPage_infoArrayList = mProcessRecordItem.formatList(searchbarTEXT);
                 //与历史记录以及收藏记录比对，拿到arraylist
                 updateList();//更新界面
 
@@ -165,28 +162,20 @@ public class Fragment_DoSearch extends Fragment {
             }
         });
     }
+    public interface OnFragmentInterfaceListener {
+
+        void analysisText(String s);
+    }
+
+
     private void updateList(){
         if(null==adapter){
-        adapter=new SearchrecordAdapter(mPage_infos);
+        adapter=new SearchrecordAdapter(webPage_infoArrayList);
         mRecyclerView.setAdapter(adapter);}else{
             adapter.notifyDataSetChanged();
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-
-        void onFragmentInteraction(String s);
-    }
     private class SearchrecordAdapter extends RecyclerView.Adapter<SearchItemHolder>{
         private ArrayList<WebPage_Info> lists;
 
@@ -211,6 +200,8 @@ public class Fragment_DoSearch extends Fragment {
             return lists.size();
         }
     }
+
+
     private class SearchItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView view1;
         TextView view2;
@@ -234,7 +225,7 @@ public class Fragment_DoSearch extends Fragment {
         @Override
         public void onClick(View v) {
             String tmp=view2.getText().toString();
-            mListener.onFragmentInteraction(tmp);
+            mListener.analysisText(tmp);
         }
     }
 
