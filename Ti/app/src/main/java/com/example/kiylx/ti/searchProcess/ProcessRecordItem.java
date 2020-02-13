@@ -1,7 +1,11 @@
 package com.example.kiylx.ti.searchProcess;
 
+import android.text.TextUtils;
+
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -22,13 +26,67 @@ public class ProcessRecordItem {
 
         Pattern pattern = Pattern.compile(regEx);
         if (pattern.matcher(s).matches()){
-            //如果是网址
-            return s;
+            //正则表达式可以判断是不是网址，再由converKeywordLoadOrSearch(s)处理，补全格式。
+            return converKeywordLoadOrSearch(s);
         }else{
             return engine+s;
         }
 
     }
+    public static Boolean testPex(String s){
+        Pattern pattern = Pattern.compile(regEx);
+        return pattern.matcher(s).matches();
+    }
+
+    public static final String HTTP = "http://";
+    public static final String HTTPS = "https://";
+    public static final String FILE = "file://";
+
+    /**
+     * 将关键字转换成最后转换的url
+     *
+     * @param keyword
+     * @return 补全后的网址
+     */
+    public static String converKeywordLoadOrSearch(String keyword) {
+        keyword = keyword.trim();
+
+        if (keyword.startsWith("www.")) {
+            keyword = HTTP + keyword;
+        } else if (keyword.startsWith("ftp.")) {
+            keyword = "ftp://" + keyword;
+        }
+
+        boolean containsPeriod = keyword.contains(".");
+        boolean isIPAddress = (TextUtils.isDigitsOnly(keyword.replace(".", ""))
+                && (keyword.replace(".", "").length() >= 4) && keyword.contains("."));
+        boolean aboutScheme = keyword.contains("about:");
+        boolean validURL = (keyword.startsWith("ftp://") || keyword.startsWith(HTTP)
+                || keyword.startsWith(FILE) || keyword.startsWith(HTTPS))
+                || isIPAddress;
+        boolean isSearch = ((keyword.contains(" ") || !containsPeriod) && !aboutScheme);
+
+        if (isIPAddress
+                && (!keyword.startsWith(HTTP) || !keyword.startsWith(HTTPS))) {
+            keyword = HTTP + keyword;
+        }
+
+        String converUrl;
+        if (isSearch) {
+            try {
+                keyword = URLEncoder.encode(keyword, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            converUrl = "http://www.baidu.com/s?wd=" + keyword + "&ie=UTF-8";
+        } else if (!validURL) {
+            converUrl = HTTP + keyword;
+        } else {
+            converUrl = keyword;
+        }
+        return converUrl;
+    }
+
 
     /**
      * @param s 传入的需要分析的字符串
