@@ -77,4 +77,9 @@
     <string name="downloading">正在下载</string>
     <string name="downloadFinish">已完成</string>
     <string name="downloadCancel">已取消</string>
+
+    <!--主页所用的资源-->
+    <string name="homePage">主页</string>
+    <string name="default_homePage_value">about:newTab</string>
+    <string name="default_homePage_url">file:///android_asset/newTab.html</string>
 </resources>

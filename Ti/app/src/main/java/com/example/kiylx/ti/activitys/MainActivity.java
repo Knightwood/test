@@ -15,8 +15,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +22,6 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.downloadCore.DownloadListener2;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.myFragments.DownloadWindow;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
@@ -33,7 +30,6 @@ import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.core1.Converted_WebPage_Lists;
-import com.example.kiylx.ti.core1.CustomWebchromeClient;
 import com.example.kiylx.ti.core1.CustomWebviewClient;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
@@ -203,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         }
 
         mWebViewManager.newWebView(0, getApplicationContext(), MainActivity.this);
-        mWebViewManager.getTop2(currect).setActionSelectListener(new ActionSelectListener() {
+        mWebViewManager.getTop(currect).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
                 Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
@@ -211,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         });
 
         f1.addView(mWebViewManager.getTop(currect));
+        mWebViewManager.loadHomePage(-1);//新建标签页载入主页
         //+setTextForbar(currect);//更新工具栏上的文字
     }
 
@@ -449,8 +446,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
             assert data != null;
             mWebViewManager.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
-
-            mConverted_lists.setWEB_feature(currect, 1);
+            //mConverted_lists.setWEB_feature_1(currect, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
     }

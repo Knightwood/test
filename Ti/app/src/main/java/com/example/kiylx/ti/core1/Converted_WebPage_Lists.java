@@ -88,9 +88,9 @@ public class Converted_WebPage_Lists implements Observer {
         mCurrectList.get(pos).setUrl(url);
     }
 
-    public void setWEB_feature(int pos, int i) {
+    /*public void setWEB_feature_1(int pos, int i) {
         mCurrectList.get(pos).setWEB_feature(i);
-    }
+    }*/
 
     public WebPage_Info getInfo(int i) {
         return mCurrectList.get(i);
@@ -146,6 +146,6 @@ public class Converted_WebPage_Lists implements Observer {
         minfo.setTitle(info.getTitle());
         minfo.setUrl(info.getUrl());
         minfo.setDate(info.getDate());
-        minfo.setWEB_feature(info.getWEB_feature());
+        //minfo.setWEB_feature(info.getWEB_feature());
     }
 }

@@ -23,7 +23,7 @@ public class WebPage_Info {
      * @param title               标题
      * @param url                 网址
      * @param webview_marked_name 网页的标签(tag),用于收藏网页时使用。
-     * @param web_feature         标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
+     * @param web_feature         标识是否被收藏了  -标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
      * @param date                网页加载时间
      */
     public WebPage_Info(String title, String url, String webview_marked_name, int web_feature, String date) {

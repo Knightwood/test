@@ -99,8 +99,8 @@ public class Fragment_DoSearch extends Fragment {
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
-        if(mCurrentURL !=null)
-        searchbox.setText(mCurrentURL);//如果当前网页不是null，那就填充网址
+        if(!mCurrentURL.equals(String.valueOf(R.string.default_homePage_url)))
+        searchbox.setText(mCurrentURL);//如果当前网页网址不是默认的主页，那就填充网址
         searchbox.selectAll();//让文字被全选
         return v;
     }

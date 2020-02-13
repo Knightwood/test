@@ -6,6 +6,7 @@ import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
@@ -26,7 +27,7 @@ import java.util.Observable;
 public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     //存着当前打开的所有webview对象
-    private ArrayList<WebView> mArrayList;
+    private ArrayList<WebView> webViewArrayList;
     //存储当前使用的webview的网址等数据，用来向观察者推送更新。
     private WebPage_Info tmpData;
     private volatile static WebViewManager sWebViewManager;
@@ -36,8 +37,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
 
-        if (mArrayList == null) {
-            mArrayList = new ArrayList<>();
+        if (webViewArrayList == null) {
+            webViewArrayList = new ArrayList<>();
             tmpData = new WebPage_Info(null, null, null, 0, null);
         }
     }
@@ -66,7 +67,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 //注：new一个webview
         CustomActionWebView web = new CustomActionWebView(applicationContext);
 
-        web.setActionList();
+        web.setActionList();//点击浏览webview的菜单项
 
         WebiVewSetting.set1(web, appCompatActivity);
         //给new出来的webview执行设置
@@ -76,15 +77,33 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //添加js，用来展开菜单的方法。
         web.MenuJSInterface();
 
-        this.addInWebManager(web, i, 0);
+        this.addInWebManager(web, i);
 
     }
 
     /**
+     * @param v 要添加的webview
+     * @param i 添加到第一个位置，但是也可以指定i的值添加到其他位置
+     */
+    public void addInWebManager(WebView v, int i) {
+        insert_12(v, i);
+
+    }
+
+    /**
+     * @param v 要添加进mArrayList的webview
+     * @param i 要添加到的位置
+     */
+    private void insert_12(WebView v, int i) {
+        webViewArrayList.add(i, v);
+        notifyupdate(v, i, Action.ADD);
+    }
+
+    /* *//**
      * @param v    要添加的webview
      * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
      * @param web_feature 标识这是什么网页，0表示这是新标签页
-     */
+     *//*
     public void addInWebManager(WebView v, int i, int web_feature) {
         //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
         //把网页信息保存进去，web_feature记为0，表示是一个新标签页，不计入历史记录
@@ -92,22 +111,22 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     }
 
-    /**
+    *//**
      * @param v    要添加进mArrayList的webview
      * @param i    要添加到的位置
      * @param web_feature 如果是0，标识这是新标签页，执行特定操作
-     */
+     *//*
     private void insert_1(WebView v, int i, int web_feature) {
-        mArrayList.add(i, v);
+        webViewArrayList.add(i, v);
         if (web_feature == 0) {
             notifyupdate(null, i, Action.ADD);
         } else
             notifyupdate(v, i, Action.ADD);
-    }
+    }*/
 
     /**
      * 标记观察者更新
-     *
+     * <p>
      * 还可以处理更多的东西，但我没写。
      */
     @Override
@@ -123,7 +142,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     private void removeWebView(int i) {
-        this.mArrayList.remove(i);
+        this.webViewArrayList.remove(i);
         notifyupdate(null, i, Action.DELETE);
     }
 
@@ -131,20 +150,17 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @return 返回存储webview对象的list的大小
      */
     public int size() {
-        return this.mArrayList.size();
-    }
-
-    public void loadurl(){
-
+        return this.webViewArrayList.size();
     }
 
     /**
-     * @param i webview列表的指定位置，默认传入0
-     * @return 列表中的webview
+     * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
+     * 载入主页
      */
-    public WebView getTop(int i) {
-
-        return mArrayList.get(i);
+    public void loadHomePage(int pos) {
+            getTop(pos ==-1? 0:pos).loadUrl(String.valueOf (R.string.default_homePage_url));
+            String uii=String.valueOf(R.string.default_homePage_url);
+        Log.d(TAG, "loadHomePage: "+uii);
     }
 
     /**
@@ -153,9 +169,16 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * <p>
      * 这个方法是返回自定义的webview子类类型。
      */
-    public CustomActionWebView getTop2(int i) {
+    public CustomActionWebView getTop(int i) {
+        return (CustomActionWebView) webViewArrayList.get(i);
+    }
 
-        return (CustomActionWebView) mArrayList.get(i);
+    /**
+     * @param i webview列表的指定位置，默认传入0
+     * @return 列表中的webview
+     */
+    public WebView getTop1(int i) {
+        return webViewArrayList.get(i);
     }
 
 
@@ -167,8 +190,9 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private void setTmpData_newPage(String title, String url) {
         tmpData.setTitle(title);
         tmpData.setUrl(url);
+
         tmpData.setDate(TimeProcess.getTime());
-        tmpData.setWEB_feature(0);
+        //tmpData.setWEB_feature(0);
     }
 
     /**
@@ -181,7 +205,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
-        tmpData.setWEB_feature(1);
+        //tmpData.setWEB_feature(1);
 
     }
 
@@ -198,6 +222,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
 
     /**
+     * 网页加载完成时会调用他更新网页信息
+     *
      * @param webView 传入webview，
      *                然后在方法里找到WebView在list中的位置，再进行更新操作，
      *                这样，就可以保证在切换webview时保证更新不会出错
@@ -212,22 +238,22 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
         /*
     //方1，遍历所有，进行更新
-        for(int pos=0;pos<mArrayList.size();pos++){
-            notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
-            Log.d(TAG, "notifyWebViewUpdate: "+mArrayList.get(pos).getTitle());
+        for(int pos=0;pos<webViewArrayList.size();pos++){
+            notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
+            Log.d(TAG, "notifyWebViewUpdate: "+webViewArrayList.get(pos).getTitle());
             if (MainActivity.getCurrect() != pos) {
                 stop(pos);
             }
         }*/
         //方2
-        int pos = mArrayList.indexOf(webView);
-        notifyupdate(mArrayList.get(pos), pos, Action.UPDATEINFO);
+        int pos = webViewArrayList.indexOf(webView);
+        notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
         if (MainActivity.getCurrect() != pos) {
             stop(pos);
         }
 
-        for (int p = 0; p < mArrayList.size(); p++) {
-            Log.d(TAG, "notifyWebViewUpdate: " + mArrayList.get(p).getUrl());
+        for (int p = 0; p < webViewArrayList.size(); p++) {
+            Log.d(TAG, "notifyWebViewUpdate: " + webViewArrayList.get(p).getUrl());
 
         }
 
@@ -246,8 +272,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         if (action == Action.ADD) {
-            //添加
-            setTmpData_newPage("新标签页", "about:newTab");
+            //添加，添加的新标签页
+            setTmpData_newPage(String.valueOf(R.string.homePage), String.valueOf(R.string.default_homePage_url));
         } else if (action == Action.DELETE) {
             //删除
             setTmpData(null);
@@ -260,9 +286,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
         //如果不是新标签页就加入数据库
-        if (tmpData.getWEB_feature() != 0) {
+        if (! tmpData.getUrl().equals(String.valueOf(R.string.default_homePage_url) )) {//if里原来是tmpData.getWEB_feature() != 0
             //历史记录加入数据库
-
             m_historyInterface.addData(tmpData);
 
         }
@@ -270,11 +295,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     public boolean isempty() {
-        return mArrayList.isEmpty();
+        return webViewArrayList.isEmpty();
     }
 
     public void destroy(int pos) {
-        WebView tmp = mArrayList.get(pos);
+        WebView tmp = webViewArrayList.get(pos);
         if (tmp != null) {
             //先加载空内容
             tmp.setWebViewClient(null);
@@ -290,11 +315,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     public void stop(int i) {
-        mArrayList.get(i).onPause();
+        webViewArrayList.get(i).onPause();
     }
 
     public void reStart(int i) {
-        mArrayList.get(i).onResume();
+        webViewArrayList.get(i).onResume();
     }
 
 }
