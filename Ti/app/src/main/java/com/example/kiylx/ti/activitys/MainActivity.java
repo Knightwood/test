@@ -8,8 +8,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     Converted_WebPage_Lists mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
+    SharedPreferences preferences;
 
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = Converted_WebPage_Lists.get(mWebViewManager);
+        //获取首选项
+        preferences=PreferenceManager.getDefaultSharedPreferences(this);
 
         //实例化某些view
         f1 = findViewById(R.id.Webview_group);
@@ -190,6 +195,11 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     }
 
     public void newTab() {
+        //是否使用自定义的主页
+        String home_url=null;
+        if (preferences.getBoolean("home_page",false)){//条件true时获取自定义网址，是false时则使用默认主页
+            home_url = preferences.getString("homepage_url", "http://www.baidu.com");
+        }
 
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         if (!mWebViewManager.isempty()) {
@@ -207,7 +217,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         });
 
         f1.addView(mWebViewManager.getTop(currect));
-        mWebViewManager.loadHomePage(-1);//新建标签页载入主页
+
+        mWebViewManager.loadHomePage(-1,home_url);//新建标签页载入主页
         //+setTextForbar(currect);//更新工具栏上的文字
     }
 

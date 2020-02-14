@@ -1,13 +1,16 @@
 package com.example.kiylx.ti.core1;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.activitys.MainActivity;
+import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
@@ -156,12 +159,17 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     /**
      * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
+     * @param url 要载入的主页网址，若是null，载入默认主页
      * 载入主页
-     *            根据preference中的设置载入不同的主页
+     *
      */
-    public void loadHomePage(int pos) {
-        //+这里要加入判断是默认的主页还是自定义的，载入不同的url
-            getTop(pos ==-1? 0:pos).loadUrl(SomeRes.default_homePage_url);
+    public void loadHomePage(int pos,String url) {
+        if (url == null) {
+            getTop(pos == -1 ? 0 : pos).loadUrl(SomeRes.default_homePage_url);
+        } else {
+            getTop(pos == -1 ? 0 : pos).loadUrl(url);
+        }
+
     }
 
     /**

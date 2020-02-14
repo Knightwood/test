@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <ListPreference
+    <SwitchPreference
         app:key="home_page"
-        app:title="设置主页"
-
+        app:title="自定义主页"
+        app:defaultValue="false"
         app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        app:key="homepage_url"
+        app:title="主页网址"
+        app:dependency="home_page"
+        app:useSimpleSummaryProvider="true"/>
+
     <Preference
         app:fragment="com.example.kiylx.ti.settingFolders.SearchEngineSetting_Fragment"
         app:key="search_engine"
