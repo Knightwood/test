@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
@@ -99,8 +100,8 @@ public class Fragment_DoSearch extends Fragment {
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
-        if(!mCurrentURL.equals(String.valueOf(R.string.default_homePage_url)))
-        searchbox.setText(mCurrentURL);//如果当前网页网址不是默认的主页，那就填充网址
+        if(!mCurrentURL.equals(SomeRes.default_homePage_url))
+        searchbox.setText(mCurrentURL);//如果当前网页网址不是默认的主页，那就填充网址到搜索栏
         searchbox.selectAll();//让文字被全选
         return v;
     }

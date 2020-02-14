@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.activitys.MainActivity;
+import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
@@ -156,11 +157,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     /**
      * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
      * 载入主页
+     *            根据preference中的设置载入不同的主页
      */
     public void loadHomePage(int pos) {
-            getTop(pos ==-1? 0:pos).loadUrl(String.valueOf (R.string.default_homePage_url));
-            String uii=String.valueOf(R.string.default_homePage_url);
-        Log.d(TAG, "loadHomePage: "+uii);
+        //+这里要加入判断是默认的主页还是自定义的，载入不同的url
+            getTop(pos ==-1? 0:pos).loadUrl(SomeRes.default_homePage_url);
     }
 
     /**
@@ -273,7 +274,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         if (action == Action.ADD) {
             //添加，添加的新标签页
-            setTmpData_newPage(String.valueOf(R.string.homePage), String.valueOf(R.string.default_homePage_url));
+            setTmpData_newPage(SomeRes.homePage, SomeRes.default_homePage_url);
         } else if (action == Action.DELETE) {
             //删除
             setTmpData(null);
@@ -286,7 +287,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(i, action));
         //如果不是新标签页就加入数据库
-        if (! tmpData.getUrl().equals(String.valueOf(R.string.default_homePage_url) )) {//if里原来是tmpData.getWEB_feature() != 0
+        if (! tmpData.getUrl().equals(SomeRes.default_homePage_url )) {//if里原来是tmpData.getWEB_feature() != 0
             //历史记录加入数据库
             m_historyInterface.addData(tmpData);
 
