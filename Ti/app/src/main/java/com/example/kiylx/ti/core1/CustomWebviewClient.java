@@ -2,15 +2,22 @@ package com.example.kiylx.ti.core1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
+import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
+
+import java.net.URISyntaxException;
+import java.util.List;
 
 public class CustomWebviewClient extends WebViewClient {
     private Context mContext;
@@ -20,15 +27,17 @@ public class CustomWebviewClient extends WebViewClient {
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
         mContext=context;
     }
+
     /**
      * 是否在 WebView 内加载页面
-     *
+     * 当要在当前WebView中加载新的URL时，给主机应用程序一个接管控件的机会。
+     * 如果未提供WebViewClient，则默认情况下，WebView将要求活动管理器为URL选择适当的处理程序。
+     * 如果提供了WebViewClient，则返回true表示主机应用程序处理该URL，而返回false表示当前的WebView处理该URL。
      */
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url){
         //WebResourceRequest request
-        //return false;
-        try {
+        /*try {
             if (url.startsWith("http:") || url.startsWith("https:")) {
                 view.loadUrl(url);
             } else {
@@ -38,7 +47,61 @@ public class CustomWebviewClient extends WebViewClient {
             return true;
         } catch (Exception e){
             return false;
+        }*/
+        //Android8.0以下的需要返回true 并且需要loadUrl；8.0之后效果相反
+        /*if(Build.VERSION.SDK_INT < 26) {
+            view.loadUrl(url);
+            return true;
+        } else {
+            return false;
+        }*/
+        try {
+            //处理intent协议
+            if (url.startsWith("intent://")) {
+                Intent intent;
+                try {
+                    intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                    intent.addCategory("android.intent.category.BROWSABLE");
+                    intent.setComponent(null);
+                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                        intent.setSelector(null);
+                    }*/
+                    List<ResolveInfo> resolves = mContext.getPackageManager().queryIntentActivities(intent,0);
+                    if(resolves.size()>0){
+                        mContext.startActivity(intent);
+                    }
+                    return true;
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+            // 处理自定义scheme协议
+            if (!url.startsWith("http")) {
+                Log.e("处理scheme","处理自定义scheme:" + url);
+                try {
+                    //以下固定写法
+                    final Intent intent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(url));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    mContext.startActivity(intent);
+                } catch (Exception e) {
+                    // 防止没有安装的情况
+                    e.printStackTrace();
+                    Toast.makeText(mContext,"您所打开的第三方App未安装！", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return false;
+
+    }
+
+    @Override
+    public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+        return super.shouldOverrideUrlLoading(view, request);
     }
 
     /**

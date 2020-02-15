@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
         // If it wasn't the Back key or there's no web page history, bubble up to the default
         // system behavior (probably exit the activity)
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
 
 
