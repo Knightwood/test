@@ -18,6 +18,7 @@ import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
+import com.example.kiylx.ti.myInterface.Setmessage;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -33,17 +34,18 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     //存着当前打开的所有webview对象
     private ArrayList<WebView> webViewArrayList;
     //存储当前使用的webview的网址等数据，用来向观察者推送更新。
-    private WebPage_Info tmpData;
+    //private WebPage_Info tmpData;
     private volatile static WebViewManager sWebViewManager;
     private static final String TAG = "WebViewManager";
     private HistoryInterface m_historyInterface;
+    private Setmessage setmessage;//用来向mainactivity设置东西
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
 
         if (webViewArrayList == null) {
             webViewArrayList = new ArrayList<>();
-            tmpData = new WebPage_Info(null, null, null, 0, null);
+            //tmpData = new WebPage_Info(null, null, null, 0, null);
         }
     }
 
@@ -59,6 +61,10 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             }
         }
         return sWebViewManager;
+    }
+
+    public void setInterface(Setmessage interface_1){
+        this.setmessage=interface_1;
     }
 
     /**
@@ -169,6 +175,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         } else {
             getTop(pos == -1 ? 0 : pos).loadUrl(url);
         }
+        //setmessage.setInfos();
 
     }
 
@@ -196,24 +203,24 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param url   URL
      *              这是为生成新标签页准备的方法。
      */
-    private void setTmpData_newPage(String title, String url) {
-        tmpData.setTitle(title);
-        tmpData.setUrl(url);
-
-        tmpData.setDate(TimeProcess.getTime());
-        //tmpData.setWEB_feature(0);
+    private WebPage_Info setTmpData_newPage(String title, String url) {
+        return new WebPage_Info(title, url, null, 0, TimeProcess.getTime());
     }
 
     /**
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
-    private void setTmpData(WebView webView) {
+    private WebPage_Info setTmpData(WebView webView) {
+        WebPage_Info tmpData=new WebPage_Info(null, null, null, 0, null);
+
         if (webView == null) {
-            return;
+            return tmpData;
         }
+
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
+        return tmpData;
         //tmpData.setWEB_feature(1);
 
     }
@@ -224,9 +231,9 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @return 获得SealedWebPageInfo
      * 获取封装好的WebPageInfo，后面将用它作为推送给观察者的数据
      */
-    private SealedWebPageInfo getSealedData(int pos, Action action) {
+    private SealedWebPageInfo getSealedData(WebPage_Info info, int pos, Action action) {
         Log.d(TAG, "getSealedData: 添加数据");
-        return new SealedWebPageInfo(tmpData, pos, action);
+        return new SealedWebPageInfo(info, pos, action);
     }
 
 
@@ -243,13 +250,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      *                当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
      */
     @Override
-    public void notifyWebViewUpdate(WebView webView) {
+    public void updateWebViewInfo(WebView webView) {
 
         /*
     //方1，遍历所有，进行更新
         for(int pos=0;pos<webViewArrayList.size();pos++){
             notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
-            Log.d(TAG, "notifyWebViewUpdate: "+webViewArrayList.get(pos).getTitle());
+            Log.d(TAG, "updateWebViewInfo: "+webViewArrayList.get(pos).getTitle());
             if (MainActivity.getCurrect() != pos) {
                 stop(pos);
             }
@@ -260,9 +267,10 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         if (MainActivity.getCurrect() != pos) {
             stop(pos);
         }
+        setmessage.setInfos();
 
         for (int p = 0; p < webViewArrayList.size(); p++) {
-            Log.d(TAG, "notifyWebViewUpdate: " + webViewArrayList.get(p).getUrl());
+            Log.d(TAG, "updateWebViewInfo: " + webViewArrayList.get(p).getUrl());
 
         }
 
@@ -280,26 +288,30 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     private void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
+        WebPage_Info info=null;
+        Log.d("网页管理",action.toString());
+
         if (action == Action.ADD) {
-            //添加，添加的新标签页
-            setTmpData_newPage(SomeRes.homePage, SomeRes.default_homePage_url);
+            //添加，添加的新标签页。下面这一条其实是遗留代码，但是没有必要删除，改动它会更费劲。
+            info= setTmpData_newPage(SomeRes.homePage, SomeRes.default_homePage_url);
+
         } else if (action == Action.DELETE) {
             //删除
-            setTmpData(null);
+            info= setTmpData(null);
         } else {
             //更新
-            setTmpData(arg);
+            info= setTmpData(arg);
         }
 
         setChanged();
         //用封装的WebPageInfo执行推送
-        notifyObservers(getSealedData(i, action));
-        //如果不是新标签页就加入数据库
-        if (! tmpData.getUrl().equals(SomeRes.default_homePage_url )) {//if里原来是tmpData.getWEB_feature() != 0
+        notifyObservers(getSealedData(info,i, action));
+        //如果不是默认新标签页就加入数据库
+        if (action!=Action.DELETE && !info.getUrl().equals(SomeRes.default_homePage_url )) {
             //历史记录加入数据库
-            m_historyInterface.addData(tmpData);
-
+            m_historyInterface.addData(info);
         }
+
 
     }
 

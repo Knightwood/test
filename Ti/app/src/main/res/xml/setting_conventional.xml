@@ -10,6 +10,7 @@
         app:key="homepage_url"
         app:title="主页网址"
         app:dependency="home_page"
+        app:summary=""
         app:useSimpleSummaryProvider="true"/>
 
     <Preference

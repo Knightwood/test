@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,8 +24,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.DataBinderMapperImpl;
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
+import com.example.kiylx.ti.model.Title_ViewModel;
 import com.example.kiylx.ti.myFragments.DownloadWindow;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
@@ -36,10 +41,12 @@ import com.example.kiylx.ti.core1.CustomWebviewClient;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.myInterface.Setmessage;
+import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements CustomWebviewClient.SETINFOS, MultiDialog_Functions {
+public class MainActivity extends AppCompatActivity implements MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
 
@@ -54,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
 
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
+    ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
 
 
     @Override
@@ -89,6 +97,14 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
         downloadWindow_startDownload();
+
+        mWebViewManager.setInterface(new Setmessage() {
+            @Override
+            public void setInfos() {
+                setTextForbar(currect);
+            }
+
+        });
     }
 
     @Override
@@ -145,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
         if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
-            mWebViewManager.getTop(0).goBack();
+            mWebViewManager.getTop(currect).goBack();
         } else {
             exit();
             return true;
@@ -154,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         // system behavior (probably exit the activity)
         return super.onKeyDown(keyCode, event);
     }
+
 
     private void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 1000) {
@@ -194,13 +211,21 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         newTab();
     }
 
+    /**
+     * 读取preference中的是否自定义主页，并且处理获取到的自定义主页网址。
+     */
     public void newTab() {
         //是否使用自定义的主页
         String home_url=null;
         if (preferences.getBoolean("home_page",false)){//条件true时获取自定义网址，是false时则使用默认主页
-            home_url = preferences.getString("homepage_url", "http://www.baidu.com");
+            home_url = preferences.getString("homepage_url", SomeRes.default_homePage_url);
+            //补全网址，以及如果没有填写任何字符，使用默认主页
+            if (home_url.equals("")){
+                home_url=SomeRes.default_homePage_url;
+            }else{
+                home_url= ProcessRecordItem.converKeywordLoadOrSearch(home_url);
+            }
         }
-
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         if (!mWebViewManager.isempty()) {
             mWebViewManager.stop(currect);
@@ -219,31 +244,34 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
         f1.addView(mWebViewManager.getTop(currect));
 
         mWebViewManager.loadHomePage(-1,home_url);//新建标签页载入主页
-        //+setTextForbar(currect);//更新工具栏上的文字
     }
 
     @Override
     public void delete_page(int position) {
         if (1 == mWebViewManager.size()) {
             //如果删除这个webview后没有其他的webview了，那就新建标签页
-            mWebViewManager.getTop(0).loadUrl(null);
+            mWebViewManager.getTop(0).loadUrl(SomeRes.default_homePage_url);
             return;
         }
         if (position > currect) {
             mWebViewManager.destroy(position);
-            //delete_CUWL(position);
+
         } else if (position < currect) {
             //把当前页面暂停并移除，然后加载新的currect处页面
             mWebViewManager.stop(currect);
             f1.removeView(mWebViewManager.getTop(currect));
             mWebViewManager.destroy(position);
-            //delete_CUWL(position);
+
             currect--;
             f1.addView(mWebViewManager.getTop(currect));
             mWebViewManager.reStart(currect);
-        } else {
+        } else {//position==currect的情况
             if (position != mWebViewManager.size() - 1) {
-                //currect==position时，只要不是删除最后一个，就都这样操作：移除当前webview，删除webivew，把新提升上来的当前位置的webview添加进视图
+                //当前位置或者说position位置在webview的列表中不是最后一个。
+                /*删除的位置是当前位置，但删除的位置不是最后一个，
+                所以，直接移除视图，删除webview，
+                这时后面一个webview在webviewmanager的arraylist中会被向前移动，
+                这时直接添加上当前位置的webview（这个位置没变，但指代的已经是被删除的webview后面的webview）视图*/
                 mWebViewManager.stop(currect);
                 f1.removeView(mWebViewManager.getTop(position));
                 mWebViewManager.destroy(position);
@@ -251,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
                 f1.addView(mWebViewManager.getTop(position));
                 mWebViewManager.reStart(currect);
             } else {
+                //当前位置或者说position位置在webview的列表中是最后一个。
+                /*删除当前webview和视图，把列表中被删除webview前面的视图挪到屏幕上*/
                 mWebViewManager.stop(currect);
                 f1.removeView(mWebViewManager.getTop(position));
                 currect--;
@@ -316,19 +346,12 @@ public class MainActivity extends AppCompatActivity implements CustomWebviewClie
     //工具栏====================================
     void setTextForbar(int i) {
         //工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
-        String mt = mConverted_lists.getTitle(i);
+        String mt = mConverted_lists.getUrl(i);
+        if(mt.equals(SomeRes.default_homePage_url)){
+            //不显示默认主页的url
+            mt="";
+        }
         mTextView.setText(mt);
-    }
-
-    @Override
-    public void setInfos(String title, String url) {
-        //网页加载完成时被调用，更新存着所有打开的网页的list中当前页面的信息，以及底栏的文字
-        Log.d("lifecycle", "webview标题" + url);
-        mTextView.setText(url);//更新工具栏上的文字
-
-        String massage = mConverted_lists.getInfo(currect).getUrl();
-        Log.d(TAG, "即将加入历史记录的内容" + massage);
-
     }
 /*
 //测试方法

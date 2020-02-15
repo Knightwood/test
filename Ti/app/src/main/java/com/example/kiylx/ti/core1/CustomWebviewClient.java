@@ -15,10 +15,6 @@ import android.webkit.WebViewClient;
 public class CustomWebviewClient extends WebViewClient {
     private Context mContext;
 
-    public interface SETINFOS {
-        void setInfos(String title, String url);
-    }
-
 
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题

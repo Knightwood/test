@@ -37,7 +37,7 @@ public class CustomWebchromeClient extends WebChromeClient {
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
             if(newProgress==100){
-                mNotifyWebViewUpdate.notifyWebViewUpdate(view);
+                mNotifyWebViewUpdate.updateWebViewInfo(view);
             }
     }
 

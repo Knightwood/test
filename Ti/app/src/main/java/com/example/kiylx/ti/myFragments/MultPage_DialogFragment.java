@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.example.kiylx.ti.activitys.MainActivity;
+import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
@@ -136,6 +137,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 
     private class WebSiteAdapter extends RecyclerView.Adapter<WebsiteHolder> {
         private ArrayList<WebPage_Info> lists;
+        MultiPageItemBinding pageitemBinding;
 
         WebSiteAdapter(ArrayList<WebPage_Info> mlists) {
             this.lists = mlists;
@@ -147,7 +149,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
-            MultiPageItemBinding pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.multi_page_item,viewGroup,false);
+            pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.multi_page_item,viewGroup,false);
             return new WebsiteHolder(pageitemBinding);
 
         }
@@ -197,7 +199,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             this.pos = pos;
             //获取点击的item的位置，也就是webview在list的位置，方便后面标记当前标签页
             String title = minfo.getTitle();
-            if (0 == minfo.getWEB_feature()) {
+            if (SomeRes.default_homePage_url.equals(item_info.getUrl())) {
                 title = getString(R.string.new_tab);
             }
             mBinding.getInfos().setTitle(title);
