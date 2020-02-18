@@ -307,7 +307,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(info,i, action));
         //如果不是默认新标签页就加入数据库
-        if (action!=Action.DELETE && !info.getUrl().equals(SomeRes.default_homePage_url )) {
+        if (action!=Action.DELETE && !(info.getUrl().equals(SomeRes.default_homePage_url ))) {
             //历史记录加入数据库
             m_historyInterface.addData(info);
         }

@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -86,8 +87,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             Log.d(TAG, "onCreate: isempty");
             newTab();
         } else {
-            reasumeWebview();
-            //f1.addView(mWebViewManager.getTop(currect));
+            mWebViewManager.getTop(currect).onResume();
+
+            //注：获取当前webview的父视图，然后再把这个webview从父视图中移除，然后再重新添加，已解决白屏问题。
+            WebView webView=mWebViewManager.getTop(currect);
+            if (webView.getParent()!=null){
+                ((ViewGroup)webView.getParent()).removeView(webView);
+            }
+            f1.addView(mWebViewManager.getTop(currect));
         }
 
         //工具栏
@@ -112,14 +119,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     protected void onRestart() {
         super.onRestart();
         mWebViewManager.getTop(currect).onResume();
-        Log.d("lifecycle", "onReBookmarkt()");
+        //f1.addView(mWebViewManager.getTop(currect));
+        Log.d("lifecycle", "onReStart()");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        Log.d("lifecycle", "onBookmarkt()");
+        Log.d("lifecycle", "onStart'");
     }
 
     @Override
@@ -156,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     }
 
-    @Override
+   @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         // Check if the key event was the Back button and if there's history
