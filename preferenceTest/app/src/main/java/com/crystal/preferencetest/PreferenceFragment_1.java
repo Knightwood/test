@@ -35,6 +35,30 @@ public class PreferenceFragment_1 extends PreferenceFragmentCompat {
         openWeb();
         clickmethod();
         readData();
+        showListValue();
+    }
+
+    private void showListValue() {
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+/*sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("列表")){
+            Log.d("datasave", "列表选中的值"+sharedPreferences.getString("列表", ""));
+        }
+    }
+});*/
+ListPreference listPreference=findPreference("列表");
+listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        Log.d("datasave", "列表选中的值"+newValue);
+        return true;
+    }
+});
+
+
     }
 
     private void readData() {
@@ -42,26 +66,26 @@ public class PreferenceFragment_1 extends PreferenceFragmentCompat {
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
         String name = sharedPreferences.getString("data1", "");
 
-        Log.d("datasave",name);
+        Log.d("datasave", name);
     }
 
     /**
      * 这个利用了PreferenceDataStore
      */
-    private void readData2(){
-        DataStore store=new DataStore();
-        EditTextPreference edit3=findPreference("data2");
-        if (edit3!=null){
+    private void readData2() {
+        DataStore store = new DataStore();
+        EditTextPreference edit3 = findPreference("data2");
+        if (edit3 != null) {
             edit3.setPreferenceDataStore(store);
         }
     }
 
     private void clickmethod() {
-        Preference clickm=findPreference("click");
+        Preference clickm = findPreference("click");
         clickm.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Toast.makeText(getActivity(),"点击了",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "点击了", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
@@ -71,26 +95,28 @@ public class PreferenceFragment_1 extends PreferenceFragmentCompat {
      * 第二种设置启动activity的方法
      */
     private void startactivity() {
-        Preference startActivity=findPreference("startActivity2");
-        Intent intent=new Intent(getContext(),secondActivity.class);
+        Preference startActivity = findPreference("startActivity2");
+        Intent intent = new Intent(getContext(), secondActivity.class);
         startActivity.setIntent(intent);
     }
-private void openWeb(){
-        Preference web=findPreference("webview2");
 
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setData(Uri.parse("http://www.bing.com"));
-    web.setIntent(intent);
+    private void openWeb() {
+        Preference web = findPreference("webview2");
 
-}
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("http://www.bing.com"));
+        web.setIntent(intent);
+
+    }
+
     private void checkbox_set_value() {
-        ListPreference list1=findPreference("列表");
+        ListPreference list1 = findPreference("列表");
         list1.setValueIndex(1);//设置entries的值
-        Toast.makeText(getActivity(),list1.getValue(),Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), list1.getValue(), Toast.LENGTH_LONG).show();
 
-        if (list1.getValue().contains("22")){
+        if (list1.getValue().contains("22")) {
             //getValue,获取当前选中的entries的值（entryValues），返回的是一个String类型
-            CheckBoxPreference checkBox=findPreference("switch");
+            CheckBoxPreference checkBox = findPreference("switch");
 
             if (checkBox != null) {
                 checkBox.setVisible(true);
@@ -101,8 +127,8 @@ private void openWeb(){
     private void edit2() {
         //第二种方法启用summaryProvider
 //自己控制summaryProvider
-        EditTextPreference edit2=findPreference("bmji2");
-        if (edit2!=null){
+        EditTextPreference edit2 = findPreference("bmji2");
+        if (edit2 != null) {
             //这个是默认的设置summaryProvider
             //edit2.setSummaryProvider(EditTextPreference.SimpleSummaryProvider.getInstance());
 
@@ -110,12 +136,12 @@ private void openWeb(){
             edit2.setSummaryProvider(new Preference.SummaryProvider<EditTextPreference>() {
                 @Override
                 public CharSequence provideSummary(EditTextPreference preference) {
-                 String text=preference.getText();
-                 if (text.isEmpty()){
-                     //神奇，string竟然和c里一样可以看做字符数组
-                     return "没有字符串";
-                 }else
-                    return "字符串长度"+text.length();
+                    String text = preference.getText();
+                    if (text.isEmpty()) {
+                        //神奇，string竟然和c里一样可以看做字符数组
+                        return "没有字符串";
+                    } else
+                        return "字符串长度" + text.length();
                 }
             });
         }
@@ -123,8 +149,8 @@ private void openWeb(){
 
     private void edit3() {
         //文本编辑偏好，控制输入类型
-        EditTextPreference edit3=findPreference("bmji3");
-        if (edit3!=null){
+        EditTextPreference edit3 = findPreference("bmji3");
+        if (edit3 != null) {
             edit3.setOnBindEditTextListener(new EditTextPreference.OnBindEditTextListener() {
                 @Override
                 public void onBindEditText(@NonNull EditText editText) {
@@ -141,17 +167,17 @@ private void openWeb(){
      */
     private void hehe() {
         //1
-        tmp w= new tmp();
+        tmp w = new tmp();
         w.start();
 
         //2
-        tmp2 ww=new tmp2();
-        Thread rr=new Thread(ww);
+        tmp2 ww = new tmp2();
+        Thread rr = new Thread(ww);
         rr.run();
     }
 
 
-    class tmp extends Thread{
+    class tmp extends Thread {
         @Override
         public void run() {
             super.run();
@@ -162,7 +188,8 @@ private void openWeb(){
             }
         }
     }
-    class tmp2 implements Runnable{
+
+    class tmp2 implements Runnable {
 
         @Override
         public void run() {
@@ -174,7 +201,7 @@ private void openWeb(){
         }
     }
 
-    public class DataStore extends PreferenceDataStore{
+    public class DataStore extends PreferenceDataStore {
         @Override
         public void putString(String key, @Nullable String value) {
             super.putString(key, value);

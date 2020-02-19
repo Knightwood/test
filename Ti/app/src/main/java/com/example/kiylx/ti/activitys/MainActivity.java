@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             if (webView.getParent()!=null){
                 ((ViewGroup)webView.getParent()).removeView(webView);
             }
-            f1.addView(mWebViewManager.getTop(currect));
+            f1.addView(webView);
         }
 
         //工具栏

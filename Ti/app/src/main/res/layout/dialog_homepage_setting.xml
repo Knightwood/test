@@ -134,6 +134,19 @@
             app:layout_constraintGuide_end="68dp" />
 
         <TextView
+            android:id="@+id/reload_webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:drawableTop="@drawable/ic_cached_black_24dp"
+            android:onClick="@{clicklister}"
+            android:text="@string/flash"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/toolButton"
+            app:layout_constraintTop_toTopOf="@+id/tool_guideline" />
+
+        <TextView
             android:id="@+id/button_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

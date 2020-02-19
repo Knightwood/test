@@ -157,6 +157,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
+     * 刷新网页
+     */
+    public void reLoad(){
+        getTop(MainActivity.getCurrect()).reload();
+    }
+
+    /**
      * @return 返回存储webview对象的list的大小
      */
     public int size() {

@@ -1,11 +1,17 @@
 package com.example.kiylx.ti.core1;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
@@ -14,7 +20,8 @@ import com.example.kiylx.ti.downloadCore.DownloadListener2;
  * webview的设置
  */
 public class WebiVewSetting {
-
+    private static final String TAG="webview设置";
+    SharedPreferences sharedPreferences;
 
     @SuppressLint("SetJavaScriptEnabled")
     public static void set1(WebView webView, AppCompatActivity context) {
@@ -64,6 +71,17 @@ public class WebiVewSetting {
         settings.setDatabaseEnabled(true);
         //打开新的窗口
         settings.setSupportMultipleWindows(false);
+
+    }
+
+    private String get_user_agent(Context context){
+        if (sharedPreferences==null)
+        sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
+        Log.d(TAG, "获取浏览器标识: "+ sharedPreferences.getString("explorer_flags",null));
+        String user_agent=sharedPreferences.getString("explorer_flags",null);
+        if (user_agent.equals("0"))
+            return null;
+        return user_agent;
 
     }
 }

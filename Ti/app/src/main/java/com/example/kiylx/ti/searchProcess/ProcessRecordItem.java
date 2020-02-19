@@ -1,10 +1,16 @@
 package com.example.kiylx.ti.searchProcess;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -12,8 +18,14 @@ import java.util.regex.Pattern;
 public class ProcessRecordItem {
     //用来处理字符是否是网址，以及历史记录和收藏记录放进一个数组的问题
     private static String regEx = "^((http|https)://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
+    private static String engine;
 
     public ProcessRecordItem() {
+    }
+
+    public ProcessRecordItem(Context context) {
+        /*SharedPreferences engine_preference= PreferenceManager.getDefaultSharedPreferences(context);
+        engine=engine_preference.getString()*/
     }
 
     /**
@@ -22,18 +34,19 @@ public class ProcessRecordItem {
      */
     public static String processString(String s) {
 
-        String engine="https://mijisou.com/search?q=";
+        String engine = "https://mijisou.com/search?q=";
 
         Pattern pattern = Pattern.compile(regEx);
-        if (pattern.matcher(s).matches()){
+        if (pattern.matcher(s).matches()) {
             //正则表达式可以判断是不是网址，再由converKeywordLoadOrSearch(s)处理，补全格式。
             return converKeywordLoadOrSearch(s);
-        }else{
-            return engine+s;
+        } else {
+            return engine + s;
         }
 
     }
-    public static Boolean testPex(String s){
+
+    public static Boolean testPex(String s) {
         Pattern pattern = Pattern.compile(regEx);
         return pattern.matcher(s).matches();
     }

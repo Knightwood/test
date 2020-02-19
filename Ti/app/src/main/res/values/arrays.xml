@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="explorer_flags">
-        <item>chrome</item>
-        <item>ie</item>
+        <item>Chrome</item>
+        <item>FireFox</item>
+        <item>IE 9.0</item>
         <item>iPhone</item>
-        <item>Symbian</item>
-        <item>自定义</item>
+        <item>默认</item>
     </string-array>
     <string-array name="explorer_flags_values" >
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0</item>
+        <item>Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;</item>
+        <item>Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5</item>
         <item>0</item>
     </string-array>
 

@@ -25,6 +25,7 @@ import com.example.kiylx.ti.activitys.HistoryActivity;
 import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
@@ -85,6 +86,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.reload_webview:
+                reload();
+                break;
             case R.id.findtext:
                 break;
             case R.id.share:
@@ -164,6 +168,10 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
         dialog.show(fm, "收藏当前网页");
 
+    }
+    private void reload(){
+        WebViewManager manager=WebViewManager.getInstance(getActivity());
+        manager.reLoad();
     }
 }
 /*private void updateUI(String[] lists) {
