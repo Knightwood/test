@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.settingFolders;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.corebase.SomeRes;
-import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.databinding.MultiPageItemBinding;
-import com.example.kiylx.ti.model.MultiPage_ViewModel;
-import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
+import com.example.kiylx.ti.databinding.SelectItemBinding;
+import com.example.kiylx.ti.model.Checked_item;
+import com.example.kiylx.ti.model.Title_ViewModel;
 
 import java.util.ArrayList;
 
@@ -29,34 +26,33 @@ public class SearchEngineSetting_Fragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_searchenginesetting,container,false);
+        View view = inflater.inflate(R.layout.fragment_searchenginesetting, container, false);
 
         return view;//super.onCreateView(inflater, container, savedInstanceState);
     }
 
-//=============================================适配器=====================================================//
+    //=============================================适配器=====================================================//
     private class WebSiteAdapter extends RecyclerView.Adapter<SearchEngineSetting_Fragment.engineHolder> {
-        private ArrayList<WebPage_Info> lists;
-        MultiPageItemBinding pageitemBinding;
+        private ArrayList<String> lists;
+        SelectItemBinding itemBinding;
 
-        WebSiteAdapter(ArrayList<WebPage_Info> mlists) {
+
+        WebSiteAdapter(ArrayList<String> mlists) {
             this.lists = mlists;
-            boolean ta = lists.isEmpty();
-
         }
 
         @NonNull
         @Override
         public SearchEngineSetting_Fragment.engineHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-            pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.multi_page_item,viewGroup,false);
-            return new SearchEngineSetting_Fragment.engineHolder(pageitemBinding);
+            itemBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.select_item, viewGroup, false);
+            return new SearchEngineSetting_Fragment.engineHolder(itemBinding);
 
         }
 
         @Override
         public void onBindViewHolder(@NonNull SearchEngineSetting_Fragment.engineHolder engineHolder, int i) {
-            engineHolder.bind(lists.get(i), i);
+            engineHolder.bind(lists.get(i),false);
         }
 
 
@@ -66,7 +62,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
             return lists.size();
         }
 
-        private void setLists(ArrayList<WebPage_Info> lists) {
+        private void setLists(ArrayList<String> lists) {
 
             this.lists = lists;
         }
@@ -75,40 +71,32 @@ public class SearchEngineSetting_Fragment extends Fragment {
     private class engineHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //变量
-        private int pos;
-        private WebPage_Info minfo;
-
-        private MultiPageItemBinding mBinding;
+        private String URL;
+        private SelectItemBinding mBinding;
 
 
-        engineHolder(@NonNull MultiPageItemBinding binding) {
+        engineHolder(@NonNull SelectItemBinding binding) {
             super(binding.getRoot());
-            mBinding=binding;
-
+            mBinding = binding;
             //绑定上viewmodel
-            mBinding.setInfos(new MultiPage_ViewModel());
-            mBinding.setClickon(this);
-
-
+            mBinding.setSearchEngine(new Title_ViewModel(""));
+            mBinding.setCheck(new Checked_item(false));
         }
 
-        void bind(WebPage_Info item_info, int pos) {
-            minfo = item_info;
-            this.pos = pos;
-            //获取点击的item的位置，也就是webview在list的位置，方便后面标记当前标签页
-            String title = minfo.getTitle();
-            if (SomeRes.default_homePage_url.equals(item_info.getUrl())) {
-                title = getString(R.string.new_tab);
-            }
-            mBinding.getInfos().setTitle(title);
-
-                mBinding.websiteItem.setTextColor(getResources().getColor(R.color.textColor));
-
+        void bind(String URL,Boolean b) {
+            this.URL = URL;
+            mBinding.getSearchEngine().setTitle(URL);
+            mBinding.getCheck().setChecked(b);
         }
 
         @Override
         public void onClick(View v) {
-
+            switch (v.getId()){
+                case R.id.search_engine_checkbox:
+                    break;
+                case R.id.edit_engine_Button:
+                    break;
+            }
         }
 
     }

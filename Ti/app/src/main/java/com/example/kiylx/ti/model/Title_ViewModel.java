@@ -8,6 +8,7 @@ import androidx.databinding.Bindable;
  * @创建时间 2020/2/15 15:16
  *
  * mainactivity中底栏中的搜索框的文字
+ * 设置搜索引擎里的文字
  */
 public class Title_ViewModel extends BaseObservable {
     @Bindable
