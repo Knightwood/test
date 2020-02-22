@@ -24,15 +24,22 @@
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_gravity="start"
-            android:layout_weight="1"
-            android:text="@{searchEngine.title}"
+            android:layout_weight="0.2"
             android:checked="@{check.checked}"/>
+
+        <TextView
+            android:id="@+id/searchengine_url"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@{search_engine.title}" />
 
         <ImageButton
             android:id="@+id/edit_engine_Button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
+
             android:contentDescription="@string/edit1"
             app:srcCompat="@drawable/ic_sort_black_24dp" />
     </LinearLayout>

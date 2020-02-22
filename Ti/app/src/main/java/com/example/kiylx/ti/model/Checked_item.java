@@ -7,7 +7,7 @@ import androidx.databinding.Bindable;
  * @创建时间 2020/2/21 18:28
  */
 public class Checked_item {
-    @Bindable
+
     public Boolean checked;
 
     public Checked_item(boolean b) {
