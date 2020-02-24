@@ -16,11 +16,23 @@ import java.util.List;
 public interface SearchEngineDao {
     @Query("SELECT * FROM searchEngine_tab")
     List<SearchEngineEntity> getAll();
+
     @Insert
     void insert(SearchEngineEntity... entity);
+
     @Delete
     void delete(SearchEngineEntity entity);
+
     @Update
     void update(SearchEngineEntity entity);
+
+    @Query("DELETE FROM searchEngine_tab WHERE url=:url1")
+    void deleteitem(String url1);
+
+    @Query("UPDATE searchEngine_tab SET check_b =:b WHERE url=:engine")
+    void updateBooleaan(String engine, boolean b);
+
+    @Query("UPDATE searchEngine_tab SET url=:url1 WHERE url=:url2")
+    void updateURL(String url1, String url2);
 
 }

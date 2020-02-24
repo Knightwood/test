@@ -15,7 +15,7 @@ public class SearchEngineEntity {
     @NonNull
     private String url;
     @ColumnInfo
-    private boolean check;
+    private boolean check_b;
 
     public String getUrl() {
         return url;
@@ -25,11 +25,11 @@ public class SearchEngineEntity {
         this.url = url;
     }
 
-    public boolean isCheck() {
-        return check;
+    public boolean isCheck_b() {
+        return check_b;
     }
 
-    public void setCheck(boolean check) {
-        this.check = check;
+    public void setCheck_b(boolean ischeck) {
+        this.check_b = ischeck;
     }
 }

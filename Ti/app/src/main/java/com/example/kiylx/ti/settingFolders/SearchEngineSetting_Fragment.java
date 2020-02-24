@@ -19,6 +19,7 @@ import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
+import com.example.kiylx.ti.myInterface.EditTextInterface;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDatabase;
 import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
@@ -36,7 +37,8 @@ public class SearchEngineSetting_Fragment extends Fragment {
     private View rootView;
     private RecyclerView recyclerView;
     public List<SearchEngineEntity> urlList;
-    public SearchEngineDao mdao;
+    private SearchEngineDao mdao;
+    private MyTask myTask;
 
     @Nullable
     @Override
@@ -55,20 +57,52 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
             }
         });*/
-        new MyTask().execute(Action.GETALL);
+       //initData();
+        myTask = new MyTask();
+        myTask.execute(Action.GETALL);
+        //myTask.execute(Action.UPDATEINFO,)
         return rootView;//super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        
+    }
+
+    private void initData() {
+        urlList=new ArrayList<>();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SearchEngineEntity a1=new SearchEngineEntity();
+                a1.setUrl("123456");
+                a1.setCheck_b(true);
+                SearchEngineEntity a2=new SearchEngineEntity();
+                a2.setUrl("111");
+                a2.setCheck_b(false);
+                mdao.insert(a1,a2);
+            }
+        }).start();
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                urlList= mdao.getAll();
+                Log.d(TAG, "run: "+urlList.isEmpty());
+                Log.d(TAG, "run: "+urlList.get(0).getUrl());
+            }
+        }).start();*/
+
     }
 
     /**
+     * 虽然数据库菜的数据不会很多，在主线程里操作也没啥问题（在build数据库时添加.allowMainThreadQueries()实现），
+     * 但是这里我还是想用多线程写一下。
+     * <p>
      * object参数：
      * 0位置表示行为，行为有：添加，删除，更新，获取所有值
-     * 1位置可以在添加删除更新时放所需的数据（searchengine_info）
+     * 1位置表示要改的原数据：在添加删除更新时放所需的数据（searchengine_info）
+     * 2位置表示要改成的新数据
      */
     private class MyTask extends AsyncTask<Object, java.lang.Void, List<SearchEngineEntity>> {
 
@@ -77,15 +111,17 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
             switch ((Action) objects[0]) {
                 case ADD:
-                    mdao.insert((SearchEngineEntity)objects[1]);
+                    mdao.insert((SearchEngineEntity) objects[1]);
                     break;
                 case DELETE:
-                    mdao.delete((SearchEngineEntity)objects[1]);
+                    mdao.deleteitem((String) objects[1]);
+                    break;
+                case FIND:
                     break;
                 case GETALL:
                     break;
                 case UPDATEINFO:
-                    mdao.update((SearchEngineEntity)objects[1]);
+                    mdao.updateBooleaan((String) objects[1], (Boolean) objects[2]);
                     break;
 
             }
@@ -95,47 +131,8 @@ public class SearchEngineSetting_Fragment extends Fragment {
         @Override
         protected void onPostExecute(List<SearchEngineEntity> searchEngineEntities) {
             uodateUI(searchEngineEntities);
+            Log.d(TAG, "线程执行完: "+searchEngineEntities.size());
         }
-    }
-
-    private void initData() {
-        urlList = new ArrayList<>();
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SearchEngineEntity a1=new SearchEngineEntity();
-                a1.setUrl("123456");
-                a1.setCheck(true);
-                SearchEngineEntity a2=new SearchEngineEntity();
-                a2.setUrl("111");
-                a2.setCheck(false);
-                //mdao.insert(a1,a2);
-            }
-        }).start();*/
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                urlList = mdao.getAll();
-                Log.d(TAG, "run: " + urlList.isEmpty());
-                Log.d(TAG, "run: " + urlList.get(0).getUrl());
-            }
-        }).start();
-
-    }
-
-    void init2() {
-        urlList = new ArrayList<>();
-
-        SearchEngineEntity a1 = new SearchEngineEntity();
-        a1.setUrl("123456");
-        a1.setCheck(true);
-        SearchEngineEntity a2 = new SearchEngineEntity();
-        a2.setUrl("111");
-        a2.setCheck(false);
-
-        urlList.add(a1);
-        urlList.add(a2);
     }
 
     public void uodateUI(List<SearchEngineEntity> list) {
@@ -171,7 +168,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull SearchEngineSetting_Fragment.engineHolder engineHolder, int i) {
-            engineHolder.bind(lists.get(i).getUrl(), lists.get(i).isCheck());
+            engineHolder.bind(lists.get(i).getUrl(), lists.get(i).isCheck_b());
         }
 
 
@@ -194,7 +191,8 @@ public class SearchEngineSetting_Fragment extends Fragment {
             mBinding = binding;
             //绑定上viewmodel
             mBinding.setSearchEngine(new Title_ViewModel(""));
-            mBinding.setCheck(new Checked_item(false));
+            mBinding.setCheck(new Checked_item(editTextInterface,false));
+
         }
 
         void bind(String URL, Boolean b) {
@@ -205,21 +203,23 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.search_engine_checkbox:
-                    break;
-                case R.id.searchengine_url:
-                    break;
-                case R.id.edit_engine_Button:
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mdao.delete(urlList.get(1));
-                        }
-                    }).start();
-                    break;
-            }
         }
 
     }
+    public EditTextInterface editTextInterface=new EditTextInterface() {
+        @Override
+        public void changeSelect(String s) {
+
+        }
+
+        @Override
+        public void editText(String s) {
+            Log.d(TAG, "搜索引擎条目的点击事件---编辑文本"+s);
+        }
+
+        @Override
+        public void deleteItem(String s) {
+            Log.d(TAG, "搜索引擎条目的点击事件---删除条目"+s);
+        }
+    };
 }

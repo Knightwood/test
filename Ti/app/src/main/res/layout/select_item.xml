@@ -19,28 +19,37 @@
         android:layout_height="45dp"
         android:orientation="horizontal">
 
-        <CheckBox
+        <RadioButton
+            android:id="@+id/engine_select_Button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_weight="0.1"
+            />
+
+        <!--<CheckBox
             android:id="@+id/search_engine_checkbox"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_gravity="start"
             android:layout_weight="0.2"
-            android:checked="@{check.checked}"/>
+            android:checked="@{check.checked}"/>-->
 
         <TextView
             android:id="@+id/searchengine_url"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:onClick="@{()->check.editText(search_engine.title)}"
             android:text="@{search_engine.title}" />
 
         <ImageButton
-            android:id="@+id/edit_engine_Button"
+            android:id="@+id/delete_engine_Button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-
-            android:contentDescription="@string/edit1"
+            android:onClick="@{()->check.deleteItem(search_engine.title)}"
+            android:contentDescription="@string/delete"
             app:srcCompat="@drawable/ic_sort_black_24dp" />
     </LinearLayout>
 </layout>
