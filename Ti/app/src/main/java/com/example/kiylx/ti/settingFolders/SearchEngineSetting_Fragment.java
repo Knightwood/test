@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Update;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
+import com.example.kiylx.ti.myFragments.EditBox_Dialog;
+import com.example.kiylx.ti.myFragments.EditText_Dialog;
 import com.example.kiylx.ti.myInterface.EditTextInterface;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDatabase;
@@ -38,7 +42,9 @@ public class SearchEngineSetting_Fragment extends Fragment {
     private RecyclerView recyclerView;
     public List<SearchEngineEntity> urlList;
     private SearchEngineDao mdao;
-    private MyTask myTask;
+    //private MyTask myTask;
+
+    private String engineUrl = null;
 
     @Nullable
     @Override
@@ -47,9 +53,10 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
         recyclerView = rootView.findViewById(R.id.engine_container);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         mdao = SearchEngineDatabase.getInstance(getActivity()).searchEngineDao();
+
         //init2();
+
        /* FloatingActionButton button=rootView.findViewById(R.id.floatingActionButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,9 +64,9 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
             }
         });*/
-       //initData();
-        myTask = new MyTask();
-        myTask.execute(Action.GETALL);
+
+        //initData();
+        new MyTask().execute(Action.GETALL);
         //myTask.execute(Action.UPDATEINFO,)
         return rootView;//super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -69,19 +76,22 @@ public class SearchEngineSetting_Fragment extends Fragment {
         super.onDestroy();
     }
 
+    /**
+     * 测试用
+     */
     private void initData() {
-        urlList=new ArrayList<>();
+        urlList = new ArrayList<>();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SearchEngineEntity a1=new SearchEngineEntity();
+                SearchEngineEntity a1 = new SearchEngineEntity();
                 a1.setUrl("123456");
                 a1.setCheck_b(true);
-                SearchEngineEntity a2=new SearchEngineEntity();
+                SearchEngineEntity a2 = new SearchEngineEntity();
                 a2.setUrl("111");
                 a2.setCheck_b(false);
-                mdao.insert(a1,a2);
+                mdao.insert(a1, a2);
             }
         }).start();
         /*new Thread(new Runnable() {
@@ -111,17 +121,40 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
             switch ((Action) objects[0]) {
                 case ADD:
+                    /*
+                    * 添加某个SearchEngineEntity对象
+                    * */
                     mdao.insert((SearchEngineEntity) objects[1]);
                     break;
                 case DELETE:
+                    /*
+                    * 1位置放url字符串
+                    * 删除某个项目
+                    * */
                     mdao.deleteitem((String) objects[1]);
                     break;
                 case FIND:
                     break;
                 case GETALL:
+                    //获取唯一一个被选择的搜索引擎url
+                    if (mdao.getItem(true).isEmpty()) {
+                        engineUrl = mdao.getAll().get(0).getUrl();
+                    } else {
+                        engineUrl = mdao.getItem(true).get(0).getUrl();
+                    }
+
                     break;
-                case UPDATEINFO:
-                    mdao.updateBooleaan((String) objects[1], (Boolean) objects[2]);
+                /*case UPDATEINFO:
+                    *//*
+                    * 更新url，1位置是旧url，2位置是新url
+                    * *//*
+                    mdao.updateURL((String) objects[1], (String) objects[2]);
+                    break;*/
+                case UPDATEBOOLEAN:
+                    //把旧的check_b改成false，新的改成true，再把旧的engineUrl用新的覆盖，如此完成单选功能
+                    mdao.updateBooleaan(engineUrl, false);
+                    mdao.updateBooleaan((String) objects[1], true);
+                    engineUrl = (String) objects[1];
                     break;
 
             }
@@ -130,31 +163,41 @@ public class SearchEngineSetting_Fragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<SearchEngineEntity> searchEngineEntities) {
+            for (int i = 0; i < searchEngineEntities.size(); i++) {
+                Log.d(TAG, "更改之后的数据: " + searchEngineEntities.get(i).getUrl() + "    " + searchEngineEntities.get(i).isCheck_b());
+            }
             uodateUI(searchEngineEntities);
-            Log.d(TAG, "线程执行完: "+searchEngineEntities.size());
+            Log.d(TAG, "线程执行完: " + searchEngineEntities.size());
         }
     }
 
     public void uodateUI(List<SearchEngineEntity> list) {
-
+        if (list == null || list.isEmpty())
+            return;
         if (this.adapter == null) {
             this.adapter = new SearchUrlAdapter(list);
             recyclerView.setAdapter(this.adapter);
         } else {
+            this.adapter.setLists(list);
             this.adapter.notifyDataSetChanged();
         }
     }
 
 
+
     //=============================================适配器=====================================================//
     private class SearchUrlAdapter extends RecyclerView.Adapter<SearchEngineSetting_Fragment.engineHolder> {
-        private List<SearchEngineEntity> lists;
+        private List<SearchEngineEntity> lists = null;
         SelectItemBinding itemBinding;
 
 
         SearchUrlAdapter(List<SearchEngineEntity> mlists) {
             this.lists = mlists;
             Log.d(TAG, "SearchUrlAdapter: " + lists.isEmpty());
+        }
+
+        public void setLists(List<SearchEngineEntity> mlists) {
+            this.lists = mlists;
         }
 
         @NonNull
@@ -191,7 +234,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
             mBinding = binding;
             //绑定上viewmodel
             mBinding.setSearchEngine(new Title_ViewModel(""));
-            mBinding.setCheck(new Checked_item(editTextInterface,false));
+            mBinding.setCheck(new Checked_item(editTextInterface, false));
 
         }
 
@@ -199,6 +242,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
             this.URL = URL;
             mBinding.getSearchEngine().setTitle(URL);
             mBinding.getCheck().setChecked(b);
+
         }
 
         @Override
@@ -206,20 +250,31 @@ public class SearchEngineSetting_Fragment extends Fragment {
         }
 
     }
-    public EditTextInterface editTextInterface=new EditTextInterface() {
+
+    public EditTextInterface editTextInterface = new EditTextInterface() {
         @Override
         public void changeSelect(String s) {
+            if (!engineUrl.equals(s)) {
+                //更新布尔值，把旧的改成false，把新的条目的check_b改成true
+                new MyTask().execute(Action.UPDATEBOOLEAN, s);
+            }
 
         }
 
         @Override
-        public void editText(String s) {
-            Log.d(TAG, "搜索引擎条目的点击事件---编辑文本"+s);
+        public void editText(String olds) {
+            EditText_Dialog dialog=EditText_Dialog.getInstance(olds);
+            FragmentManager manager=getFragmentManager();
+            assert manager != null;
+            dialog.show(manager,"编辑文本");
+
+            Log.d(TAG, "搜索引擎条目的点击事件---编辑文本" + olds);
         }
 
         @Override
         public void deleteItem(String s) {
-            Log.d(TAG, "搜索引擎条目的点击事件---删除条目"+s);
+            new MyTask().execute(Action.DELETE,s);
+            Log.d(TAG, "搜索引擎条目的点击事件---删除条目" + s);
         }
     };
 }

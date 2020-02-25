@@ -25,6 +25,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:layout_weight="0.1"
+
+            android:checked="@{check.checked}"
+            android:onClick="@{(view)->check.changeselect(search_engine.title)}"
             />
 
         <!--<CheckBox

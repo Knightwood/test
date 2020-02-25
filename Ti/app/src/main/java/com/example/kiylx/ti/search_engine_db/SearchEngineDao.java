@@ -16,6 +16,8 @@ import java.util.List;
 public interface SearchEngineDao {
     @Query("SELECT * FROM searchEngine_tab")
     List<SearchEngineEntity> getAll();
+    @Query("SELECT * FROM searchEngine_tab WHERE check_b=:b1")
+    List<SearchEngineEntity> getItem(Boolean b1);
 
     @Insert
     void insert(SearchEngineEntity... entity);
