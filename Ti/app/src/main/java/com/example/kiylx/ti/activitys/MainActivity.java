@@ -470,11 +470,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void search_dialog() {
 
-        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
+        /*Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
-        startActivityForResult(intent, 21);
+        startActivityForResult(intent, 21);*/
 
+       //这里测试浏览器标识用
+       SharedPreferences sharedPreferences= androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        Log.d(TAG, "获取浏览器标识: "+ sharedPreferences.getString("explorer_flags",null));
     }
 
     @Override

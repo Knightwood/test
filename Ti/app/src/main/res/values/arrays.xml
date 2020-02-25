@@ -12,7 +12,7 @@
         <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0</item>
         <item>Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;</item>
         <item>Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5</item>
-        <item>0</item>
+        <item>null</item>
     </string-array>
 
 </resources>

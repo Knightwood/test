@@ -9,6 +9,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
@@ -21,7 +22,12 @@ import com.example.kiylx.ti.downloadCore.DownloadListener2;
  */
 public class WebiVewSetting {
     private static final String TAG="webview设置";
-    SharedPreferences sharedPreferences;
+    private SharedPreferences sharedPreferences;
+
+
+    public static void setDefault(){
+
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     public static void set1(WebView webView, AppCompatActivity context) {
