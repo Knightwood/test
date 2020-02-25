@@ -24,6 +24,7 @@ import com.example.kiylx.ti.model.Title_ViewModel;
 import com.example.kiylx.ti.myFragments.EditBox_Dialog;
 import com.example.kiylx.ti.myFragments.EditText_Dialog;
 import com.example.kiylx.ti.myInterface.EditTextInterface;
+import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDatabase;
 import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
@@ -35,7 +36,7 @@ import java.util.List;
  * @创建者 kiylx
  * @创建时间 2020/2/19 15:50
  */
-public class SearchEngineSetting_Fragment extends Fragment {
+public class SearchEngineSetting_Fragment extends Fragment implements Setmessage {
     private static final String TAG = "搜索引擎数据库";
     private SearchUrlAdapter adapter;
     private View rootView;
@@ -103,6 +104,11 @@ public class SearchEngineSetting_Fragment extends Fragment {
             }
         }).start();*/
 
+    }
+
+    @Override
+    public void setInfos() {
+        new MyTask().execute(Action.GETALL);
     }
 
     /**
@@ -196,7 +202,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
             Log.d(TAG, "SearchUrlAdapter: " + lists.isEmpty());
         }
 
-        public void setLists(List<SearchEngineEntity> mlists) {
+        void setLists(List<SearchEngineEntity> mlists) {
             this.lists = mlists;
         }
 
@@ -264,6 +270,7 @@ public class SearchEngineSetting_Fragment extends Fragment {
         @Override
         public void editText(String olds) {
             EditText_Dialog dialog=EditText_Dialog.getInstance(olds);
+            dialog.setInterface(SearchEngineSetting_Fragment.this);
             FragmentManager manager=getFragmentManager();
             assert manager != null;
             dialog.show(manager,"编辑文本");

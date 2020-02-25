@@ -34,7 +34,11 @@ public interface SearchEngineDao {
     @Query("UPDATE searchEngine_tab SET check_b =:b WHERE url=:engine")
     void updateBooleaan(String engine, boolean b);
 
-    @Query("UPDATE searchEngine_tab SET url=:url1 WHERE url=:url2")
+    /**
+     * @param url1 旧字符串（待更新字符串）
+     * @param url2 新字符串
+     */
+    @Query("UPDATE searchEngine_tab SET url=:url2 WHERE url=:url1")
     void updateURL(String url1, String url2);
 
 }

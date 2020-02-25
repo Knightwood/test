@@ -14,10 +14,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngine_db_Util;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @创建者 kiylx
@@ -29,6 +31,7 @@ public class EditText_Dialog extends DialogFragment {
 
     private EditText view1;//编辑框
     String oldString;
+    private Setmessage mInterface;//用于执行某些操作，比如点击确定后的更新界面
 
 
     public static EditText_Dialog getInstance(String s){
@@ -44,6 +47,9 @@ public class EditText_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments()!=null){
+            oldString=getArguments().getString(BUNDLE_PARAM1);
+        }
 
     }
 
@@ -51,17 +57,15 @@ public class EditText_Dialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder mBuilder=new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_box, null);
         view1 = view.findViewById(R.id.editTagBox);
-        mBuilder.setView(view);
+        view1.setText(oldString);
 
+        mBuilder.setView(view);
         mBuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                if (getArguments()!=null){
-                    oldString=getArguments().getString(BUNDLE_PARAM1);
-                }
 
                 //获取旧string，从textview中拿取新的string，然后从多线程中更新数据库
                 new MyTask().execute(oldString,view1.getText().toString());
@@ -92,6 +96,16 @@ public class EditText_Dialog extends DialogFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            mInterface.setInfos();
         }
+    }
+    public void setInterface(Setmessage mInterface){
+        this.mInterface=mInterface;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mInterface=null;
     }
 }

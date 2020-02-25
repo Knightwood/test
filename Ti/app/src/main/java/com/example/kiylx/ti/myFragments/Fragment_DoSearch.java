@@ -82,7 +82,7 @@ public class Fragment_DoSearch extends Fragment {
 
         }
         if(null== mProcessRecordItem)
-        mProcessRecordItem =new ProcessRecordItem();
+        mProcessRecordItem =new ProcessRecordItem(getActivity());
         Log.d(TAG, "onCreate: ");
     }
 

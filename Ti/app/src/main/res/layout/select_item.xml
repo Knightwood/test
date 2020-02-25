@@ -44,7 +44,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:onClick="@{()->check.editText(search_engine.title)}"
-            android:text="@{search_engine.title}" />
+            android:singleLine="true"
+            android:text="@{search_engine.title}"
+            android:textSize="18sp" />
 
         <ImageButton
             android:id="@+id/delete_engine_Button"

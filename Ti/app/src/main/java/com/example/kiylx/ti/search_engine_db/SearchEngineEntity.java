@@ -11,6 +11,9 @@ import androidx.room.PrimaryKey;
  */
 @Entity(tableName = "searchEngine_tab")
 public class SearchEngineEntity {
+
+
+
     @PrimaryKey
     @NonNull
     private String url;

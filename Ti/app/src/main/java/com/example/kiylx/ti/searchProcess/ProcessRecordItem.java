@@ -8,6 +8,9 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
+import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
+import com.example.kiylx.ti.search_engine_db.SearchEngine_db_Util;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -26,6 +29,22 @@ public class ProcessRecordItem {
     public ProcessRecordItem(Context context) {
         /*SharedPreferences engine_preference= PreferenceManager.getDefaultSharedPreferences(context);
         engine=engine_preference.getString()*/
+        final SearchEngineDao mDao= SearchEngine_db_Util.getDao(context);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (mDao.getItem(true).isEmpty()){
+                    engine="http://www.baidu.com/s?wd=";
+                    SearchEngineEntity engineEntity=new SearchEngineEntity();
+                    engineEntity.setUrl("http://www.baidu.com/s?wd=");
+                    engineEntity.setCheck_b(true);
+                    mDao.insert(engineEntity);
+                }else{
+                    engine=mDao.getItem(true).get(0).getUrl();
+                }
+
+            }
+        }).start();
     }
 
     /**
@@ -34,7 +53,7 @@ public class ProcessRecordItem {
      */
     public static String processString(String s) {
 
-        String engine = "https://mijisou.com/search?q=";
+        //String engine = "https://mijisou.com/search?q=";
 
         Pattern pattern = Pattern.compile(regEx);
         if (pattern.matcher(s).matches()) {
@@ -91,7 +110,8 @@ public class ProcessRecordItem {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            converUrl = "http://www.baidu.com/s?wd=" + keyword + "&ie=UTF-8";
+            //converUrl = "http://www.baidu.com/s?wd=" + keyword + "&ie=UTF-8";
+            converUrl = engine + keyword + "&ie=UTF-8";
         } else if (!validURL) {
             converUrl = HTTP + keyword;
         } else {
