@@ -23,12 +23,12 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.example.kiylx.ti.activitys.MainActivity;
+import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
-import com.example.kiylx.ti.core1.Converted_WebPage_Lists;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 
 
     private void updateUI() {
-        ArrayList<WebPage_Info> lists =Converted_WebPage_Lists.getPageList();
+        ArrayList<WebPage_Info> lists = WebViewInfo_Manager.getPageList();
         Log.d(TAG, "updateUI: 多窗口处的数组大小"+lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);

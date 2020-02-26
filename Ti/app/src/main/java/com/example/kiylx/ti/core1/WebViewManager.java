@@ -1,8 +1,10 @@
 package com.example.kiylx.ti.core1;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
+import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
@@ -33,12 +36,12 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     //存着当前打开的所有webview对象
     private ArrayList<WebView> webViewArrayList;
-    //存储当前使用的webview的网址等数据，用来向观察者推送更新。
-    //private WebPage_Info tmpData;
     private volatile static WebViewManager sWebViewManager;
     private static final String TAG = "WebViewManager";
+
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
+    private String useragent;
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
@@ -79,7 +82,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
         web.setActionList();//点击浏览webview的菜单项
 
-        WebiVewSetting.set1(web, appCompatActivity);
+        setWebview(web, appCompatActivity);
         //给new出来的webview执行设置
         web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
         web.setWebChromeClient(new CustomWebchromeClient());
@@ -350,4 +353,59 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         webViewArrayList.get(i).onResume();
     }
 
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setWebview(WebView webView, AppCompatActivity context) {
+        WebSettings settings = webView.getSettings();
+
+        webView.canGoBack();
+        webView.canGoForward();
+
+        //系统的下载器
+        webView.setDownloadListener(new DownloadListener1(context));
+        //内置下载器
+        //webView.setDownloadListener(new DownloadListener2(context));
+
+        // webview启用javascript支持 用于访问页面中的javascript
+        settings.setJavaScriptEnabled(true);
+        //设置WebView缓存模式 默认断网情况下不缓存
+        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        /*
+         * LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
+         * LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
+         * LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
+         * LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
+         */
+        //断网情况下加载本地缓存
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        //让WebView支持DOM storage API
+        settings.setDomStorageEnabled(true);
+        //让WebView支持缩放
+        settings.setSupportZoom(true);
+        //启用WebView内置缩放功能
+        settings.setBuiltInZoomControls(true);
+        //让WebView支持可任意比例缩放
+        settings.setUseWideViewPort(true);
+        //设置WebView使用内置缩放机制时，是否展现在屏幕缩放控件上
+        settings.setDisplayZoomControls(false);
+        //设置在WebView内部是否允许访问文件
+        settings.setAllowFileAccess(true);
+        //设置WebView的访问UserAgent
+        settings.setUserAgentString(useragent);
+        //设置脚本是否允许自动打开弹窗
+        settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        // 开启Application H5 Caches 功能
+        settings.setAppCacheEnabled(true);
+        // 设置编码格式
+        settings.setDefaultTextEncodingName("utf-8");
+        // 开启数据库缓存
+        settings.setDatabaseEnabled(true);
+        //打开新的窗口
+        settings.setSupportMultipleWindows(false);
+
+    }
+
+    public void setValue(String s) {
+        this.useragent=s;
+    }
 }

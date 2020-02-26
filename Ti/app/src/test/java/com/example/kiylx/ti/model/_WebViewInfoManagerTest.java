@@ -4,7 +4,7 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import org.junit.Before;
 
-public class Converted_WebPage_ListsTest {
+public class _WebViewInfoManagerTest {
 
     @Before
     public void setUp() throws Exception {

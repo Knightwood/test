@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.core1;
+package com.example.kiylx.ti.livedata;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModel;
 public class DefaultValuesViewModel extends ViewModel {
 
     private MutableLiveData<String> userAgent;
+    private MutableLiveData<Boolean> canZoom;
+
 
     public MutableLiveData<String> getUserAgent(){
         if (userAgent==null){
@@ -17,5 +19,6 @@ public class DefaultValuesViewModel extends ViewModel {
         }
         return userAgent;
     }
+
 
 }

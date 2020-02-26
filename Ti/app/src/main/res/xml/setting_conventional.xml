@@ -20,6 +20,7 @@
     <ListPreference
         app:entries="@array/explorer_flags"
         app:entryValues="@array/explorer_flags_values"
+        app:useSimpleSummaryProvider="true"
         app:key="explorer_flags"
         app:title="浏览器标识" />
 

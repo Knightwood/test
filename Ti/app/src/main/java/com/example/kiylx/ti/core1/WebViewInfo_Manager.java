@@ -16,35 +16,35 @@ import java.util.Observer;
  * 此类用来存储浏览网页产生的网页信息，基本单位是Webpage_info是实时从webview中抽取信息，存储。
  * 用来展示多窗口的网页的列表，当前打开的所有网页信息
  */
-public class Converted_WebPage_Lists implements Observer {
+public class WebViewInfo_Manager implements Observer {
 
     private static ArrayList<WebPage_Info> mCurrectList;
     private Observable mObservable;
-    private static Converted_WebPage_Lists sConverted_webPage_lists;
-    private static final String TAG = "Converted_WebPage_Lists";
+    private static WebViewInfo_Manager s_webViewInfoManager;
+    private static final String TAG = "WebViewInfo_Manager";
 
-    private Converted_WebPage_Lists() {
+    private WebViewInfo_Manager() {
         mCurrectList = new ArrayList<>();
     }
 
-    private Converted_WebPage_Lists(Observable o) {
+    private WebViewInfo_Manager(Observable o) {
         mCurrectList = new ArrayList<>();
         this.mObservable = o;
         mObservable.addObserver(this);
     }
 
-    public static Converted_WebPage_Lists get() {
-        if (sConverted_webPage_lists == null) {
-            sConverted_webPage_lists = new Converted_WebPage_Lists();
+    public static WebViewInfo_Manager get() {
+        if (s_webViewInfoManager == null) {
+            s_webViewInfoManager = new WebViewInfo_Manager();
         }
-        return sConverted_webPage_lists;
+        return s_webViewInfoManager;
     }
 
-    public static Converted_WebPage_Lists get(Observable o) {
-        if (sConverted_webPage_lists == null) {
-            sConverted_webPage_lists = new Converted_WebPage_Lists(o);
+    public static WebViewInfo_Manager get(Observable o) {
+        if (s_webViewInfoManager == null) {
+            s_webViewInfoManager = new WebViewInfo_Manager(o);
         }
-        return sConverted_webPage_lists;
+        return s_webViewInfoManager;
     }
 
     /**

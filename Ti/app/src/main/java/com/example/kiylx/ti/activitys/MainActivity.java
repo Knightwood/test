@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,21 +24,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
-import com.example.kiylx.ti.DataBinderMapperImpl;
+import com.example.kiylx.ti.livedata.DefaultValuesManager;
+import com.example.kiylx.ti.livedata.DefaultValuesViewModel;
+import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
-import com.example.kiylx.ti.model.Title_ViewModel;
 import com.example.kiylx.ti.myFragments.DownloadWindow;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.core1.WebViewManager;
-import com.example.kiylx.ti.core1.Converted_WebPage_Lists;
-import com.example.kiylx.ti.core1.CustomWebviewClient;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
@@ -56,10 +56,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private long mExitTime;//拿来判断按返回键间隔
 
     WebViewManager mWebViewManager;
-    Converted_WebPage_Lists mConverted_lists;//存储webpage_info的list
+    WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
     SharedPreferences preferences;
+    DefaultValuesViewModel model;
 
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
@@ -71,12 +72,18 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //获取首选项
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         //获取类的实例
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
-        mConverted_lists = Converted_WebPage_Lists.get(mWebViewManager);
-        //获取首选项
-        preferences=PreferenceManager.getDefaultSharedPreferences(this);
+        mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
+
+        //初次设置偏好值
+        initSefaultValues();
+        //监听默认值的改变
+        getDefaultValues();
 
         //实例化某些view
         f1 = findViewById(R.id.Webview_group);
@@ -90,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             mWebViewManager.getTop(currect).onResume();
 
             //注：获取当前webview的父视图，然后再把这个webview从父视图中移除，然后再重新添加，已解决白屏问题。
-            WebView webView=mWebViewManager.getTop(currect);
-            if (webView.getParent()!=null){
-                ((ViewGroup)webView.getParent()).removeView(webView);
+            WebView webView = mWebViewManager.getTop(currect);
+            if (webView.getParent() != null) {
+                ((ViewGroup) webView.getParent()).removeView(webView);
             }
             f1.addView(webView);
         }
@@ -163,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     }
 
-   @Override
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         // Check if the key event was the Back button and if there's history
@@ -224,14 +231,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     public void newTab() {
         //是否使用自定义的主页
-        String home_url=null;
-        if (preferences.getBoolean("home_page",false)){//条件true时获取自定义网址，是false时则使用默认主页
+        String home_url = null;
+        if (preferences.getBoolean("home_page", false)) {//条件true时获取自定义网址，是false时则使用默认主页
             home_url = preferences.getString("homepage_url", SomeRes.default_homePage_url);
             //补全网址，以及如果没有填写任何字符，使用默认主页
-            if (home_url.equals("")){
-                home_url=SomeRes.default_homePage_url;
-            }else{
-                home_url= ProcessRecordItem.converKeywordLoadOrSearch(home_url);
+            if (home_url.equals("")) {
+                home_url = SomeRes.default_homePage_url;
+            } else {
+                home_url = ProcessRecordItem.converKeywordLoadOrSearch(home_url);
             }
         }
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
@@ -251,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         f1.addView(mWebViewManager.getTop(currect));
 
-        mWebViewManager.loadHomePage(-1,home_url);//新建标签页载入主页
+        mWebViewManager.loadHomePage(-1, home_url);//新建标签页载入主页
     }
 
     @Override
@@ -355,9 +362,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     void setTextForbar(int i) {
         //工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
         String mt = mConverted_lists.getUrl(i);
-        if(mt.equals(SomeRes.default_homePage_url)){
+        if (mt.equals(SomeRes.default_homePage_url)) {
             //不显示默认主页的url
-            mt="";
+            mt = "";
         }
         mTextView.setText(mt);
     }
@@ -475,9 +482,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //把当前网页网址传进去
         startActivityForResult(intent, 21);*/
 
-       //这里测试浏览器标识用
-       SharedPreferences sharedPreferences= androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        Log.d(TAG, "获取浏览器标识: "+ sharedPreferences.getString("explorer_flags",null));
+        //这里测试浏览器标识用
+        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
+        //model.getUserAgent().setValue("oklll");
+
     }
 
     @Override
@@ -526,60 +535,44 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     };
 
+    /**
+     * 进入mainactivity时获取“偏好值”进行初次设置
+     */
+    public void initSefaultValues(){
+        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        mWebViewManager.setValue(sharedPreferences.getString("explorer_flags", null));
+        Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
+    }
 
-    //webview的设置================================
-    /*void set1(WebView ti) {
+    /**
+     * 推送更新后的“设置值”
+     */
+    public void getDefaultValues() {
+        int qw=1;//测试用，我想在不同fragment间共享数据，但是不成功，还得再想想
+        if (qw==1){
+            model = ViewModelProviders.of(this).get(DefaultValuesViewModel.class);
 
-        ti.canGoBack();
-        ti.canGoForward();
+            //定义观察者在观察到数据发生改变时的做法
+            final Observer<String> userAgentObserver = new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    mWebViewManager.setValue(s);
+                    Log.d(TAG, "获取浏览器标识: "+s);
+                }
+            };
+            //添加观察者
+            model.getUserAgent().observe(this, userAgentObserver);
+        }else {
+            final Observer<String> observer=new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    Log.d(TAG, "获取浏览器标识: "+s);
+                }
+            };
 
-        //系统的下载器
-        //ti.setDownloadListener(new DownloadListener1(MainActivity.this));
-        //内置下载器
-        ti.setDownloadListener(new DownloadListener2(MainActivity.this));
-
-        WebSettings settings = ti.getSettings();
-        // webview启用javascript支持 用于访问页面中的javascript
-        settings.setJavaScriptEnabled(true);
-        //设置WebView缓存模式 默认断网情况下不缓存
-        settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-        *//*
-         * LOAD_CACHE_ONLY: 不使用网络，只读取本地缓存数据
-         * LOAD_DEFAULT: （默认）根据cache-control决定是否从网络上取数据。
-         * LOAD_NO_CACHE: 不使用缓存，只从网络获取数据.
-         * LOAD_CACHE_ELSE_NETWORK，只要本地有，无论是否过期，或者no-cache，都使用缓存中的数据。
-         *//*
-        //断网情况下加载本地缓存
-        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        //让WebView支持DOM storage API
-        settings.setDomStorageEnabled(true);
-        //让WebView支持缩放
-        settings.setSupportZoom(true);
-        //启用WebView内置缩放功能
-        settings.setBuiltInZoomControls(true);
-        //让WebView支持可任意比例缩放
-        settings.setUseWideViewPort(true);
-        //设置WebView使用内置缩放机制时，是否展现在屏幕缩放控件上
-        settings.setDisplayZoomControls(false);
-        //设置在WebView内部是否允许访问文件
-        settings.setAllowFileAccess(true);
-        //设置WebView的访问UserAgent
-        settings.setUserAgentString(null);
-        //设置脚本是否允许自动打开弹窗
-        settings.setJavaScriptCanOpenWindowsAutomatically(true);
-        // 开启Application H5 Caches 功能
-        settings.setAppCacheEnabled(true);
-        // 设置编码格式
-        settings.setDefaultTextEncodingName("utf-8");
-        // 开启数据库缓存
-        settings.setDatabaseEnabled(true);
-        //打开新的窗口
-        settings.setSupportMultipleWindows(false);
-
-    }*/
-
-
-
+            DefaultValuesManager.getInstance().getUserAgent().observe(this,observer);
+        }
+    }
 /*
     @Override
     protected void onDestroy() {
