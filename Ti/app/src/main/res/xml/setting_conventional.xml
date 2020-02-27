@@ -23,5 +23,23 @@
         app:useSimpleSummaryProvider="true"
         app:key="explorer_flags"
         app:title="浏览器标识" />
+    <Preference
+        app:title="清除数据"
+        app:key="clearData"/>
+    <CheckBoxPreference
+        app:key="resumeData"
+        app:title="启动时恢复标签页"
+        app:defaultValue="false"/>
+    <ListPreference
+        app:key="textZoomlist"
+        app:title="字体缩放"
+        app:entries="@array/text_zoom"
+        app:entryValues="@array/text_zoom_value"
+        app:useSimpleSummaryProvider="true"/>
+    <CheckBoxPreference
+        android:key="downloadTools"
+        android:title="是否使用内置下载器"
+        android:summary="建议不要开启"
+        android:defaultValue="false"/>
 
 </PreferenceScreen>

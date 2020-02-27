@@ -6,10 +6,6 @@
         android:title="常规"
         android:fragment="com.example.kiylx.ti.settingFolders.ConventionalFragment"/>
     <Preference
-        android:key="advanced"
-        android:title="高级"
-        android:fragment="com.example.kiylx.ti.settingFolders.AdvancedFragment"/>
-    <Preference
         android:key="theme"
         android:title="主题"
         android:fragment="com.example.kiylx.ti.settingFolders.ThemeFragment"/>

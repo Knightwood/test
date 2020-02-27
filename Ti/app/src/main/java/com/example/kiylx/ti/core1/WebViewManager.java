@@ -17,6 +17,8 @@ import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadCore.DownloadListener1;
+import com.example.kiylx.ti.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.livedata.DefaultValue_WebView;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
@@ -41,7 +43,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
-    private static String useragent;
+    private static DefaultValue_WebView defaultValue;
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
@@ -66,8 +68,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         return sWebViewManager;
     }
 
-    public void setInterface(Setmessage interface_1){
-        this.setmessage=interface_1;
+    public void setInterface(Setmessage interface_1) {
+        this.setmessage = interface_1;
     }
 
     /**
@@ -162,7 +164,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     /**
      * 刷新网页
      */
-    public void reLoad(){
+    public void reLoad(AppCompatActivity context) {
+        setWebview(getTop(MainActivity.getCurrect()),context);
         getTop(MainActivity.getCurrect()).reload();
     }
 
@@ -176,10 +179,9 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     /**
      * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
      * @param url 要载入的主页网址，若是null，载入默认主页
-     * 载入主页
-     *
+     *            载入主页
      */
-    public void loadHomePage(int pos,String url) {
+    public void loadHomePage(int pos, String url) {
         if (url == null) {
             getTop(pos == -1 ? 0 : pos).loadUrl(SomeRes.default_homePage_url);
         } else {
@@ -221,7 +223,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * @param webView 传入webview实例，初始化tempData，以备观察者推送更新
      */
     private WebPage_Info setTmpData(WebView webView) {
-        WebPage_Info tmpData=new WebPage_Info(null, null, null, 0, null);
+        WebPage_Info tmpData = new WebPage_Info(null, null, null, 0, null);
 
         if (webView == null) {
             return tmpData;
@@ -298,26 +300,26 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     private void notifyupdate(WebView arg, int i, Action action) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
-        WebPage_Info info=null;
-        Log.d("网页管理",action.toString());
+        WebPage_Info info = null;
+        Log.d("网页管理", action.toString());
 
         if (action == Action.ADD) {
             //添加，添加的新标签页。下面这一条其实是遗留代码，但是没有必要删除，改动它会更费劲。
-            info= setTmpData_newPage(SomeRes.homePage, SomeRes.default_homePage_url);
+            info = setTmpData_newPage(SomeRes.homePage, SomeRes.default_homePage_url);
 
         } else if (action == Action.DELETE) {
             //删除
-            info= setTmpData(null);
+            info = setTmpData(null);
         } else {
             //更新
-            info= setTmpData(arg);
+            info = setTmpData(arg);
         }
 
         setChanged();
         //用封装的WebPageInfo执行推送
-        notifyObservers(getSealedData(info,i, action));
+        notifyObservers(getSealedData(info, i, action));
         //如果不是默认新标签页就加入数据库
-        if (action!=Action.DELETE && !(info.getUrl().equals(SomeRes.default_homePage_url ))) {
+        if (action != Action.DELETE && !(info.getUrl().equals(SomeRes.default_homePage_url))) {
             //历史记录加入数据库
             m_historyInterface.addData(info);
         }
@@ -361,10 +363,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         webView.canGoBack();
         webView.canGoForward();
 
-        //系统的下载器
-        webView.setDownloadListener(new DownloadListener1(context));
-        //内置下载器
-        //webView.setDownloadListener(new DownloadListener2(context));
+        if (defaultValue.getUseCustomDwnloadTool()) {
+            //内置下载器
+            webView.setDownloadListener(new DownloadListener2(context));
+        } else {
+            //系统的下载器
+            webView.setDownloadListener(new DownloadListener1(context));
+        }
 
         // webview启用javascript支持 用于访问页面中的javascript
         settings.setJavaScriptEnabled(true);
@@ -380,6 +385,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
+        //字体缩放
+        settings.setTextZoom(defaultValue.getTextZoom());
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
@@ -391,7 +398,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(useragent);
+        settings.setUserAgentString(defaultValue.getUser_agent());
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能
@@ -405,7 +412,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     }
 
-    public void setValue(String s) {
-        useragent=s;
+    public void setValue(DefaultValue_WebView s) {
+        defaultValue = s;
     }
 }

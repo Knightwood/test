@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
@@ -171,7 +172,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
     private void reload(){
         WebViewManager manager=WebViewManager.getInstance(getActivity());
-        manager.reLoad();
+        manager.reLoad((AppCompatActivity) getActivity());
     }
 }
 /*private void updateUI(String[] lists) {

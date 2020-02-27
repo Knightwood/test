@@ -6,18 +6,18 @@ import androidx.lifecycle.LiveData;
  * @创建者 kiylx
  * @创建时间 2020/2/27 15:45
  */
-public class DefaultValueLiveData extends LiveData<DefaultValue> {
-    private static DefaultValueLiveData mLiveData;
+public class LiveData_DF_WebView extends LiveData<DefaultValue_WebView> {
+    private static LiveData_DF_WebView mLiveData;
 
-    private DefaultValueLiveData(){
+    private LiveData_DF_WebView(){
 
     }
 
-    public static DefaultValueLiveData getInstance(){
+    public static LiveData_DF_WebView getInstance(){
         if (mLiveData==null){
-            synchronized (DefaultValueLiveData.class){
+            synchronized (LiveData_DF_WebView.class){
                 if (mLiveData==null){
-                  mLiveData=new DefaultValueLiveData();
+                  mLiveData=new LiveData_DF_WebView();
                 }
             }
         }
@@ -35,11 +35,12 @@ public class DefaultValueLiveData extends LiveData<DefaultValue> {
     }
 
     @Override
-    protected void setValue(DefaultValue value) {
+    protected void setValue(DefaultValue_WebView value) {
         super.setValue(value);
     }
 
-    public void setmLiveData(DefaultValue value){
+    public void setmLiveData(DefaultValue_WebView value){
         mLiveData.setValue(value);
     }
+
 }

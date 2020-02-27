@@ -26,8 +26,8 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 
-import com.example.kiylx.ti.livedata.DefaultValue;
-import com.example.kiylx.ti.livedata.DefaultValueLiveData;
+import com.example.kiylx.ti.livedata.DefaultValue_WebView;
+import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.corebase.SomeRes;
@@ -537,24 +537,31 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 进入mainactivity时获取“偏好值”进行初次设置
      */
     public void initSefaultValues(){
+
         SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        mWebViewManager.setValue(sharedPreferences.getString("explorer_flags", null));
+        DefaultValue_WebView defaultValue_webView= new DefaultValue_WebView(sharedPreferences.getString("explorer_flags", null));
+        defaultValue_webView.setTextZoom( Integer.valueOf (Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))) );
+        defaultValue_webView.setUseCustomDwnloadTool(sharedPreferences.getBoolean("downloadTools",false));
+
+
+        mWebViewManager.setValue( defaultValue_webView);
         Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
+        Log.d(TAG, "获取浏览器标识: " + Integer.valueOf (Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
     }
 
     /**
      * 推送更新后的“设置值”
      */
     public void getDefaultValues() {
-            final Observer<DefaultValue> observer=new Observer<DefaultValue>() {
+            final Observer<DefaultValue_WebView> observer=new Observer<DefaultValue_WebView>() {
                 @Override
-                public void onChanged(DefaultValue s) {
+                public void onChanged(DefaultValue_WebView s) {
                     Log.d(TAG, "获取浏览器标识: "+s.getUser_agent());
-                    mWebViewManager.setValue(s.getUser_agent());
+                    mWebViewManager.setValue(s);
                 }
             };
 
-            DefaultValueLiveData.getInstance().observe(this,observer);
+            LiveData_DF_WebView.getInstance().observe(this,observer);
 
     }
 /*
