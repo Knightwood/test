@@ -1,21 +1,20 @@
 package com.example.kiylx.ti.settingFolders;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.lifecycle.ViewModelProviders;
 import androidx.preference.ListPreference;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.livedata.DefaultValuesManager;
-import com.example.kiylx.ti.livedata.DefaultValuesViewModel;
+import com.example.kiylx.ti.livedata.DefaultValue;
+import com.example.kiylx.ti.livedata.DefaultValueLiveData;
 
 /**
  * 常规的设置
  */
 public class ConventionalFragment extends PreferenceFragmentCompat {
-
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.setting_conventional, rootKey);
@@ -26,24 +25,28 @@ public class ConventionalFragment extends PreferenceFragmentCompat {
         //userAgent.setValueIndex(4);
 
         //更新liveData
-        final DefaultValuesViewModel model=ViewModelProviders.of(ConventionalFragment.this).get(DefaultValuesViewModel.class);
-        userAgent.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        listener=new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                //更新liveData
-                int qw=1;
-                if (qw==1){
-                    model.getUserAgent().postValue(userAgent.getValue());
-                }else{
-                    DefaultValuesManager manager=DefaultValuesManager.getInstance();
-                    manager.setUserAgent(userAgent.getValue());
-                }
-
-
-                return true;
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                DefaultValueLiveData.getInstance().setmLiveData (new DefaultValue(userAgent.getValue()));
             }
-        });
+        };
+        /*
+        * getPreferenceManager().getSharedPreferences()获取sharedpreference
+        * */
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+    }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
+    }
 }

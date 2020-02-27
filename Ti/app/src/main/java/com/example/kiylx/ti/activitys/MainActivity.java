@@ -25,10 +25,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
-import com.example.kiylx.ti.livedata.DefaultValuesManager;
-import com.example.kiylx.ti.livedata.DefaultValuesViewModel;
+import com.example.kiylx.ti.livedata.DefaultValue;
+import com.example.kiylx.ti.livedata.DefaultValueLiveData;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.corebase.SomeRes;
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
     SharedPreferences preferences;
-    DefaultValuesViewModel model;
 
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
@@ -477,15 +475,15 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void search_dialog() {
 
-        /*Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
+        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
-        startActivityForResult(intent, 21);*/
+        startActivityForResult(intent, 21);
 
         //这里测试浏览器标识用
-        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        /*SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
-        //model.getUserAgent().setValue("oklll");
+        */
 
     }
 
@@ -548,30 +546,16 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 推送更新后的“设置值”
      */
     public void getDefaultValues() {
-        int qw=1;//测试用，我想在不同fragment间共享数据，但是不成功，还得再想想
-        if (qw==1){
-            model = ViewModelProviders.of(this).get(DefaultValuesViewModel.class);
-
-            //定义观察者在观察到数据发生改变时的做法
-            final Observer<String> userAgentObserver = new Observer<String>() {
+            final Observer<DefaultValue> observer=new Observer<DefaultValue>() {
                 @Override
-                public void onChanged(String s) {
-                    mWebViewManager.setValue(s);
-                    Log.d(TAG, "获取浏览器标识: "+s);
-                }
-            };
-            //添加观察者
-            model.getUserAgent().observe(this, userAgentObserver);
-        }else {
-            final Observer<String> observer=new Observer<String>() {
-                @Override
-                public void onChanged(String s) {
-                    Log.d(TAG, "获取浏览器标识: "+s);
+                public void onChanged(DefaultValue s) {
+                    Log.d(TAG, "获取浏览器标识: "+s.getUser_agent());
+                    mWebViewManager.setValue(s.getUser_agent());
                 }
             };
 
-            DefaultValuesManager.getInstance().getUserAgent().observe(this,observer);
-        }
+            DefaultValueLiveData.getInstance().observe(this,observer);
+
     }
 /*
     @Override

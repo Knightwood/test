@@ -41,7 +41,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
-    private String useragent;
+    private static String useragent;
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
@@ -406,6 +406,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     public void setValue(String s) {
-        this.useragent=s;
+        useragent=s;
     }
 }
