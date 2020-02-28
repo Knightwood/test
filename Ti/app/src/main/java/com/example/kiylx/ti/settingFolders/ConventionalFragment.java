@@ -9,7 +9,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.livedata.DefaultValue_WebView;
+import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 
 /**
@@ -17,7 +17,7 @@ import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
  */
 public class ConventionalFragment extends PreferenceFragmentCompat {
     private SharedPreferences.OnSharedPreferenceChangeListener listener;//sharedpreference监听器
-    private DefaultValue_WebView defaultValue;
+    private DefaultValue_1 defaultValue;
      private ListPreference userAgent;
      private CheckBoxPreference customDownloadTool;
      private ListPreference textZoomlist;
@@ -32,7 +32,7 @@ public class ConventionalFragment extends PreferenceFragmentCompat {
         textZoomlist=findPreference("textZoomlist");
 
         assert userAgent != null;
-        defaultValue=new DefaultValue_WebView(userAgent.getValue());
+        defaultValue=new DefaultValue_1(userAgent.getValue());
 
 
         //更新liveData
@@ -52,7 +52,7 @@ public class ConventionalFragment extends PreferenceFragmentCompat {
     /**
      * @return 设置默认值对象的属性
      */
-    private DefaultValue_WebView changeValue() {
+    private DefaultValue_1 changeValue() {
         defaultValue.setUser_agent(userAgent.getValue());
         defaultValue.setUseCustomDwnloadTool(customDownloadTool.isChecked());
         defaultValue.setTextZoom(Integer.valueOf(textZoomlist.getValue()));

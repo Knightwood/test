@@ -91,11 +91,13 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 reload();
                 break;
             case R.id.findtext:
+                find();
                 break;
             case R.id.share:
                 sharing();
                 break;
             case R.id.pcMode:
+                usePcMode();
                 break;
             case R.id.hideSelf:
                 break;
@@ -118,6 +120,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         }
         dismiss();
         Log.d(TAG, "onClick: " + v.getId());
+    }
+
+    private void usePcMode() {
+        WebViewManager manager = WebViewManager.getInstance(getActivity());
+        manager.reLoad_pcmode();
     }
 
     private void startDownload() {
@@ -170,8 +177,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         dialog.show(fm, "收藏当前网页");
 
     }
-    private void reload(){
-        WebViewManager manager=WebViewManager.getInstance(getActivity());
+
+    private void reload() {
+        WebViewManager manager = WebViewManager.getInstance(getActivity());
         manager.reLoad((AppCompatActivity) getActivity());
     }
 }

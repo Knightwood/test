@@ -5,9 +5,9 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/layout"
         tools:context=".activitys.MainActivity">
 
 
@@ -78,6 +78,15 @@
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
+
+        <ViewStub
+            android:id="@+id/viewStub_search"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout="@layout/webviewsearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

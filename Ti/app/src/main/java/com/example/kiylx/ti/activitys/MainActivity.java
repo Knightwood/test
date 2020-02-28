@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 
-import com.example.kiylx.ti.livedata.DefaultValue_WebView;
+import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
     ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
+    View inflated;//搜索webview文字的搜索框
 
 
     @Override
@@ -173,14 +175,16 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
+        if (keyCode == KeyEvent.KEYCODE_BACK && inflated != null) {
+            inflated.setVisibility(View.INVISIBLE);
+        }
         if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
             mWebViewManager.getTop(currect).goBack();
         } else {
             exit();
             return true;
         }
-        // If it wasn't the Back key or there's no web page history, bubble up to the default
-        // system behavior (probably exit the activity)
+
         return true;
     }
 
@@ -475,16 +479,21 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void search_dialog() {
 
-        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
+        /*Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
-        startActivityForResult(intent, 21);
+        startActivityForResult(intent, 21);*/
+        searchText();
 
-        //这里测试浏览器标识用
-        /*SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
-        */
+    }
 
+    public void searchText() {
+
+        ViewStub stub = findViewById(R.id.viewStub_search);
+        if (stub != null) {
+            inflated = stub.inflate();
+        }
+        inflated.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -536,32 +545,32 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     /**
      * 进入mainactivity时获取“偏好值”进行初次设置
      */
-    public void initSefaultValues(){
+    public void initSefaultValues() {
 
         SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        DefaultValue_WebView defaultValue_webView= new DefaultValue_WebView(sharedPreferences.getString("explorer_flags", null));
-        defaultValue_webView.setTextZoom( Integer.valueOf (Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))) );
-        defaultValue_webView.setUseCustomDwnloadTool(sharedPreferences.getBoolean("downloadTools",false));
+        DefaultValue_1 defaultValue_1 = new DefaultValue_1(sharedPreferences.getString("explorer_flags", null));
+        defaultValue_1.setTextZoom(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
+        defaultValue_1.setUseCustomDwnloadTool(sharedPreferences.getBoolean("downloadTools", false));
 
 
-        mWebViewManager.setValue( defaultValue_webView);
+        mWebViewManager.setValue(defaultValue_1);
         Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
-        Log.d(TAG, "获取浏览器标识: " + Integer.valueOf (Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
+        Log.d(TAG, "获取浏览器标识: " + Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
     }
 
     /**
      * 推送更新后的“设置值”
      */
     public void getDefaultValues() {
-            final Observer<DefaultValue_WebView> observer=new Observer<DefaultValue_WebView>() {
-                @Override
-                public void onChanged(DefaultValue_WebView s) {
-                    Log.d(TAG, "获取浏览器标识: "+s.getUser_agent());
-                    mWebViewManager.setValue(s);
-                }
-            };
+        final Observer<DefaultValue_1> observer = new Observer<DefaultValue_1>() {
+            @Override
+            public void onChanged(DefaultValue_1 s) {
+                Log.d(TAG, "获取浏览器标识: " + s.getUser_agent());
+                mWebViewManager.setValue(s);
+            }
+        };
 
-            LiveData_DF_WebView.getInstance().observe(this,observer);
+        LiveData_DF_WebView.getInstance().observe(this, observer);
 
     }
 /*

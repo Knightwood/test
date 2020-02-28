@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
  * @创建者 kiylx
  * @创建时间 2020/2/27 15:45
  */
-public class LiveData_DF_WebView extends LiveData<DefaultValue_WebView> {
+public class LiveData_DF_WebView extends LiveData<DefaultValue_1> {
     private static LiveData_DF_WebView mLiveData;
 
     private LiveData_DF_WebView(){
@@ -35,11 +35,11 @@ public class LiveData_DF_WebView extends LiveData<DefaultValue_WebView> {
     }
 
     @Override
-    protected void setValue(DefaultValue_WebView value) {
+    protected void setValue(DefaultValue_1 value) {
         super.setValue(value);
     }
 
-    public void setmLiveData(DefaultValue_WebView value){
+    public void setmLiveData(DefaultValue_1 value){
         mLiveData.setValue(value);
     }
 

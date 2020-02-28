@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.example.kiylx.ti.livedata.DefaultValue_WebView;
+import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 
 /**
@@ -14,7 +14,7 @@ import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
  */
 public abstract class BaseSetFragment extends PreferenceFragmentCompat {
     private SharedPreferences.OnSharedPreferenceChangeListener listener;//sharedpreference监听器
-    private DefaultValue_WebView value;
+    private DefaultValue_1 value;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -46,5 +46,5 @@ public abstract class BaseSetFragment extends PreferenceFragmentCompat {
 
     public abstract void initValue();
 
-    public abstract DefaultValue_WebView defaultvalue();
+    public abstract DefaultValue_1 defaultvalue();
 }

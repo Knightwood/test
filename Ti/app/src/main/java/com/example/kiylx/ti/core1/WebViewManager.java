@@ -2,23 +2,19 @@ package com.example.kiylx.ti.core1;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
-import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.activitys.MainActivity;
-import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
-import com.example.kiylx.ti.livedata.DefaultValue_WebView;
+import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
@@ -43,7 +39,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
-    private static DefaultValue_WebView defaultValue;
+    private static DefaultValue_1 defaultValue;
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
@@ -165,8 +161,18 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * 刷新网页
      */
     public void reLoad(AppCompatActivity context) {
-        setWebview(getTop(MainActivity.getCurrect()),context);
+        setWebview(getTop(MainActivity.getCurrect()), context);
         getTop(MainActivity.getCurrect()).reload();
+    }
+
+    /**
+     * 使用桌面版的useragent达到访问桌面版的效果
+     */
+    public void reLoad_pcmode() {
+        WebView webView = getTop(MainActivity.getCurrect());
+        webView.getSettings().setUserAgentString(SomeRes.PCuserAgent);
+        webView.reload();
+
     }
 
     /**
@@ -412,7 +418,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     }
 
-    public void setValue(DefaultValue_WebView s) {
+    public void setValue(DefaultValue_1 s) {
         defaultValue = s;
     }
 }

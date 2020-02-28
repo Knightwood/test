@@ -3,13 +3,15 @@ package com.example.kiylx.ti.livedata;
 /**
  * @创建者 kiylx
  * @创建时间 2020/2/27 15:46
+ *
+ * 这是关于webview的一些设置，livedata通过这个进行推送
  */
-public class DefaultValue_WebView {
+public class DefaultValue_1 {
     private String user_agent;
     private Boolean useCustomDwnloadTool;
     private int textZoom;
 
-    public DefaultValue_WebView(String s){
+    public DefaultValue_1(String s){
         this.user_agent=s;
     }
 
