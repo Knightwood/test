@@ -29,6 +29,8 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.myInterface.SearchTextOnWebview;
+import com.example.kiylx.ti.myInterface.Setmessage;
 
 /**
  * 主界面的功能界面
@@ -42,6 +44,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     //private RecyclerView mRecyclerView;
     //private View mView;
     private static WebPage_Info info;
+    private SearchTextOnWebview mInterface;
 
     public static MinSetDialog newInstance(WebPage_Info info) {
         MinSetDialog fragment = new MinSetDialog();
@@ -164,9 +167,12 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         startActivity(i);
 
     }
+    public void setInterafce(SearchTextOnWebview mInterface){
+        this.mInterface=mInterface;
+    }
 
     private void find() {
-
+        mInterface.search();
     }
 
     private void addtobookmark() {

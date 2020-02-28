@@ -43,6 +43,7 @@ import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.myInterface.SearchTextOnWebview;
 import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
+    private Boolean isOpenedSearchText =false;//用来指示在webview页面上搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
 
     WebViewManager mWebViewManager;
     WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
@@ -175,14 +177,17 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
-        if (keyCode == KeyEvent.KEYCODE_BACK && inflated != null) {
-            inflated.setVisibility(View.INVISIBLE);
-        }
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
-            mWebViewManager.getTop(currect).goBack();
-        } else {
-            exit();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK && isOpenedSearchText) {
+            //先处理webview的文本搜索
+            closeSearchText();
+        }else{
+            //处理在没有文本搜索的时候
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
+                mWebViewManager.getTop(currect).goBack();
+            } else {
+                exit();
+                return true;
+            }
         }
 
         return true;
@@ -464,6 +469,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
+        md.setInterafce(new SearchTextOnWebview() {
+            @Override
+            public void search() {
+                //打开webview搜索文本
+                openSearchText();
+            }
+        });
         md.show(fm, "minSetDialog");
     }
 
@@ -479,21 +491,28 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void search_dialog() {
 
-        /*Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
+        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
         intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
         //把当前网页网址传进去
-        startActivityForResult(intent, 21);*/
-        searchText();
+        startActivityForResult(intent, 21);
+
 
     }
-
-    public void searchText() {
+    /**
+     * 把webview上的文本搜索收起来
+     */
+    private void closeSearchText() {
+        inflated.setVisibility(View.INVISIBLE);
+        isOpenedSearchText =false;
+    }
+    public void openSearchText() {
 
         ViewStub stub = findViewById(R.id.viewStub_search);
         if (stub != null) {
             inflated = stub.inflate();
         }
         inflated.setVisibility(View.VISIBLE);
+        isOpenedSearchText =true;
     }
 
     @Override
