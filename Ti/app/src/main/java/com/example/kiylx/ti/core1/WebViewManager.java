@@ -423,13 +423,20 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
-     * @param pos 当前webview在list中的位置
+     * @param pos     当前webview在list中的位置
      * @param content 文本框输入的内容
      */
-    public void findAllAsync(int pos,String content) {
+    public void findAllAsync(int pos, String content) {
         webViewArrayList.get(pos).setFindListener(new WebView.FindListener() {
             @Override
             public void onFindResultReceived(int i, int i1, boolean b) {
+                /*
+                 *  void onFindResultReceived (int activeMatchOrdinal,int numberOfMatches,boolean isDoneCounting)
+                 *
+                 * activeMatchOrdinal：指示这是第几个被匹配的文本，下标从0开始
+                 * numberOfMatches：一共匹配了多少个
+                 * isDoneCounting：匹配文本是否完成
+                 * */
 
             }
         });
