@@ -421,4 +421,42 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     public void setValue(DefaultValue_1 s) {
         defaultValue = s;
     }
+
+    /**
+     * @param pos 当前webview在list中的位置
+     * @param content 文本框输入的内容
+     */
+    public void findAllAsync(int pos,String content) {
+        webViewArrayList.get(pos).setFindListener(new WebView.FindListener() {
+            @Override
+            public void onFindResultReceived(int i, int i1, boolean b) {
+
+            }
+        });
+
+        webViewArrayList.get(pos).findAllAsync(content);
+    }
+
+
+    public void clearMatches(int pos) {
+        webViewArrayList.get(pos).clearMatches();
+    }
+
+    /**
+     * @param pos 当前webview在list中的位置
+     *            查找下一个匹配的文字
+     */
+    public void goaHead(int pos) {
+        //true为查找下一个
+        webViewArrayList.get(pos).findNext(true);
+    }
+
+    /**
+     * @param pos 当前webview在list中的位置
+     *            查找上一个匹配的文字
+     */
+    public void text_back(int pos) {
+        //回到上一个
+        webViewArrayList.get(pos).findNext(false);
+    }
 }

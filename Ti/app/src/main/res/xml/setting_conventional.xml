@@ -25,7 +25,8 @@
         app:title="浏览器标识" />
     <Preference
         app:title="清除数据"
-        app:key="clearData"/>
+        app:key="clearData"
+        android:summary="这个功能还没有开发完"/>
     <CheckBoxPreference
         app:key="resumeData"
         app:title="启动时恢复标签页"
@@ -39,7 +40,7 @@
     <CheckBoxPreference
         android:key="downloadTools"
         android:title="是否使用内置下载器"
-        android:summary="建议不要开启"
+        android:summary="建议不要开启，因为还没有开发完"
         android:defaultValue="false"/>
 
 </PreferenceScreen>

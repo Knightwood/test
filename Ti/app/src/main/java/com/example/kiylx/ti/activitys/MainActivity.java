@@ -12,6 +12,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,7 +23,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
-    private Boolean isOpenedSearchText =false;//用来指示在webview页面上搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
+    private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
 
     WebViewManager mWebViewManager;
     WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (keyCode == KeyEvent.KEYCODE_BACK && isOpenedSearchText) {
             //先处理webview的文本搜索
             closeSearchText();
-        }else{
+        } else {
             //处理在没有文本搜索的时候
             if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
                 mWebViewManager.getTop(currect).goBack();
@@ -498,13 +503,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
 
     }
+
     /**
      * 把webview上的文本搜索收起来
      */
     private void closeSearchText() {
         inflated.setVisibility(View.INVISIBLE);
-        isOpenedSearchText =false;
+        isOpenedSearchText = false;
+        mWebViewManager.clearMatches(currect);
     }
+
+    /**
+     * 打开文本搜索功能
+     */
     public void openSearchText() {
 
         ViewStub stub = findViewById(R.id.viewStub_search);
@@ -512,7 +523,45 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             inflated = stub.inflate();
         }
         inflated.setVisibility(View.VISIBLE);
-        isOpenedSearchText =true;
+        isOpenedSearchText = true;
+
+        EditText editText = inflated.findViewById(R.id.textView_search);
+        ImageButton goaHead=inflated.findViewById(R.id.goahead);
+        ImageButton back=inflated.findViewById(R.id.back);
+
+        editText.setText("");//清空文本框内容
+        goaHead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWebViewManager.goaHead(currect);
+            }
+        });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWebViewManager.text_back(currect);
+            }
+        });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String content = s.toString();
+                if (!TextUtils.isEmpty(content)) {
+                    mWebViewManager.findAllAsync(currect, content);
+                }
+            }
+        });
     }
 
     @Override
