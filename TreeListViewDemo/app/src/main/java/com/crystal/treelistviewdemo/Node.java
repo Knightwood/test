@@ -33,18 +33,26 @@ public class Node {
      * 图标的id
      */
     private int icon;
-    private List<Node> children = new ArrayList<>();
-    private Node parent;
+    private List<Node> childrenList;//存储文件夹类型的节点
+    private List<Node> fileList;//存储普通节点（非文件夹类型的节点）
     private boolean folder;
 
-    public Node() {
-    }
+    public Node() {}
 
-    public Node(int id, int parentId, String name) {
+    public Node(int id, int parentId, int level, String name, boolean folder) {
         super();
         this.id = id;
         this.parentId = parentId;
+        this.level = level;
         this.name = name;
+        this.folder = folder;
+        if (folder){
+            childrenList = new ArrayList<>();
+            fileList = new ArrayList<>();
+        }else {
+            childrenList=null;
+            fileList=null;
+        }
     }
 
     public int getIcon() {
@@ -87,56 +95,20 @@ public class Node {
         return isExpand;
     }
 
-    public List<Node> getChildren() {
-        return children;
+    public List<Node> getChildrenList() {
+        return childrenList;
     }
 
-    public void setChildren(List<Node> children) {
-        this.children = children;
+    public void setChildrenList(List<Node> childrenList) {
+        this.childrenList = childrenList;
     }
 
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
-    }
-
-    /**
-     * 是否为跟节点
-     *
-     * @return
-     */
-    public boolean isRoot() {
-        return parent == null;
-    }
-
-    /**
-     * 判断父节点是否展开
-     *
-     * @return
-     */
-    public boolean isParentExpand() {
-        if (parent == null)
-            return false;
-        return parent.isExpand();
-    }
-
-    /**
-     * 是否是叶子界点
-     *
-     * @return
-     */
-    public boolean isLeaf() {
-        return children.size() == 0;
-    }
 
     /**
      * 获取level
      */
     public int getLevel() {
-        return parent == null ? 0 : parent.getLevel() + 1;
+        return level;
     }
 
     /**
@@ -148,18 +120,47 @@ public class Node {
         this.isExpand = isExpand;
         if (!isExpand) {
 
-            for (Node node : children) {
+            for (Node node : childrenList) {
                 node.setExpand(isExpand);
             }
         }
     }
 
-
+    /**
+     * @return 是不是文件夹
+     */
     public boolean isFolder() {
         return folder;
     }
 
-    public void setFolder(boolean folder) {
-        this.folder = folder;
+    /**
+     * @return 返回普通节点的列表
+     */
+    public List<Node> getFileList() {
+        return fileList;
+    }
+
+    /**
+     * @param list 列表
+     *             把传入的文件夹节点的list合并到这个节点的childrenList（）文件夹列表
+     */
+    public void addFolder(List<Node> list){
+        this.childrenList.addAll(list);
+    }
+
+    /**
+     * @param list 列表
+     *             把传入的普通节点的list合并到这个节点的fileList
+     */
+    public void addFile(List<Node> list){
+        this.fileList.addAll(list);
+    }
+
+    /**
+     * @param node 文件夹节点
+     *             从文件夹节点中删除node
+     */
+    public void deleteFolder(Node node) {
+        this.childrenList.remove(node);
     }
 }
