@@ -1,8 +1,10 @@
 package com.crystal.treelistviewdemo;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 /**
  * @创建者 kiylx
@@ -15,6 +17,7 @@ public class NodeControl {
 
     private NodeControl() {
         root = new Node(-1, -2, 0, "**根节点**", true);
+        root.setExpand(true);
     }
 
     public static NodeControl getInstance() {
@@ -64,21 +67,61 @@ public class NodeControl {
 
     /**
      * @param node 要被删除的文件夹
+     * @param b    是否连文件夹下的内容也一并删除
      *             先找到node的父节点，把node的两个list合并到父节点，
      *             然后从父节点删除node
      */
-    public void deleteFolder(Node node) {
-        Node rootNode = Objects.requireNonNull(findParent(root, node));
-        rootNode.addFolder(node.getChildrenList());
-        rootNode.addFile(node.getFileList());
-        rootNode.deleteFolder(node);
-    }
+    public void deleteFolder(Node node, boolean b) {
+        Node parent=Objects.requireNonNull(findParent(root, node));
+        int level=node.getLevel();
+        if (!b) {
+            //不删除子文件和子文件夹
+            if (node.getChildrenList() != null && !node.getChildrenList().isEmpty()) {
+                //如果node的子文件夹节点列表存在且有数据,深度优先遍历，更改level值
+                Stack<Node> stack = new Stack<>();
+                stack.push(node);
+                while (!stack.empty()) {
+                    Node top = stack.pop();
+                    top.setLevel(top.getLevel()-1);
+                    List<Node> children = top.getChildrenList();
+                    List<Node> files = top.getFileList();
+
+                    if (files != null && files.size() > 0) {
+                        for (int i = files.size() - 1; i >= 0; i--) {
+                            stack.push(files.get(i));
+                        }
+                    }
+                    if (children != null && children.size() > 0) {
+                        for (int i = children.size() - 1; i >= 0; i--) {
+                            stack.push(children.get(i));
+                        }
+
+                    }
+                }
+            }
+            if (node.getChildrenList()!=null && !node.getChildrenList().isEmpty()){
+                //把被删除节点的直属子节点加入被删除节点的父节点
+                for (Node folder: node.getChildrenList()) {
+                    parent.getChildrenList().add(folder);
+                }
+            }
+            if (node.getFileList() != null && !node.getFileList().isEmpty()) {
+                //如果node的子文件节点列表存在且有数据
+                for (Node file : node.getFileList()) {
+                    file.setLevel(level-1);
+                    file.setParentId(parent.getId());
+                    parent.getFileList().add(file);
+                }
+            }
+        }
+        parent.getChildrenList().remove(node);
+}
 
 
 
     private Node findParent(Node root, Node node) {
         if (node.getParentId() == root.getId()) {
-            System.out.println(node.getName() + "的直接父节点->" + root.getName());
+            //System.out.println(node.getName() + "的直接父节点->" + root.getName());
             //这里隐含的是node的level=1，root的level=0；广义的也就是node比root的level小1（node.getLevel()-1==root.getLevel()）；
             return root;
         } else {
@@ -87,10 +130,9 @@ public class NodeControl {
                 //root节点的子节点和node节点平级，这个root节点不是node节点的父节点
                 return null;
             }
-            //一
             for (Node tmp : root.getChildrenList()) {
                 if (tmp.isFolder()) {
-                    System.out.println(tmp.getName() + "->");
+                    //System.out.println(tmp.getName() + "->");
                     //遍历根节点的childrenlist（用到了递归），如果不是node的父节点，result会被赋为null，如果是父节点，就直接返回结果
                     Node result = findParent(tmp, node);
                     if (result != null) {
@@ -99,74 +141,52 @@ public class NodeControl {
                 }
 
             }
-            //二
-            /*获取根节点的childrenlist，而且是排除了子节点属性是非文件夹的节点
-             * 如果这个节点的childrenlist是不存在的，要么是非文件夹属性的节点，要么就是叶子结点，而如果是叶子节点，到这一步就不会再往下查找了，
-             * 因为叶子结点可能就是要查找的父节点*/
-            /*for (int i=0;i<root.getChildrenList().size();i++){
-                Node tmp=root.getChildrenList().get(i);
-                if (tmp.isFolder()){ //不遍历非文件夹的节点
-                    System.out.println(tmp.getName()+"->");
-                    //遍历根节点的childrenlist（用到了递归），如果不是node的父节点，result会被赋为null，如果是父节点，就直接返回结果
-                    Node result = findParent(tmp, node);
-                    if (result != null){
-                        return result;
-                    }
-                }
-            }*/
         }
         return null;
     }
-    /**
-     * 深度优先遍历
-     * */
-    public List<Node> find(){
-        return null;
-    }
 
     /**
-     * @param node 被编辑的节点
-     *             编辑节点的名称
+     * 深度优先遍历,非递归
+     * <p>
+     * 把根节点入栈，
+     * while循环->
+     * 取出栈顶，放入结果列表
+     * 在栈顶（根节点）是展开的状态下，如果根节点的文件列表不为空，把文件从右往左入栈，文件夹列表也如此。
+     * 然后while不停循环
      */
-    public void editfolderName(Node node,String name) {
-
-    }
-    /**
-     * @param node 被编辑的节点
-     *             编辑节点的名称
-     */
-    public void editFileName(Node node,String name){
-
-    }
-    /**
-     * @return 返回应展示的的list
-     */
-    public List<Node> getList(){
-        return null;
-    }
-
-    /**
-     * @param root 根节点
-     * @param b 获取根节点的所有展开的list
-     * @return 应展示的list
-     */
-    public List<Node> getExpandList(Node root,boolean b) {
+    public List<Node> getExpandList(Node rootNode) {
         List<Node> result = new ArrayList<>();
+        Stack<Node> stack = new Stack<>();
+        stack.push(rootNode);
+        while (!stack.empty()) {
+            Node top = stack.pop();
+            result.add(top);
+            List<Node> children = top.getChildrenList();
+            List<Node> files = top.getFileList();
+            if (top.isExpand()) {
+                if (files != null && files.size() > 0) {
+                    for (int i = files.size() - 1; i >= 0; i--) {
+                        stack.push(files.get(i));
+                    }
+                }
+                if (children != null && children.size() > 0) {
 
+                    for (int i = children.size() - 1; i >= 0; i--) {
+                        stack.push(children.get(i));
+                    }
+
+                }
+            }
+
+        }
         return result;
     }
 
     /**
-     * @param root 根节点
-     *             操作展开根节点和关闭根节点
+     * @param node 被编辑的节点
+     *             编辑节点的名称
      */
-    public List<Node> expandList(Node root) {
-        if (root.isExpand()){
-           return getExpandList(root,false);
-        }else{
-           return getExpandList(root,true);
-        }
+    public void editNodeName(Node node, String name) {
+        node.setName(name);
     }
-
-
 }

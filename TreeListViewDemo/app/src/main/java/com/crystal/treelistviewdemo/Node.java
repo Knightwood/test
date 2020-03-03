@@ -1,7 +1,9 @@
 package com.crystal.treelistviewdemo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @创建者 kiylx
@@ -28,7 +30,7 @@ public class Node {
     /**
      * 是否是展开状态
      */
-    private boolean isExpand = false;
+    private boolean isExpand = true;
     /**
      * 图标的id
      */
@@ -37,7 +39,8 @@ public class Node {
     private List<Node> fileList;//存储普通节点（非文件夹类型的节点）
     private boolean folder;
 
-    public Node() {}
+    public Node() {
+    }
 
     public Node(int id, int parentId, int level, String name, boolean folder) {
         super();
@@ -46,12 +49,12 @@ public class Node {
         this.level = level;
         this.name = name;
         this.folder = folder;
-        if (folder){
+        if (folder) {
             childrenList = new ArrayList<>();
             fileList = new ArrayList<>();
-        }else {
-            childrenList=null;
-            fileList=null;
+        } else {
+            childrenList = null;
+            fileList = null;
         }
     }
 
@@ -99,10 +102,6 @@ public class Node {
         return childrenList;
     }
 
-    public void setChildrenList(List<Node> childrenList) {
-        this.childrenList = childrenList;
-    }
-
 
     /**
      * 获取level
@@ -118,12 +117,12 @@ public class Node {
      */
     public void setExpand(boolean isExpand) {
         this.isExpand = isExpand;
-        if (!isExpand) {
+       /* if (!isExpand) {
 
             for (Node node : childrenList) {
                 node.setExpand(isExpand);
             }
-        }
+        }*/
     }
 
     /**
@@ -144,7 +143,7 @@ public class Node {
      * @param list 列表
      *             把传入的文件夹节点的list合并到这个节点的childrenList（）文件夹列表
      */
-    public void addFolder(List<Node> list){
+    public void addFolder(List<Node> list) {
         this.childrenList.addAll(list);
     }
 
@@ -152,15 +151,10 @@ public class Node {
      * @param list 列表
      *             把传入的普通节点的list合并到这个节点的fileList
      */
-    public void addFile(List<Node> list){
+    public void addFile(List<Node> list) {
         this.fileList.addAll(list);
     }
 
-    /**
-     * @param node 文件夹节点
-     *             从文件夹节点中删除node
-     */
-    public void deleteFolder(Node node) {
-        this.childrenList.remove(node);
-    }
+
+
 }

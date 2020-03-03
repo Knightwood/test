@@ -11,48 +11,80 @@ import java.util.List;
  * @创建时间 2020/3/2 16:23
  */
 public class NodeControlTest {
-    private List<Node> oringe;
+    NodeControl control;
+    Node root1;
     Node c;
     Node d;
     Node a;
     Node b;
+    Node e;
     Node a1;
 
     @Before
     public void setUp() throws Exception {
-        oringe = new ArrayList<>();
-        a = new Node(23, -1, 1, "a文件夹lv1", true);
-        b = new Node(224, -1, 1, "b文件夹lv1", true);
-        a1 = new Node(10, -1, 1, "a1文件lv1", false);
+        a = new Node(23, -1, 1, "a文件夹", true);
+        b = new Node(224, -1, 1, "b文件夹", true);
+        a1 = new Node(10, -1, 1, "a1文件", false);
+        c = new Node(2, 224, 2, "c文件夹", true);
+        //c.setExpand(false);
+        d = new Node(25, 2, 3, "d文件夹", true);
+        e = new Node(256, 23, 2, "e文件", false);
 
-        c = new Node(2, 224, 2, "c文件夹lv2", true);
-        d = new Node(25, 2, 3, "d文件夹lv3", true);
-
-        oringe.add(a);
-        oringe.add(b);
-        oringe.add(a1);
-
-    }
-
-    @Test
-    public void insertNode() {
-        NodeControl control = NodeControl.getInstance();
+        control = NodeControl.getInstance();
 
         control.insertNode(a);
         control.insertNode(b);
         control.insertNode(a1);
-        Node root1 = control.getRoot();
-        System.out.println("================");
-        for (Node result : root1.getChildrenList()
-        ) {
-            System.out.println(result.getName());
 
-        }
-        System.out.println("=====================================");
+        root1 = control.getRoot();
+        control.insertNode(e);
         control.insertNode(c);
-        System.out.println("=====================================");
         control.insertNode(d);
 
+        control.newNode(333, 2, 2, "f文件夹", true);
+        control.newNode(331, 333, 3, "m文件夹", true);
+        control.newNode(332, 333, 3, "n文件", false);
+        System.out.println("================");
+    }
 
+    @Test
+    public void insertData() {
+
+        c.setExpand(true);
+
+        List<Node> result = control.getExpandList(root1);
+        result.get(7).setName("mmmm");
+        print();
+//改变节点的展开状态，再获取所有节点。这里的是引用，所以改变list的节点，树中的节点肯定会被改变
+        //result.get(6).setExpand(false);
+        print();
+    }
+    private void print(){
+        List<Node> result = control.getExpandList(root1);
+        System.out.println("目录：\n");
+        for (Node tmp : result) {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < tmp.getLevel(); i++) {
+                builder.append("  ");
+            }
+
+            System.out.println(builder.toString() + tmp.getName());
+
+        }
+    }
+
+    @Test
+    public void expandList() {
+        c.setExpand(true);
+        print();
+    }
+
+    @Test
+    public void deleteNode(){
+        print();
+        control.deleteNode(a1);
+        print();
+        control.deleteFolder(b,false);
+        print();
     }
 }
