@@ -11,7 +11,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="35dp"
         android:orientation="vertical">
 
         <TextView
@@ -30,8 +30,8 @@
 
         <ImageView
             android:id="@+id/folder"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             app:layout_constraintStart_toEndOf="@+id/spec"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_folder_black_24dp" />
@@ -40,10 +40,28 @@
             android:id="@+id/folderName"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
             android:text="@{folderinfo.name}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/newFolder"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/folder"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/newFolder"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintEnd_toStartOf="@+id/deleteFolder"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_add_box_black_24dp" />
+
+        <ImageView
+            android:id="@+id/deleteFolder"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_delete_forever_black_24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
