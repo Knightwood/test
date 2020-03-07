@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutHistory;
@@ -63,6 +64,8 @@ public class HistoryActivity extends AppCompatActivity {
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
         updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
+        //搜索记录
+        search();
     }
 
     //监听chipgroup以更新recyclerview视图
@@ -126,9 +129,26 @@ public class HistoryActivity extends AppCompatActivity {
             mAdapter.notifyDataSetChanged();
         }
 
-
     }
 
+    /**
+     * 用于查询时更新界面
+     */
+    private void updateUI() {
+        //没有历史记录的话什么也不做
+        if (mHistorys.isEmpty()) {
+            return;
+        }
+        if (null == mAdapter) {
+            mAdapter = new HistoryAdapter(mHistorys);
+            listView.setAdapter(mAdapter);
+            Log.d("历史activity", "onClick: 创建adapter函数被触发");
+        } else {
+            mAdapter.setLists(mHistorys);
+            mAdapter.notifyDataSetChanged();
+        }
+
+    }
     private void itemPopmenu(View v) {
         PopupMenu itemMenu = new PopupMenu(this, v);
         MenuInflater inflater = itemMenu.getMenuInflater();
@@ -153,6 +173,25 @@ public class HistoryActivity extends AppCompatActivity {
         itemMenu.show();
     }
 
+    /**
+     * 搜索历史记录
+     */
+    private void search() {
+        SearchView searchView=findViewById(R.id.history_searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mHistorys=sAboutHistory.query(query);
+                updateUI();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+    }
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         ArrayList<WebPage_Info> lists;
 
@@ -161,6 +200,8 @@ public class HistoryActivity extends AppCompatActivity {
             boolean ta = lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
+
+
 
         void setLists(ArrayList<WebPage_Info> lists) {
             this.lists = lists;

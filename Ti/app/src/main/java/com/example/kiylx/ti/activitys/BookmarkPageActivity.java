@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +19,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.BookMarkFolderManager;
@@ -63,7 +67,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
         mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
-        mSpinner = findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
+        mSpinner = findViewById(R.id.bookmarkSpinner);//标签选择spinner
         selectOneFolderUpdate();//展示spinner
 
         //展示recyclerview
@@ -89,6 +93,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
             }
         });
+        //搜索书签
+        search();
 
     }
 
@@ -288,9 +294,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         }
 
         /**
-         * @param v 要添加popmenu的视图
+         * @param v      要添加popmenu的视图
          * @param title1 标题
-         * @param url1 网址
+         * @param url1   网址
          */
         void addPopMenu(View v, final String title1, final String url1) {
             PopupMenu popupMenu = new PopupMenu(BookmarkPageActivity.this, v);
@@ -358,16 +364,63 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         }
 
         /**
-         * @param title 标题
-         * @param url 网址
+         * @param title              标题
+         * @param url                网址
          * @param bookmarkFolderName 标签
-         *            显示书签编辑对话框
+         *                           显示书签编辑对话框
          */
         void showBookmarkDialog(String title, String url, String bookmarkFolderName) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, bookmarkFolderName, -1,null));
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(title, url, bookmarkFolderName, -1, null));
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }
+    }
+
+    private void search() {
+        SearchView searchView = findViewById(R.id.search_Bookmark);
+        //点击搜索按钮，展开搜索
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSpinner.setVisibility(View.GONE);
+                editBookmarkfolder_button.setVisibility(View.GONE);
+                /*mSpinner.animate().alpha(0f)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+
+                            }
+                        });*/
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mBookmarkArrayList = mAboutBookmark.query(query);
+                if (mBookmarkArrayList.isEmpty()) {
+                    Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                updateUI();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        //搜索框展开时后面叉叉按钮的点击事件
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mSpinner.setVisibility(View.VISIBLE);
+                editBookmarkfolder_button.setVisibility(View.VISIBLE);
+                Toast.makeText(getApplicationContext(), "Close", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
     }
 }
 /*public void showPopMenu(View v) {

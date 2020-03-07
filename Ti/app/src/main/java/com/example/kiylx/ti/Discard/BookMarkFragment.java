@@ -62,7 +62,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         mAboutBookmark = AboutBookmark.get(getActivity());
         mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
-        mSpinner = mView.findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
+        mSpinner = mView.findViewById(R.id.bookmarkSpinner);//标签选择spinner
         selectTagtoUpdate();//展示spinner
 
         //展示recyclerview

@@ -39,7 +39,7 @@ public class BookMarkFolderManager {
 
     /**
      * 文件夹名称不是“未分类”就添加进去
-     * */
+     */
     private void addTagintoLists(String str) {
         if (!str.equals("未分类"))
             bookmarkFolderlists.add(str);
@@ -57,7 +57,7 @@ public class BookMarkFolderManager {
      * 如果网页信息中tag是空的，那就返回0，显示成：“未分类”。
      */
     public int getPosfromLists(String str) {
-            if (str == null) {
+        if (str == null) {
             return 0;
         }
         return bookmarkFolderlists.indexOf(str);
@@ -89,7 +89,7 @@ public class BookMarkFolderManager {
     }
 
     /**
-     * @param oldTag 原“标签”
+     * @param oldTag     原“标签”
      * @param folderName 要修改为的新“标签”
      */
     private void updateFolderName(String oldTag, String folderName) {
@@ -162,7 +162,7 @@ public class BookMarkFolderManager {
         Cursor cursor = mDatabase.query(
                 TagDbSchema.TagTable.NAME,
                 null,
-                where,
+                where + "=?",
                 whereArgs,
                 null,
                 null,

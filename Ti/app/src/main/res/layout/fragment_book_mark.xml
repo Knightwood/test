@@ -40,12 +40,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/bc_qm_ul_xr"
+        app:layout_constraintEnd_toStartOf="@+id/bookmarkSpinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:id="@+id/bc_qm_ul_xr"
+        android:id="@+id/bookmarkSpinner"
         style="@android:style/Widget.Material.Light.Spinner"
         android:layout_width="170dp"
         android:layout_height="45dp"

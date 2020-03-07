@@ -171,13 +171,31 @@ public class AboutBookmark {
         Cursor cursor = mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
                 null,
-                whereClause,
+                whereClause + "=?",
                 whereArgs,
                 null,
                 null,
                 null
         );
         return new ItemCursorWrapper(cursor);
+    }
+
+    public ArrayList<WebPage_Info> query(String query) {
+        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE, new String[]{query});
+        try {
+            if (cursor.getCount() == 0) {
+                return mlists;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                mlists.add(cursor.getFavoriterinfo());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return mlists;
     }
 }
 /*

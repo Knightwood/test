@@ -31,13 +31,13 @@ public class AboutHistory implements HistoryInterface {
 
     /**
      * @param startDate 开始时间
-     * @param endDate 结束时间
+     * @param endDate   结束时间
      * @return 这段时间内的所有历史记录，如果传入的都是null，返回所有历史记录
      */
     private ArrayList<WebPage_Info> getlistswithDate(String startDate, String endDate) {
         //查询并返回一个时间段内的所有条目
         ArrayList<WebPage_Info> temp = new ArrayList<>();
-        ItemCursorWrapper cursor= queryHistoryfromDate(startDate, endDate);
+        ItemCursorWrapper cursor = queryHistoryfromDate(startDate, endDate);
 
         try {
             cursor.moveToFirst();
@@ -74,13 +74,28 @@ public class AboutHistory implements HistoryInterface {
     private void removeAll() {
     }
 
+    public ArrayList<WebPage_Info> query(String queryText) {
+        ArrayList<WebPage_Info> mList = new ArrayList<>();
+      Cursor cursor=  mDatabase.rawQuery("SELECT * from history_item where title = ?", new String[]{queryText});
+      ItemCursorWrapper cursorWrapper=new ItemCursorWrapper(cursor);
+      try {
+          cursorWrapper.moveToFirst();
+          while (!cursorWrapper.isLast()){
+              mList.add(cursorWrapper.getWebPageInfo());
+              cursorWrapper.moveToNext();
+          }
+      }finally {
+          cursorWrapper.close();
+      }
+      return mList;
+    }
 
     private ItemCursorWrapper queryHistoryfromDate(String startDate, String endDate) {
         Cursor cursor;
-        if (startDate==null){
-            cursor=mDatabase.rawQuery("SELECT * from histoy_item",null);
-        }else
-        cursor = mDatabase.rawQuery("SELECT * from history_item where date between ? and ? order by date desc", new String[]{startDate, endDate});
+        if (startDate == null) {
+            cursor = mDatabase.rawQuery("SELECT * from histoy_item", null);
+        } else
+            cursor = mDatabase.rawQuery("SELECT * from history_item where date between ? and ? order by date desc", new String[]{startDate, endDate});
 
         return new ItemCursorWrapper(cursor);
     }
@@ -101,7 +116,7 @@ public class AboutHistory implements HistoryInterface {
      */
     @Override
     public ArrayList<WebPage_Info> getDataLists() {
-        return getlistswithDate(null,null);
+        return getlistswithDate(null, null);
     }
 
     /**
@@ -137,7 +152,6 @@ public class AboutHistory implements HistoryInterface {
     public void deleteAll() {
         removeAll();
     }
-
 
 }
 /*
