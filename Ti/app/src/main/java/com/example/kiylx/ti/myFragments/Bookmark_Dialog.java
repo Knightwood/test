@@ -29,7 +29,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
-import com.example.kiylx.ti.core1.AboutTag;
+import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
@@ -41,12 +41,12 @@ public class Bookmark_Dialog extends DialogFragment {
     private static final String TAG = "Bookmark_Dialog";
     private AboutBookmark mAboutBookmark;
     private static WebPage_Info beBookmarked_info;
-    private TextView tagadd;
+    private TextView newFolderButton;
     private Spinner mSpinner;
     private Context mContext;
-    private ArrayList<String> taglists;
-    private EditBox_Dialog mEditBoxDialog;
-    private AboutTag mAboutTag;
+    private ArrayList<String> bookmarkFolderlists;
+    private EditBookmarkFolder_Dialog mEditBoxDialog;
+    private BookMarkFolderManager mBookMarkFolderManager;
     private ArrayAdapter<String> adapter;
     private static final String ARGME = "wholauncherI";
     private static int intentid;//谁启动了这个对话框
@@ -85,7 +85,7 @@ public class Bookmark_Dialog extends DialogFragment {
         mContext = context;
         super.onAttach(mContext);
         mAboutBookmark = AboutBookmark.get(mContext);
-        mAboutTag = AboutTag.get(mContext);
+        mBookMarkFolderManager = BookMarkFolderManager.get(mContext);
 
 
     }
@@ -93,7 +93,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        taglists = mAboutTag.getTagListfromDB();
+        bookmarkFolderlists = mBookMarkFolderManager.getfolderListfromDB();
 
     }
 
@@ -149,7 +149,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
                         //如果intentid是2(BookmarkPageActivity)，更新视图
                         if (intentid == 2) {
-                            Log.d("网页tag", "onClick: " + beBookmarked_info.getWebTags() + "intentid" + intentid);
+                            Log.d("网页tag", "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
                             refresh.refresh(null);
                         }
                     }
@@ -163,16 +163,16 @@ public class Bookmark_Dialog extends DialogFragment {
         });
 
         setMassage(view);//填充网页信息
-        tagadd = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
-        tagadd.setOnClickListener(new View.OnClickListener() {
+        newFolderButton = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
+        newFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newEditBox();
             }
         });
         mSpinner = view.findViewById(R.id.select_Tags);
-        //设置tag的选项
-        selectTags(mAboutTag.getPosfromLists(beBookmarked_info.getWebTags()));
+        //设置spinner显示的选项
+        selectOneFolder(mBookMarkFolderManager.getPosfromLists(beBookmarked_info.getBookmarkFolderName()));
 
         return builder.create();
 
@@ -180,12 +180,12 @@ public class Bookmark_Dialog extends DialogFragment {
 
     /**
      * @param i 点击的条目在list中的位置
-     *          选择某一个“标签”后
+     *          选择某一个“文件夹”后，让spinner显示这个文件夹
      */
-    private void selectTags(int i) {
+    private void selectOneFolder(int i) {
         //填充微调框
         if (adapter == null) {
-            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, taglists);
+            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, bookmarkFolderlists);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         } else {
             adapter.notifyDataSetChanged();
@@ -194,10 +194,10 @@ public class Bookmark_Dialog extends DialogFragment {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("tag序号", "onItemSelected: " + position + "数组大小" + mAboutTag.getSize());
+                Log.d("文件夹序号", "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
 
-                //选择某一个tag后更新webviewinfo信息
-                updateWebinfo(mAboutTag.getTagfromList(position));
+                //选择某一个文件夹后更新webviewinfo信息
+                updateWebinfo(mBookMarkFolderManager.getFolderfromList(position));
 
             }
 
@@ -218,7 +218,7 @@ public class Bookmark_Dialog extends DialogFragment {
      */
     private void newEditBox() {
         //启动编辑tag的fragment
-        mEditBoxDialog = EditBox_Dialog.getInstance();
+        mEditBoxDialog = EditBookmarkFolder_Dialog.getInstance();
         FragmentManager fm = getFragmentManager();
 
         //EditBox设置目标fragment为Bookmark_Dialog Fragment。
@@ -233,7 +233,7 @@ public class Bookmark_Dialog extends DialogFragment {
      *            更新beBookmarked_info的“标签”信息
      */
     private void updateWebinfo(String str) {
-        beBookmarked_info.setWebview_marked_name(str);
+        beBookmarked_info.setBookmarkFolderName(str);
     }
 
     /**
@@ -262,7 +262,7 @@ public class Bookmark_Dialog extends DialogFragment {
      * @param resultCode  结果码
      * @param data        数据
      *                    用于BookmarkPageActivity更新视图使用
-     *                    只有一个fragment与之关联(EditBox_Dialog)，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
+     *                    只有一个fragment与之关联(EditBookmarkFolder_Dialog)，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -273,8 +273,8 @@ public class Bookmark_Dialog extends DialogFragment {
         //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
         Log.d("唉", "iggs");
         //用新的list更新界面
-        String tmptag = data.getStringExtra("newTagName");
-        selectTags(mAboutTag.getPosfromLists(tmptag));
+        String name = data.getStringExtra("newTagName");
+        selectOneFolder(mBookMarkFolderManager.getPosfromLists(name));
 
     }
 
@@ -308,7 +308,7 @@ public class Bookmark_Dialog extends DialogFragment {
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         menuBuilder.add(0,-1,0,"添加标签");
         //存着tag的lists
-        /*ArrayList<String> mItems=mAboutTag.getTagListfromDB();
+        /*ArrayList<String> mItems=mBookMarkFolderManager.getfolderListfromDB();
         if(mItems==null||mItems.isEmpty()){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();

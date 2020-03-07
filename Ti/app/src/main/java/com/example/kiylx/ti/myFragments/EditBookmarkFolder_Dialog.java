@@ -19,34 +19,38 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
-import com.example.kiylx.ti.core1.AboutTag;
+import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class EditBox_Dialog extends DialogFragment {
-    private AboutTag mAboutTag;
+public class EditBookmarkFolder_Dialog extends DialogFragment {
+    private BookMarkFolderManager mBookMarkFolderManager;
     private EditText view1;
     private Context mContext;
-    private static String newtagname;
+    private static String folderName;//被传入的时候是旧有的名称
     private String oldtagname;//保存没被修改的标签，在修改标签时会用到
     private String tmp2;
-    private static final String TAG = "EditBox_Dialog";
+    private static final String TAG = "EditFolder_Dialog";
     private RefreshBookMark flashBookmark;
 
 
-    public static EditBox_Dialog getInstance() {
-        EditBox_Dialog editBox_dialog = new EditBox_Dialog();
-        newtagname = null;
-        return editBox_dialog;
+    public static EditBookmarkFolder_Dialog getInstance() {
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = new EditBookmarkFolder_Dialog();
+        folderName = null;
+        return editBookmarkFolder_dialog;
     }
 
-    public static EditBox_Dialog getInstance(String tagname) {
+    /**
+     * @param tagname 原有的文件夹名称
+     * @return fragmentdialog
+     */
+    public static EditBookmarkFolder_Dialog getInstance(String tagname) {
         //编辑tag时会调用这个方法，并把它
-        EditBox_Dialog editBox_dialog = new EditBox_Dialog();
-        newtagname = tagname;
-        return editBox_dialog;
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = new EditBookmarkFolder_Dialog();
+        folderName = tagname;
+        return editBookmarkFolder_dialog;
     }
 
     @NonNull
@@ -54,7 +58,7 @@ public class EditBox_Dialog extends DialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = getActivity();
-        mAboutTag = AboutTag.get(mContext);
+        mBookMarkFolderManager = BookMarkFolderManager.get(mContext);
     }
 
     @Override
@@ -67,43 +71,43 @@ public class EditBox_Dialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder mbuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
-        final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_box, null);
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_editbookmarkfolder, null);
         view1 = view.findViewById(R.id.editTagBox);
         mbuilder.setView(view);
 
-        if (newtagname != null) {
+        if (folderName != null) {
             //如果tagname不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
-            view1.setText(newtagname);
+            view1.setText(folderName);
 
-            oldtagname = newtagname;//备份原有的名称，在更新操作中会用到
+            oldtagname = folderName;//备份原有的名称，在更新操作中会用到
 
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     //更新tag
-                    newtagname = view1.getText().toString();//tag名称更新
-                    Log.d(TAG, "onClick: tagname被改为" + newtagname + "oldtagname:" + oldtagname + "tmp2:" + tmp2);
+                    folderName = view1.getText().toString();//tag名称更新
+                    Log.d(TAG, "onClick: tagname被改为" + folderName + "oldtagname:" + oldtagname + "tmp2:" + tmp2);
 
-                    mAboutTag.updateTag(oldtagname, newtagname);
+                    mBookMarkFolderManager.updateitem(oldtagname, folderName);
                     //更新相关tag的书签
                     AboutBookmark bookmark = AboutBookmark.get(mContext);
-                    bookmark.updateTagsforItems(oldtagname, newtagname);
+                    bookmark.updateTagsforItems(oldtagname, folderName);
 
                     //刷新BookmarkActivity里的视图
-                    flashBookmark.refresh(newtagname);
+                    flashBookmark.refresh(folderName);
                     returnResult();
 
                 }
             });
         } else {
-            //tagname是null，说明是“新建tag操作”，需要把tag加入数据库
+            //folderName是null，说明是“新建tag操作”，需要把它加入数据库
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     /*点击确定后调用returnResult方法*/
-                    newtagname = view1.getText().toString();
-                    if (!(newtagname.equals(""))) {
-                        mAboutTag.add(newtagname);
+                    folderName = view1.getText().toString();
+                    if (!(folderName.equals(""))) {
+                        mBookMarkFolderManager.add(folderName);
                     }
                     if (getTargetFragment() == null) {
                         return;
@@ -134,7 +138,7 @@ public class EditBox_Dialog extends DialogFragment {
         }
         Intent intent = new Intent();
         //上面把新添加的标签加入到数据库，这里再把它放进intent返回，这样，Bookmarkdialog就可以不用从数据库再读取一次数据，直接拿到返回的放进lists中刷新视图
-        intent.putExtra("newTagName", newtagname);
+        intent.putExtra("newTagName", folderName);
         getTargetFragment().onActivityResult(0, Activity.RESULT_OK, intent);
     }
 

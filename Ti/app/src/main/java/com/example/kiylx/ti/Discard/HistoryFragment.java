@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.myFragments;
+package com.example.kiylx.ti.Discard;
 
 import android.os.Bundle;
 

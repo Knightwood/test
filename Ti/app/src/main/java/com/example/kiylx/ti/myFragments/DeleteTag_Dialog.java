@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
-import com.example.kiylx.ti.core1.AboutTag;
+import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class DeleteTag_Dialog extends DialogFragment {
     private static final String TAG = "DeleteTag_Dialog";
     private String tag;
-    private AboutTag aboutTag;
+    private BookMarkFolderManager bookMarkFolderManager;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
     private static RefreshBookMark refresh;
@@ -41,7 +41,7 @@ public class DeleteTag_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        aboutTag=AboutTag.get(getActivity());
+        bookMarkFolderManager = BookMarkFolderManager.get(getActivity());
         aboutBookmark=AboutBookmark.get(getActivity());
         if(getArguments() !=null){
             tag=getArguments().getString(ARG_PARAM);
@@ -74,7 +74,7 @@ public class DeleteTag_Dialog extends DialogFragment {
             }
         });
         //删除tag
-        aboutTag.delete(tag);
+        bookMarkFolderManager.delete(tag);
         return builder.create();
 
     }

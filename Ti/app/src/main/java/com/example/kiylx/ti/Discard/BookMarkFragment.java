@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.myFragments;
+package com.example.kiylx.ti.Discard;
 
 import android.os.Bundle;
 
@@ -23,7 +23,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
-import com.example.kiylx.ti.core1.AboutTag;
+import com.example.kiylx.ti.core1.BookMarkFolderManager;
+import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
+import com.example.kiylx.ti.myFragments.DeleteTag_Dialog;
+import com.example.kiylx.ti.myFragments.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
@@ -37,7 +40,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
     private BookMarkFragment.RecyclerAdapter adapter;
-    private AboutTag mAboutTag;
+    private BookMarkFolderManager mBookMarkFolderManager;
     private Spinner mSpinner;
     private ArrayList<String> mTaglists;
     private String tagname;//指示当前是哪个tag,以及在taglists中的pos
@@ -52,8 +55,8 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView=inflater.inflate(R.layout.fragment_history,null);
         //获取tag列表
-        mAboutTag = AboutTag.get(getActivity());
-        mTaglists = mAboutTag.getTagListfromDB();
+        mBookMarkFolderManager = BookMarkFolderManager.get(getActivity());
+        mTaglists = mBookMarkFolderManager.getfolderListfromDB();
 
         //获取收藏item列表，并默认展示未tag的列表
         mAboutBookmark = AboutBookmark.get(getActivity());
@@ -76,7 +79,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         Bookmark_Dialog.setRefresh(this);
 
         //删除tag按钮
-        deleteTag_textview = mView.findViewById(R.id.edit_tags);
+        deleteTag_textview = mView.findViewById(R.id.edit_Bookmarkfolder);
         deleteTag_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,15 +199,15 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.editTag:
+                    case R.id.editBookmarkFolderName:
                         editTag(tagname);
                         //更新tag列表和书签记录列表
                         break;
-                    case R.id.newTag:
+                    case R.id.newBookmarkFolder:
                         newTag();
                         //更新tag列表
                         break;
-                    case R.id.deleteTag:
+                    case R.id.deleteBookmarkFolder:
                         deleteTag(tagname);
                         //更新tag列表和书签记录列表
                         break;
@@ -219,9 +222,9 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
      *            填入标签名称，启动标签编辑对话框，修改标签名称
      */
     private void editTag(String arg) {
-        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance(arg);
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance(arg);
         FragmentManager fm = getFragmentManager();
-        editBox_dialog.show(fm, "编辑tag");
+        editBookmarkFolder_dialog.show(fm, "编辑tag");
 
     }
 
@@ -229,9 +232,9 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
      * 启动“标签”编辑对话框，添加新的“标签”
      */
     private void newTag() {
-        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance();
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance();
         FragmentManager fm = getFragmentManager();
-        editBox_dialog.show(fm, "新建一个tag");
+        editBookmarkFolder_dialog.show(fm, "新建一个tag");
 
     }
 
@@ -329,7 +332,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         public void bind(WebPage_Info info) {
             title_1 = info.getTitle();
             url_1 = info.getUrl();
-            tag_1 = info.getWebTags();
+            tag_1 = info.getBookmarkFolderName();
 
             title.setText(title_1);
             url.setText(url_1);
@@ -378,7 +381,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         mPopupMenu=new PopupMenu(this,v);
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         //存着tag的lists
-        ArrayList<String> mItems=mAboutTag.getTagListfromDB();
+        ArrayList<String> mItems=mBookMarkFolderManager.getfolderListfromDB();
         if(mItems==null){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();

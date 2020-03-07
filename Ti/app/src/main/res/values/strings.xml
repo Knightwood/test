@@ -63,9 +63,9 @@
     <string name="whether_deleteTag">是否删除“标签”</string>
 
     <!--tag管理选项-->
-    <string name="editTag">编辑标签</string>
-    <string name="deleteTag">删除标签</string>
-    <string name="addTag">添加新标签</string>
+    <string name="editBookmarkFolderName">编辑文件夹</string>
+    <string name="deleteBookmarkFolder">删除文件夹</string>
+    <string name="addBookmarkFolder">添加新文件夹</string>
     <string name="read_record">阅读列表</string>
     <string name="findText">在页面上查找</string>
     <string name="startDownloadButton">开始和暂停下载</string>

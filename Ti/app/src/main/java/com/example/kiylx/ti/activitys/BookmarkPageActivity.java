@@ -21,10 +21,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
-import com.example.kiylx.ti.core1.AboutTag;
+import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myFragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
-import com.example.kiylx.ti.myFragments.EditBox_Dialog;
+import com.example.kiylx.ti.myFragments.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
@@ -37,12 +37,12 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
     private RecyclerAdapter adapter;
-    private AboutTag mAboutTag;
+    private BookMarkFolderManager mBookmarkFolderManager;
     private Spinner mSpinner;
-    private ArrayList<String> mTaglists;
-    private String tagname;//指示当前是哪个tag,以及在taglists中的pos
+    private ArrayList<String> mbookmarkFolderLists;
+    private String bookmarkFolderName;//指示当前是哪个书签文件夹,以及在书签文件夹lists中的pos
     private static OpenOneWebpage mopenWeb;
-    private TextView deleteTag_textview;
+    private TextView editBookmarkfolder_button;
     private static final String TAG = "BookmarkActivity";
 
 
@@ -55,36 +55,37 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark_page);
-        //获取tag列表
-        mAboutTag = AboutTag.get(BookmarkPageActivity.this);
-        mTaglists = mAboutTag.getTagListfromDB();
+        //获取书签文件夹列表
+        mBookmarkFolderManager = BookMarkFolderManager.get(BookmarkPageActivity.this);
+        mbookmarkFolderLists = mBookmarkFolderManager.getfolderListfromDB();
 
-        //获取收藏item列表，并默认展示未tag的列表
+        //获取收藏item列表，并默认展示未书签文件夹的列表
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
         mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
         mSpinner = findViewById(R.id.bc_qm_ul_xr);//标签选择spinner
-        selectTagtoUpdate();//展示spinner
+        selectOneFolderUpdate();//展示spinner
 
         //展示recyclerview
         mRecyclerView = findViewById(R.id.show_BookmarkItem);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(BookmarkPageActivity.this));//展示具体收藏item的recyclerview
 
         //更新lists，然后更新视图
-        tagname = mTaglists.get(0);//一开始就初始化tag名称防止出错
-        getBookmarksWithTagChanged(tagname);
+        bookmarkFolderName = mbookmarkFolderLists.get(0);//一开始就初始化书签文件夹名称防止出错
+        getBookmarksWithFolderChanged(bookmarkFolderName);
         updateUI();
         //接口回调
 
         DeleteTag_Dialog.setInterface(this);
         Bookmark_Dialog.setRefresh(this);
 
-        //删除tag按钮
-        deleteTag_textview = findViewById(R.id.edit_tags);
-        deleteTag_textview.setOnClickListener(new View.OnClickListener() {
+        //删除书签文件夹的按钮
+        editBookmarkfolder_button = findViewById(R.id.edit_Bookmarkfolder);
+        //添加菜单
+        editBookmarkfolder_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addMenutoEditTag(v);
+                addMenuForEditBookmarkFolder(v);
 
             }
         });
@@ -95,7 +96,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
         这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
         如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
-        如果不是null，根据tag来更新视图*/
+        如果不是null，根据书签文件夹来更新视图*/
         /*if(mBookmarkArrayList.isEmpty()){
             //如果收藏夹没有任何内容，那什么也不做，且隐藏recyclerview
            mRecyclerView.setVisibility(View.GONE);
@@ -116,7 +117,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      * @param str “标签”
      *            获取含有此标签的书签记录
      */
-    private void getBookmarksWithTagChanged(String str) {
+    private void getBookmarksWithFolderChanged(String str) {
 
         mBookmarkArrayList = mAboutBookmark.getBookmarks(str);
     }
@@ -124,16 +125,16 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     /**
      * 在spinner中选择一个项目，然后更新含有此标签的书签列表
      */
-    public void selectTagtoUpdate() {
-        ArrayAdapter<String> madapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mTaglists);
+    public void selectOneFolderUpdate() {
+        ArrayAdapter<String> madapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mbookmarkFolderLists);
         madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(madapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //对tagname赋值，以它更新视图
-                tagname = mTaglists.get(position);
-                getBookmarksWithTagChanged(tagname);
+                //对bookmarkFolderName赋值，以它更新视图
+                bookmarkFolderName = mbookmarkFolderLists.get(position);
+                getBookmarksWithFolderChanged(bookmarkFolderName);
                 updateUI();
             }
 
@@ -152,13 +153,13 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     public void refresh(String arg1) {
 
 
-        //在书签页面编辑详细一个书签条目后，应该用当前的tagname刷新视图。所以，此时传入的是null，直接用当前的tagname刷新视图
+        //在书签页面编辑详细一个书签条目后，应该用当前的bookmarkFolderName刷新视图。所以，此时传入的是null，直接用当前的bookmarkFolderName刷新视图
         if (arg1 != null)
-            tagname = arg1;
+            bookmarkFolderName = arg1;
 
-        //在spinner中选择新的tagname，并更新书签记录的视图
-        mSpinner.setSelection(mTaglists.indexOf(tagname));
-        getBookmarksWithTagChanged(tagname);//标签已被传进去删除，所以重新获取list，并重新置为tagname
+        //在spinner中选择新的bookmarkFolderName，并更新书签记录的视图
+        mSpinner.setSelection(mbookmarkFolderLists.indexOf(bookmarkFolderName));
+        getBookmarksWithFolderChanged(bookmarkFolderName);//标签已被传进去删除，所以重新获取list，并重新置为bookmarkFolderName
         updateUI();//更新书签记录的视图
 
     }
@@ -171,9 +172,9 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     @Override
     public void refresh() {
 
-        tagname = mTaglists.get(0);
+        bookmarkFolderName = mbookmarkFolderLists.get(0);
         mSpinner.setSelection(0);
-        getBookmarksWithTagChanged(tagname);
+        getBookmarksWithFolderChanged(bookmarkFolderName);
         updateUI();
     }
 
@@ -184,8 +185,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     /**
      * @param v 要添加上popmenu的视图
      */
-    private void addMenutoEditTag(View v) {
-        //用来控制tag编辑的几个菜单选项
+    private void addMenuForEditBookmarkFolder(View v) {
+        //用来控制bookmarkFolderName编辑的几个菜单选项
         PopupMenu menu = new PopupMenu(BookmarkPageActivity.this, v);
         MenuInflater inflater = menu.getMenuInflater();
         inflater.inflate(R.menu.tagmanager_menu, menu.getMenu());
@@ -194,17 +195,17 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
-                    case R.id.editTag:
-                        editTag(tagname);
-                        //更新tag列表和书签记录列表
+                    case R.id.editBookmarkFolderName:
+                        editbookmarkFolderName(bookmarkFolderName);
+                        //更新书签文件夹列表和书签记录列表
                         break;
-                    case R.id.newTag:
-                        newTag();
-                        //更新tag列表
+                    case R.id.newBookmarkFolder:
+                        newbookmarkFolder();
+                        //更新书签文件夹列表
                         break;
-                    case R.id.deleteTag:
-                        deleteTag(tagname);
-                        //更新tag列表和书签记录列表
+                    case R.id.deleteBookmarkFolder:
+                        deletebookmarkFolder(bookmarkFolderName);
+                        //更新书签文件夹列表和书签记录列表
                         break;
                 }
                 return false;
@@ -216,24 +217,24 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      * @param arg 标签名称
      *            填入标签名称，启动标签编辑对话框，修改标签名称
      */
-    private void editTag(String arg) {
-        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance(arg);
+    private void editbookmarkFolderName(String arg) {
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance(arg);
         FragmentManager fm = getSupportFragmentManager();
-        editBox_dialog.show(fm, "编辑tag");
+        editBookmarkFolder_dialog.show(fm, "编辑书签文件夹");
 
     }
 
     /**
      * 启动“标签”编辑对话框，添加新的“标签”
      */
-    private void newTag() {
-        EditBox_Dialog editBox_dialog = EditBox_Dialog.getInstance();
+    private void newbookmarkFolder() {
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance();
         FragmentManager fm = getSupportFragmentManager();
-        editBox_dialog.show(fm, "新建一个tag");
+        editBookmarkFolder_dialog.show(fm, "新建一个书签文件夹");
 
     }
 
-    private void deleteTag(String arg) {
+    private void deletebookmarkFolder(String arg) {
         DeleteTag_Dialog fr = DeleteTag_Dialog.getInstance(arg);
         FragmentManager fm = getSupportFragmentManager();
         fr.show(fm, "删除标签dialog");
@@ -274,7 +275,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         TextView title;
         TextView url;
         ImageView imageView;
-        String title_1, url_1, tag_1;
+        String title_1, url_1, bookmarkFolderName_1;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -300,11 +301,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.edit_Bookmark:
-                            showBookmarkDialog(title1, url1, tag_1);
+                            showBookmarkDialog(title1, url1, bookmarkFolderName_1);
                             break;
                         case R.id.delete_Bookmark:
                             mAboutBookmark.delete(url1);
-                            getBookmarksWithTagChanged(tag_1);
+                            getBookmarksWithFolderChanged(bookmarkFolderName_1);
                             updateUI();
                             break;
                         case R.id.openPageinNewWindow:
@@ -326,7 +327,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         public void bind(WebPage_Info info) {
             title_1 = info.getTitle();
             url_1 = info.getUrl();
-            tag_1 = info.getWebTags();
+            bookmarkFolderName_1 = info.getBookmarkFolderName();
 
             title.setText(title_1);
             url.setText(url_1);
@@ -359,11 +360,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         /**
          * @param title 标题
          * @param url 网址
-         * @param tag 标签
+         * @param bookmarkFolderName 标签
          *            显示书签编辑对话框
          */
-        void showBookmarkDialog(String title, String url, String tag) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, tag, -1,null));
+        void showBookmarkDialog(String title, String url, String bookmarkFolderName) {
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, bookmarkFolderName, -1,null));
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }
@@ -373,7 +374,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         mPopupMenu=new PopupMenu(this,v);
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         //存着tag的lists
-        ArrayList<String> mItems=mAboutTag.getTagListfromDB();
+        ArrayList<String> mItems=mBookmarkFolderManager.getfolderListfromDB();
         if(mItems==null){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/editTag"
-        android:title="@string/editTag" />
+        android:id="@+id/editBookmarkFolderName"
+        android:title="@string/editBookmarkFolderName" />
     <item
-        android:id="@+id/deleteTag"
-        android:title="@string/deleteTag" />
+        android:id="@+id/deleteBookmarkFolder"
+        android:title="@string/deleteBookmarkFolder" />
     <item
-        android:id="@+id/newTag"
-        android:title="@string/addTag" />
+        android:id="@+id/newBookmarkFolder"
+        android:title="@string/addBookmarkFolder" />
 </menu>

@@ -19,7 +19,6 @@ import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngine_db_Util;
 
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * @创建者 kiylx
@@ -58,7 +57,7 @@ public class EditText_Dialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder mBuilder=new AlertDialog.Builder(Objects.requireNonNull(getContext()));
 
-        final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_edit_box, null);
+        final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_editbookmarkfolder, null);
         view1 = view.findViewById(R.id.editTagBox);
         view1.setText(oldString);
 

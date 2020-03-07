@@ -162,7 +162,7 @@ public class AboutBookmark {
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG, info.getWebTags());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG, info.getBookmarkFolderName());
 
         return values;
     }
