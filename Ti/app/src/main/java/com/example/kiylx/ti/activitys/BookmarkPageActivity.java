@@ -396,7 +396,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mBookmarkArrayList = mAboutBookmark.query(query);
+                mBookmarkArrayList = mAboutBookmark.queryBookmark(query);
                 if (mBookmarkArrayList.isEmpty()) {
                     Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
                     return true;

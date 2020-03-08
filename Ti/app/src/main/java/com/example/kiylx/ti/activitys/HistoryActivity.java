@@ -110,16 +110,18 @@ public class HistoryActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    /**
+     * @param startDate 开始时间
+     * @param endDate 结束时间
+     *                返回这段时间范围内的历史记录
+     */
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        Log.d(TAG, "updateUI: " + startDate + "/" + endDate);
+        Log.d(TAG, "updateUI: " + startDate + "---" + endDate);
 
         //用统一的接口获取数据
         mHistorys = m_historyInterface.getDataLists(startDate, endDate);
-        //没有历史记录的话什么也不做
-        if (mHistorys.isEmpty()) {
-            return;
-        }
+
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(mHistorys);
             listView.setAdapter(mAdapter);
@@ -149,6 +151,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
     }
+
     private void itemPopmenu(View v) {
         PopupMenu itemMenu = new PopupMenu(this, v);
         MenuInflater inflater = itemMenu.getMenuInflater();
@@ -177,11 +180,11 @@ public class HistoryActivity extends AppCompatActivity {
      * 搜索历史记录
      */
     private void search() {
-        SearchView searchView=findViewById(R.id.history_searchView);
+        SearchView searchView = findViewById(R.id.history_searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mHistorys=sAboutHistory.query(query);
+                mHistorys = sAboutHistory.query(query);
                 updateUI();
                 return false;
             }
@@ -192,6 +195,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
         });
     }
+
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         ArrayList<WebPage_Info> lists;
 
@@ -200,7 +204,6 @@ public class HistoryActivity extends AppCompatActivity {
             boolean ta = lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
-
 
 
         void setLists(ArrayList<WebPage_Info> lists) {

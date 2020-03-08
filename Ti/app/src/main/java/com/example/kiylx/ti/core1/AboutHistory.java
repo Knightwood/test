@@ -74,20 +74,26 @@ public class AboutHistory implements HistoryInterface {
     private void removeAll() {
     }
 
+    /**
+     * @param queryText 要查找的文本
+     * @return 返回匹配的历史记录
+     * 这是历史记录查询功能
+     */
     public ArrayList<WebPage_Info> query(String queryText) {
-        ArrayList<WebPage_Info> mList = new ArrayList<>();
-      Cursor cursor=  mDatabase.rawQuery("SELECT * from history_item where title = ?", new String[]{queryText});
-      ItemCursorWrapper cursorWrapper=new ItemCursorWrapper(cursor);
-      try {
-          cursorWrapper.moveToFirst();
-          while (!cursorWrapper.isLast()){
-              mList.add(cursorWrapper.getWebPageInfo());
-              cursorWrapper.moveToNext();
-          }
-      }finally {
-          cursorWrapper.close();
-      }
-      return mList;
+        ArrayList<WebPage_Info> mhistoryList= new ArrayList<>();
+
+        Cursor cursor = mDatabase.rawQuery("SELECT * from history_item where title like'%'+?+'%' ", new String[]{queryText});
+        ItemCursorWrapper cursorWrapper = new ItemCursorWrapper(cursor);
+        try {
+            cursorWrapper.moveToFirst();
+            while (!cursorWrapper.isLast()) {
+                mhistoryList.add(cursorWrapper.getWebPageInfo());
+                cursorWrapper.moveToNext();
+            }
+        } finally {
+            cursorWrapper.close();
+        }
+        return mhistoryList;
     }
 
     private ItemCursorWrapper queryHistoryfromDate(String startDate, String endDate) {
@@ -156,7 +162,7 @@ public class AboutHistory implements HistoryInterface {
 }
 /*
     private ItemCursorWrapper queryHistory(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.query(
+        Cursor cursor = mDatabase.queryBookmark(
                 HistoryTable.NAME,
                 null,
                 whereClause,

@@ -180,7 +180,7 @@ public class AboutBookmark {
         return new ItemCursorWrapper(cursor);
     }
 
-    public ArrayList<WebPage_Info> query(String query) {
+    public ArrayList<WebPage_Info> queryBookmark(String query) {
         ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE, new String[]{query});
         try {
