@@ -44,7 +44,7 @@ public class AboutBookmark {
     /**
      * @param info webpageinfo
      *             更新条目
-     *         如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
+     *             如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
      */
     public void updateItem(WebPage_Info info) {
 
@@ -61,11 +61,10 @@ public class AboutBookmark {
     public ArrayList<WebPage_Info> getBookmarks(String str) {
         ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor;
-        if (str==null){
-            cursor=queryFavority(null,null);
-        }
-
-         cursor= queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TAG + " =?", new String[]{str});
+        if (str == null) {
+            cursor = queryFavority(null, null);
+        } else
+            cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder + " =?", new String[]{str});
         try {
             if (cursor.getCount() == 0) {
                 return mlists;
@@ -107,8 +106,8 @@ public class AboutBookmark {
     }
 
     /**
-     * @param str tag
-     * @return 返回tag下的书签列表或返回所有书签
+     * @param str 书签文件夹名称
+     * @return 返回该文件夹下的书签列表或返回所有书签
      */
     public ArrayList<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
@@ -119,17 +118,18 @@ public class AboutBookmark {
     }
 
     /**
-     * @param tag 旧的标签名称
-     * @param newTagname 新的标签名称
-     * 根据tag批量更改条目的信息,更新书签记录的tag名称
+     * @param oldfolderName    旧的标签名称
+     * @param newFolderName 新的标签名称
+     *                      根据tag批量更改条目的信息,更新书签记录的tag名称
      */
-    public void updateTagsforItems(String tag, String newTagname) {
+    public void updateFolderforItems(String oldfolderName, String newFolderName) {
 
-
+        mDatabase.execSQL("UPDATE FavoriteTab SET folderName = ? where folderName = ?", new String[]{newFolderName, oldfolderName});
     }
 
-    public void deleteBookMarkfromTag(String tag) {
-        //根据tag这个标签删除相关的条目
+    public void deleteBookMarkWithFolderName(String folderName) {
+        //根据folderName这个文件夹删除相关的条目
+        mDatabase.execSQL("DELETE FROM FavoriteTab where folderName=?", new String[]{folderName});
     }
 
 
@@ -162,7 +162,7 @@ public class AboutBookmark {
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.TAG, info.getBookmarkFolderName());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder, info.getBookmarkFolderName());
 
         return values;
     }
@@ -171,7 +171,7 @@ public class AboutBookmark {
         Cursor cursor = mDatabase.query(
                 FavoritepageDbSchema.FavoriteTable.NAME,
                 null,
-                whereClause + "=?",
+                whereClause,
                 whereArgs,
                 null,
                 null,
@@ -251,7 +251,7 @@ public class AboutBookmark {
         }
         return null;
     }
-    public boolean TagIsExist(Context context,String tag,String filename){
+    public boolean FolderIsExist(Context context,String folder,String filename){
         OutputStream outputStream;
         try{
             outputStream=context.openFileOutput(filename,Context.MODE_PRIVATE);

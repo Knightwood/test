@@ -274,7 +274,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     //方1，遍历所有，进行更新
         for(int pos=0;pos<webViewArrayList.size();pos++){
             notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
-            Log.d(TAG, "updateWebViewInfo: "+webViewArrayList.get(pos).getTitle());
+            Log.d(FOLDER, "updateWebViewInfo: "+webViewArrayList.get(pos).getTitle());
             if (MainActivity.getCurrect() != pos) {
                 stop(pos);
             }

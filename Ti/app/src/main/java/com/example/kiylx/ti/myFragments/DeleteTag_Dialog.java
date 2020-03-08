@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.BookMarkFolderManager;
+import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 
 public class DeleteTag_Dialog extends DialogFragment {
     private static final String TAG = "DeleteTag_Dialog";
-    private String tag;
+    private String folderName;
     private BookMarkFolderManager bookMarkFolderManager;
     private AboutBookmark aboutBookmark;
     private static final String ARG_PARAM = "param";
@@ -44,8 +45,8 @@ public class DeleteTag_Dialog extends DialogFragment {
         bookMarkFolderManager = BookMarkFolderManager.get(getActivity());
         aboutBookmark=AboutBookmark.get(getActivity());
         if(getArguments() !=null){
-            tag=getArguments().getString(ARG_PARAM);
-            Log.d(TAG,"要删除的标签"+tag);
+            folderName =getArguments().getString(ARG_PARAM);
+            Log.d(TAG,"要删除的标签"+ folderName);
         }
 
     }
@@ -59,8 +60,8 @@ public class DeleteTag_Dialog extends DialogFragment {
         builder.setPositiveButton("仅删除标签", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //删除标签同时把这个标签下的书签记录的tag改成默认的“未分类”
-                updateBookmark(tag,"未分类");
+                //把这个标签下的书签记录的文件夹改成默认的“未分类”
+                updateBookmark(folderName, SomeRes.defaultBookmarkFolder);
                 //刷新BookmarkPageActivity里面的视图
                 refresh.refresh();
 
@@ -69,24 +70,23 @@ public class DeleteTag_Dialog extends DialogFragment {
         builder.setNegativeButton("连同书签一起删除", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteAll(tag);
+                deleteAll(folderName);
                 refresh.refresh();
             }
         });
-        //删除tag
-        bookMarkFolderManager.delete(tag);
+        //删除书签文件夹
+        bookMarkFolderManager.delete(folderName);
         return builder.create();
-
     }
 
-    private void deleteAll(String tag) {
-        //把有这个标签的书签尽数删除
-        aboutBookmark.deleteBookMarkfromTag(tag);
+    private void deleteAll(String folder) {
+        //把所属这个文件夹的书签尽数删除
+        aboutBookmark.deleteBookMarkWithFolderName(folder);
     }
 
-    private void updateBookmark(String tag,String newTagname) {
-        //把有相关标签的书签批量更改它的标签
-        aboutBookmark.updateTagsforItems(tag,newTagname);
+    private void updateBookmark(String folderName,String newFoldername) {
+        //把有相关标签的书签批量更改它的文件夹
+        aboutBookmark.updateFolderforItems(folderName,newFoldername);
     }
     public static void setInterface(RefreshBookMark minterface){
         DeleteTag_Dialog.refresh =minterface;

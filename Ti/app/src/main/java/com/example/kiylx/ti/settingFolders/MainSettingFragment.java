@@ -29,7 +29,7 @@ public class MainSettingFragment extends PreferenceFragmentCompat implements Pre
         //SwitchPreference switchPreference=(SwitchPreference) findPreference("notifications");
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Objects.requireNonNull(getActivity()));
         //boolean turn = sharedPreferences.getBoolean("notifications",true);
-        //Log.d(TAG, "onCreatePreferences: "+turn);
+        //Log.d(FOLDER, "onCreatePreferences: "+turn);
 
     }
 

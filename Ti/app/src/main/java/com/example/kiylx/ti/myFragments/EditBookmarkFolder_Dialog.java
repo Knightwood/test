@@ -30,26 +30,20 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
     private EditText view1;
     private Context mContext;
     private static String folderName;//被传入的时候是旧有的名称
-    private String oldtagname;//保存没被修改的标签，在修改标签时会用到
+    private String oldFoldername;//保存没被修改的标签，在修改标签时会用到
     private String tmp2;
     private static final String TAG = "EditFolder_Dialog";
     private RefreshBookMark flashBookmark;
 
 
-    public static EditBookmarkFolder_Dialog getInstance() {
-        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = new EditBookmarkFolder_Dialog();
-        folderName = null;
-        return editBookmarkFolder_dialog;
-    }
-
     /**
-     * @param tagname 原有的文件夹名称
+     * @param name 传入原有的文件夹名称，编辑文件夹名称。若传入null则是新建文件夹操作
      * @return fragmentdialog
      */
-    public static EditBookmarkFolder_Dialog getInstance(String tagname) {
+    public static EditBookmarkFolder_Dialog getInstance(@Nullable String name) {
         //编辑tag时会调用这个方法，并把它
         EditBookmarkFolder_Dialog editBookmarkFolder_dialog = new EditBookmarkFolder_Dialog();
-        folderName = tagname;
+        folderName = name;
         return editBookmarkFolder_dialog;
     }
 
@@ -76,31 +70,33 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
         mbuilder.setView(view);
 
         if (folderName != null) {
-            //如果tagname不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
+            //如果传入的文件夹名称不是null，说明是“编辑操作”，需要修改tag，并更新这个tag下的收藏记录
             view1.setText(folderName);
 
-            oldtagname = folderName;//备份原有的名称，在更新操作中会用到
+            oldFoldername = folderName;//备份原有的名称，在更新操作中会用到
 
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //更新tag
-                    folderName = view1.getText().toString();//tag名称更新
-                    Log.d(TAG, "onClick: tagname被改为" + folderName + "oldtagname:" + oldtagname + "tmp2:" + tmp2);
+                    //更新文件夹名称
+                    folderName = view1.getText().toString();//获取编辑框里改好的文件夹名称
+                    Log.d(TAG, "onClick: tagname被改为" + folderName + "oldFoldername:" + oldFoldername + "tmp2:" + tmp2);
 
-                    mBookMarkFolderManager.updateitem(oldtagname, folderName);
-                    //更新相关tag的书签
+                    //更新该文件夹名称
+                    mBookMarkFolderManager.updateitem(oldFoldername, folderName);
+                    //更新该文件夹下的的书签
                     AboutBookmark bookmark = AboutBookmark.get(mContext);
-                    bookmark.updateTagsforItems(oldtagname, folderName);
+                    bookmark.updateFolderforItems(oldFoldername, folderName);
 
                     //刷新BookmarkActivity里的视图
                     flashBookmark.refresh(folderName);
+                    //if(getTargetRequestCode()==0)//只有BookmarkDialog调用过setTargetFragment()
                     returnResult();
 
                 }
             });
         } else {
-            //folderName是null，说明是“新建tag操作”，需要把它加入数据库
+            //folderName是null，说明是“新建文件夹操作”，需要把它加入数据库
             mbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -112,6 +108,7 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
                     if (getTargetFragment() == null) {
                         return;
                     }
+                    //if(getTargetRequestCode()==0)
                     returnResult();//新建操作不仅是“书签activity”也有可能是“收藏fragment”启动的，所以这一句不能去掉
 
                 }

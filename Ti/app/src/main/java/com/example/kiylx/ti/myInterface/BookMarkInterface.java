@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public interface BookMarkInterface {
     ArrayList<WebPage_Info> getBookmark();
 
-    ArrayList<WebPage_Info> getBookmarks(String tag);
+    ArrayList<WebPage_Info> getBookmarks(String folderName);
 
     /**
      * @param info 要添加进数据库的WebPage_Info
@@ -27,15 +27,15 @@ public interface BookMarkInterface {
     boolean isMarked(WebPage_Info info);
 
     /**
-     * @param tag tag名称，根据它来删除它下面的书签
+     * @param folderName tag名称，根据它来删除它下面的书签
      */
-    void deleteBookMarkfromTag(String tag);
+    void deleteBookMarkfromTag(String folderName);
 
     /**
-     * @param tag        旧的标签名称
-     * @param newTagname 新的标签名称
+     * @param folderName        旧的标签名称
+     * @param newFoldername 新的标签名称
      *                   会把旧的标签名称改为新的标签名称，并更新这个标签下的书签的记录
      */
-    void updateItemWithTag(String tag, String newTagname);
+    void updateItemName(String folderName, String newFoldername);
 
 }

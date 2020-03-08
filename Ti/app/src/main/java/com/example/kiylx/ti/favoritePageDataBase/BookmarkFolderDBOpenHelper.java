@@ -6,16 +6,16 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-public class TagOpenHelper extends SQLiteOpenHelper {
+public class BookmarkFolderDBOpenHelper extends SQLiteOpenHelper {
     private static final int VERSION=1;
-    private static final String DATABASE_NAME="TagTab";
-    public TagOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version){
+    private static final String DATABASE_NAME="BookmarkFolderTab";
+    public BookmarkFolderDBOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version){
         super(context, name, factory, version);
 
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+ TagDbSchema.TagTable.NAME+"("+"_id integer primary key autoincrement, "+ TagDbSchema.TagTable.childs.TAG+")");
+        db.execSQL("create table "+ BookmarkFolderDbSchema.FolderTable.NAME+"("+"_id integer primary key autoincrement, "+ BookmarkFolderDbSchema.FolderTable.childs.FOLDER +")");
     }
 
     @Override

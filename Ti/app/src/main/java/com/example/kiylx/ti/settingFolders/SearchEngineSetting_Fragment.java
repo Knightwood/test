@@ -97,8 +97,8 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
             @Override
             public void run() {
                 urlList= mdao.getAll();
-                Log.d(TAG, "run: "+urlList.isEmpty());
-                Log.d(TAG, "run: "+urlList.get(0).getUrl());
+                Log.d(FOLDER, "run: "+urlList.isEmpty());
+                Log.d(FOLDER, "run: "+urlList.get(0).getUrl());
             }
         }).start();*/
 

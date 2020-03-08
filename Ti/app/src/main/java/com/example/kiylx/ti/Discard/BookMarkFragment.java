@@ -145,16 +145,16 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
     }
 
     /**
-     * @param arg1 书签，根据书签更新recycler
+     * @param folderName 书签，根据书签更新recycler
      *             更新BookmarkPageActivity里的那些书签recyclerview视图
      */
     @Override
-    public void refresh(String arg1) {
+    public void refresh(String folderName) {
 
 
         //在书签页面编辑详细一个书签条目后，应该用当前的tagname刷新视图。所以，此时传入的是null，直接用当前的tagname刷新视图
-        if (arg1 != null)
-            tagname = arg1;
+        if (folderName != null)
+            tagname = folderName;
 
         //在spinner中选择新的tagname，并更新书签记录的视图
         mSpinner.setSelection(mTaglists.indexOf(tagname));
@@ -232,7 +232,7 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
      * 启动“标签”编辑对话框，添加新的“标签”
      */
     private void newTag() {
-        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance();
+        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance(null);
         FragmentManager fm = getFragmentManager();
         editBookmarkFolder_dialog.show(fm, "新建一个tag");
 
@@ -367,11 +367,11 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
         /**
          * @param title 标题
          * @param url 网址
-         * @param tag 标签
+         * @param folderName 书签文件夹
          *            显示书签编辑对话框
          */
-        void showBookmarkDialog(String title, String url, String tag) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, tag, -1,null));
+        void showBookmarkDialog(String title, String url, String folderName) {
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2,new WebPage_Info(title, url, folderName, -1,null));
             FragmentManager fm = getFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }

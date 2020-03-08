@@ -205,7 +205,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
         public listAdapter(String[] lists) {
             options = lists;
-            Log.d(TAG, "onCreateView: "+options[0]);
+            Log.d(FOLDER, "onCreateView: "+options[0]);
         }
 
         public void setOptionList(String[] list) {
@@ -222,7 +222,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         @Override
         public void onBindViewHolder(@NonNull OptionViewHolder holder, int position) {
             holder.bind(options[position]);
-            Log.d(TAG, "onCreateView: "+optionslist[position]);
+            Log.d(FOLDER, "onCreateView: "+optionslist[position]);
         }
 
         @Override
@@ -245,12 +245,12 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
         public void bind(String optionName) {
             mBinding.getOptionViewModel().setOptionsName(optionName);
-            Log.d(TAG, "bind: "+optionName);
+            Log.d(FOLDER, "bind: "+optionName);
         }
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "点击选项 ");
+            Log.d(FOLDER, "点击选项 ");
 
         }
     }*/

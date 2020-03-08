@@ -1,13 +1,12 @@
 package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,6 +39,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     private RecyclerView mRecyclerView;
     private ArrayList<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
+    ArrayAdapter<String> mSpinnerAdapter;
     private RecyclerAdapter adapter;
     private BookMarkFolderManager mBookmarkFolderManager;
     private Spinner mSpinner;
@@ -61,7 +61,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         setContentView(R.layout.activity_bookmark_page);
         //获取书签文件夹列表
         mBookmarkFolderManager = BookMarkFolderManager.get(BookmarkPageActivity.this);
-        mbookmarkFolderLists = mBookmarkFolderManager.getfolderListfromDB();
+        mbookmarkFolderLists = mBookmarkFolderManager.getBookmarkFolderlists();
 
         //获取收藏item列表，并默认展示未书签文件夹的列表
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
@@ -83,7 +83,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         DeleteTag_Dialog.setInterface(this);
         Bookmark_Dialog.setRefresh(this);
 
-        //删除书签文件夹的按钮
+        //操作书签文件夹的按钮
         editBookmarkfolder_button = findViewById(R.id.edit_Bookmarkfolder);
         //添加菜单
         editBookmarkfolder_button.setOnClickListener(new View.OnClickListener() {
@@ -120,7 +120,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     /**
-     * @param str “标签”
+     * @param str “文件夹名称”
      *            获取含有此标签的书签记录
      */
     private void getBookmarksWithFolderChanged(String str) {
@@ -132,9 +132,12 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      * 在spinner中选择一个项目，然后更新含有此标签的书签列表
      */
     public void selectOneFolderUpdate() {
-        ArrayAdapter<String> madapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mbookmarkFolderLists);
-        madapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(madapter);
+        if (mSpinnerAdapter == null) {
+            mSpinnerAdapter = new ArrayAdapter<>(BookmarkPageActivity.this, android.R.layout.simple_list_item_1, mbookmarkFolderLists);
+            mSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
+
+        mSpinner.setAdapter(mSpinnerAdapter);
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -152,16 +155,18 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     /**
-     * @param arg1 书签，根据书签更新recycler
-     *             更新BookmarkPageActivity里的那些书签recyclerview视图
+     * @param folderName 书签文件夹名称，根据文件夹名称更新recycler
+     *                   更新BookmarkPageActivity里的那些书签recyclerview视图
+     *
+     *                   1.在Bookmark_Dialog编辑详细一个书签条目后，会用当前的bookmarkFolderName刷新视图（这时传入的是参数null）。
+     *                   2.在BookmarkPageActivity编辑文件夹名称后，会传入新的文件夹名称，用它刷新视图
      */
     @Override
-    public void refresh(String arg1) {
-
-
-        //在书签页面编辑详细一个书签条目后，应该用当前的bookmarkFolderName刷新视图。所以，此时传入的是null，直接用当前的bookmarkFolderName刷新视图
-        if (arg1 != null)
-            bookmarkFolderName = arg1;
+    public void refresh(String folderName) {
+        if (folderName != null){
+            bookmarkFolderName = folderName;
+            mSpinnerAdapter.notifyDataSetChanged();//通知spinner的适配器更新数据
+        }
 
         //在spinner中选择新的bookmarkFolderName，并更新书签记录的视图
         mSpinner.setSelection(mbookmarkFolderLists.indexOf(bookmarkFolderName));
@@ -172,16 +177,18 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
     /**
      * 更新BookmarkPageActivity里的那些书签recyclerview视图
-     * 标签已被teTag_Dialog删除，所以重新获取list，并重新置为0号的“未分类”
+     * 文件夹被teTag_Dialog删除，所以重新获取list，并重新置为0号的“未分类”
      * 更新BookmarkPageActivity里的那些书签recyclerview视图
      */
     @Override
     public void refresh() {
-
-        bookmarkFolderName = mbookmarkFolderLists.get(0);
+        //重新获取文件夹列表
+        mbookmarkFolderLists=mBookmarkFolderManager.reGetList();
+        bookmarkFolderName = mbookmarkFolderLists.get(0);//置为“未分类”
+        mSpinnerAdapter.notifyDataSetChanged();//通知适配器数据改变
         mSpinner.setSelection(0);
-        getBookmarksWithFolderChanged(bookmarkFolderName);
-        updateUI();
+        getBookmarksWithFolderChanged(bookmarkFolderName);//重新获取书签列表
+        updateUI();//更新视图
     }
 
     public static void setInterface(OpenOneWebpage minterface) {
@@ -202,11 +209,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.editBookmarkFolderName:
-                        editbookmarkFolderName(bookmarkFolderName);
+                        editOrNewBookmarkFolder(bookmarkFolderName);
                         //更新书签文件夹列表和书签记录列表
                         break;
                     case R.id.newBookmarkFolder:
-                        newbookmarkFolder();
+                        editOrNewBookmarkFolder(null);
                         //更新书签文件夹列表
                         break;
                     case R.id.deleteBookmarkFolder:
@@ -220,25 +227,17 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     /**
-     * @param arg 标签名称
-     *            填入标签名称，启动标签编辑对话框，修改标签名称
+     * @param arg 文件夹名称,填入null则是新建文件夹
+     *            填入文件夹名称，启动文件夹编辑对话框，修改文件夹名称
      */
-    private void editbookmarkFolderName(String arg) {
+    private void editOrNewBookmarkFolder(@Nullable String arg) {
         EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance(arg);
+        editBookmarkFolder_dialog.setFlashBookmark(this);
         FragmentManager fm = getSupportFragmentManager();
         editBookmarkFolder_dialog.show(fm, "编辑书签文件夹");
 
     }
 
-    /**
-     * 启动“标签”编辑对话框，添加新的“标签”
-     */
-    private void newbookmarkFolder() {
-        EditBookmarkFolder_Dialog editBookmarkFolder_dialog = EditBookmarkFolder_Dialog.getInstance();
-        FragmentManager fm = getSupportFragmentManager();
-        editBookmarkFolder_dialog.show(fm, "新建一个书签文件夹");
-
-    }
 
     private void deletebookmarkFolder(String arg) {
         DeleteTag_Dialog fr = DeleteTag_Dialog.getInstance(arg);

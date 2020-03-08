@@ -93,7 +93,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bookmarkFolderlists = mBookMarkFolderManager.getfolderListfromDB();
+        bookmarkFolderlists = mBookMarkFolderManager.getBookmarkFolderlists();
 
     }
 
@@ -124,7 +124,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        //onCreateDialog在onCreate之后，onCreateView之前被调用
+        //注：onCreateDialog在onCreate之后，onCreateView之前被调用
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
@@ -147,7 +147,7 @@ public class Bookmark_Dialog extends DialogFragment {
                             mAboutBookmark.add(beBookmarked_info);
                         }
 
-                        //如果intentid是2(BookmarkPageActivity)，更新视图
+                        //如果intentid是2(BookmarkPageActivity打开的，用来编辑已经存在的书签)，更新视图
                         if (intentid == 2) {
                             Log.d("网页tag", "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
                             refresh.refresh(null);
@@ -212,13 +212,13 @@ public class Bookmark_Dialog extends DialogFragment {
     }
 
     /**
-     * 开启编辑“标签”的对话框
+     * 开启编辑“文件夹名称”的对话框
      * 并设置目标fragment
      * EditBox的目标fragment是Bookmark_Dialog
      */
     private void newEditBox() {
         //启动编辑tag的fragment
-        mEditBoxDialog = EditBookmarkFolder_Dialog.getInstance();
+        mEditBoxDialog = EditBookmarkFolder_Dialog.getInstance(null);
         FragmentManager fm = getFragmentManager();
 
         //EditBox设置目标fragment为Bookmark_Dialog Fragment。

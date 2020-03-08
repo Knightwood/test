@@ -7,14 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.kiylx.ti.corebase.SomeRes;
-import com.example.kiylx.ti.favoritePageDataBase.TagDbSchema;
-import com.example.kiylx.ti.favoritePageDataBase.TagItemCursorWrapper;
-import com.example.kiylx.ti.favoritePageDataBase.TagOpenHelper;
+import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderCursorWrapper;
+import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDbSchema;
+import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDBOpenHelper;
 
 import java.util.ArrayList;
 
 public class BookMarkFolderManager {
-    /*tag，如果在添加标签的时候选择的是未分类，那么这一条*/
+    /*书签文件夹，如果在添加标签的时候选择的是未分类，那么这一条*/
     private static BookMarkFolderManager sBookMarkFolderManager;
     private SQLiteDatabase mDatabase;
     private ArrayList<String> bookmarkFolderlists;
@@ -25,7 +25,7 @@ public class BookMarkFolderManager {
 
     private BookMarkFolderManager(Context context) {
 
-        mDatabase = new TagOpenHelper(context, TagDbSchema.TagTable.NAME, null, 1).getWritableDatabase();
+        mDatabase = new BookmarkFolderDBOpenHelper(context, BookmarkFolderDbSchema.FolderTable.NAME, null, 1).getWritableDatabase();
         bookmarkFolderlists = new ArrayList<>();
         bookmarkFolderlists.add(0, SomeRes.defaultBookmarkFolder);//在这里添加了未分类文件夹，数据库里是没有的
     }
@@ -79,76 +79,92 @@ public class BookMarkFolderManager {
     }
 
     /**
-     * @param tag 要查询的“标签”名称
-     * @return 如果要查询的“标签”存在，返回真
-     * 查询是否有与形参“tag”重复的元素
+     * @param folderName 要查询的“文件夹”名称
+     * @return 如果要查询的“文件夹”存在，返回真
+     * 查询是否有与文件夹重复的元素
      */
-    private boolean isExist(String tag) {
+    private boolean isExist(String folderName) {
 
-        return bookmarkFolderlists.contains(tag);
+        return bookmarkFolderlists.contains(folderName);
     }
 
     /**
-     * @param oldTag     原“标签”
-     * @param folderName 要修改为的新“标签”
+     * @return 第一次初始化的文件夹列表
+     * 在其他的类里第一次获取列表所调用
      */
-    private void updateFolderName(String oldTag, String folderName) {
-        bookmarkFolderlists.set(bookmarkFolderlists.indexOf(oldTag), folderName);
-    }
-
     public ArrayList<String> getBookmarkFolderlists() {
+        if (bookmarkFolderlists == null) {
+            bookmarkFolderlists = new ArrayList<>();
+        }
+        if (bookmarkFolderlists.size() == 1)//只有一个“未分类”
+            bookmarkFolderlists = getfolderListfromDB();
         return bookmarkFolderlists;
     }
-
+    /**
+     * @return 重新获取所有的记录
+     * 清空书签文件夹列表，然后重新获取
+     */
+    public ArrayList<String> reGetList() {
+        bookmarkFolderlists.clear();
+        bookmarkFolderlists.add(SomeRes.defaultBookmarkFolder);
+        bookmarkFolderlists=getfolderListfromDB();
+        return bookmarkFolderlists;
+    }
     //=============================以下数据库操作===================//
-    public void add(String tag) {
-        if (isExist(tag)) {
+    public void add(String folder) {
+        if (isExist(folder)) {
             return;
         }
-        Log.d("tag添加", tag);
-        ContentValues values = getContentValues(tag);
-        mDatabase.insert(TagDbSchema.TagTable.NAME, null, values);
-        addTagintoLists(tag);
+        Log.d("tag添加", folder);
+        ContentValues values = getContentValues(folder);
+        mDatabase.insert(BookmarkFolderDbSchema.FolderTable.NAME, null, values);
+        addTagintoLists(folder);
 
     }
 
-    public void delete(String tag) {
-        mDatabase.delete(TagDbSchema.TagTable.NAME, TagDbSchema.TagTable.childs.TAG + " =? ", new String[]{tag});
-        deleteTagfromLists(tag);
+    public void delete(String folderName) {
+        mDatabase.delete(BookmarkFolderDbSchema.FolderTable.NAME, BookmarkFolderDbSchema.FolderTable.childs.FOLDER + " =? ", new String[]{folderName});
+        deleteTagfromLists(folderName);
 
     }
 
-    public void updateitem(String oldTag, String newTag) {
-        //更新tag为新的名称
-        //oldTag:原tag;newTag:要改成的名称
-        mDatabase.update(TagDbSchema.TagTable.NAME, getContentValues(newTag), TagDbSchema.TagTable.childs.TAG + " =?", new String[]{oldTag});
-        // 表名
-        // 修改后的数据
-        // 修改条件
-        // 满足修改的值
-        updateFolderName(oldTag, newTag);//实时刷新taglist中的值
+    /**
+     * @param oldName 文件夹旧有名称
+     * @param newName 文件夹新名称
+     */
+    public void updateitem(String oldName, String newName) {
+        mDatabase.execSQL("UPDATE BookmarkFolderTab SET folderName=? where folderName=?", new String[]{newName, oldName});
+        //updateFolderName(oldName, newName);//实时刷新taglist中的值
+        //刷新列表
+        bookmarkFolderlists=reGetList();
     }
 
-    private static ContentValues getContentValues(String tag) {
-        //存tag
+
+
+    private static ContentValues getContentValues(String folderName) {
         ContentValues values = new ContentValues();
-        values.put(TagDbSchema.TagTable.childs.TAG, tag);
+        values.put(BookmarkFolderDbSchema.FolderTable.childs.FOLDER, folderName);
 
         return values;
     }
 
+    /**
+     * @return 返回书签文件夹列表
+     * 默认的“未分类”文件夹并不添加进数据库
+     */
     public ArrayList<String> getfolderListfromDB() {
-        TagItemCursorWrapper cursor = queryTag(null, null);
+        //BookmarkFolderCursorWrapper cursor = queryFolder(null, null);
+        BookmarkFolderCursorWrapper cursor = getAllFolder(null);
         //如果文件夹list仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是文件夹list仅被初始化还没有从数据库里拿数据
-        if (bookmarkFolderlists.size() == 1)
+        if (bookmarkFolderlists.get(0).equals(SomeRes.defaultBookmarkFolder))
             try {
-                Log.d("TagDB数量", String.valueOf(cursor.getCount()));
+                Log.d("书签文件夹数量", String.valueOf(cursor.getCount()));
                 if (cursor.getCount() == 0) {
                     return bookmarkFolderlists;
                 }
                 cursor.moveToFirst();
                 while (!cursor.isAfterLast()) {
-                    bookmarkFolderlists.add(cursor.getTaginfo());
+                    bookmarkFolderlists.add(cursor.getFolderinfo());
                     cursor.moveToNext();
                 }
             } finally {
@@ -158,15 +174,26 @@ public class BookMarkFolderManager {
 
     }
 
-    private TagItemCursorWrapper queryTag(String where, String[] whereArgs) {
+    private BookmarkFolderCursorWrapper queryFolder(String where, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
-                TagDbSchema.TagTable.NAME,
+                BookmarkFolderDbSchema.FolderTable.NAME,
                 null,
-                where + "=?",
+                where,
                 whereArgs,
                 null,
                 null,
                 null);
-        return new TagItemCursorWrapper(cursor);
+        return new BookmarkFolderCursorWrapper(cursor);
+    }
+
+    private BookmarkFolderCursorWrapper getAllFolder(String name) {
+        Cursor cursor;
+        if (name == null) {
+            cursor = mDatabase.rawQuery("SELECT * from BookmarkFolderTab", null);
+        } else {
+            cursor = mDatabase.rawQuery("SELECT * from BookmarkFolderTab where folderName = ?", new String[]{name});
+        }
+
+        return new BookmarkFolderCursorWrapper(cursor);
     }
 }
