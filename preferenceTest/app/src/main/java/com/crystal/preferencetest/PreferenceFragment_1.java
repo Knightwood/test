@@ -49,14 +49,14 @@ public class PreferenceFragment_1 extends PreferenceFragmentCompat {
         }
     }
 });*/
-ListPreference listPreference=findPreference("列表");
-listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        Log.d("datasave", "列表选中的值"+newValue);
-        return true;
-    }
-});
+        ListPreference listPreference = findPreference("列表");
+        listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                Log.d("datasave", "列表选中的值" + newValue);
+                return true;
+            }
+        });
 
 
     }

@@ -423,11 +423,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                         mult_dialog();
                         break;
                     /*case R.id.action_Bookmark:
-                        Log.i(FOLDER, "onClick: 收藏按钮被触发");
+                        Log.i(TAG, "onClick: 收藏按钮被触发");
                         showBookmarkDialog();
                         break;
                     case R.id.action_flash:
-                        Log.i(FOLDER, "onClick: 刷新按钮被触发");
+                        Log.i(TAG, "onClick: 刷新按钮被触发");
                         mWebViewManager.getTop(currect).reload();
                         break;*/
                     case R.id.action_menu:
