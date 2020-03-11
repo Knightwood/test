@@ -18,6 +18,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /*
 * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
 * 要增加一个观察者模式推送各个下载list给downloadactivity
@@ -438,6 +447,38 @@ public class DownloadManager {
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
         }
+    }
+
+    private void storge(){
+        Observable<DownloadInfo> observable= Observable.create(new ObservableOnSubscribe<DownloadInfo>() {
+            @Override
+            public void subscribe(ObservableEmitter<DownloadInfo> emitter) throws Exception {
+
+            }
+        }).subscribeOn(Schedulers.newThread());
+        Observer<DownloadInfo> observer=new Observer<DownloadInfo>() {
+
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(DownloadInfo downloadInfo) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+        observable.subscribe(observer);
     }
 
 }
