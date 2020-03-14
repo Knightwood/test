@@ -33,16 +33,17 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class BookMarkFragment extends Fragment implements RefreshBookMark {
     private RecyclerView mRecyclerView;
-    private ArrayList<WebPage_Info> mBookmarkArrayList;
+    private List<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
     private BookMarkFragment.RecyclerAdapter adapter;
     private BookMarkFolderManager mBookMarkFolderManager;
     private Spinner mSpinner;
-    private ArrayList<String> mTaglists;
+    private List<String> mTaglists;
     private String tagname;//指示当前是哪个tag,以及在taglists中的pos
     private static OpenOneWebpage mopenWeb;
     private TextView deleteTag_textview;
@@ -245,13 +246,13 @@ public class BookMarkFragment extends Fragment implements RefreshBookMark {
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<BookMarkFragment.ViewHolder> {
-        private ArrayList<WebPage_Info> mList;
+        private List<WebPage_Info> mList;
 
-        RecyclerAdapter(ArrayList<WebPage_Info> lists) {
+        RecyclerAdapter(List<WebPage_Info> lists) {
             mList = lists;
         }
 
-        void setList(ArrayList<WebPage_Info> updatelists) {
+        void setList(List<WebPage_Info> updatelists) {
             mList = updatelists;
         }
 

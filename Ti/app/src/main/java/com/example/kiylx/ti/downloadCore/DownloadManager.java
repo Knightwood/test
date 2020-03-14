@@ -46,9 +46,10 @@ public class DownloadManager {
     private OkhttpManager mOkhttpManager;
     private static StorgeTask mStorgeTask;
 
-    private Queue<DownloadInfo> readyDownload;
+    private List<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
     private List<DownloadInfo> pausedownload;
+    private List<DownloadInfo> completeDownload;
 
     private int downloadNumLimit;
     private Context mContext;
@@ -71,17 +72,19 @@ public class DownloadManager {
      */
     private DownloadManager() {
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        downloadNumLimit = SomeRes.downloadLimit;//还没写配置文件，这里用5暂时代替
+        downloadNumLimit = SomeRes.downloadLimit;
 
-        downloading = new ArrayList<>();
-        pausedownload = new ArrayList<>();
-        readyDownload = new LinkedList<>();
+        downloading = new ArrayList<>();//正在下载列表
+        pausedownload = new ArrayList<>();//暂停下载列表
+        readyDownload = new LinkedList<>();//准备下载列表
 
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
         //-mStorgeTask = new StorgeTask();
-
+        completeDownload = new ArrayList<>();
+        //completeDownload从数据库获取数据
+        //pausedownload从数据库拿数据
     }
 
     /**
@@ -121,11 +124,11 @@ public class DownloadManager {
             if (info.isDownloadSuccess()) {
                 //下载完成，触发通知
                 //并且，把downloading中的此downloadinfo移除，且把完成信息放入“持久化存储”
-
+                afterDownloadComplete(info);
                 //调入新的下载任务开始下载
                 if (!readyDownload.isEmpty()) {
                     try {
-                        startDownload(readyDownload.poll());
+                        startDownload(readyDownload.remove(0));
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -138,6 +141,8 @@ public class DownloadManager {
             return true;
         }
     };
+
+
 //--------------------------------------以上是接口方法多线程会调用它，以下是一些下载方法------------------------------//
 
 
@@ -145,7 +150,7 @@ public class DownloadManager {
      * @param info downloadinfo
      *             加工信息，生成文件分块下载信息等。
      */
-    public void processInfo(DownloadInfo info) throws IOException {
+    public void processInfo(@NonNull DownloadInfo info) throws IOException {
         //用于文件下载的线程数
         int threadNum = info.getThreadNum();
         //如果下载文件的大小已经给出了（也就是info里contentLength不等于0），就直接赋值。否则，调用getFileLength获取
@@ -169,33 +174,49 @@ public class DownloadManager {
     }
 
     /**
+     * 下载完成，把任务从正在下载列表移除，放进下载完成列表，并更新数据库数据。
+     */
+    private void afterDownloadComplete(DownloadInfo info) {
+        completeDownload.add(info);
+        downloading.remove(info);
+        //更新数据库数据
+    }
+
+    /**
      * @param info 文件下载信息
      * @throws IOException 抛出异常
      */
-    void startDownload(DownloadInfo info) throws IOException {
+    public void startDownload(@NonNull DownloadInfo info) throws IOException {
+        /*
+         * “暂停”为假,“准备下载”为真(刚构建的下载任务中“暂停”是假，“等待下载”是假),
+         * 说明这是暂停之后要恢复下载
+         * 若恢复下载时下载列表满了，加入准备下载列表
+         * */
         if (!info.isPause() && info.isWaitDownload()) {
-            //暂停为假,准备下载为真(钢构件的下载任务中暂停也是假，准备下载是假)则就应该开始下载
-            downloading.add(info);
-            int i = info.getThreadNum();
-            for (int j = 0; j < i; j++) {
-                TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+            //注：恢复下载
+            if (downloading.size() == SomeRes.downloadLimit)
+                readyDownload.add(info);
+            else {
+                downloading.add(info);
+                /*int i = info.getThreadNum();
+                for (int j = 0; j < i; j++) {
+                    TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+                }*/
+                execDownload(info);
             }
         } else {
             //注：全新开始的下载
             //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
-                readyDownload.offer(info);
+                readyDownload.add(info);
                 info.setPause(true);
             } else {
                 //注：还没到下载数量限制，这是第一次开始下载
-                //处理信息
+                //处理下载信息
                 processInfo(info);
-
-                int i = info.getThreadNum();
-                for (int j = 0; j < i; j++) {
-                    TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
-                }
+                //执行下载
+                execDownload(info);
 
                 //加入下载队列
                 downloading.add(info);
@@ -213,35 +234,53 @@ public class DownloadManager {
 
     /**
      * @param info 下载信息
-     *             <p>
-     *             修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
-     *             传入为null则遍历所有正在下载的进行暂停
-     *             <p>
-     *             “暂停标志”为 真，则“恢复标志”为 假。
-     *             这两个互斥，暂停时不会是恢复状态，恢复时不会是暂停状态。
-     *             <p>
-     *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是准备下载状态。
+     *             使用线程池执行下载任务
      */
-    void pauseDownload(@NonNull DownloadInfo info) {
+    private void execDownload(DownloadInfo info) {
+        int i = info.getThreadNum();
+        for (int j = 0; j < i; j++) {
+            TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+        }
+    }
+
+    /**
+     * @param info 下载信息
+     *             <p>
+     *             若是正在下载，则修改下载信息的暂停标记，使得下载文件的所有线程暂停文件块的下载
+     *             <p>
+     *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是暂态等待下载的任务。
+     */
+    public void pauseDownload(@NonNull DownloadInfo info) {
         if (info.isWaitDownload()) {
-            //info.setPause(true);
-            info.setWaitDownload(false);
+            //如果是等待下载（等待下载时也算是“正在下载的一种”）
 
             downloading.remove(info);
             pausedownload.add(info);
-
+            info.setWaitDownload(false);
         }
+        //正在下载或是等待下载，都要设置暂停为假
         info.setPause(true);
 
     }
 
-    void pauseAll() {
+    /**
+     * 先把准备下载队列清空，然后把正在下载列表清空。
+     */
+    public void pauseAll() {
         for (int i = 0; i < readyDownload.size(); i++) {
-            pausedownload.add(readyDownload.poll());
+            DownloadInfo info=readyDownload.get(i);
+            info.setPause(true);
+            info.setWaitDownload(true);
+            pausedownload.add(info);
+            readyDownload.clear();
+
         }
         for (int i = 0; i < downloading.size(); i++) {
-            downloading.get(i).setPause(true);
+
+            DownloadInfo info= downloading.get(i);
+            info.setPause(true);
         }
+
     }
 
     /**
@@ -249,13 +288,13 @@ public class DownloadManager {
      *             继续下载
      *             判断downloading列表是否满了，如果满了，放进ready列表
      */
-    void resumeDownload(@NonNull DownloadInfo info) {
+    public void resumeDownload(@NonNull DownloadInfo info) {
 
         resume(info);
 
     }
 
-    void resumeAll() {
+    public void resumeAll() {
         for (int i = 0; i < pausedownload.size(); i++) {
             resume(pausedownload.get(i));
         }
@@ -508,3 +547,6 @@ public class DownloadManager {
     }
 
 }
+/*
+ *
+ * */

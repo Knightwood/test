@@ -2,6 +2,19 @@ package com.example.kiylx.ti.corebase;
 
 import android.os.Environment;
 
+/**
+ * pause 暂停标志
+ * <p>
+ * waitDownload 等待下载标志
+ * <p>
+ * 非暂停恢复下载;非暂停等待下载：暂停为假,准备下载为真
+ * <p>
+ * 暂停状态：暂停为真，准备下载为假
+ * <p>
+ * 构建的下载任务：暂停是假，准备下载是假
+ * <p>
+ * 正在下载：暂停下载为假，准备下载为假
+ */
 public class DownloadInfo {
     private String url;
     private String fileName;
@@ -82,20 +95,23 @@ public class DownloadInfo {
         if (this.path == null) {
             //默认路径
             this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        }else{
+            this.path=path;
         }
         this.contentLength = contentLength;
 
         this.threadNum = threadNum;
-        //初始化暂停和取消的标志
+        //初始化暂停,等待，和取消的标志
         this.pause = false;
         this.cancel = false;
+        this.waitDownload=false;
     }
 
     /**
      * 只有一个下载地址的构造函数
      */
     public DownloadInfo(String url) {
-        this(url, null, null, 8, 0);
+        this(url, null, null, SomeRes.downloadThreadNum, 0);
     }
 
     /**
@@ -103,7 +119,7 @@ public class DownloadInfo {
      * @param contentLength 下载文件的文件长度
      */
     public DownloadInfo(String url, long contentLength) {
-        this(url, null, null, 8, contentLength);
+        this(url, null, null, SomeRes.downloadThreadNum, contentLength);
     }
 
 

@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -54,5 +55,23 @@ public class ProcessRecordItemTest {
             System.out.println("结果"+url[i]+"\n");
         }
     }
+    @Test
+    public void testLinkList(){
+        List<String> list=new LinkedList<>();
+        list.add("1");
+        list.add("2");
+        list.add("3");
+        list.add("4");
+        list.add("5");
+        for (String s:list) {
+            System.out.println(s+" ");
 
+        }
+        System.out.println("移除0位置元素前"+list.get(0));
+        System.out.println("移除0位置元素"+list.remove(0));
+        System.out.println("移除0位置元素之后"+list.get(0));
+        list.add(0,"6");
+        System.out.println("在0位置添加元素后"+list.get(0));
+
+    }
 }

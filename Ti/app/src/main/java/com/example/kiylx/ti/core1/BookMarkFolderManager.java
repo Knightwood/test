@@ -12,12 +12,13 @@ import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDbSchema;
 import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDBOpenHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BookMarkFolderManager {
     /*书签文件夹，如果在添加标签的时候选择的是未分类，那么这一条*/
     private static BookMarkFolderManager sBookMarkFolderManager;
     private SQLiteDatabase mDatabase;
-    private ArrayList<String> bookmarkFolderlists;
+    private List<String> bookmarkFolderlists;
     /*taglist是一个全局的列表，
     会从数据库里拿数据后添加进taglist返回给需要的对象，
     所以，必要时需要判断taglist是不是空的再决定是否从数据库里拿数据放进去*/
@@ -92,7 +93,7 @@ public class BookMarkFolderManager {
      * @return 第一次初始化的文件夹列表
      * 在其他的类里第一次获取列表所调用
      */
-    public ArrayList<String> getBookmarkFolderlists() {
+    public List<String> getBookmarkFolderlists() {
         if (bookmarkFolderlists == null) {
             bookmarkFolderlists = new ArrayList<>();
         }
@@ -104,7 +105,7 @@ public class BookMarkFolderManager {
      * @return 重新获取所有的记录
      * 清空书签文件夹列表，然后重新获取
      */
-    public ArrayList<String> reGetList() {
+    public List<String> reGetList() {
         bookmarkFolderlists.clear();
         bookmarkFolderlists.add(SomeRes.defaultBookmarkFolder);
         bookmarkFolderlists=getfolderListfromDB();
@@ -152,7 +153,7 @@ public class BookMarkFolderManager {
      * @return 返回书签文件夹列表
      * 默认的“未分类”文件夹并不添加进数据库
      */
-    public ArrayList<String> getfolderListfromDB() {
+    public List<String> getfolderListfromDB() {
         //BookmarkFolderCursorWrapper cursor = queryFolder(null, null);
         BookmarkFolderCursorWrapper cursor = getAllFolder(null);
         //如果文件夹list仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是文件夹list仅被初始化还没有从数据库里拿数据

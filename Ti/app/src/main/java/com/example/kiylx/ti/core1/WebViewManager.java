@@ -22,6 +22,7 @@ import com.example.kiylx.ti.corebase.SealedWebPageInfo;
 import com.example.kiylx.ti.myInterface.Setmessage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -33,7 +34,7 @@ import java.util.Observable;
 public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     //存着当前打开的所有webview对象
-    private ArrayList<WebView> webViewArrayList;
+    private List<WebView> webViewArrayList;
     private volatile static WebViewManager sWebViewManager;
     private static final String TAG = "WebViewManager";
 

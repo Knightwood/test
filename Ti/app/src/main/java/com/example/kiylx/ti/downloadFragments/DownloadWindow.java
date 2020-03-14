@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.myFragments;
+package com.example.kiylx.ti.downloadFragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

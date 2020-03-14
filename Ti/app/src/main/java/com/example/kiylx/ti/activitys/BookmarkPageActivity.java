@@ -33,17 +33,17 @@ import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark {
     private RecyclerView mRecyclerView;
-    private ArrayList<WebPage_Info> mBookmarkArrayList;
+    private List<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
     ArrayAdapter<String> mSpinnerAdapter;
     private RecyclerAdapter adapter;
     private BookMarkFolderManager mBookmarkFolderManager;
     private Spinner mSpinner;
-    private ArrayList<String> mbookmarkFolderLists;
+    private List<String> mbookmarkFolderLists;
     private String bookmarkFolderName;//指示当前是哪个书签文件夹,以及在书签文件夹lists中的pos
     private static OpenOneWebpage mopenWeb;
     private TextView editBookmarkfolder_button;
@@ -246,13 +246,13 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
-        private ArrayList<WebPage_Info> mList;
+        private List<WebPage_Info> mList;
 
-        RecyclerAdapter(ArrayList<WebPage_Info> lists) {
+        RecyclerAdapter(List<WebPage_Info> lists) {
             mList = lists;
         }
 
-        void setList(ArrayList<WebPage_Info> updatelists) {
+        void setList(List<WebPage_Info> updatelists) {
             mList = updatelists;
         }
 
@@ -426,7 +426,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         mPopupMenu=new PopupMenu(this,v);
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         //存着tag的lists
-        ArrayList<String> mItems=mBookmarkFolderManager.getfolderListfromDB();
+        List<String> mItems=mBookmarkFolderManager.getfolderListfromDB();
         if(mItems==null){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();

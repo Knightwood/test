@@ -39,7 +39,7 @@ import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
-import com.example.kiylx.ti.myFragments.DownloadWindow;
+import com.example.kiylx.ti.downloadFragments.DownloadWindow;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;

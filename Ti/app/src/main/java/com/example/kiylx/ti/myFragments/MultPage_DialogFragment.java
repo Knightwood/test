@@ -31,7 +31,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class MultPage_DialogFragment extends DialogFragment {
@@ -120,7 +120,7 @@ public class MultPage_DialogFragment extends DialogFragment {
 
 
     private void updateUI() {
-        ArrayList<WebPage_Info> lists = WebViewInfo_Manager.getPageList();
+        List<WebPage_Info> lists = WebViewInfo_Manager.getPageList();
         Log.d(TAG, "updateUI: 多窗口处的数组大小"+lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);
@@ -136,10 +136,10 @@ public class MultPage_DialogFragment extends DialogFragment {
     }
 
     private class WebSiteAdapter extends RecyclerView.Adapter<WebsiteHolder> {
-        private ArrayList<WebPage_Info> lists;
+        private List<WebPage_Info> lists;
         MultiPageItemBinding pageitemBinding;
 
-        WebSiteAdapter(ArrayList<WebPage_Info> mlists) {
+        WebSiteAdapter(List<WebPage_Info> mlists) {
             this.lists = mlists;
             boolean ta = lists.isEmpty();
             Log.d("MultPage_DialogFragment", "onClick: Adapter构造函数被触发" + ta);
@@ -167,7 +167,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             return lists.size();
         }
 
-        private void setLists(ArrayList<WebPage_Info> lists) {
+        private void setLists(List<WebPage_Info> lists) {
 
             this.lists = lists;
         }

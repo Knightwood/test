@@ -11,10 +11,11 @@ import com.example.kiylx.ti.favoritePageDataBase.FavoritepageDbSchema;
 import com.example.kiylx.ti.favoritePageDataBase.ItemCursorWrapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AboutBookmark {
     private static AboutBookmark sAboutBookmark;
-    private static ArrayList<WebPage_Info> bookMarklists;
+    private static List<WebPage_Info> bookMarklists;
     private SQLiteDatabase mDatabase;
     private Context mContext;
 
@@ -58,8 +59,8 @@ public class AboutBookmark {
      * @param str 标签
      * @return 返回该标签下的所有书签
      */
-    public ArrayList<WebPage_Info> getBookmarks(String str) {
-        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+    public List<WebPage_Info> getBookmarks(String str) {
+        List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor;
         if (str == null) {
             cursor = queryFavority(null, null);
@@ -109,7 +110,7 @@ public class AboutBookmark {
      * @param str 书签文件夹名称
      * @return 返回该文件夹下的书签列表或返回所有书签
      */
-    public ArrayList<WebPage_Info> getChangeLists(String str) {
+    public List<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
         if (str.equals("所有书签")) {
             return getWebPageinfos();
@@ -136,10 +137,10 @@ public class AboutBookmark {
     /**
      * @return 返回所有的书签记录
      */
-    private ArrayList<WebPage_Info> getWebPageinfos() {
+    private List<WebPage_Info> getWebPageinfos() {
         //第一个参数来指示查询哪一列
 
-        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+        List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(null, null);
         try {
             if (cursor.getCount() == 0) {
@@ -180,8 +181,8 @@ public class AboutBookmark {
         return new ItemCursorWrapper(cursor);
     }
 
-    public ArrayList<WebPage_Info> queryBookmark(String query) {
-        ArrayList<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+    public List<WebPage_Info> queryBookmark(String query) {
+        List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE, new String[]{query});
         try {
             if (cursor.getCount() == 0) {

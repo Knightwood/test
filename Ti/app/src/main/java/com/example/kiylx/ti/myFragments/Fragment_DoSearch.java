@@ -24,14 +24,14 @@ import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class Fragment_DoSearch extends Fragment {
     private static final String TAG = "fragmentLifeCycle";
 
     private static final String ARG_PARAM1 = "param1";//这是创建fragment时要保存在bundle中数据的名称，存着的值是一个字符串（它是网址或是普通的文字）
-    private ArrayList<WebPage_Info> webPage_infoArrayList =new ArrayList<>();//用输入文字匹配之后的网址列表
+    private List<WebPage_Info> webPage_infoArrayList =new ArrayList<>();//用输入文字匹配之后的网址列表
     private ProcessRecordItem mProcessRecordItem;//处理字符串的类
     private String mCurrentURL;//用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
     private String searchbarTEXT;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
@@ -178,9 +178,9 @@ public class Fragment_DoSearch extends Fragment {
     }
 
     private class SearchrecordAdapter extends RecyclerView.Adapter<SearchItemHolder>{
-        private ArrayList<WebPage_Info> lists;
+        private List<WebPage_Info> lists;
 
-        SearchrecordAdapter(ArrayList<WebPage_Info> lists) {
+        SearchrecordAdapter(List<WebPage_Info> lists) {
             this.lists = lists;
         }
 

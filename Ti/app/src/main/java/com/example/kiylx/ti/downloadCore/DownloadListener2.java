@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.myFragments.DownloadWindow;
+import com.example.kiylx.ti.downloadFragments.DownloadWindow;
 
 /**
  * 启动自己写的多线程下载其进行下载

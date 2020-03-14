@@ -34,7 +34,7 @@ import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Bookmark_Dialog extends DialogFragment {
@@ -44,7 +44,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private TextView newFolderButton;
     private Spinner mSpinner;
     private Context mContext;
-    private ArrayList<String> bookmarkFolderlists;
+    private List<String> bookmarkFolderlists;
     private EditBookmarkFolder_Dialog mEditBoxDialog;
     private BookMarkFolderManager mBookMarkFolderManager;
     private ArrayAdapter<String> adapter;
@@ -308,7 +308,7 @@ public class Bookmark_Dialog extends DialogFragment {
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
         menuBuilder.add(0,-1,0,"添加标签");
         //存着tag的lists
-        /*ArrayList<String> mItems=mBookMarkFolderManager.getfolderListfromDB();
+        /*List<String> mItems=mBookMarkFolderManager.getfolderListfromDB();
         if(mItems==null||mItems.isEmpty()){
             //如果tag的lists是null，也就是空的，那什么tag也不会显示
             mPopupMenu.show();

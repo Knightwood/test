@@ -28,10 +28,11 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
     HistoryAdapter mAdapter;
-    ArrayList<WebPage_Info> mHistorys;
+    List<WebPage_Info> mHistorys;
     View view;
     RecyclerView listView;
     AboutHistory sAboutHistory;
@@ -197,16 +198,16 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
-        ArrayList<WebPage_Info> lists;
+        List<WebPage_Info> lists;
 
-        HistoryAdapter(ArrayList<WebPage_Info> list) {
+        HistoryAdapter(List<WebPage_Info> list) {
             this.lists = list;
             boolean ta = lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
 
 
-        void setLists(ArrayList<WebPage_Info> lists) {
+        void setLists(List<WebPage_Info> lists) {
             this.lists = lists;
         }
 

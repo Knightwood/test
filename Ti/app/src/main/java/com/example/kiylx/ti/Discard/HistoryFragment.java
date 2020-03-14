@@ -27,11 +27,12 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class HistoryFragment extends Fragment {
     private HistoryFragment.HistoryAdapter mAdapter;
-    private ArrayList<WebPage_Info> mHistorys;
+    private List<WebPage_Info> mHistorys;
     View view;
     private RecyclerView listView;
     private AboutHistory sAboutHistory;
@@ -148,15 +149,15 @@ public class HistoryFragment extends Fragment {
     }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryFragment.HistoryViewHolder> {
-        ArrayList<WebPage_Info> lists;
+        List<WebPage_Info> lists;
 
-        HistoryAdapter(ArrayList<WebPage_Info> list) {
+        HistoryAdapter(List<WebPage_Info> list) {
             this.lists = list;
             boolean ta = lists.isEmpty();
             Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
         }
 
-        void setLists(ArrayList<WebPage_Info> lists) {
+        void setLists(List<WebPage_Info> lists) {
             this.lists = lists;
         }
 

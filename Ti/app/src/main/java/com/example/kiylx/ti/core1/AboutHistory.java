@@ -12,6 +12,7 @@ import com.example.kiylx.ti.historyDataBase.HistoryDbSchema.HistoryTable;
 import com.example.kiylx.ti.historyDataBase.ItemCursorWrapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AboutHistory implements HistoryInterface {
     private static AboutHistory sAboutHistory;
@@ -34,9 +35,9 @@ public class AboutHistory implements HistoryInterface {
      * @param endDate   结束时间
      * @return 这段时间内的所有历史记录，如果传入的都是null，返回所有历史记录
      */
-    private ArrayList<WebPage_Info> getlistswithDate(String startDate, String endDate) {
+    private List<WebPage_Info> getlistswithDate(String startDate, String endDate) {
         //查询并返回一个时间段内的所有条目
-        ArrayList<WebPage_Info> temp = new ArrayList<>();
+        List<WebPage_Info> temp = new ArrayList<>();
         ItemCursorWrapper cursor = queryHistoryfromDate(startDate, endDate);
 
         try {
@@ -79,8 +80,8 @@ public class AboutHistory implements HistoryInterface {
      * @return 返回匹配的历史记录
      * 这是历史记录查询功能
      */
-    public ArrayList<WebPage_Info> query(String queryText) {
-        ArrayList<WebPage_Info> mhistoryList= new ArrayList<>();
+    public List<WebPage_Info> query(String queryText) {
+        List<WebPage_Info> mhistoryList= new ArrayList<>();
 
         Cursor cursor = mDatabase.rawQuery("SELECT * from history_item where title like'%'+?+'%' ", new String[]{queryText});
         ItemCursorWrapper cursorWrapper = new ItemCursorWrapper(cursor);
@@ -121,7 +122,7 @@ public class AboutHistory implements HistoryInterface {
      * @return 返回所有历史记录
      */
     @Override
-    public ArrayList<WebPage_Info> getDataLists() {
+    public List<WebPage_Info> getDataLists() {
         return getlistswithDate(null, null);
     }
 
@@ -131,7 +132,7 @@ public class AboutHistory implements HistoryInterface {
      * @return 返回开始到结束日期的历史记录
      */
     @Override
-    public ArrayList<WebPage_Info> getDataLists(String startdate, String endDate) {
+    public List<WebPage_Info> getDataLists(String startdate, String endDate) {
         return getlistswithDate(startdate, endDate);
     }
 

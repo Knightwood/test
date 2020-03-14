@@ -9,6 +9,7 @@ import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,7 +19,7 @@ import java.util.Observer;
  */
 public class WebViewInfo_Manager implements Observer {
 
-    private static ArrayList<WebPage_Info> mCurrectList;
+    private static List<WebPage_Info> mCurrectList;
     private Observable mObservable;
     private static WebViewInfo_Manager s_webViewInfoManager;
     private static final String TAG = "WebViewInfo_Manager";
@@ -59,7 +60,7 @@ public class WebViewInfo_Manager implements Observer {
         mCurrectList.remove(index);
     }
 
-    public static ArrayList<WebPage_Info> getPageList() {
+    public static List<WebPage_Info> getPageList() {
         try {
             return mCurrectList;
         } catch (NullPointerException m) {
