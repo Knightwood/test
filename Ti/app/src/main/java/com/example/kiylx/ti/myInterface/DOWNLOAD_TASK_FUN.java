@@ -2,6 +2,9 @@ package com.example.kiylx.ti.myInterface;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 
+/**
+ * downloadmanager实现了这些接口，在下载的线程中可以调用这些方法来控制。
+ */
 public interface DOWNLOAD_TASK_FUN {
 
     /**

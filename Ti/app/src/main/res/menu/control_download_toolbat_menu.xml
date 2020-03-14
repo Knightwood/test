@@ -3,14 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/allStart"
-        android:title="@string/startAllDownload"
-        android:icon="@drawable/download_button_action"
+        android:icon="@drawable/ic_play_arrow_black_24dp"
         android:orderInCategory="100"
-        app:showAsAction="always"/>
+        android:title="@string/startAllDownload"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/pauseAll"
+        android:icon="@drawable/ic_pause_black_24dp"
+        android:title="全部暂停"
+        app:showAsAction="always" />
     <item
         android:id="@+id/allCancel"
-        android:title="@string/CancelallDownload"
         android:icon="@drawable/ic_delete_forever_black_24dp"
         android:orderInCategory="100"
-        app:showAsAction="always"/>
+        android:title="@string/CancelallDownload"
+        app:showAsAction="always" />
+
 </menu>

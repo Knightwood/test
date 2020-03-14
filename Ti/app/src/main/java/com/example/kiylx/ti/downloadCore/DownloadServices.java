@@ -43,7 +43,21 @@ public class DownloadServices extends Service {
         super.onDestroy();
     }
 
-    public class DownloadBinder extends Binder implements DownloadMethod {
+    public class DownloadBinder extends Binder {
+
+        /**
+         * @return 返回正在下载的个数
+         */
+        public int getDownloadingNum(){
+            return mDownloadManager.getDownloadingNum();
+        }
+
+        /**
+         * @return 返回暂停下载的个数
+         */
+        public int getPauseNum() {
+            return mDownloadManager.getPauseNum();
+        }
 
         /**
          * @param info     文件信息
@@ -51,14 +65,14 @@ public class DownloadServices extends Service {
          * @param filePath 修改的文件存储路径
          * @return 被修改后的文件信息
          */
-        @Override
+
         public DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath) {
             info.setFileName(fileName);
             info.setPath(filePath);
             return info;
         }
 
-        @Override
+
         public void startDownload(DownloadInfo info) {
             if (mDownloadManager == null) {
                 mDownloadManager = DownloadManager.getInstance();
@@ -70,43 +84,44 @@ public class DownloadServices extends Service {
             }
         }
 
-        @Override
-        public void startAll() {
 
-        }
+        /**
+         * 开始全部的下载任务
+         */
 
-        @Override
+
+
         public void resumeDownload(DownloadInfo info) {
             mDownloadManager.resumeDownload(info);
         }
 
-        @Override
+
         public void resumeAll() {
             mDownloadManager.resumeAll();
         }
 
-        @Override
+
         public void pauseDownload(DownloadInfo info) {
             mDownloadManager.pauseDownload(info);
         }
 
-        @Override
+
         public void pauseAll() {
             mDownloadManager.pauseAll();
         }
 
-        @Override
+
         public void canaelDownload(DownloadInfo info) {
             mDownloadManager.cancelDownload(info, false);
 
         }
 
-        @Override
+
         public void cancelAll() {
             mDownloadManager.canaelAll();
         }
 
-        @Override
+
         public float getRate(DownloadInfo info) {
             return mDownloadManager.getPercentage(info);
 

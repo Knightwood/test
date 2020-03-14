@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.corebase.SomeRes;
 import com.example.kiylx.ti.downloadInfo_storage.DatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
@@ -18,21 +20,25 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static io.reactivex.Flowable.fromArray;
+
 /*
-* 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
-* 要增加一个观察者模式推送各个下载list给downloadactivity
-* 要增加代码更新item的xml的进度条
-* 增加前台服务，不再写绑定到mainactivity等啰嗦的代码
-* 关于下载list为null的情况的处理*/
+ * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
+ * 要增加一个观察者模式推送各个下载list给downloadactivity
+ * 要增加代码更新item的xml的进度条
+ * 增加前台服务，不再写绑定到mainactivity等啰嗦的代码
+ * 关于下载list为null的情况的处理*/
 public class DownloadManager {
     private static final String TAG = "下载管理器";
 
@@ -65,7 +71,7 @@ public class DownloadManager {
      */
     private DownloadManager() {
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        downloadNumLimit = 5;//还没写配置文件，这里用5暂时代替
+        downloadNumLimit = SomeRes.downloadLimit;//还没写配置文件，这里用5暂时代替
 
         downloading = new ArrayList<>();
         pausedownload = new ArrayList<>();
@@ -194,7 +200,7 @@ public class DownloadManager {
                 //加入下载队列
                 downloading.add(info);
                 //第一次开始下载就该存入数据库
-               //-insertData(info);
+                //-insertData(info);
             }
         }
         //执行更新线程，只要开始下载就要开始更新
@@ -360,8 +366,30 @@ public class DownloadManager {
         this.mContext = context;
     }
 
-    public List<DownloadInfo> getDownloading(){
+    public List<DownloadInfo> getDownloading() {
         return downloading;
+    }
+
+    /**
+     * @return 返回正在下载的任务数量
+     */
+    public int getDownloadingNum() {
+        if (downloading.isEmpty() || downloading == null) {
+            return 0;
+        } else {
+            return downloading.size();
+        }
+    }
+
+    /**
+     * @return 返回暂停下载的个数
+     */
+    public int getPauseNum() {
+        if (pausedownload.isEmpty() || pausedownload == null) {
+            return 0;
+        } else {
+            return pausedownload.size();
+        }
     }
 
     /*废弃
@@ -380,6 +408,7 @@ public class DownloadManager {
     private void delete(DownloadInfo info) {
         DatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformInfo(info));
     }
+
 
     /**
      * 在downloading列表不为空的时候不停的更新里面 “ 每一个条目 ” 的数据。
@@ -449,14 +478,11 @@ public class DownloadManager {
         }
     }
 
-    private void storge(){
-        Observable<DownloadInfo> observable= Observable.create(new ObservableOnSubscribe<DownloadInfo>() {
-            @Override
-            public void subscribe(ObservableEmitter<DownloadInfo> emitter) throws Exception {
+    private void storge() {
 
-            }
-        }).subscribeOn(Schedulers.newThread());
-        Observer<DownloadInfo> observer=new Observer<DownloadInfo>() {
+        //interval 操作符用于间隔时间执行某个操作，其接受三个参数，分别是第一次发送延迟，间隔时间，时间单位
+
+        Observer<DownloadInfo> observer = new Observer<DownloadInfo>() {
 
             @Override
             public void onSubscribe(Disposable d) {
@@ -478,7 +504,7 @@ public class DownloadManager {
 
             }
         };
-        observable.subscribe(observer);
+
     }
 
 }

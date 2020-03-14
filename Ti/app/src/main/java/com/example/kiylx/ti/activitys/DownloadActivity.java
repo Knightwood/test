@@ -25,11 +25,10 @@ import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadManager;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadFragments.CancelDownloadFragment;
+import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -42,11 +41,7 @@ import java.util.Objects;
  */
 public class DownloadActivity extends AppCompatActivity {
 
-    /**
-     * 放下载的列表的recyclerview
-     */
-    private RecyclerView rootview;
-    private DownloadViewAdapter mAdapter;
+
     /**
      * 存放下载的信息的列表
      */
@@ -54,7 +49,7 @@ public class DownloadActivity extends AppCompatActivity {
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
     private int selectPage;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
-    private DownloadManager downloadManager=DownloadManager.getInstance();
+    private DownloadManager downloadManager = DownloadManager.getInstance();
 
     public DownloadActivity() {
         super();
@@ -82,7 +77,7 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
-        rootview = findViewById(R.id.downloadRecyclerview);
+
         //下载条目xml控制下载所调用的方法
         controlMethod = new DownloadClickMethod() {
             @Override
@@ -102,9 +97,8 @@ public class DownloadActivity extends AppCompatActivity {
         };
         //downloadList=从存储中获取下载信息
 
-        //更新列表视图--废弃
-        //updateUI();
-downloadList=downloadManager.getDownloading();
+
+        downloadList = downloadManager.getDownloading();
         downloadingFragment();
 
         //开启下载服务
@@ -138,29 +132,32 @@ downloadList=downloadManager.getDownloading();
                         downloadBinder.cancelAll();
                         break;
                     case R.id.allStart:
-                        downloadBinder.startAll();
+                        downloadBinder.resumeAll();
+                        break;
+                    case R.id.pauseAll:
+                        downloadBinder.pauseAll();
                         break;
                 }
                 return false;
             }
         });
 //底栏
-        BottomNavigationView bottomView=findViewById(R.id.downloadBottomNavigation);
+        BottomNavigationView bottomView = findViewById(R.id.downloadBottomNavigation);
         bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()){
+                switch (menuItem.getItemId()) {
                     case R.id.downloading:
-                        if (selectPage!=0)
-                        downloadingFragment();
+                        if (selectPage != 0)
+                            downloadingFragment();
                         break;
                     case R.id.downloadFinish:
-                        if (selectPage!=1)
-                        finishFragment();
+                        if (selectPage != 1)
+                            finishFragment();
                         break;
                     case R.id.cancel:
-                        if (selectPage!=2)
-                        cancelFragment();
+                        if (selectPage != 2)
+                            settingFragment();
                         break;
                 }
                 return false;
@@ -168,10 +165,42 @@ downloadList=downloadManager.getDownloading();
         });
     }
 
+
+    /**
+     * 创建菜单
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.control_download_toolbat_menu, menu);
+        /*if (downloadBinder.getDownloadingNum()>0){
+            //根据有没有下载任务设置不同的图标
+            menu.findItem(R.id.allStart).setIcon(R.drawable.ic_pause_black_24dp);
+        }else{
+            menu.findItem(R.id.allStart).setIcon(R.drawable.ic_play_arrow_black_24dp);
+        }*/
+
         return true;
+    }
+
+
+    /*
+   系统调用onCreateOptionsMenu方法后，将保留创建的Menu实例。
+除非菜单由于某些原因而失效，否则不会再次调用onCreateOptionsMenu。
+因此，我们只应该使用onCreateOptionsMenu来创建初始菜单状态，而不应使用它在Activity生命周期中对菜单执行任何更改。
+   如果需要根据在Activity生命周期中发生的某些事件修改选项菜单，则应该通过onPrepareOptionsMenu方法实现。
+这个方法的参数中有一个Menu对象（即旧的Menu对象），我们可以使用它对菜单执行修改，如添加、移除、启用或禁用菜单项。
+（Fragment同样提供onPrepareOptionsMenu方法，只是不需要提供返回值）
+   需要注意，在Android 3.0及更高版本中，当菜单项显示在应用栏中时，选项菜单被视为始终处于打开状态。
+发生事件时，如果要执行菜单更新，则必须调用 invalidateOptionsMenu来请求系统调用onPrepareOptionsMenu方法。
+*/
+
+    /**
+     * @param menu
+     * @return 改变toolbar中按钮的状态
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -192,134 +221,35 @@ downloadList=downloadManager.getDownloading();
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-    private void updateUI() {
-        rootview.setLayoutManager(new LinearLayoutManager(DownloadActivity.this));
-        if (mAdapter == null) {
-            mAdapter = new DownloadViewAdapter();
-            mAdapter.setLists(downloadList);
-        } else {
-            mAdapter.setLists(downloadList);
-            mAdapter.notifyDataSetChanged();
-        }
-        rootview.setAdapter(mAdapter);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //-unbindService(connection);
-    }
-
-    //=========================下载列表适配器======================================//
-    private class DownloadViewAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
-        List<DownloadInfo> infos;
-
-        public DownloadViewAdapter() {
-            infos = new ArrayList<>();
-        }
-
-        /**
-         * @param list 所有的下列信息
-         *             赋值下载信息的列表，准备构建recyclerview视图
-         */
-        public void setLists(List<DownloadInfo> list) {
-            this.infos = list;
-        }
-
-        @NonNull
-        @Override
-        public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = getLayoutInflater().inflate(R.layout.download_item, parent, false);
-            return new DownloadViewHolder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull DownloadViewHolder holder, int position) {
-            holder.binding(infos.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return this.infos.size();
-        }
-    }
-    //=========================viewholder======================================//
-    private class DownloadViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        String fileName;
-        String DownloadURL;
-
-        DownloadInfo mDownloadInfo;
-
-        TextView filenameView;
-        TextView URlview;
-        ImageButton startDownload;
-        ImageButton deleteView;
-
-        public DownloadViewHolder(@NonNull View itemView) {
-            super(itemView);
-            startDownload = itemView.findViewById(R.id.resumeDownload);
-            deleteView = itemView.findViewById(R.id.deleteDownloadinfo);
-            filenameView = itemView.findViewById(R.id.downloadTtitle);
-            URlview = itemView.findViewById(R.id.downloadUrl);
-
-            startDownload.setOnClickListener(this);
-            deleteView.setOnClickListener(this);
-
-        }
-
-        public void binding(DownloadInfo info) {
-            mDownloadInfo = info;
-            fileName = info.getFileName();
-            DownloadURL = info.getUrl();
-
-        }
-
-        @Override
-        /**
-         * 控制下载行为
-         */
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.resumeDownload:
-                    downloadBinder.resumeDownload(mDownloadInfo);
-                    break;
-                case R.id.deleteDownloadinfo:
-                    downloadBinder.canaelDownload(mDownloadInfo);
-                    break;
-            }
-        }
-
-
-    }
-
     /**
      * 开启正在下载fragment
      */
     public void downloadingFragment() {
-        selectPage=0;
+        selectPage = 0;
         DownloadingFragment fragment = DownloadingFragment.getInstance(downloadList, controlMethod);
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
 
     }
+
     /**
      * 开启完成下载的fragment
      */
-    public void finishFragment(){
-        selectPage=1;
+    public void finishFragment() {
+        selectPage = 1;
         DownloadFinishFragment fragment = new DownloadFinishFragment(null);
-        FragmentManager manager=getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
     }
+
     /**
-     * 开启取消下载fragment
+     * 开启下载设置界面
      */
-    public void cancelFragment(){
-        selectPage=2;
-        CancelDownloadFragment fragment = new CancelDownloadFragment(null);
-        FragmentManager manager=getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer,fragment).commit();
+    public void settingFragment() {
+        selectPage = 2;
+        DownloadSettingFragment fragment = new DownloadSettingFragment(null);
+        FragmentManager manager = getSupportFragmentManager();
+        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
 

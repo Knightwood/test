@@ -2,9 +2,9 @@ package com.example.kiylx.ti.downloadFragments;
 
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
-public class CancelDownloadFragment extends DownloadbaseFragment {
+public class DownloadSettingFragment extends DownloadbaseFragment {
 
-    public CancelDownloadFragment(DownloadClickMethod method) {
+    public DownloadSettingFragment(DownloadClickMethod method) {
         super(method);
     }
 }
