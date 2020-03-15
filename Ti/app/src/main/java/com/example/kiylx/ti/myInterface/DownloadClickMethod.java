@@ -17,4 +17,8 @@ public interface DownloadClickMethod {
     void pause(DownloadInfo info);
 
     void cancel(DownloadInfo info);
+
+    void reasume(DownloadInfo info);
+
+    float getPercent(DownloadInfo info);
 }

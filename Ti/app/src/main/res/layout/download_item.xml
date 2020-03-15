@@ -9,13 +9,13 @@ file:C:\Users\Kiylx\AndroidStudioProjects\Ti\app\src\main\res\layout\download_it
 loc:49:31 - 49:87
 ****\ data binding error ****
 -->
-    <data>
+    <!--<data>
 
         <variable
-            name="control"
+            name="itemcontrol"
             type="com.example.kiylx.ti.model.DownloadControlViewModel" />
 
-    </data>
+    </data>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +26,6 @@ loc:49:31 - 49:87
             android:layout_width="0dp"
             android:layout_height="25dp"
             android:singleLine="true"
-            android:text="@{control.filename}"
             android:textAlignment="textStart"
             android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -41,27 +40,25 @@ loc:49:31 - 49:87
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.75" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/resumeDownload"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/startDownloadButton"
-            android:onClick="@{()->control.downloadandpause()}"
-            android:src="@drawable/download_button_action"
+            android:background="@drawable/ic_play_arrow_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/deleteDownloadinfo"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/deleteDownloadinfo"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_marginEnd="4dp"
             android:contentDescription="@string/deleteDownloadButton"
-            android:onClick="@{()->control.cancelDownload()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +70,6 @@ loc:49:31 - 49:87
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:max="100"
-            android:progress="@{control.procress}"
             app:layout_constraintBottom_toTopOf="@+id/downloadUrl"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,7 +80,6 @@ loc:49:31 - 49:87
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="@{control.fileUrl}"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"

@@ -1,11 +1,14 @@
 package com.example.kiylx.ti.model;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
-public class DownloadControlViewModel {
+public class DownloadControlViewModel extends BaseObservable {
     private DownloadInfo mDownloadInfo;
-
+    private DownloadClickMethod mInterface;
     /**
      * 下载的进度
      */
@@ -18,15 +21,13 @@ public class DownloadControlViewModel {
      */
     public boolean cheak;
 
-    private DownloadClickMethod mInterface;
-
     public DownloadControlViewModel(DownloadClickMethod method) {
         this.mInterface = method;
     }
 
     /**
      * @param downloadInfo 下载信息。
-     *
+     *                     <p>
      *                     设置好下载信息，方便xml访问这些数据。
      */
     public void setDownloadInfo(DownloadInfo downloadInfo) {
@@ -34,8 +35,9 @@ public class DownloadControlViewModel {
 
         this.setFileUrl(downloadInfo.getUrl());
         this.setFilename(downloadInfo.getFileName());
-        this.procress =((int)(downloadInfo.getProcress()*100));
+        this.procress = ((int) (downloadInfo.getProcress() * 100));
     }
+
     public String getFileUrl() {
         return fileUrl;
     }
@@ -46,7 +48,6 @@ public class DownloadControlViewModel {
 
     /**
      * xml控制下载或时暂停。
-     *
      */
     public void downloadandpause() {
         if (cheak) {
@@ -61,7 +62,9 @@ public class DownloadControlViewModel {
     }
 
 
-
+    public DownloadClickMethod getmInterface() {
+        return mInterface;
+    }
 
     public String getFilename() {
         return filename;
@@ -71,7 +74,13 @@ public class DownloadControlViewModel {
         this.filename = filename;
     }
 
+    @Bindable
     public int getProcress() {
-        return (int)(mDownloadInfo.getProcress()*100);
+        return (int) (mDownloadInfo.getProcress() * 100);
+    }
+
+    public void setProcress(int procress) {
+        this.procress = procress;
+        notify();
     }
 }

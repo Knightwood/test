@@ -23,38 +23,42 @@ import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownloadbaseFragment extends Fragment {
+public abstract class DownloadbaseFragment extends Fragment {
 
     private View mRootView;
-    RecyclerView viewContainer;
+    private RecyclerView viewContainer;
     private List<DownloadInfo> mDownloadInfoArrayList;
     private listAdapter mAdapter;
-    private DownloadClickMethod mClickMethod;
 
+    /**
+     * @return 让子类重写此方法，提供不同的itemview视图。
+     */
     @LayoutRes
-    private int getresId() {
+    public int getresId() {
         return R.layout.downloadbasefragments;
     }
+    /**
+     * @param v    条目视图
+     * @param info 绑定到视图的数据
+     *             交给子类实现去绑定视图以及控制方法
+     */
+    public abstract void bindItemView(View v, DownloadInfo info);
 
-    public DownloadbaseFragment(DownloadClickMethod method) {
+    public DownloadbaseFragment() {
         super();
-        this.mClickMethod=method;
     }
 
-    public void setDownloadInfoArrayList(List<DownloadInfo> list) {
+    public DownloadbaseFragment(List<DownloadInfo> list) {
         this.mDownloadInfoArrayList = list;
-
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //return super.onCreateView(inflater, container, savedInstanceState);
-        mRootView = inflater.inflate(getresId(),null);
+        mRootView = inflater.inflate(getresId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
-
         updateUI();
-
         return mRootView;
     }
 
@@ -69,34 +73,46 @@ public class DownloadbaseFragment extends Fragment {
     }
 
     private void updateUI() {
-        if (mDownloadInfoArrayList==null){
+        if (mDownloadInfoArrayList == null) {
             return;
         }
         viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         if (mAdapter == null) {
-            mAdapter = new listAdapter();
-            mAdapter.setLists(mDownloadInfoArrayList);
+            mAdapter = new listAdapter(mDownloadInfoArrayList);
+            viewContainer.setAdapter(mAdapter);
         } else {
+            mAdapter.setLists(mDownloadInfoArrayList);
             mAdapter.notifyDataSetChanged();
         }
-        viewContainer.setAdapter(mAdapter);
 
+    }
+
+    /**
+     * @param list 存储下载信息的列表
+     *             传入新的数据，更新界面
+     */
+    public void updateUI(List<DownloadInfo> list){
+        this.mDownloadInfoArrayList=list;
+        updateUI();
     }
 
     private class listAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
         private List<DownloadInfo> mLists;//recyclerview所用的数据
 
+        public listAdapter(List<DownloadInfo> list){
+            this.mLists=list;
+        }
 
-        void setLists(List<DownloadInfo> list) {
+        public void setLists(List<DownloadInfo> list) {
             this.mLists = list;
         }
 
         @NonNull
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            //View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
-            DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
-            return new DownloadViewHolder(itemBinding);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
+            //DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
+            return new DownloadViewHolder(v);
         }
 
         @Override
@@ -111,6 +127,21 @@ public class DownloadbaseFragment extends Fragment {
     }
 
     public class DownloadViewHolder extends RecyclerView.ViewHolder {
+        private DownloadInfo mDownloadInfo;
+        private View downloadItemView;
+
+        public DownloadViewHolder(@NonNull View itemView) {
+            super(itemView);
+            downloadItemView=itemView;
+        }
+
+        public void bindView(DownloadInfo info) {
+            this.mDownloadInfo = info;
+            //绑定视图，这里由子类实现
+            bindItemView(downloadItemView, info);
+        }
+    }
+    /*public class DownloadViewHolder extends RecyclerView.ViewHolder {
         DownloadInfo mDownloadInfo;
         private DownloadItemBinding mBinding;
 
@@ -120,26 +151,17 @@ public class DownloadbaseFragment extends Fragment {
 
             //绑定上viewModel
             //mClickMethod是item布局控制实际下载方法的途径，由fragment依附的DownloadActivity实现
-            mBinding.setControl(new DownloadControlViewModel(mClickMethod));
+            mBinding.setItemcontrol(new DownloadControlViewModel(mClickMethod));
         }
 
 
         public void bindView(DownloadInfo info) {
             this.mDownloadInfo = info;
             //设置数据
-            mBinding.getControl().setDownloadInfo(mDownloadInfo);
-
-            //bind1(mBinding.getRoot(),mDownloadInfo);
+            mBinding.getItemcontrol().setDownloadInfo(mDownloadInfo);
+            bindItemView(mRootView,info);
         }
 
-    }
-
-    /**
-     * @param v 条目视图
-     * @param info 绑定到视图的数据
-     */
-    public void bind1(View v,DownloadInfo info){
-
-    }
+    }*/
 
 }

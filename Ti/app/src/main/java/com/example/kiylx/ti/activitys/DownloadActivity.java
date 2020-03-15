@@ -78,33 +78,16 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
 
-        //下载条目xml控制下载所调用的方法
-        controlMethod = new DownloadClickMethod() {
-            @Override
-            public void download(DownloadInfo info) {
-                downloadBinder.startDownload(info);
-            }
-
-            @Override
-            public void pause(DownloadInfo info) {
-                downloadBinder.pauseDownload(info);
-            }
-
-            @Override
-            public void cancel(DownloadInfo info) {
-                downloadBinder.canaelDownload(info);
-            }
-        };
-        //downloadList=从存储中获取下载信息
-
-
-        downloadList = downloadManager.getDownloading();
-        downloadingFragment();
-
         //开启下载服务
         //startDownoadService();
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
+        //下载条目xml控制下载所调用的方法
+        controlMethod = downloadBinder.getInferface();
+        //downloadList=从存储中获取下载信息
+
+        downloadList = downloadManager.getDownloading();
+        downloadingFragment();
 
         //测试开始下载任务的按钮
         Button bui = findViewById(R.id.ceshianniu);
@@ -226,7 +209,7 @@ public class DownloadActivity extends AppCompatActivity {
      */
     public void downloadingFragment() {
         selectPage = 0;
-        DownloadingFragment fragment = DownloadingFragment.getInstance(downloadList, controlMethod);
+        DownloadingFragment fragment = DownloadingFragment.getInstance(controlMethod,downloadList);
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
 
@@ -254,3 +237,28 @@ public class DownloadActivity extends AppCompatActivity {
 
 
 }
+/*new DownloadClickMethod() {
+            @Override
+            public void download(DownloadInfo info) {
+                downloadBinder.startDownload(info);
+            }
+
+            @Override
+            public void pause(DownloadInfo info) {
+                downloadBinder.pauseDownload(info);
+            }
+
+            @Override
+            public void cancel(DownloadInfo info) {
+                downloadBinder.canaelDownload(info);
+            }
+
+            @Override
+            public void reasume(DownloadInfo info) {
+                downloadBinder.resumeDownload(info);
+            }
+
+            @Override
+            public void getPercent(DownloadInfo info) {
+                downloadBinder.getRate(info);
+            }*/

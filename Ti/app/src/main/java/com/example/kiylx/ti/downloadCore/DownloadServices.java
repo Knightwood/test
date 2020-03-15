@@ -8,6 +8,7 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.example.kiylx.ti.myInterface.DownloadMethod;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class DownloadServices extends Service {
     private DownloadBinder mDownloadBinder;
     private DownloadManager mDownloadManager;
+    private DownloadClickMethod controlMethod;
 
     @Override
     public void onCreate() {
@@ -48,7 +50,7 @@ public class DownloadServices extends Service {
         /**
          * @return 返回正在下载的个数
          */
-        public int getDownloadingNum(){
+        public int getDownloadingNum() {
             return mDownloadManager.getDownloadingNum();
         }
 
@@ -84,15 +86,42 @@ public class DownloadServices extends Service {
             }
         }
 
-
         /**
-         * 开始全部的下载任务
+         * @return 返回控制下载任务的接口
+         * <p>
+         * 下载任务条目会使用这些接口控制下载过程，而这些接口调用的是downloadmanager中的方法
          */
+        public DownloadClickMethod getInferface() {
+            if (controlMethod == null) {
+                controlMethod = new DownloadClickMethod() {
+                    @Override
+                    public void download(DownloadInfo info) {
+                        startDownload(info);
+                    }
 
+                    @Override
+                    public void pause(DownloadInfo info) {
+                        mDownloadManager.pauseDownload(info);
+                    }
 
+                    @Override
+                    public void cancel(DownloadInfo info) {
+                        mDownloadManager.cancelDownload(info);
+                    }
 
-        public void resumeDownload(DownloadInfo info) {
-            mDownloadManager.resumeDownload(info);
+                    @Override
+                    public void reasume(DownloadInfo info) {
+                        mDownloadManager.resumeDownload(info);
+                    }
+
+                    @Override
+                    public float getPercent(DownloadInfo info) {
+                        return mDownloadManager.getPercentage(info);
+                    }
+                };
+
+            }
+            return controlMethod;
         }
 
 
@@ -100,32 +129,13 @@ public class DownloadServices extends Service {
             mDownloadManager.resumeAll();
         }
 
-
-        public void pauseDownload(DownloadInfo info) {
-            mDownloadManager.pauseDownload(info);
-        }
-
-
-        public void pauseAll() {
-            mDownloadManager.pauseAll();
-        }
-
-
-        public void canaelDownload(DownloadInfo info) {
-            mDownloadManager.cancelDownload(info);
-        }
-
-
         public void cancelAll() {
             mDownloadManager.canaelAll();
         }
 
-
-        public float getRate(DownloadInfo info) {
-            return mDownloadManager.getPercentage(info);
-
+        public void pauseAll() {
+            mDownloadManager.pauseAll();
         }
     }
-
 
 }
