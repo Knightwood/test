@@ -13,6 +13,8 @@ import com.example.kiylx.ti.downloadInfo_storage.DatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -251,14 +253,10 @@ public class DownloadManager {
      *             暂停的时候因为有下载数量限制，所以有一些调用暂停时是暂态等待下载的任务。
      */
     public void pauseDownload(@NonNull DownloadInfo info) {
-        if (info.isWaitDownload()) {
-            //如果是等待下载（等待下载时也算是“正在下载的一种”）
-
-            downloading.remove(info);
-            pausedownload.add(info);
+        if (info.isWaitDownload()) {//如果是等待下载（等待下载时也算是“正在下载的一种”）
             info.setWaitDownload(false);
         }
-        //正在下载或是等待下载，都要设置暂停为假
+        //正在下载或是等待下载，都要设置"暂停"为真
         info.setPause(true);
 
     }
@@ -268,36 +266,38 @@ public class DownloadManager {
      */
     public void pauseAll() {
         for (int i = 0; i < readyDownload.size(); i++) {
-            DownloadInfo info=readyDownload.get(i);
+            DownloadInfo info = readyDownload.get(i);
             info.setPause(true);
-            info.setWaitDownload(true);
+            info.setWaitDownload(false);
             pausedownload.add(info);
-            readyDownload.clear();
-
         }
+        readyDownload.clear();
         for (int i = 0; i < downloading.size(); i++) {
 
-            DownloadInfo info= downloading.get(i);
-            info.setPause(true);
+            downloading.get(i).setPause(true);
         }
 
     }
 
     /**
      * @param info 下载信息
-     *             继续下载
-     *             判断downloading列表是否满了，如果满了，放进ready列表
+     *             继续下载任务，在resume()方法中使任务继续下载，
+     *             在resumeDownload(@NonNull DownloadInfo info)中移除暂停下载列表中的任务
      */
     public void resumeDownload(@NonNull DownloadInfo info) {
 
         resume(info);
-
+        pausedownload.remove(info);//移除暂停列表中的这个条目
     }
 
+    /**
+     * 遍历暂停下载列表，调用resume(DownloadInfo info)恢复下载，然后清空暂停下载列表
+     */
     public void resumeAll() {
         for (int i = 0; i < pausedownload.size(); i++) {
             resume(pausedownload.get(i));
         }
+        pausedownload.clear();
     }
 
     /**
@@ -308,13 +308,14 @@ public class DownloadManager {
      * 否则，设置pause标志为假，加入正在下载列表，开始下载
      */
     private void resume(DownloadInfo info) {
-
-        pausedownload.remove(info);//移除暂停列表中的这个条目
         //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载
+        info.setPause(false);
         if (downloading.size() == downloadNumLimit) {
+            info.setWaitDownload(true);
             readyDownload.add(info);
+
         } else {
-            info.setPause(false);//暂停标志设为假
+            info.setWaitDownload(false);
             downloading.add(info);
             try {
                 startDownload(info);
@@ -327,39 +328,31 @@ public class DownloadManager {
 
     /**
      * @param info       下载信息
-     * @param deleteFile 是否删除文件
      *                   <p>
-     *                   修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *                   如果任务“正在下载”，修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *                   <p>
      *                   取消下载的流程实现暂停，然后再删除文件
      *                   1.正在下载：调用暂停，然后删除文件。
      *                   2.暂停，直接删除文文件。
      *                   3.准备下载，调用暂停，然后删除。
      *                   <p>
-     *                   先暂停，然后从暂停列表中移除info，根据标志，决定是否删除文件。设置取消标志而不是从数据库删除条目。
-     *                   然后再次调用时，若cancel是true，文件也不存在，删除数据库记录
+     *                   先暂停，然后从暂停列表中移除info。
      */
-    void cancelDownload(@NonNull DownloadInfo info, boolean deleteFile) {
-
-        if (info.isCancel()) {
-            //如果有取消标志，意味着文件已经删除，也没有在任何一个“下载状态”中，所以直接从数据库删除条目
-            //-delete(info);
-        } else {
+    public void cancelDownload(@NonNull DownloadInfo info) {
             if (!info.isPause()) {
                 //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
                 pauseDownload(info);
             }
-            pausedownload.remove(info);
             info.setCancel(true);
-            if (deleteFile) {
-                deleteFile(info);
-            }
-        }
+            pausedownload.remove(info);
+            deleteFile(info);
+
     }
 
     /**
      * 取消全部下载
      */
-    void canaelAll() {
+    public void canaelAll() {
         //暂停全部任务。
         pauseAll();
         //删除文件
@@ -405,6 +398,7 @@ public class DownloadManager {
         this.mContext = context;
     }
 
+    @NotNull
     public List<DownloadInfo> getDownloading() {
         return downloading;
     }
@@ -413,7 +407,7 @@ public class DownloadManager {
      * @return 返回正在下载的任务数量
      */
     public int getDownloadingNum() {
-        if (downloading.isEmpty() || downloading == null) {
+        if (downloading.isEmpty()) {
             return 0;
         } else {
             return downloading.size();
@@ -424,7 +418,7 @@ public class DownloadManager {
      * @return 返回暂停下载的个数
      */
     public int getPauseNum() {
-        if (pausedownload.isEmpty() || pausedownload == null) {
+        if (pausedownload.isEmpty()) {
             return 0;
         } else {
             return pausedownload.size();

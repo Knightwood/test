@@ -112,8 +112,7 @@ public class DownloadServices extends Service {
 
 
         public void canaelDownload(DownloadInfo info) {
-            mDownloadManager.cancelDownload(info, false);
-
+            mDownloadManager.cancelDownload(info);
         }
 
 
