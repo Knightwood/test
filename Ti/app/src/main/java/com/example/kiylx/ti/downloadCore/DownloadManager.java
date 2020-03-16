@@ -4,11 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadInfo_storage.DatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
@@ -21,19 +20,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-import static io.reactivex.Flowable.fromArray;
 
 /*
  * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。

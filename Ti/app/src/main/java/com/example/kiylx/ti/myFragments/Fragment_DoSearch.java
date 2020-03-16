@@ -19,7 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 

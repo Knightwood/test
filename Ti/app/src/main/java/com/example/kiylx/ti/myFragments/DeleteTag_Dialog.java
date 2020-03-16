@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.BookMarkFolderManager;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;
 

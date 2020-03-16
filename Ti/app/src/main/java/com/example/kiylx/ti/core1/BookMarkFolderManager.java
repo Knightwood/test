@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderCursorWrapper;
 import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDbSchema;
 import com.example.kiylx.ti.favoritePageDataBase.BookmarkFolderDBOpenHelper;

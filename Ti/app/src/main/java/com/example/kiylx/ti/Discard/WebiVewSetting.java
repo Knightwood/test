@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.core1;
+package com.example.kiylx.ti.Discard;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
@@ -33,9 +33,9 @@ public class WebiVewSetting {
         webView.canGoForward();
 
         //系统的下载器
-        webView.setDownloadListener(new DownloadListener1(context));
+        //webView.setDownloadListener(new DownloadListener1(context));
         //内置下载器
-        //webView.setDownloadListener(new DownloadListener2(context));
+        webView.setDownloadListener(new DownloadListener2(context));
 
         WebSettings settings = webView.getSettings();
         // webview启用javascript支持 用于访问页面中的javascript

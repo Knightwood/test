@@ -9,10 +9,9 @@ import android.webkit.WebView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.activitys.MainActivity;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
-import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
 import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
@@ -370,13 +369,14 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         webView.canGoBack();
         webView.canGoForward();
 
-        if (defaultValue.getUseCustomDwnloadTool()) {
+        webView.setDownloadListener(new DownloadListener2(context));
+        /*if (defaultValue.getUseCustomDwnloadTool()) {
             //内置下载器
-            webView.setDownloadListener(new DownloadListener2(context));
+
         } else {
             //系统的下载器
             webView.setDownloadListener(new DownloadListener1(context));
-        }
+        }*/
 
         // webview启用javascript支持 用于访问页面中的javascript
         settings.setJavaScriptEnabled(true);

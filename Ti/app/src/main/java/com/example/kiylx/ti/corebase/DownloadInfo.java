@@ -2,6 +2,8 @@ package com.example.kiylx.ti.corebase;
 
 import android.os.Environment;
 
+import com.example.kiylx.ti.conf.SomeRes;
+
 /**
  * pause 暂停标志
  * <p>

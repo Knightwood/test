@@ -32,11 +32,12 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 
+import com.example.kiylx.ti.conf.PConf;
 import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadFragments.DownloadWindow;
@@ -77,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firstInstall();//判断是不是第一次安装
         setContentView(R.layout.activity_main);
-
         //获取首选项
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -198,6 +199,22 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         return true;
     }
 
+    /**
+     * 第一次安装后启动，写入一个preference，判断是不是第一次打开
+     * 若是，打开启动页，并关闭mainactivity，在startpageactivity中作出一系列的初始化操作
+     */
+    private void firstInstall() {
+
+        if (!PConf.getBoolean(this,"Installed")){
+            //如果是第一次打开应用Installed不存在，默认拿到false。则可以在这里做一些初始化操作。之后写入Installed为true。
+            PConf.putBoolean(this,"Installed",true);
+
+            Intent intent=new Intent(MainActivity.this,StartPageActivity.class);
+            startActivity(intent);//打开启动页activity
+            finish();//结束mainactivity
+        }
+
+    }
 
     private void exit() {
         if ((System.currentTimeMillis() - mExitTime) > 1000) {
@@ -526,8 +543,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         isOpenedSearchText = true;
 
         EditText editText = inflated.findViewById(R.id.textView_search);
-        ImageButton goaHead=inflated.findViewById(R.id.goahead);
-        ImageButton back=inflated.findViewById(R.id.back);
+        ImageButton goaHead = inflated.findViewById(R.id.goahead);
+        ImageButton back = inflated.findViewById(R.id.back);
 
         editText.setText("");//清空文本框内容
         goaHead.setOnClickListener(new View.OnClickListener() {

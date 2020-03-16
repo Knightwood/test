@@ -13,47 +13,74 @@ import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import java.util.List;
 
 public class DownloadingFragment extends DownloadbaseFragment {
-private DownloadClickMethod controlInterface;
+    private DownloadClickMethod controlInterface;
+
     /**
      * @param minterface 控制下载任务的接口
-     * @param list 下载任务列表
+     * @param list       下载任务列表
      * @return downloadingFragment
      */
-    public static DownloadingFragment getInstance(DownloadClickMethod minterface,List<DownloadInfo> list) {
-        return new DownloadingFragment(minterface,list);
+    public static DownloadingFragment getInstance(DownloadClickMethod minterface, List<DownloadInfo> list) {
+        return new DownloadingFragment(minterface, list);
     }
 
-    public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list ) {
+    public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list) {
         super(list);
-        controlInterface=minterface;
+        controlInterface = minterface;
     }
 
     //重写的viewholder中的bind方法
     @Override
     public void bindItemView(View v, DownloadInfo info) {
-        TextView title=v.findViewById(R.id.downloadTtitle);
-        TextView url=v.findViewById(R.id.downloadUrl);
-        ProgressBar progressBar=v.findViewById(R.id.downloadProgressBar);
-        ImageView playButtom=v.findViewById(R.id.resumeDownload);
+        TextView title = v.findViewById(R.id.downloadTtitle);
+        TextView url = v.findViewById(R.id.downloadUrl);
+        ProgressBar progressBar = v.findViewById(R.id.downloadProgressBar);
+        ImageView playButtom = v.findViewById(R.id.resumeDownload);
         //ImageView deleteButtom=v.findViewById(R.id.deleteDownloadinfo);
 
         title.setText(info.getFileName());
         url.setText(info.getUrl());
-        progressBar.setProgress((int) controlInterface.getPercent(info));
+
+        new Thread(new updateProgress(info, progressBar)).start();
         playButtom.setImageResource(setPlayButtomBackgroud(info));
 
     }
 
     /**
+     * 更新进度条进度
+     */
+    private class updateProgress implements Runnable {
+        private final DownloadInfo info;
+        private final ProgressBar bar;
+
+        public updateProgress(DownloadInfo info, ProgressBar bar) {
+            this.info = info;
+            this.bar = bar;
+        }
+
+        @Override
+        public void run() {
+            while (!info.isPause()||!info.isDownloadSuccess()) {
+                try {
+                    Thread.sleep(500);
+                    this.bar.setProgress((int) info.getProcress());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
      * @param info 下载任务
      * @return 根据暂停与否返回不同的资源id
-     *
+     * <p>
      * 下载任务不在暂停状态，返回一张“暂停”的图片id，反之，返回一张“播放”的图片id
      */
-    private int setPlayButtomBackgroud(DownloadInfo info){
-        if (!info.isPause()){
+    private int setPlayButtomBackgroud(DownloadInfo info) {
+        if (!info.isPause()) {
             return R.drawable.ic_pause_black_24dp;
-        }else {
+        } else {
             return R.drawable.ic_play_arrow_black_24dp;
         }
     }

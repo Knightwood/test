@@ -24,7 +24,7 @@ import android.widget.ImageButton;
 
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
-import com.example.kiylx.ti.corebase.SomeRes;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.model.MultiPage_ViewModel;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.R;

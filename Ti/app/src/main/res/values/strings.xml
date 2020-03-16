@@ -77,5 +77,6 @@
     <string name="downloading">正在下载</string>
     <string name="downloadFinish">已完成</string>
     <string name="downloadCancel">已取消</string>
+    <string name="title_activity_start_page">StartPageActivity</string>
 
 </resources>

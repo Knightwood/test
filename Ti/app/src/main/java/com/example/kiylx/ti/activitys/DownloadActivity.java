@@ -65,13 +65,21 @@ public class DownloadActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
+            //下载条目xml控制下载所调用的方法
+            controlMethod = downloadBinder.getInferface();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            controlMethod = null;
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +90,7 @@ public class DownloadActivity extends AppCompatActivity {
         //startDownoadService();
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
-        //下载条目xml控制下载所调用的方法
-        controlMethod = downloadBinder.getInferface();
+
         //downloadList=从存储中获取下载信息
 
         downloadList = downloadManager.getDownloading();
@@ -101,6 +108,8 @@ public class DownloadActivity extends AppCompatActivity {
                 downloadBinder.pauseAll();
             }
         });
+
+
 
 //工具栏
         Toolbar toolbar = findViewById(R.id.downloadContoltoolbar);
@@ -209,7 +218,7 @@ public class DownloadActivity extends AppCompatActivity {
      */
     public void downloadingFragment() {
         selectPage = 0;
-        DownloadingFragment fragment = DownloadingFragment.getInstance(controlMethod,downloadList);
+        DownloadingFragment fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
 
