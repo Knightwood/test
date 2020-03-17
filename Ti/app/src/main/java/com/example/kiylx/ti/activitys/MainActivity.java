@@ -30,11 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 
-import com.example.kiylx.ti.conf.PConf;
-import com.example.kiylx.ti.livedata.DefaultValue_1;
-import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
+import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -89,9 +86,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
 
         //初次设置偏好值
-        initSefaultValues();
+        //initSefaultValues();
         //监听默认值的改变
-        getDefaultValues();
+        //getDefaultValues();
 
         //实例化某些view
         f1 = findViewById(R.id.Webview_group);
@@ -205,9 +202,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void firstInstall() {
 
-        if (!PConf.getBoolean(this,"Installed")){
+        if (!PreferenceTools.getBoolean(this,"Installed")){
             //如果是第一次打开应用Installed不存在，默认拿到false。则可以在这里做一些初始化操作。之后写入Installed为true。
-            PConf.putBoolean(this,"Installed",true);
+            PreferenceTools.putBoolean(this,"Installed",true);
 
             Intent intent=new Intent(MainActivity.this,StartPageActivity.class);
             startActivity(intent);//打开启动页activity
@@ -627,37 +624,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     };
 
-    /**
-     * 进入mainactivity时获取“偏好值”进行初次设置
-     */
-    public void initSefaultValues() {
-
-        SharedPreferences sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        DefaultValue_1 defaultValue_1 = new DefaultValue_1(sharedPreferences.getString("explorer_flags", null));
-        defaultValue_1.setTextZoom(Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
-        defaultValue_1.setUseCustomDwnloadTool(sharedPreferences.getBoolean("downloadTools", false));
-
-
-        mWebViewManager.setValue(defaultValue_1);
-        Log.d(TAG, "获取浏览器标识: " + sharedPreferences.getString("explorer_flags", null));
-        Log.d(TAG, "获取浏览器标识: " + Integer.valueOf(Objects.requireNonNull(sharedPreferences.getString("textZoomlist", "100"))));
-    }
-
-    /**
-     * 推送更新后的“设置值”
-     */
-    public void getDefaultValues() {
-        final Observer<DefaultValue_1> observer = new Observer<DefaultValue_1>() {
-            @Override
-            public void onChanged(DefaultValue_1 s) {
-                Log.d(TAG, "获取浏览器标识: " + s.getUser_agent());
-                mWebViewManager.setValue(s);
-            }
-        };
-
-        LiveData_DF_WebView.getInstance().observe(this, observer);
-
-    }
 /*
     @Override
     protected void onDestroy() {

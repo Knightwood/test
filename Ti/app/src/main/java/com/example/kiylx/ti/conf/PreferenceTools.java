@@ -21,18 +21,19 @@ import java.util.List;
  * 创建者 kiylx
  * 创建时间 2020/3/16 9:42
  */
-public class PConf {
+public class PreferenceTools {
 
-    private static String PREFERENCE_NAME=SomeRes.preference_conf_1;
+    private static String PREFERENCE_NAME = SomeRes.preference_conf_1;
 
     /**
      * 清空数据
      */
-    public static void clearAll(Context context){
-        SharedPreferences setting=context.getSharedPreferences(PREFERENCE_NAME,Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor=setting.edit();
+    public static void clearAll(Context context) {
+        SharedPreferences setting = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = setting.edit();
         editor.clear().apply();
     }
+
     /**
      * put string preferences
      *
@@ -244,11 +245,64 @@ public class PConf {
     }
     //=============================================================================================
 
+    public static boolean putHashMap2(Context context, String key, HashMap<String, String> map) {
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        try {
+            String value = prcessHashMap2(map);
+            editor.putString(key, value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return editor.commit();
+    }
+
+    private static String prcessHashMap2(HashMap<String, String> map) throws IOException {
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(byteArray);
+        outputStream.writeObject(map);
+        String result = Base64.encodeToString(byteArray.toByteArray(), Base64.DEFAULT);
+        outputStream.close();
+        return result;
+    }
+
+    public static HashMap<String, String> getHashMap2(Context context, String key) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        String orign = sp.getString(key, null);
+        try {
+            return unprcessHashMap2(orign);
+        } catch (StreamCorruptedException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param orign
+     * @return
+     * @throws StreamCorruptedException 从对象流中读取的控制信息违反内部一致性检查时抛出。
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
+    private static HashMap<String, String> unprcessHashMap2(String orign) throws StreamCorruptedException, ClassNotFoundException, IOException {
+        byte[] origan = Base64.decode(orign, Base64.DEFAULT);
+        ByteArrayInputStream inArray = new ByteArrayInputStream(origan);
+        ObjectInputStream inputStream = new ObjectInputStream(inArray);
+        HashMap<String, String> result = (HashMap<String, String>) inputStream.readObject();
+        inputStream.close();
+        return result;
+    }
+
     /**
      * @param hashmap
      * @return
-     * @throws IOException
-     * 处理hashmap，转成string
+     * @throws IOException 处理hashmap，转成string
      */
     public static String SceneList2String(HashMap<String, Integer> hashmap)
             throws IOException {

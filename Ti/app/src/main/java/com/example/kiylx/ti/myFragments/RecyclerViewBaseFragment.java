@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.downloadFragments;
+package com.example.kiylx.ti.myFragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -23,7 +23,7 @@ import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class DownloadbaseFragment extends Fragment {
+public abstract class RecyclerViewBaseFragment extends Fragment {
 
     private View mRootView;
     private RecyclerView viewContainer;
@@ -44,11 +44,11 @@ public abstract class DownloadbaseFragment extends Fragment {
      */
     public abstract void bindItemView(View v, DownloadInfo info);
 
-    public DownloadbaseFragment() {
+    public RecyclerViewBaseFragment() {
         super();
     }
 
-    public DownloadbaseFragment(List<DownloadInfo> list) {
+    public RecyclerViewBaseFragment(List<DownloadInfo> list) {
         this.mDownloadInfoArrayList = list;
     }
 

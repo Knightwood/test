@@ -3,9 +3,10 @@ package com.example.kiylx.ti.downloadFragments;
 import android.view.View;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
-public class DownloadFinishFragment extends DownloadbaseFragment {
+public class DownloadFinishFragment extends RecyclerViewBaseFragment {
 
     /**
      * @return 提供不同于默认的下载item的item视图

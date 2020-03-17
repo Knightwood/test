@@ -4,7 +4,7 @@
     <Preference
         android:key="conventional"
         android:title="常规"
-        android:fragment="com.example.kiylx.ti.settingFolders.ConventionalFragment"/>
+        android:fragment="com.example.kiylx.ti.settingFolders.GeneralFragment"/>
     <Preference
         android:key="theme"
         android:title="主题"

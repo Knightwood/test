@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.downloadFragments;
 
-import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -8,11 +7,12 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 import java.util.List;
 
-public class DownloadingFragment extends DownloadbaseFragment {
+public class DownloadingFragment extends RecyclerViewBaseFragment {
     private DownloadClickMethod controlInterface;
 
     /**

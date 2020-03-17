@@ -36,6 +36,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private List<WebView> webViewArrayList;
     private volatile static WebViewManager sWebViewManager;
     private static final String TAG = "WebViewManager";
+    private CustomWebviewClient customWebviewClient;
+    private CustomWebchromeClient customWebchromeClient;
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
@@ -48,6 +50,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             webViewArrayList = new ArrayList<>();
             //tmpData = new WebPage_Info(null, null, null, 0, null);
         }
+        customWebchromeClient=new CustomWebchromeClient();
+        customWebviewClient=new CustomWebviewClient(context);
     }
 
     public static WebViewManager getInstance(Context context) {
@@ -82,9 +86,10 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
         setWebview(web, appCompatActivity);
         //给new出来的webview执行设置
-        web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
-        web.setWebChromeClient(new CustomWebchromeClient());
-
+        //web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
+        //web.setWebChromeClient(new CustomWebchromeClient());
+        web.setWebViewClient(customWebviewClient);
+        web.setWebChromeClient(customWebchromeClient);
         //添加js，用来展开菜单的方法。
         web.MenuJSInterface();
 
@@ -393,7 +398,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(defaultValue.getTextZoom());
+        settings.setTextZoom(100);
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
@@ -405,7 +410,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(defaultValue.getUser_agent());
+        settings.setUserAgentString(null);
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能
