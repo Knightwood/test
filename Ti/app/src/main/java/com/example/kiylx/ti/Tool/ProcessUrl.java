@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.searchProcess;
+package com.example.kiylx.ti.Tool;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,15 +18,15 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
-public class ProcessRecordItem {
+public class ProcessUrl {
     //用来处理字符是否是网址，以及历史记录和收藏记录放进一个数组的问题
     private static String regEx = "^((http|https)://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$";
     private static String engine;
 
-    public ProcessRecordItem() {
+    public ProcessUrl() {
     }
 
-    public ProcessRecordItem(Context context) {
+    public ProcessUrl(Context context) {
         /*SharedPreferences engine_preference= PreferenceManager.getDefaultSharedPreferences(context);
         engine=engine_preference.getString()*/
         final SearchEngineDao mDao= SearchEngine_db_Util.getDao(context);

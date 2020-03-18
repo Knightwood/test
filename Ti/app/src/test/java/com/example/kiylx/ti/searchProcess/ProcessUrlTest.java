@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.searchProcess;
 
-import android.util.Log;
+import com.example.kiylx.ti.Tool.ProcessUrl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import java.util.List;
  * @创建者 kiylx
  * @创建时间 2020/2/13{TIME}
  */
-public class ProcessRecordItemTest {
+public class ProcessUrlTest {
     private static final String TAG="网址测试";
 
     List<String> arrayList = new ArrayList<>();
@@ -36,7 +36,7 @@ public class ProcessRecordItemTest {
     @Test
     public void testPex(){
         for (int i = 0; i <arrayList.size() ; i++) {
-            result[i]= ProcessRecordItem.testPex(arrayList.get(i));
+            result[i]= ProcessUrl.testPex(arrayList.get(i));
         }
         for (int i = 0; i < 9; i++) {
             System.out.printf("输入"+ arrayList.get(i));
@@ -49,7 +49,7 @@ public class ProcessRecordItemTest {
     public void test2(){
         String url[]=new String[9];
         for (int i=0;i<arrayList.size();i++){
-            url[i]=ProcessRecordItem.converKeywordLoadOrSearch(arrayList.get(i));
+            url[i]= ProcessUrl.converKeywordLoadOrSearch(arrayList.get(i));
         }
         for (int i = 0; i < 9; i++) {
             System.out.println("结果"+url[i]+"\n");

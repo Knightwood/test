@@ -2,13 +2,11 @@ package com.example.kiylx.ti.activitys;
 
 import android.content.Intent;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
+import com.example.kiylx.ti.Tool.ProcessUrl;
 import com.example.kiylx.ti.myFragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
@@ -39,7 +37,7 @@ public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSe
 
         Intent intent = new Intent();
 
-        intent.putExtra(TEXR_OR_URL, ProcessRecordItem.processString(s));
+        intent.putExtra(TEXR_OR_URL, ProcessUrl.processString(s));
         setResult(RESULT_OK, intent);
         finish();
     }

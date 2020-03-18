@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
+import com.example.kiylx.ti.Tool.ProcessUrl;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class Fragment_DoSearch extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";//这是创建fragment时要保存在bundle中数据的名称，存着的值是一个字符串（它是网址或是普通的文字）
     private List<WebPage_Info> webPage_infoArrayList =new ArrayList<>();//用输入文字匹配之后的网址列表
-    private ProcessRecordItem mProcessRecordItem;//处理字符串的类
+    private ProcessUrl mProcessUrl;//处理字符串的类
     private String mCurrentURL;//用来存储当前网页页面的网址，这样打开搜索，搜索栏里就会填充上网址
     private String searchbarTEXT;//搜索框输入的文本信息，可以拿来比较历史记录以及收藏
 
@@ -81,8 +81,8 @@ public class Fragment_DoSearch extends Fragment {
             mCurrentURL = getArguments().getString(ARG_PARAM1);
 
         }
-        if(null== mProcessRecordItem)
-        mProcessRecordItem =new ProcessRecordItem(getActivity());
+        if(null== mProcessUrl)
+        mProcessUrl =new ProcessUrl(getActivity());
         Log.d(TAG, "onCreate: ");
     }
 
@@ -155,7 +155,7 @@ public class Fragment_DoSearch extends Fragment {
             public void afterTextChanged(Editable s) {
             //把文本与历史记录进行对比，筛选出符合的信息，刷新listview
                 searchbarTEXT =searchbox.getText().toString();
-                webPage_infoArrayList = mProcessRecordItem.formatList(searchbarTEXT);
+                webPage_infoArrayList = mProcessUrl.formatList(searchbarTEXT);
                 //与历史记录以及收藏记录比对，拿到arraylist
                 updateList();//更新界面
 

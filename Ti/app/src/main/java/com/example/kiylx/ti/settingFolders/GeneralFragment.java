@@ -7,17 +7,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.Tool.HashMapProcess;
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 
@@ -40,10 +43,14 @@ public class GeneralFragment extends Fragment {
     private Spinner textZoomSpinner;
     private Switch resumeDataBottom;
     private Switch customDownloadBottom;
+
     private ArrayAdapter<String> adapter1;//userAgent的Spinner
     private HashMap<String, String> userAgentMap;//存放userAgent的hashMap
     private List<String> useragentNamelist;
-    private List<String> useragentList;
+
+    private ArrayAdapter<String> adapter2;//TextZoom的Spinner
+    private HashMap<String,Integer> textZoomMap;//存放textZoom集合的hashMap
+    private List<String> zoomNamelist;//字体缩放hashMap的key值列表
 
     public GeneralFragment() {
     }
@@ -57,27 +64,11 @@ public class GeneralFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initUserAgentMap();
+        initUserAgentMap();//读取userAgent列表的HashMap
+        initTextZoomHashMap();//读取字体缩放的HashMap
     }
 
-    /**
-     * 获取useragent的hashmap，然后遍历hashmap，把key装进List中，spinner显示key值。
-     * <p>
-     * 在useragent的spinner中，显示的是key值，点击某一个选项时把相应的value值写入默认useragent的preference
-     */
-    private void initUserAgentMap() {
 
-        userAgentMap = new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap2(Objects.requireNonNull(getActivity()), WebviewConf.userAgentList)));
-        Set<String> useragentNameSet = userAgentMap.keySet();//hashmap的key值集合
-        Iterator<String> userAgentNameit = useragentNameSet.iterator();
-
-        useragentNamelist = new ArrayList<>();
-        while (userAgentNameit.hasNext()) {
-            String key = userAgentNameit.next();
-            useragentNameSet.add(key);
-
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -102,10 +93,16 @@ public class GeneralFragment extends Fragment {
         //用不用自定义主页网址的开关
         homeButtom = f(R.id.homepage);
         homeButtom.setChecked(useCustomtHomePage);
+        homeButtom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PreferenceTools.getBoolean(getActivity(),WebviewConf.useCustomHomepage,isChecked);
+            }
+        });
 
         //如果使用自定义主页网址，自定义主页网址的文本框显示出来，反之，隐藏文本框
         homePageUrl = f(R.id.homepage_url_view);
-        homeButtom.setVisibility(useCustomtHomePage ? View.VISIBLE : View.GONE);
+        homePageUrl.setVisibility(useCustomtHomePage ? View.VISIBLE : View.GONE);
         //设置自定义主页文本框的网址
         homePageUrl.setText(PreferenceTools.getString(getActivity(), WebviewConf.homepageurl));
 
@@ -121,6 +118,7 @@ public class GeneralFragment extends Fragment {
 
         //文本缩放spinner
         textZoomSpinner = f(R.id.text_zoom_buttom);
+        initTextZoomSpinner();
 
         //打开浏览器要不要恢复上次的网址开关
         resumeDataBottom = f(R.id.resumeData);
@@ -129,6 +127,29 @@ public class GeneralFragment extends Fragment {
         customDownloadBottom = f(R.id.downloadtool);
     }
 
+    /**
+     * 获取useragent的hashmap，然后遍历hashmap，把key装进List中，spinner显示key值。
+     * <p>
+     * 在useragent的spinner中，显示的是key值，点击某一个选项时把相应的value值写入默认useragent的preference
+     */
+    private void initUserAgentMap() {
+
+        userAgentMap = new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap2(Objects.requireNonNull(getActivity()), WebviewConf.userAgentList)));
+        useragentNamelist = HashMapProcess.getKeys(userAgentMap);
+    }
+
+    /**
+     * userAgent是由key和value组成的键值对，key是显示名称，value是对应的useragent字符串值。
+     * 例如：key（名称）："IE 9.0", value（值）："Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0"
+     * <p>
+     * 然后这几个userAgent放入一个HashMap（M），在第一次打开应用时被初始化，把HashMap写入preference（P）。
+     * 并且，设置一个单独的preference（A）存储默认userAgent。
+     * <p>
+     * 在这个fragment中，读取“P”，取出HashMap，让spinner显示key值，点击其中一项，把key值对应的value值写入"A"，在new Webview时直接读取“A”里的字符串值。
+     * <p>
+     * 默认的userAgent键值对是："默认", null。
+     * 在启动页初始化时就将这个默认值写入"A"，在“M”中也有一项与默认userAgent键值对一样，这样在spinner中选择默认时就不会出错。
+     */
     private void initUserAgentSpinner() {
         int pos;
         if (adapter1 == null) {
@@ -138,18 +159,53 @@ public class GeneralFragment extends Fragment {
         } else {
             adapter1.notifyDataSetChanged();
         }
-        //获取默认userAgent字符串在hashmap中的位置，让spinner显示这个名称
+        //获取默认userAgent字符串在hashmap中的位置，让spinner显示这个value对应的key名称
+        pos = HashMapProcess.getValuePos(userAgentMap, PreferenceTools.getString(getActivity(), WebviewConf.userAgent));
 
-        pos = useragentNamelist.indexOf(PreferenceTools.getString(getActivity(), WebviewConf.userAgent));
         userAgentSpinner.setAdapter(adapter1);
-        //把spinner显示的设置为上面拿到的pos位置的useragnet名称
-        userAgentSpinner.setSelection(pos);
+        userAgentSpinner.setSelection(pos);//设置显示名称
 
         userAgentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //设置useragent的偏好值为：从spinner选择一项，把这项的名称在hashmap中对应的value值写入preference
                 PreferenceTools.putString(getActivity(), WebviewConf.userAgent, userAgentMap.get(useragentNamelist.get(position)));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void initTextZoomHashMap(){
+        textZoomMap=new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap(getActivity(), WebviewConf.textZoomList)));
+        zoomNamelist=HashMapProcess.getKeys(textZoomMap);
+    }
+
+    private void initTextZoomSpinner(){
+        int pos;
+        if (adapter2 == null) {
+
+            //spinner显示的所有名称（hashmap的key值）
+            adapter2 = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, zoomNamelist);
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        } else {
+            adapter2.notifyDataSetChanged();
+        }
+        //获取默认字体缩放值在hashmap中的位置，让spinner显示这个value对应的key名称
+        pos = HashMapProcess.getValuePos(textZoomMap, PreferenceTools.getInt(getActivity(), WebviewConf.textZoom));
+
+        textZoomSpinner.setAdapter(adapter2);
+        textZoomSpinner.setSelection(pos);//设置显示名称
+
+        textZoomSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //设置字体缩放的偏好值为：从spinner选择一项key，把这项在hashmap中对应的value值写入preference
+                PreferenceTools.putInt(getActivity(), WebviewConf.textZoom, (int)textZoomMap.get(zoomNamelist.get(position)));
+                Log.d(TAG, "字体缩放值: "+textZoomMap.get(zoomNamelist.get(position)));
             }
 
             @Override

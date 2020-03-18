@@ -9,7 +9,9 @@ import android.webkit.WebView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.activitys.MainActivity;
+import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
@@ -398,7 +400,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(100);
+        settings.setTextZoom(PreferenceTools.getInt(context,WebviewConf.textZoom));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
@@ -410,7 +412,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(null);
+        settings.setUserAgentString(PreferenceTools.getString(context, WebviewConf.userAgent));
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         // 开启Application H5 Caches 功能

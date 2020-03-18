@@ -48,7 +48,7 @@ import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.myInterface.SearchTextOnWebview;
 import com.example.kiylx.ti.myInterface.Setmessage;
-import com.example.kiylx.ti.searchProcess.ProcessRecordItem;
+import com.example.kiylx.ti.Tool.ProcessUrl;
 
 import java.util.Objects;
 
@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             if (home_url.equals("")) {
                 home_url = SomeRes.default_homePage_url;
             } else {
-                home_url = ProcessRecordItem.converKeywordLoadOrSearch(home_url);
+                home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
             }
         }
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
