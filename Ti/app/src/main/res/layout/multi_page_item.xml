@@ -15,21 +15,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/three"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/setting_item"
         android:descendantFocusability="blocksDescendants">
 
         <TextView
             android:id="@+id/website_item"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:background="#00FFFFFF"
-            android:paddingTop="7dp"
+            android:onClick="@{clickon}"
             android:singleLine="true"
             android:text="@{infos.title}"
             android:textAlignment="viewStart"
             android:textColor="@android:color/black"
             android:textSize="18sp"
-            android:onClick="@{clickon}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/close_button"
             app:layout_constraintStart_toStartOf="parent"

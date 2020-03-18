@@ -78,5 +78,10 @@
     <string name="downloadFinish">已完成</string>
     <string name="downloadCancel">已取消</string>
     <string name="title_activity_start_page">StartPageActivity</string>
+    <string name="searchEngine">搜索引擎</string>
+    <string name="cleanData">清除数据</string>
+    <string name="textZoom">字体缩放</string>
+    <string name="resumeHistory">恢复上次打开的网页</string>
+    <string name="downloadToolSelect" >使用内置下载器</string>
 
 </resources>

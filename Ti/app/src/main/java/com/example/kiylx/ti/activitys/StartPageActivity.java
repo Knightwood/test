@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.activitys;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import com.example.kiylx.ti.conf.PreferenceTools;
@@ -16,9 +15,7 @@ import android.view.View;
 
 import com.example.kiylx.ti.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class StartPageActivity extends AppCompatActivity {
 
@@ -50,13 +47,12 @@ public class StartPageActivity extends AppCompatActivity {
     }
 
     /**
-     * @param context
      * 初始化设置文件
      */
     private void initConf() {
-        //是否使用自定义主页
-        PreferenceTools.putBoolean(this, WebviewConf.useDefaultHomepage,false);
-        //主页网址
+        //不使用自定义主页
+        PreferenceTools.putBoolean(this, WebviewConf.useCustomHomepage,false);
+        //主页网址初始化为“”
         PreferenceTools.putString(this,WebviewConf.homepageurl,"");
         //默认useragent，设置时从useragent列表中选择一个写入到这个preference
         PreferenceTools.putString(this,WebviewConf.userAgent,null);
@@ -66,7 +62,7 @@ public class StartPageActivity extends AppCompatActivity {
         useragentMap.put("FireFox","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0");
         useragentMap.put("IE 9.0","Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0");
         useragentMap.put("iPhone","Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5");
-        useragentMap.put("默认","null");
+        useragentMap.put("默认"," ");
         PreferenceTools.putHashMap2(this,WebviewConf.userAgentList,useragentMap);
 
         //字体缩放

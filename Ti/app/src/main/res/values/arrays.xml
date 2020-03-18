@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="explorer_flags">
+        <item>默认</item>
         <item>Chrome</item>
         <item>FireFox</item>
         <item>IE 9.0</item>
         <item>iPhone</item>
-        <item>默认</item>
+
     </string-array>
     <string-array name="explorer_flags_values" >
         <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36</item>

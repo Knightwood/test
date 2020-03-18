@@ -8,7 +8,7 @@ package com.example.kiylx.ti.conf;
 public class WebviewConf {
     //=================================preference的key值=========================================//
 
-    public static String useDefaultHomepage = "home_page_default";//是否使用默认主页key
+    public static String useCustomHomepage = "home_page_default";//是否使用自定义主页key
     public static String homepageurl = "home_page_url";//自定义主页网址key
 
     public static String searchengine = "search_engine";//默认搜索引擎key
