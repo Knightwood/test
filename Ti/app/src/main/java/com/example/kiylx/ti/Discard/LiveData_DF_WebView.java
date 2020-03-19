@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.livedata;
+package com.example.kiylx.ti.Discard;
 
 import androidx.lifecycle.LiveData;
 

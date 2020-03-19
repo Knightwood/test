@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/general_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".settingFolders.GeneralFragment">
@@ -99,9 +100,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:clickable="false"
+        android:text="@string/textZoom"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="@string/textZoom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cleanData" />

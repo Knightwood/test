@@ -49,7 +49,7 @@ public class StartPageActivity extends AppCompatActivity {
      * 初始化设置文件
      */
     private void initConf() {
-        //不使用自定义主页
+        //默认不使用自定义主页
         PreferenceTools.putBoolean(this, WebviewConf.useCustomHomepage, false);
         //主页网址初始化为“”
         PreferenceTools.putString(this, WebviewConf.homepageurl, "");
@@ -96,9 +96,9 @@ public class StartPageActivity extends AppCompatActivity {
             PreferenceTools.putHashMap2(this, WebviewConf.searchengineList, searchengineList);
         }
 
-        //不适用内置下载器
+        //默认不用内置下载器
         PreferenceTools.putBoolean(this, WebviewConf.customDownload, false);
-        //是否打开就恢复上次网页
+        //是否打开就恢复上次网页，默认是false
         PreferenceTools.putBoolean(this, WebviewConf.resumeData, false);
 
     }

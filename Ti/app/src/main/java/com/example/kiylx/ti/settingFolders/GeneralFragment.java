@@ -6,7 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +52,7 @@ public class GeneralFragment extends Fragment {
     private List<String> useragentNamelist;
 
     private ArrayAdapter<String> adapter2;//TextZoom的Spinner
-    private HashMap<String,Integer> textZoomMap;//存放textZoom集合的hashMap
+    private HashMap<String, Integer> textZoomMap;//存放textZoom集合的hashMap
     private List<String> zoomNamelist;//字体缩放hashMap的key值列表
 
     public GeneralFragment() {
@@ -67,7 +70,6 @@ public class GeneralFragment extends Fragment {
         initUserAgentMap();//读取userAgent列表的HashMap
         initTextZoomHashMap();//读取字体缩放的HashMap
     }
-
 
 
     @Override
@@ -93,18 +95,33 @@ public class GeneralFragment extends Fragment {
         //用不用自定义主页网址的开关
         homeButtom = f(R.id.homepage);
         homeButtom.setChecked(useCustomtHomePage);
-        homeButtom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferenceTools.getBoolean(getActivity(),WebviewConf.useCustomHomepage,isChecked);
-            }
-        });
 
         //如果使用自定义主页网址，自定义主页网址的文本框显示出来，反之，隐藏文本框
         homePageUrl = f(R.id.homepage_url_view);
         homePageUrl.setVisibility(useCustomtHomePage ? View.VISIBLE : View.GONE);
         //设置自定义主页文本框的网址
         homePageUrl.setText(PreferenceTools.getString(getActivity(), WebviewConf.homepageurl));
+        //监听开关的状态，如果使用自定义主页，让自定义主页编辑框显示出来。
+        homeButtom.setOnCheckedChangeListener(checkedChangeListener);
+
+        homePageUrl.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //把获取的自定义主页网址写入preference
+                PreferenceTools.putString(getActivity(), WebviewConf.homepageurl, s.toString());
+            }
+        });
+
 
         //useragent的spinner
         userAgentSpinner = f(R.id.spinner2);
@@ -112,9 +129,11 @@ public class GeneralFragment extends Fragment {
 
         //搜索引擎文本框，点击它跳转到设置搜索引擎的页面
         searchEngineText = f(R.id.searchengine_buttom);
+        searchEngineText.setOnClickListener(clickListener);
 
         //清除数据按钮
         cleanDataBottom = f(R.id.cleanData);
+        cleanDataBottom.setOnClickListener(clickListener);
 
         //文本缩放spinner
         textZoomSpinner = f(R.id.text_zoom_buttom);
@@ -122,10 +141,49 @@ public class GeneralFragment extends Fragment {
 
         //打开浏览器要不要恢复上次的网址开关
         resumeDataBottom = f(R.id.resumeData);
+        resumeDataBottom.setChecked(PreferenceTools.getBoolean(getActivity(), WebviewConf.resumeData));
+        resumeDataBottom.setOnCheckedChangeListener(checkedChangeListener);
 
         //用不用内置的下载工具
         customDownloadBottom = f(R.id.downloadtool);
+        customDownloadBottom.setChecked(PreferenceTools.getBoolean(getActivity(), WebviewConf.customDownload));
+        customDownloadBottom.setOnCheckedChangeListener(checkedChangeListener);
     }
+
+    private CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            switch (buttonView.getId()) {
+                case R.id.homepage:
+                    PreferenceTools.putBoolean(getActivity(), WebviewConf.useCustomHomepage, isChecked);
+                    homePageUrl.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                    break;
+                case R.id.resumeData:
+                    PreferenceTools.putBoolean(getActivity(), WebviewConf.resumeData, isChecked);
+                    break;
+                case R.id.downloadtool:
+                    PreferenceTools.putBoolean(getActivity(), WebviewConf.customDownload, isChecked);
+                    break;
+
+            }
+        }
+    };
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.searchengine_buttom:
+                    SearchEngineSetting_Fragment fragment=new SearchEngineSetting_Fragment();
+                    FragmentManager fm=getFragmentManager();
+                    fragment.show(fm,"searchEngineListDialog");
+                    break;
+                case R.id.cleanData:
+                    break;
+            }
+        }
+    };
+
 
     /**
      * 获取useragent的hashmap，然后遍历hashmap，把key装进List中，spinner显示key值。
@@ -179,12 +237,12 @@ public class GeneralFragment extends Fragment {
         });
     }
 
-    private void initTextZoomHashMap(){
-        textZoomMap=new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap(getActivity(), WebviewConf.textZoomList)));
-        zoomNamelist=HashMapProcess.getKeys(textZoomMap);
+    private void initTextZoomHashMap() {
+        textZoomMap = new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap(getActivity(), WebviewConf.textZoomList)));
+        zoomNamelist = HashMapProcess.getKeys(textZoomMap);
     }
 
-    private void initTextZoomSpinner(){
+    private void initTextZoomSpinner() {
         int pos;
         if (adapter2 == null) {
 
@@ -204,8 +262,8 @@ public class GeneralFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //设置字体缩放的偏好值为：从spinner选择一项key，把这项在hashmap中对应的value值写入preference
-                PreferenceTools.putInt(getActivity(), WebviewConf.textZoom, (int)textZoomMap.get(zoomNamelist.get(position)));
-                Log.d(TAG, "字体缩放值: "+textZoomMap.get(zoomNamelist.get(position)));
+                PreferenceTools.putInt(getActivity(), WebviewConf.textZoom, (int) textZoomMap.get(zoomNamelist.get(position)));
+                Log.d(TAG, "字体缩放值: " + textZoomMap.get(zoomNamelist.get(position)));
             }
 
             @Override
@@ -228,6 +286,11 @@ public class GeneralFragment extends Fragment {
 
     }
 
+    /**
+     * @param resId 资源id
+     * @param <T> 继承自View的泛型
+     * @return 返回View类型的，通过id获取的view
+     */
     private <T extends View> T f(int resId) {
         return (T) rootview.findViewById(resId);
     }

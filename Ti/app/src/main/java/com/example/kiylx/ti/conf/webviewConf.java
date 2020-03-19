@@ -21,6 +21,7 @@ public class WebviewConf {
 
     public static String cleanData = "clean_data";//清除数据key
     public static String textZoom = "text_zoom";//字体缩放key
+    public static String textZoomList = "text_zoom_list";//字体缩放列表key
 
     public static String resumeData = "resume_data";//是否打开恢复上次网址key
 

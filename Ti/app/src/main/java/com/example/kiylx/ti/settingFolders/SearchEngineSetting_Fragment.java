@@ -1,21 +1,31 @@
 package com.example.kiylx.ti.settingFolders;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.model.Checked_item;
@@ -34,7 +44,7 @@ import java.util.List;
  * @创建者 kiylx
  * @创建时间 2020/2/19 15:50
  */
-public class SearchEngineSetting_Fragment extends Fragment implements Setmessage {
+public class SearchEngineSetting_Fragment extends DialogFragment implements Setmessage {
     private static final String TAG = "搜索引擎数据库";
     private SearchUrlAdapter adapter;
     private View rootView;
@@ -45,10 +55,20 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
 
     private String engineUrl = null;
 
-    @Nullable
+
+    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_searchenginesetting, container, false);
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        rootView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_searchenginesetting,null);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity()).setTitle("搜索引擎列表");
+        dialogBuilder.setView(rootView)
+        .setPositiveButton("添加搜索引擎", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
 
         recyclerView = rootView.findViewById(R.id.engine_container);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -64,10 +84,46 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
             }
         });*/
 
-        //initData();
+        initData();
         new MyTask().execute(Action.GETALL);
         //myTask.execute(Action.UPDATEINFO,)
-        return rootView;//super.onCreateView(inflater, container, savedInstanceState);
+        //return rootView;//super.onCreateView(inflater, container, savedInstanceState);
+        Log.d(TAG, "onCreateDialog: 对话框显示");
+
+        return dialogBuilder.create();
+    }
+
+    /*@Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+
+
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }*/
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            //指定显示位置
+            //layoutParams.gravity = Gravity.BOTTOM;
+            //指定显示大小
+            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            //设置背景，不然无法扩展到屏幕边缘
+            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
+            //显示消失动画
+            window.setWindowAnimations(R.style.animate_dialog);
+            //让属性设置生效
+            window.setAttributes(layoutParams);
+            //设置点击外部可以取消对话框
+            setCancelable(true);
+        }
     }
 
     @Override
@@ -81,7 +137,7 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
     private void initData() {
         urlList = new ArrayList<>();
 
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 SearchEngineEntity a1 = new SearchEngineEntity();
@@ -92,15 +148,15 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
                 a2.setCheck_b(false);
                 mdao.insert(a1, a2);
             }
-        }).start();
-        /*new Thread(new Runnable() {
+        }).start();*/
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 urlList= mdao.getAll();
-                Log.d(FOLDER, "run: "+urlList.isEmpty());
-                Log.d(FOLDER, "run: "+urlList.get(0).getUrl());
+                Log.d(TAG, "run: "+urlList.isEmpty());
+                Log.d(TAG, "run: "+urlList.get(0).getUrl());
             }
-        }).start();*/
+        }).start();
 
     }
 
@@ -126,15 +182,15 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
             switch ((Action) objects[0]) {
                 case ADD:
                     /*
-                    * 添加某个SearchEngineEntity对象
-                    * */
+                     * 添加某个SearchEngineEntity对象
+                     * */
                     mdao.insert((SearchEngineEntity) objects[1]);
                     break;
                 case DELETE:
                     /*
-                    * 1位置放url字符串
-                    * 删除某个项目
-                    * */
+                     * 1位置放url字符串
+                     * 删除某个项目
+                     * */
                     mdao.deleteitem((String) objects[1]);
                     break;
                 case FIND:
@@ -149,9 +205,9 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
 
                     break;
                 /*case UPDATEINFO:
-                    *//*
-                    * 更新url，1位置是旧url，2位置是新url
-                    * *//*
+                 *//*
+                 * 更新url，1位置是旧url，2位置是新url
+                 * *//*
                     mdao.updateURL((String) objects[1], (String) objects[2]);
                     break;*/
                 case UPDATEBOOLEAN:
@@ -186,7 +242,6 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
             this.adapter.notifyDataSetChanged();
         }
     }
-
 
 
     //=============================================适配器=====================================================//
@@ -267,18 +322,18 @@ public class SearchEngineSetting_Fragment extends Fragment implements Setmessage
 
         @Override
         public void editText(String olds) {
-            EditText_Dialog dialog=EditText_Dialog.getInstance(olds);
+            EditText_Dialog dialog = EditText_Dialog.getInstance(olds);
             dialog.setInterface(SearchEngineSetting_Fragment.this);
-            FragmentManager manager=getFragmentManager();
+            FragmentManager manager = getFragmentManager();
             assert manager != null;
-            dialog.show(manager,"编辑文本");
+            dialog.show(manager, "编辑文本");
 
             Log.d(TAG, "搜索引擎条目的点击事件---编辑文本" + olds);
         }
 
         @Override
         public void deleteItem(String s) {
-            new MyTask().execute(Action.DELETE,s);
+            new MyTask().execute(Action.DELETE, s);
             Log.d(TAG, "搜索引擎条目的点击事件---删除条目" + s);
         }
     };

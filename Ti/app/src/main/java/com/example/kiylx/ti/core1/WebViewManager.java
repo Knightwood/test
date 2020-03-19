@@ -14,8 +14,8 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
+import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
-import com.example.kiylx.ti.livedata.DefaultValue_1;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
@@ -43,7 +43,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西
-    private static DefaultValue_1 defaultValue;
+
 
     private WebViewManager(Context context) {
         m_historyInterface = AboutHistory.get(context);
@@ -52,8 +52,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             webViewArrayList = new ArrayList<>();
             //tmpData = new WebPage_Info(null, null, null, 0, null);
         }
-        customWebchromeClient=new CustomWebchromeClient();
-        customWebviewClient=new CustomWebviewClient(context);
+        customWebchromeClient = new CustomWebchromeClient();
+        customWebviewClient = new CustomWebviewClient(context);
     }
 
     public static WebViewManager getInstance(Context context) {
@@ -95,13 +95,15 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //添加js，用来展开菜单的方法。
         web.MenuJSInterface();
 
-        this.addInWebManager(web, i);
+        addInWebManager(web, i);
 
     }
 
     /**
      * @param v 要添加的webview
      * @param i 添加到第一个位置，但是也可以指定i的值添加到其他位置
+     *          <p>
+     *          把webview放入manager管理的list
      */
     public void addInWebManager(WebView v, int i) {
         insert_12(v, i);
@@ -114,7 +116,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     private void insert_12(WebView v, int i) {
         webViewArrayList.add(i, v);
-        notifyupdate(v, i, Action.ADD);
+        notifyupdate(v, i, Action.ADD);//更新网页信息的数据
     }
 
     /* *//**
@@ -376,14 +378,13 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         webView.canGoBack();
         webView.canGoForward();
 
-        webView.setDownloadListener(new DownloadListener2(context));
-        /*if (defaultValue.getUseCustomDwnloadTool()) {
+        if (PreferenceTools.getBoolean(context, WebviewConf.customDownload)) {
             //内置下载器
-
+            webView.setDownloadListener(new DownloadListener2(context));
         } else {
             //系统的下载器
             webView.setDownloadListener(new DownloadListener1(context));
-        }*/
+        }
 
         // webview启用javascript支持 用于访问页面中的javascript
         settings.setJavaScriptEnabled(true);
@@ -400,7 +401,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(PreferenceTools.getInt(context,WebviewConf.textZoom));
+        settings.setTextZoom(PreferenceTools.getInt(context, WebviewConf.textZoom));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
@@ -424,10 +425,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //打开新的窗口
         settings.setSupportMultipleWindows(false);
 
-    }
-
-    public void setValue(DefaultValue_1 s) {
-        defaultValue = s;
     }
 
     /**

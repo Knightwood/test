@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.settingFolders;
+package com.example.kiylx.ti.Discard;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,8 +9,6 @@ import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.livedata.DefaultValue_1;
-import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
 
 /**
  * 常规的设置

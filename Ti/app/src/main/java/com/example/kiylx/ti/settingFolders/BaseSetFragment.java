@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.example.kiylx.ti.livedata.DefaultValue_1;
-import com.example.kiylx.ti.livedata.LiveData_DF_WebView;
+import com.example.kiylx.ti.Discard.DefaultValue_1;
+import com.example.kiylx.ti.Discard.LiveData_DF_WebView;
 
 /**
  * @创建者 kiylx

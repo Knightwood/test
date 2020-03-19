@@ -32,6 +32,7 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
-    SharedPreferences preferences;
 
     FrameLayout f1;
     TextView mTextView;//主界面的工具栏里的搜索框
@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         super.onCreate(savedInstanceState);
         firstInstall();//判断是不是第一次安装
         setContentView(R.layout.activity_main);
-        //获取首选项
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         //获取类的实例
         mWebViewManager = WebViewManager.getInstance(MainActivity.this);
@@ -258,8 +256,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public void newTab() {
         //是否使用自定义的主页
         String home_url = null;
-        if (preferences.getBoolean("home_page", false)) {//条件true时获取自定义网址，是false时则使用默认主页
-            home_url = preferences.getString("homepage_url", SomeRes.default_homePage_url);
+        if (PreferenceTools.getBoolean(this,WebviewConf.useCustomHomepage )) {//条件true时获取自定义网址，是false时则使用默认主页
+            home_url = PreferenceTools.getString(this,WebviewConf.homepageurl);
             //补全网址，以及如果没有填写任何字符，使用默认主页
             if (home_url.equals("")) {
                 home_url = SomeRes.default_homePage_url;
