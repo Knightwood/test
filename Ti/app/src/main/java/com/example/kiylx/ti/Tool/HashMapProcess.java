@@ -82,7 +82,12 @@ public class HashMapProcess {
      * 获取value对应的key值
      */
     public static <K, T> K getKeyOfValues(HashMap<K, T> hashMap, T value) {
-        int valuePos = getValuePos(hashMap, value);
-        return getKeys(hashMap).get(valuePos);
+        if (hashMap.containsValue(value)){
+            int valuePos = getValuePos(hashMap, value);
+            return getKeys(hashMap).get(valuePos);
+        }else {
+            return null;
+        }
+
     }
 }

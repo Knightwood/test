@@ -1,6 +1,8 @@
 package com.example.kiylx.ti.settingFolders;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,12 +29,10 @@ import com.example.kiylx.ti.Tool.HashMapProcess;
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
 public class GeneralFragment extends Fragment {
@@ -41,7 +41,7 @@ public class GeneralFragment extends Fragment {
     private Switch homeButtom;
     private EditText homePageUrl;
     private Spinner userAgentSpinner;
-    private TextView searchEngineText;
+
     private TextView cleanDataBottom;
     private Spinner textZoomSpinner;
     private Switch resumeDataBottom;
@@ -52,8 +52,10 @@ public class GeneralFragment extends Fragment {
     private List<String> useragentNamelist;
 
     private ArrayAdapter<String> adapter2;//TextZoom的Spinner
-    private HashMap<String, Integer> textZoomMap;//存放textZoom集合的hashMap
+    private HashMap<String, String> textZoomMap;//存放textZoom集合的hashMap
     private List<String> zoomNamelist;//字体缩放hashMap的key值列表
+
+    private TextView searchEngineView;
 
     public GeneralFragment() {
     }
@@ -128,8 +130,8 @@ public class GeneralFragment extends Fragment {
         initUserAgentSpinner();
 
         //搜索引擎文本框，点击它跳转到设置搜索引擎的页面
-        searchEngineText = f(R.id.searchengine_buttom);
-        searchEngineText.setOnClickListener(clickListener);
+        searchEngineView = f(R.id.searchengine_T);
+        searchEngineView.setOnClickListener(clickListener);
 
         //清除数据按钮
         cleanDataBottom = f(R.id.cleanData);
@@ -173,10 +175,11 @@ public class GeneralFragment extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.searchengine_buttom:
-                    SearchEngineSetting_Fragment fragment=new SearchEngineSetting_Fragment();
+                case R.id.searchengine_T:
+                    SearchEngineListDialog someThingDialog= SearchEngineListDialog.getInstance();
                     FragmentManager fm=getFragmentManager();
-                    fragment.show(fm,"searchEngineListDialog");
+                    someThingDialog.setTargetFragment(GeneralFragment.this,0);
+                    someThingDialog.show(fm,"编辑默认搜索引擎");
                     break;
                 case R.id.cleanData:
                     break;
@@ -192,7 +195,7 @@ public class GeneralFragment extends Fragment {
      */
     private void initUserAgentMap() {
 
-        userAgentMap = new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap2(Objects.requireNonNull(getActivity()), WebviewConf.userAgentList)));
+        userAgentMap = new LinkedHashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap2(Objects.requireNonNull(getActivity()), WebviewConf.userAgentList)));
         useragentNamelist = HashMapProcess.getKeys(userAgentMap);
     }
 
@@ -238,7 +241,7 @@ public class GeneralFragment extends Fragment {
     }
 
     private void initTextZoomHashMap() {
-        textZoomMap = new HashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap(getActivity(), WebviewConf.textZoomList)));
+        textZoomMap = new LinkedHashMap<>(Objects.requireNonNull(PreferenceTools.getHashMap2(getActivity(), WebviewConf.textZoomList)));
         zoomNamelist = HashMapProcess.getKeys(textZoomMap);
     }
 
@@ -253,7 +256,7 @@ public class GeneralFragment extends Fragment {
             adapter2.notifyDataSetChanged();
         }
         //获取默认字体缩放值在hashmap中的位置，让spinner显示这个value对应的key名称
-        pos = HashMapProcess.getValuePos(textZoomMap, PreferenceTools.getInt(getActivity(), WebviewConf.textZoom));
+        pos = HashMapProcess.getValuePos(textZoomMap, PreferenceTools.getString(getActivity(), WebviewConf.textZoom));
 
         textZoomSpinner.setAdapter(adapter2);
         textZoomSpinner.setSelection(pos);//设置显示名称
@@ -262,7 +265,7 @@ public class GeneralFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //设置字体缩放的偏好值为：从spinner选择一项key，把这项在hashmap中对应的value值写入preference
-                PreferenceTools.putInt(getActivity(), WebviewConf.textZoom, (int) textZoomMap.get(zoomNamelist.get(position)));
+                PreferenceTools.putString(getActivity(), WebviewConf.textZoom,textZoomMap.get(zoomNamelist.get(position)));
                 Log.d(TAG, "字体缩放值: " + textZoomMap.get(zoomNamelist.get(position)));
             }
 
@@ -272,7 +275,6 @@ public class GeneralFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -284,6 +286,19 @@ public class GeneralFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode!= Activity.RESULT_OK){
+            return;
+        }else{
+            String url=data.getStringExtra(WebviewConf.searchengine);
+            //设置默认搜索引擎为：从spinner选择一项key，把这项在hashmap中对应的value值写入preference
+            //PreferenceTools.putString(getActivity(),WebviewConf.searchengine,url);
+
+        }
     }
 
     /**

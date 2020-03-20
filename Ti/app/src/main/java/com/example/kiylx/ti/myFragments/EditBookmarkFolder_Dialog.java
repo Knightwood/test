@@ -25,6 +25,9 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
+/**
+ * 编辑书签文件夹时，打开这个对话框。
+ */
 public class EditBookmarkFolder_Dialog extends DialogFragment {
     private BookMarkFolderManager mBookMarkFolderManager;
     private EditText view1;

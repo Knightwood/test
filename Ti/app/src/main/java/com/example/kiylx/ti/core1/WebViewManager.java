@@ -42,7 +42,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private CustomWebchromeClient customWebchromeClient;
 
     private HistoryInterface m_historyInterface;
-    private Setmessage setmessage;//用来向mainactivity设置东西
+    private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
 
 
     private WebViewManager(Context context) {
@@ -401,7 +401,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(PreferenceTools.getInt(context, WebviewConf.textZoom));
+        settings.setTextZoom(Integer.parseInt(PreferenceTools.getString(context, WebviewConf.textZoom,"100")));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能

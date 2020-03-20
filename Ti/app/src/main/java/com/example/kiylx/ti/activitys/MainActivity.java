@@ -8,10 +8,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -61,15 +59,16 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private long mExitTime;//拿来判断按返回键间隔
     private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
 
-    WebViewManager mWebViewManager;
-    WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
+    private WebViewManager mWebViewManager;
+    private WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
 
-    FrameLayout f1;
-    TextView mTextView;//主界面的工具栏里的搜索框
-    ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
-    View inflated;//搜索webview文字的搜索框
+    private FrameLayout f1;
+    private TextView mTextView;//主界面的工具栏里的搜索框
+    private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
+    private View inflated;//搜索webview文字的搜索框
+    private MultPage_DialogFragment md;//多窗口dialogFragment
 
 
     @Override
@@ -119,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         mWebViewManager.setInterface(new Setmessage() {
             @Override
             public void setInfos() {
+                //网页加载完成后会通过这里更新底栏的文字
                 setTextForbar(currect);
             }
 
@@ -200,11 +200,12 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void firstInstall() {
 
-        if (!PreferenceTools.getBoolean(this,"Installed")){
+        if (!PreferenceTools.getBoolean(this, "Installed")) {
             //如果是第一次打开应用Installed不存在，默认拿到false。则可以在这里做一些初始化操作。之后写入Installed为true。
-            PreferenceTools.putBoolean(this,"Installed",true);
+            //先注释掉下面这句，为了测试权限申请
+            //PreferenceTools.putBoolean(this, "Installed", true);
 
-            Intent intent=new Intent(MainActivity.this,StartPageActivity.class);
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);//打开启动页activity
             finish();//结束mainactivity
         }
@@ -256,8 +257,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public void newTab() {
         //是否使用自定义的主页
         String home_url = null;
-        if (PreferenceTools.getBoolean(this,WebviewConf.useCustomHomepage )) {//条件true时获取自定义网址，是false时则使用默认主页
-            home_url = PreferenceTools.getString(this,WebviewConf.homepageurl);
+        if (PreferenceTools.getBoolean(this, WebviewConf.useCustomHomepage)) {//条件true时获取自定义网址，是false时则使用默认主页
+            home_url = PreferenceTools.getString(this, WebviewConf.homepageurl);
             //补全网址，以及如果没有填写任何字符，使用默认主页
             if (home_url.equals("")) {
                 home_url = SomeRes.default_homePage_url;
@@ -290,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (1 == mWebViewManager.size()) {
             //如果删除这个webview后没有其他的webview了，那就新建标签页
             mWebViewManager.getTop(0).loadUrl(SomeRes.default_homePage_url);
+            md.dismiss();//关闭多窗口
             return;
         }
         if (position > currect) {
@@ -382,9 +384,12 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         MultPage_DialogFragment.setInterface(this);
     }
 
-    //工具栏====================================
+    /**
+     * @param i 当前webview在列表中的位置
+     *          <p>
+     *          工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
+     */
     void setTextForbar(int i) {
-        //工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
         String mt = mConverted_lists.getUrl(i);
         if (mt.equals(SomeRes.default_homePage_url)) {
             //不显示默认主页的url
@@ -475,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void mult_dialog() {
 
         FragmentManager fm = getSupportFragmentManager();
-        MultPage_DialogFragment md = new MultPage_DialogFragment();
+        md = new MultPage_DialogFragment();
         md.show(fm, "fragment_multPage_dialog");
     }
 

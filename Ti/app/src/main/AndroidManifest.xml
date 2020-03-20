@@ -4,7 +4,8 @@
     package="com.example.kiylx.ti">
     <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,7 @@
         <activity
             android:name=".activitys.StartPageActivity"
             android:label="@string/title_activity_start_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activitys.DownloadActivity" />
 
         <service android:name=".downloadCore.DownloadServices" />

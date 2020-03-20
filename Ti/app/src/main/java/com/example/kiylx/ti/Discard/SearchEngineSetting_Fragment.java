@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.settingFolders;
+package com.example.kiylx.ti.Discard;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +18,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.Tool.HashMapProcess;
+import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.model.Checked_item;
@@ -38,6 +38,8 @@ import com.example.kiylx.ti.search_engine_db.SearchEngineDatabase;
 import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -52,9 +54,18 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
     public List<SearchEngineEntity> urlList;
     private SearchEngineDao mdao;
     //private MyTask myTask;
+    private HashMap<String,String> searchEngine;//搜索引擎的hashmap
+    private List<String> searchEngineNameList;//提取key值存进去
 
     private String engineUrl = null;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        searchEngine=new LinkedHashMap<>(PreferenceTools.getHashMap2(getActivity(), WebviewConf.searchengineList));
+        searchEngineNameList=new ArrayList<>(HashMapProcess.getKeys(searchEngine));
+
+    }
 
     @NonNull
     @Override

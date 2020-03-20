@@ -12,7 +12,8 @@ public class WebviewConf {
     public static String homepageurl = "home_page_url";//自定义主页网址key
 
     public static String searchengine = "search_engine";//默认搜索引擎key
-    public static String searchengineList="search_engine_list";//搜索引擎列表key
+    public static String searchengineList="search_engine_list";//内置搜索引擎列表 的key
+    public static String customsearchengine = "custom_search_engine";//自定义搜索引擎的key，自定义的不一定会设置为默认，所以，这一项是为了在自定义的那项不是默认值时也能记住自定义的值
 
     public static String customDownload = "custom_download_listener";//是否使用软件内置下载器key
 

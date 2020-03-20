@@ -7,6 +7,8 @@ import android.text.TextUtils;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 
+import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
 import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
@@ -27,9 +29,9 @@ public class ProcessUrl {
     }
 
     public ProcessUrl(Context context) {
-        /*SharedPreferences engine_preference= PreferenceManager.getDefaultSharedPreferences(context);
-        engine=engine_preference.getString()*/
-        final SearchEngineDao mDao= SearchEngine_db_Util.getDao(context);
+
+        engine= PreferenceTools.getString(context, WebviewConf.searchengine,"https://mijisou.com/search?q=");
+        /*final SearchEngineDao mDao= SearchEngine_db_Util.getDao(context);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -44,7 +46,7 @@ public class ProcessUrl {
                 }
 
             }
-        }).start();
+        }).start();*/
     }
 
     /**
