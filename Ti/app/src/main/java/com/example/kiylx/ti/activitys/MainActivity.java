@@ -1,8 +1,10 @@
 package com.example.kiylx.ti.activitys;
 
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,6 +53,8 @@ import com.example.kiylx.ti.Tool.ProcessUrl;
 
 import java.util.Objects;
 
+import pub.devrel.easypermissions.EasyPermissions;
+
 public class MainActivity extends AppCompatActivity implements MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
@@ -69,6 +73,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
     private View inflated;//搜索webview文字的搜索框
     private MultPage_DialogFragment md;//多窗口dialogFragment
+
+    //权限
+    String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
 
 
     @Override
@@ -201,10 +208,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void firstInstall() {
 
         if (!PreferenceTools.getBoolean(this, "Installed")) {
-            //如果是第一次打开应用Installed不存在，默认拿到false。则可以在这里做一些初始化操作。之后写入Installed为true。
-            //先注释掉下面这句，为了测试权限申请
-            //PreferenceTools.putBoolean(this, "Installed", true);
-
+            //如果是第一次打开应用Installed不存在，默认拿到false。则可以在这里做一些初始化操作。之后在StartPageActivity中写入Installed为true。
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);//打开启动页activity
             finish();//结束mainactivity
@@ -598,17 +602,27 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 设置接口，让开始下载任务的dialog可以调用这个方法来开启并绑定服务。
+     * 设置下载接口。
+     * 让开始下载任务的dialog可以调用这个方法来开启并绑定服务。
      */
     private void downloadWindow_startDownload() {
         DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
 
             @Override
             public void startDownoadService(DownloadInfo info) {
-                Intent intent = new Intent(MainActivity.this, DownloadServices.class);
-                startService(intent);
-                bindService(intent, connection, BIND_AUTO_CREATE);
-                downloadInfo = info;
+
+                //如果有存储权限，则可以开始下载，否则告诉用户申请权限
+                if (EasyPermissions.hasPermissions(MainActivity.this, allperm)) {
+                    //Toast.makeText(MainActivity.this,"已赋予权限",Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(MainActivity.this, DownloadServices.class);
+                    startService(intent);
+                    bindService(intent, connection, BIND_AUTO_CREATE);
+                    downloadInfo = info;
+                } else {
+                    EasyPermissions.requestPermissions(MainActivity.this, "没有文件读写权限，请去设置给予权限后再试", 20033, allperm);
+                }
+
+
 
             }
         });
@@ -627,6 +641,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     };
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
 /*
     @Override
     protected void onDestroy() {

@@ -84,7 +84,6 @@ public class SearchEngineListDialog extends DialogFragment {
                         url = SomeRes.miji;
                         break;
                     case R.id.customurlradio:
-
                         break;
                 }
                 if (customurlRadio.isChecked()) {
@@ -109,6 +108,7 @@ public class SearchEngineListDialog extends DialogFragment {
                     url = textView1.getText().toString();
                 }
                 PreferenceTools.putString(getActivity(), WebviewConf.searchengine, url);
+                setResult(url);//把默认搜索引擎字符串传回目标fragment
             }
         });
 

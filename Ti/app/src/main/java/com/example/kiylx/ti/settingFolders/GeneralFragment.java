@@ -131,6 +131,7 @@ public class GeneralFragment extends Fragment {
 
         //搜索引擎文本框，点击它跳转到设置搜索引擎的页面
         searchEngineView = f(R.id.searchengine_T);
+        searchEngineView.setText(PreferenceTools.getString(getActivity(),WebviewConf.searchengine));
         searchEngineView.setOnClickListener(clickListener);
 
         //清除数据按钮
@@ -295,8 +296,7 @@ public class GeneralFragment extends Fragment {
             return;
         }else{
             String url=data.getStringExtra(WebviewConf.searchengine);
-            //设置默认搜索引擎为：从spinner选择一项key，把这项在hashmap中对应的value值写入preference
-            //PreferenceTools.putString(getActivity(),WebviewConf.searchengine,url);
+            searchEngineView.setText(url);
 
         }
     }

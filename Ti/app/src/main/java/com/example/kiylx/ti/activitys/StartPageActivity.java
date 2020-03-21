@@ -26,7 +26,8 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class StartPageActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks{
+public class StartPageActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
+    String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,25 +54,43 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
      */
 
     private void getAuthority(StartPageActivity startPageActivity) {
-        String[] perms = {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
-        if (EasyPermissions.hasPermissions(this,perms)){
-        }else {
-            EasyPermissions.requestPermissions(this,"这些权限是必须的",20033,perms);
+
+        if (EasyPermissions.hasPermissions(this, allperm)) {
+            //注释掉下面这句，为了测试权限申请
+            writeInstalled(true);
+            Toast.makeText(this, "有权限了", Toast.LENGTH_LONG).show();
+        } else {
+            EasyPermissions.requestPermissions(this, "这些权限是必须的", 20033, allperm);
         }
     }
 
     /**
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
+     * @param b 布尔值
+     *          <p>
+     *          控制是不是第一次打开，安装应用后第一次打开，“Installed”preference是不存在的，也就是false。
+     *          这时如果写入true，则意味着应用已安装，权限之类的也已经配置好了，可以打开mainactivity了。
+     *          之后再打开应用，这个值是true，就不会再打开“启动页”配置权限，初始化配置信息之类的了。
+     *          如果应用升级了，还可以使用它引导到启动页
      *
-     * 权限请求结果在这里处理
+     */
+    private void writeInstalled(boolean b) {
+        PreferenceTools.putBoolean(this, "Installed", b);
+    }
+
+    /**
+     * @param requestCode  请求码
+     * @param permissions  权限集合
+     * @param grantResults 请求结果
+     *                     <p>
+     *                     onRequestPermissionsResult是Android的方法，用来处理权限请求后的事情
+     *                     <p>
+     *                     EasyPermissions.onRequestPermissionsResult，在这里被转发到easyPermission处理
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        // 将结果转发到EasyPermissions
+        // 将结果转发到EasyPermissions进行处理
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
@@ -84,26 +103,46 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
      */
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        Toast.makeText(getApplicationContext(), "用户授权成功",Toast.LENGTH_LONG).show();
+        //注释掉下面这句，为了测试权限申请
+        writeInstalled(true);
+        Toast.makeText(getApplicationContext(), "用户授权成功", Toast.LENGTH_LONG).show();
     }
+
     /**
-     * 请求权限失败
+     * easypermission的接口，请求权限失败后被调用
      *
      * @param requestCode
      * @param perms
      */
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
-        Toast.makeText(getApplicationContext(), "用户授权失败",Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "用户授权失败", Toast.LENGTH_LONG).show();
         /**
          * 若是在权限弹窗中，用户勾选了'NEVER ASK AGAIN.'或者'不在提示'，且拒绝权限。
          * 这时候，需要跳转到设置界面去，让用户手动开启。
          */
+        //(可选的)这里检查用户是否拒绝授权权限，以及点击了“不再询问”，这时，将展示一个对话框指导用户在应用设置里授权权限
+        //如果没有点击不再询问，这里是不会被调用的，如果点击了不再询问，则展示对话框提示设置权限
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            new AppSettingsDialog.Builder(this).build().show();
+            new AppSettingsDialog.Builder(this)
+                    .setRationale("没有该权限，此应用程序可能无法正常工作。打开应用设置屏幕以修改应用权限")
+                    .setTitle("必需权限")
+                    .build()
+                    .show();
+        } else {
+            //没有点击不再询问，则再一次申请权限
+            EasyPermissions.requestPermissions(this, "这些权限是必须的", 20033, allperm);
         }
     }
-
+    /*
+     * EasyPermissions.somePermissionPermanentlyDenied(this, perms):
+     *
+     * 检查被拒绝的权限列表中是否至少有一个权限被永久拒绝(用户单击“不要再问”)。
+     * 注意:由于Android框架权限API提供的信息的限制，
+     * 此方法仅在权限被拒绝且您的应用程序已收到onPermissionsDenied回调后才有效。
+     * 否则，该库无法将永久拒绝与“尚未拒绝”情况区分开来
+     *
+     * */
 
     /**
      * 初始化设置文件
