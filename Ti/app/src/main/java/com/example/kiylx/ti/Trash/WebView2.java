@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Discard;
+package com.example.kiylx.ti.Trash;
 
 import android.content.Context;
 import android.os.Build;
@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.webkit.WebView;
 
 import java.util.ArrayList;

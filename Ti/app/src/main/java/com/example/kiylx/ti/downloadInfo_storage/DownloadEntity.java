@@ -23,7 +23,7 @@ public class DownloadEntity {
      * @param splitStart       分块下载的开始位置
      * @param splitEnd         分块下载的结束位置
      * @param contentLength    文件总大小
-     * @param currentLength      已下载的文件大小
+     * @param currentLength     已下载的文件大小
      * @param blockSize        分块大小
      * @param downloadSuccess  下载成功的标志
      */
@@ -31,7 +31,7 @@ public class DownloadEntity {
                           int blockCompleteNum, int blockPauseNum, String pause,
                           String cancel, String waitDownload,
                           int threadNum, String splitStart, String splitEnd,
-                          long contentLength, float currentLength,
+                          long contentLength, long currentLength,
                           long blockSize, String downloadSuccess) {
         this.url = url;
         this.filename = filename;
@@ -90,7 +90,7 @@ public class DownloadEntity {
     public long contentLength;
 
     @ColumnInfo(name = "current_Length")
-    public float currentLength;
+    public long currentLength;
 
     @ColumnInfo(name = "block_size")
     public long blockSize;

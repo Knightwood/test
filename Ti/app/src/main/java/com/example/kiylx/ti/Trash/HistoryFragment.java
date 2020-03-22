@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Discard;
+package com.example.kiylx.ti.Trash;
 
 import android.os.Bundle;
 
@@ -26,7 +26,6 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

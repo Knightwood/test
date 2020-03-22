@@ -2,6 +2,8 @@ package com.example.kiylx.ti.corebase;
 
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+
 import com.example.kiylx.ti.conf.SomeRes;
 
 /**
@@ -108,6 +110,27 @@ public class DownloadInfo {
         this.cancel = false;
         this.waitDownload=false;
     }
+    public DownloadInfo (@NonNull String url, String filename, String path,
+                         int blockCompleteNum, int blockPauseNum, boolean pause,
+                         boolean cancel, boolean waitDownload,
+                         int threadNum, long[] splitStart, long[] splitEnd,
+                         long contentLength, long currentLength,
+                         long blockSize, boolean downloadSuccess) {
+        this.url = url;
+        this.fileName = filename;
+        this.path = path;
+        this.blockCompleteNum = blockCompleteNum;
+        this.blockPauseNum = blockPauseNum;
+        this.pause = pause;
+        this.cancel = cancel;
+        this.waitDownload = waitDownload;
+        this.threadNum = threadNum;
+        this.splitStart = splitStart;
+        this.splitEnd = splitEnd;
+        this.contentLength = contentLength;
+        this.currentLength = currentLength;
+        this.blockSize = blockSize;
+        this.downloadSuccess = downloadSuccess;}
 
     /**
      * 只有一个下载地址的构造函数
@@ -182,9 +205,9 @@ public class DownloadInfo {
     /**
      * 存进数据库时所需的转换操作，把真假的布尔值转换为string值
      */
-    public String getPauseFlags() {
+    /*public String getPauseFlags() {
         return isPause() ? "true" : "false";
-    }
+    }*/
 
     public void setPause(boolean pause) {
         this.pause = pause;
@@ -253,13 +276,6 @@ public class DownloadInfo {
         return downloadSuccess;
     }
 
-    /**
-     * @return 存进数据库时的转换，布尔值转换为string类型
-     */
-    public String getDownloadSuccess() {
-        return downloadSuccess ? "true" : "false";
-    }
-
     private void setSuccessFlags(boolean flag) {
         this.downloadSuccess = flag;
     }
@@ -270,20 +286,6 @@ public class DownloadInfo {
 
     public void setWaitDownload(boolean waitDownload) {
         this.waitDownload = waitDownload;
-    }
-
-    /**
-     * @return 把取消标志转换为String，用于数据库
-     */
-    public String getCancelFlags() {
-        return this.isCancel() ? "true" : "false";
-    }
-
-    /**
-     * @return 把等待下载标志转换为String，用于数据库
-     */
-    public String getWaitDownloadFlags() {
-        return this.isWaitDownload() ? "true" : "false";
     }
 
     /**

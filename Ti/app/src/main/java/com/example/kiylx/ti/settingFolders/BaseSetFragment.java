@@ -5,8 +5,8 @@ import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.example.kiylx.ti.Discard.DefaultValue_1;
-import com.example.kiylx.ti.Discard.LiveData_DF_WebView;
+import com.example.kiylx.ti.Trash.DefaultValue_1;
+import com.example.kiylx.ti.Trash.LiveData_DF_WebView;
 
 /**
  * @创建者 kiylx
@@ -26,6 +26,21 @@ public abstract class BaseSetFragment extends PreferenceFragmentCompat {
                 LiveData_DF_WebView.getInstance().setmLiveData(defaultvalue());
             }
         };
+
+        /*观察数据示例，
+        这个livedata是自定义的，生命周期随application，所以可以跨组件通讯。
+        这个livedata是继承自livedata，不是继承自viewmodel。viewmodel是生命周期组件，livedata是观察者模式
+        final Observer<DefaultValue_1> observer = new Observer<DefaultValue_1>() {
+            @Override
+            public void onChanged(DefaultValue_1 s) {
+                Log.d(TAG, "获取浏览器标识: " + s.getUser_agent());
+                mWebViewManager.setValue(s);
+            }
+        };
+
+        LiveData_DF_WebView.getInstance().observe(this, observer);*/
+
+
         /*
          * getPreferenceManager().getSharedPreferences()获取sharedpreference
          * */

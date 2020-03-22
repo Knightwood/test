@@ -19,7 +19,7 @@ loc:49:31 - 49:87
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="60dp">
 
         <TextView
             android:id="@+id/downloadTtitle"
@@ -47,7 +47,6 @@ loc:49:31 - 49:87
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:contentDescription="@string/startDownloadButton"
-            android:background="@drawable/ic_play_arrow_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/deleteDownloadinfo"
             app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -68,7 +67,7 @@ loc:49:31 - 49:87
             android:id="@+id/downloadProgressBar"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:max="100"
             app:layout_constraintBottom_toTopOf="@+id/downloadUrl"
             app:layout_constraintEnd_toStartOf="@+id/guideline"

@@ -1,9 +1,12 @@
 package com.example.kiylx.ti.activitys;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +14,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
@@ -28,6 +32,8 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
+import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
+import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoViewModel;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -35,6 +41,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * 下载管理界面
@@ -108,7 +115,6 @@ public class DownloadActivity extends AppCompatActivity {
                 downloadBinder.pauseAll();
             }
         });
-
 
 
 //工具栏
@@ -244,30 +250,24 @@ public class DownloadActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
+    List<DownloadInfo> downloadInfoList = new ArrayList<>();
+
+    /**
+     * @return downloadinfo列表
+     * 数据库room，使用了livedata，这里观察数据的更新。
+     */
+    public List<DownloadInfo> getDownloadList() {
+        DownloadInfoViewModel model = ViewModelProviders.of(this).get(DownloadInfoViewModel.class);
+        model.getiLiveData().observe(this, new Observer<List<DownloadEntity>>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onChanged(List<DownloadEntity> downloadEntities) {
+                downloadInfoList.clear();
+                Stream<DownloadEntity> stream=downloadEntities.stream();
+            }
+        });
+
+        return null;
+    }
 
 }
-/*new DownloadClickMethod() {
-            @Override
-            public void download(DownloadInfo info) {
-                downloadBinder.startDownload(info);
-            }
-
-            @Override
-            public void pause(DownloadInfo info) {
-                downloadBinder.pauseDownload(info);
-            }
-
-            @Override
-            public void cancel(DownloadInfo info) {
-                downloadBinder.canaelDownload(info);
-            }
-
-            @Override
-            public void reasume(DownloadInfo info) {
-                downloadBinder.resumeDownload(info);
-            }
-
-            @Override
-            public void getPercent(DownloadInfo info) {
-                downloadBinder.getRate(info);
-            }*/

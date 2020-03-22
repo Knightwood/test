@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.downloadInfo_storage;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,7 +15,7 @@ import java.util.List;
 public interface DownloadDao {
 
     @Query("SELECT * FROM downloadInfo_tab")
-    List<DownloadEntity> getAll();
+    LiveData<List<DownloadEntity>>  getAll();
 
     @Query("SELECT * FROM downloadInfo_tab WHERE url =:URL")
     List<DownloadEntity> getOne(String URL);

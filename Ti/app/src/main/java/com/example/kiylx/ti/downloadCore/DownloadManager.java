@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.downloadInfo_storage.DatabaseUtil;
+import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
 
@@ -420,15 +420,15 @@ public class DownloadManager {
     }*/
 //-----------------------数据库操作---------------------//
     private void insertData(DownloadInfo info) {
-        DatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformInfo(info));
+        DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     private void updateData(DownloadInfo info) {
-        DatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformInfo(info));
+        DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     private void delete(DownloadInfo info) {
-        DatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformInfo(info));
+        DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info));
     }
 
 

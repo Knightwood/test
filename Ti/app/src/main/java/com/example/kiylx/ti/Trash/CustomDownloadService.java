@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Discard;
+package com.example.kiylx.ti.Trash;
 
 import android.app.Notification;
 import android.app.NotificationManager;
