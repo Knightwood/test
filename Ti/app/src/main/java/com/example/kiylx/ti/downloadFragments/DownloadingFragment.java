@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class DownloadingFragment extends RecyclerViewBaseFragment {
     private DownloadClickMethod controlInterface;
+    private static final String TAG="下载系列fragment";
 
     /**
      * @param minterface 控制下载任务的接口
@@ -28,6 +30,8 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list) {
         super(list);
         controlInterface = minterface;
+        Log.d(TAG, "DownloadingFragment: ");
+
     }
 
     //重写的viewholder中的bind方法
@@ -64,7 +68,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             while (!info.isPause()||!info.isDownloadSuccess()) {
                 try {
                     Thread.sleep(500);
-                    this.bar.setProgress((int) (info.getProcress())*100);
+                    this.bar.setProgress((int) (info.getPercent())*100);
                     Log.d("下载进度", "run: "
                             +info.getFileName()
                             +"已下载"
@@ -72,7 +76,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
                             +"总大小"
                             +info.getContentLength()
                             +"百分比"
-                            +(info.getProcress())
+                            +(info.getPercent())
                     );
                 } catch (InterruptedException e) {
                     e.printStackTrace();

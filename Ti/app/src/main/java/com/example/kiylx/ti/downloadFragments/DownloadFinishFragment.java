@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.downloadFragments;
 
+import android.util.Log;
 import android.view.View;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
@@ -7,7 +8,7 @@ import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 public class DownloadFinishFragment extends RecyclerViewBaseFragment {
-
+    private static final String TAG="下载系列fragment";
     /**
      * @return 提供不同于默认的下载item的item视图
      */
@@ -18,6 +19,7 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
 
     public DownloadFinishFragment(DownloadClickMethod method) {
         super();
+        Log.d(TAG, "DownloadFinishFragment: ");
     }
 
     @Override

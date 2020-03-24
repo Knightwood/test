@@ -26,6 +26,7 @@ public class DownloadServices extends Service {
         super.onCreate();
         this.mDownloadBinder = new DownloadBinder();
         mDownloadManager = DownloadManager.getInstance();
+        mDownloadManager.setContext(getApplicationContext());
 
     }
 

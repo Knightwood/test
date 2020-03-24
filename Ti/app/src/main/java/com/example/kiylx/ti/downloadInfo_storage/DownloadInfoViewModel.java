@@ -25,7 +25,7 @@ public class DownloadInfoViewModel extends AndroidViewModel {
     public DownloadInfoViewModel(@NonNull Application application) {
         super(application);
         database = DownloadInfoDatabase.getInstance(application);
-        liveData = DownloadInfoDatabaseUtil.getDao(application).getAll();
+        //liveData = DownloadInfoDatabaseUtil.getDao(application).getAll();
         //simpleliveData=DownloadInfoDatabaseUtil.getDao(application).getSimpleDataList();
 
     }

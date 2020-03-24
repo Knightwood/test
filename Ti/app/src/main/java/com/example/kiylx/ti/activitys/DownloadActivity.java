@@ -36,8 +36,10 @@ import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
 import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
+import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoViewModel;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
+import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -61,8 +63,11 @@ public class DownloadActivity extends AppCompatActivity {
     private List<DownloadInfo> downloadList;
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
-    private int selectPage;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
+    private int selectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
     private DownloadManager downloadManager = DownloadManager.getInstance();
+
+    BottomNavigationView bottomView;
+
 
     public DownloadActivity() {
         super();
@@ -107,7 +112,7 @@ public class DownloadActivity extends AppCompatActivity {
         //downloadList=从存储中获取下载信息
 
         downloadList = downloadManager.getDownloading();
-        downloadingFragment();
+        switchFragment(selectPage);
 
         //测试开始下载任务的按钮
         Button bui = findViewById(R.id.ceshianniu);
@@ -117,7 +122,7 @@ public class DownloadActivity extends AppCompatActivity {
                 //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
                 //FragmentManager fragmentManager=getSupportFragmentManager();
                 //dof.show(fragmentManager,"下载");
-                //getList();
+                getList();
             }
         });
 
@@ -145,35 +150,84 @@ public class DownloadActivity extends AppCompatActivity {
             }
         });
 //底栏
-        BottomNavigationView bottomView = findViewById(R.id.downloadBottomNavigation);
+        bottomView = findViewById(R.id.downloadBottomNavigation);
         bottomView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.downloading:
                     if (selectPage != 0)
-                        downloadingFragment();
+                        switchFragment(0);
                     break;
                 case R.id.downloadFinish:
                     if (selectPage != 1)
-                        finishFragment();
+                        switchFragment(1);
                     break;
                 case R.id.cancel:
                     if (selectPage != 2)
-                        settingFragment();
+                        switchFragment(2);
                     break;
             }
-            return false;
+            return true;
         });
     }
 
+    /**
+     * @param i 选择的底栏位置
+     *          <p>
+     *          selectPage是选中的item的位置，0是正在下载fragment，1是下载完成fragment，2是下载设置fragment
+     */
+    private void switchFragment(int i) {
+        selectPage = i;
+        FragmentManager manager = getSupportFragmentManager();
+        RecyclerViewBaseFragment fragment;
+        switch (i) {
+            case 0:
+                fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                break;
+            case 1:
+                fragment = new DownloadFinishFragment(null);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                break;
+            case 2:
+                fragment = new DownloadSettingFragment(null);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                break;
+        }
+
+    }
+
     private void getList() {
-        LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
+        /*LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
         List<DownloadEntity> list = listLiveData.getValue();
         for (int i = 0; i < list.size(); i++) {
             Log.d("下载管理",
                     "当前大小" + list.get(i).currentLength
                             + "总大小" + list.get(i).contentLength
                             + "文件名称" + list.get(i).filename);
-        }
+        }*/
+
+        new Thread(new Runnable() {
+            private List<DownloadEntity> list;
+
+            @Override
+            public void run() {
+                this.list  =  DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
+
+                if (list==null){
+                    Log.d("下载管理", "getList: 数据库出错");
+                }else{
+                    for (int i = 0; i < list.size(); i++) {
+                        Log.d("下载管理",
+                                "当前大小" + list.get(i).currentLength
+                                        + "总大小" + list.get(i).contentLength
+                                        + "文件名称" + list.get(i).filename);
+                    }
+                }
+
+            }
+        }).start();
+
+
     }
 
 
@@ -183,13 +237,6 @@ public class DownloadActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.control_download_toolbat_menu, menu);
-        /*if (downloadBinder.getDownloadingNum()>0){
-            //根据有没有下载任务设置不同的图标
-            menu.findItem(R.id.allStart).setIcon(R.drawable.ic_pause_black_24dp);
-        }else{
-            menu.findItem(R.id.allStart).setIcon(R.drawable.ic_play_arrow_black_24dp);
-        }*/
-
         return true;
     }
 
@@ -241,26 +288,6 @@ public class DownloadActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
 
-    }
-
-    /**
-     * 开启完成下载的fragment
-     */
-    public void finishFragment() {
-        selectPage = 1;
-        DownloadFinishFragment fragment = new DownloadFinishFragment(null);
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
-    }
-
-    /**
-     * 开启下载设置界面
-     */
-    public void settingFragment() {
-        selectPage = 2;
-        DownloadSettingFragment fragment = new DownloadSettingFragment(null);
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
     List<SimpleDownloadInfo> downloadInfoList = new ArrayList<>();

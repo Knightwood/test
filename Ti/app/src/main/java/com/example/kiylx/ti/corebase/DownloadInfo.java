@@ -299,7 +299,7 @@ public class DownloadInfo {
      * 文件的下载线程数就是文件分块的标号，
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
-    public float getProcress() {
+    public float getPercent() {
         //返回已下载百分比
         return ((float)this.getCurrentLength() / (float) this.getContentLength());
     }

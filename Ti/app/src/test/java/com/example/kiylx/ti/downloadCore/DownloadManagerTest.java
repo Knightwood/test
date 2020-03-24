@@ -15,8 +15,10 @@ import java.util.List;
 public class DownloadManagerTest {
     private DownloadManager manager;
     private DownloadInfo info1;
+private List<DownloadInfo> list;
     @Before
     public void setUp() throws Exception {
+        list=new ArrayList<>();
         long blocksize=300;
         manager=DownloadManager.getInstance();
         info1=new DownloadInfo("https://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe");
@@ -26,6 +28,8 @@ public class DownloadManagerTest {
         for (int i = 0; i < 8; i++) {
             info1.splitStart[i]+=100;
         }
+
+        list.add(info1);
 
     }
 
@@ -67,6 +71,11 @@ public class DownloadManagerTest {
             //结果：a,c
         }*/
 
+    }
+
+    @Test
+    public void testRxjava(){
+        manager.writeData(list);
     }
 
 }

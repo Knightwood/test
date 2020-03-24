@@ -17,7 +17,7 @@ import java.util.List;
 public interface DownloadDao {
 
     @Query("SELECT * FROM downloadInfo_tab")
-    LiveData<List<DownloadEntity>>  getAll();
+    List<DownloadEntity>  getAll();
 
     /*@Query("select file_name,url,pause_flag,wait_download,cancel_download from downloadInfo_tab")
     LiveData<List<SimpleDownloadInfo>> getSimpleDataList();*/

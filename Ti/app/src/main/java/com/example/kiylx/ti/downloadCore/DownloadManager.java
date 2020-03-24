@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -17,12 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /*
  * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
@@ -35,7 +32,6 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
-    private static StorgeTask mStorgeTask;
 
     private List<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
@@ -72,10 +68,11 @@ public class DownloadManager {
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
-        //-mStorgeTask = new StorgeTask();
+
         completeDownload = new ArrayList<>();
         //completeDownload从数据库获取数据
         //pausedownload从数据库拿数据
+        scheduleWrite();
     }
 
     /**
@@ -211,14 +208,13 @@ public class DownloadManager {
 
                 //加入下载队列
                 downloading.add(info);
-                //第一次开始下载就该存入数据库
-                //-insertData(info);
             }
             //全新开始的下载任务要加入数据库
+            insertInfo(info);
         }
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
-        //-mStorgeTask.execute(downloading);
+
 
         //重置threadUse
         info.setblockPauseNum(0);
@@ -318,25 +314,25 @@ public class DownloadManager {
     }
 
     /**
-     * @param info       下载信息
-     *                   <p>
-     *                   如果任务“正在下载”，修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
-     *                   <p>
-     *                   取消下载的流程实现暂停，然后再删除文件
-     *                   1.正在下载：调用暂停，然后删除文件。
-     *                   2.暂停，直接删除文文件。
-     *                   3.准备下载，调用暂停，然后删除。
-     *                   <p>
-     *                   先暂停，然后从暂停列表中移除info。
+     * @param info 下载信息
+     *             <p>
+     *             如果任务“正在下载”，修改下载信息的取消下载标记，使得下载文件的所有线程取消文件块的下载
+     *             <p>
+     *             取消下载的流程实现暂停，然后再删除文件
+     *             1.正在下载：调用暂停，然后删除文件。
+     *             2.暂停，直接删除文文件。
+     *             3.准备下载，调用暂停，然后删除。
+     *             <p>
+     *             先暂停，然后从暂停列表中移除info。
      */
     public void cancelDownload(@NonNull DownloadInfo info) {
-            if (!info.isPause()) {
-                //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
-                pauseDownload(info);
-            }
-            info.setCancel(true);
-            pausedownload.remove(info);
-            deleteFile(info);
+        if (!info.isPause()) {
+            //如果是非暂停状态需要进行暂停。（非暂停状态包括正在下载和准备下载状态）
+            pauseDownload(info);
+        }
+        info.setCancel(true);
+        pausedownload.remove(info);
+        deleteFile(info);
 
     }
 
@@ -373,7 +369,7 @@ public class DownloadManager {
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
     float getPercentage(DownloadInfo info) {
-        return info.getProcress();
+        return info.getPercent();
     }
 
     public void setContext(Context context) {
@@ -407,11 +403,7 @@ public class DownloadManager {
         }
     }
 
-    /*废弃
-    private void getDatabase() {
-        mDatabase = DownloadInfoDatabase.getInstance(mContext);
-    }*/
-//-----------------------数据库操作---------------------//
+    //-----------------------数据库操作---------------------//
     private void insertData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
@@ -420,109 +412,95 @@ public class DownloadManager {
         DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info));
     }
 
-    private void delete(DownloadInfo info) {
+    private void deleteData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info));
     }
 
 
+    private void insertInfo(DownloadInfo info) {
+        Thread baseThread = new BaseThread(info, (info1) -> {
+            DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info1));
+        });
+        baseThread.start();
+    }
+    private void deleteInfo(DownloadInfo info) {
+        Thread baseThread = new BaseThread(info, (info1) -> {
+            DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info1));
+        });
+        baseThread.start();
+    }
+    private void updateInfo(DownloadInfo info) {
+        Thread baseThread = new BaseThread(info, (info1) -> {
+            DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info1));
+        });
+        baseThread.start();
+
+    }
+
     /**
-     * 在downloading列表不为空的时候不停的更新里面 “ 每一个条目 ” 的数据。
-     * 1.不断地把下载条目的下载进度记录进数据库，
-     * 2.通知每一个下载条目的下载进度，用于下载界面的进度条更新
+     * 用于对info进行一些数据库操作
      */
-    //---------------------在线程里存储进数据库-----------------------//
+    public interface updateItem {
+        void update(DownloadInfo info);
+    }
+    /**
+     * 这个线程用于执行interface方法,
+     * 这个interface是关于对info进行一些数据库操作而写的
+     */
+    class BaseThread extends Thread {
+        private final DownloadInfo info;
+        private final updateItem method;
 
-
-    private class StorgeTask extends AsyncTask<List<DownloadInfo>, Integer, Integer> {
-        // 类中参数为3种泛型类型
-// 整体作用：控制AsyncTask子类执行线程任务时各个阶段的返回类型
-// 具体说明：
-        // a. Params：开始异步任务执行时传入的参数类型，对应excute（）中传递的参数
-        // b. Progress：异步任务执行过程中，返回下载进度值的类型
-        // c. Result：异步任务执行完成后，返回的结果类型，与doInBackground()的返回值类型保持一致
-// 注：
-        // a. 使用时并不是所有类型都被使用
-        // b. 若无被使用，可用java.lang.Void类型代替
-        // c. 若有不同业务，需额外再写1个AsyncTask的子类
-
-
-        /**
-         * @param lists 可变参数，类型是List<DownloadInfo>
-         * @return 返回 ？？
-         * <p>
-         * StorgeTask的泛型参数第一个是List<DownloadInfo>类型，
-         * 但是DoinBackground接受的是一个可变长参数，所以可以只传入一个参数：downloading列表。
-         */
-        /*
-         * 在声明具有模糊类型（比如：泛型）的可变参数的构造函数或方法时，
-         * Java编译器会报unchecked警告。
-         * 鉴于这些情况，如果程序员断定声明的构造函数和方法的主体不会对其varargs参数执行潜在的不安全的操作，
-         * 可使用@SafeVarargs进行标记，这样的话，Java编译器就不会报unchecked警告。
-         * 使用的时候要注意：@SafeVarargs注解，对于非static或非final声明的方法，不适用，会编译不通过。
-         * 方法未声明为static或final方法，不能使用@SafeVarargs,如果要抑制unchecked警告，可以使用@SuppressWarnings注解。
-         * */
-        @SuppressWarnings("unchecked")
-        @Override
-        protected Integer doInBackground(List<DownloadInfo>... lists) {
-
-            //注：迭代器，用于遍历downloading列表
-            Iterator<DownloadInfo> iterator = lists[0].iterator();
-
-            while (iterator.hasNext()) {
-                try {
-                    Thread.sleep(2 * 1000);//2秒更新一次数据
-                    //-updateData(iterator.next());
-                    //publishProgress((int)downloadInfos[0].getCurrentLength());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return 1;
+        BaseThread(DownloadInfo info, updateItem method) {
+            this.info = info;
+            this.method = method;
         }
 
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
+        public void run() {
+            super.run();
+            method.update(info);
         }
     }
 
-    private void storge() {
 
-        //interval 操作符用于间隔时间执行某个操作，其接受三个参数，分别是第一次发送延迟，间隔时间，时间单位
+    /**
+     * 遍历list列表,把下载任务写入数据库以更新数据
+     * 这个方法要在非主线程里使用
+     */
+    public void writeData(List<DownloadInfo> list) {
+        for (DownloadInfo info : list) {
+            updateData(info);
+        }
+    }
+    /**
+     * 遍历list列表,把下载任务写入数据库以更新数据
+     * 这个方法要在非主线程里使用
+     */
+    private void writeData() {
+        this.writeData(downloading);
+    }
 
-        Observer<DownloadInfo> observer = new Observer<DownloadInfo>() {
+    /**
+     * 以500毫秒的间隔不停地把正在下载的数据写入数据库更新数据
+     * 正在下载列表最大也就5个任务
+     */
+    private void scheduleWrite() {
+        Timer timer = new Timer();
+        UpdateTask updateTask = new UpdateTask();
+        timer.schedule(updateTask, 500L, 500L);
+    }
 
-            @Override
-            public void onSubscribe(Disposable d) {
+    class UpdateTask extends TimerTask {
 
+        @Override
+        public void run() {
+            if (downloading.isEmpty()) {
+            } else {
+                writeData();
             }
 
-            @Override
-            public void onNext(DownloadInfo downloadInfo) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        };
-
+        }
     }
 
 }
-/*
- *
- * */

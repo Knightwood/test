@@ -15,6 +15,6 @@ import android.content.Context;
  */
 public class DownloadInfoDatabaseUtil {
     public static DownloadDao getDao(Context context) {
-        return DownloadInfoDatabase.getInstance(context).getDao();
+        return DownloadInfoDatabase.getInstance(context).downloadDao();
     }
 }

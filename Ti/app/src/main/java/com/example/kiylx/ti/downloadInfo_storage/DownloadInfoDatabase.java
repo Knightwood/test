@@ -25,5 +25,5 @@ public abstract class DownloadInfoDatabase extends RoomDatabase {
         sDownloadInfoDatabase=null;
     }
     //抽象方法getDao()，这个是获取数据库操作接口的方法，不用我们实现，编译通过后，room会帮我们实现
-    public abstract DownloadDao getDao();
+    public abstract DownloadDao downloadDao();
 }
