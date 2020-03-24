@@ -174,6 +174,12 @@ public class DownloadInfo {
 
 
     public long getCurrentLength() {
+        long unDownloadPart = 0;//未下载的部分
+        for (int i = 0; i < this.getThreadNum(); i++) {
+            unDownloadPart += (this.splitEnd[i] - this.splitStart[i] + 1);
+        }
+        //设置已下载的长度
+        this.setCurrentLength(this.getContentLength() - unDownloadPart);
         return currentLength;
     }
 
@@ -294,13 +300,7 @@ public class DownloadInfo {
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
     public float getProcress() {
-        long unDownloadPart = 0;//未下载的部分
-        for (int i = 0; i < this.getThreadNum(); i++) {
-            unDownloadPart += (this.splitEnd[i] - this.splitStart[i] + 1);
-        }
-        //设置已下载的长度
-        this.setCurrentLength(this.getContentLength() - unDownloadPart);
         //返回已下载百分比
-        return (float) (this.getCurrentLength() / this.getContentLength());
+        return ((float)this.getCurrentLength() / (float) this.getContentLength());
     }
 }

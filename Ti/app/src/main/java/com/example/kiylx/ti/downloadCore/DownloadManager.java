@@ -214,10 +214,12 @@ public class DownloadManager {
                 //第一次开始下载就该存入数据库
                 //-insertData(info);
             }
+            //全新开始的下载任务要加入数据库
         }
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
         //-mStorgeTask.execute(downloading);
+
         //重置threadUse
         info.setblockPauseNum(0);
 
@@ -371,15 +373,6 @@ public class DownloadManager {
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
     float getPercentage(DownloadInfo info) {
-        /*long unDownloadPart = 0;//未下载的部分
-        for (int i = 0; i < info.getThreadNum(); i++) {
-            unDownloadPart += (info.splitEnd[i] - info.splitStart[i] + 1);
-        }
-        //设置已下载的长度
-        info.setCurrentLength(info.getContentLength() - unDownloadPart);
-        //返回已下载百分比
-        return (float) (info.getCurrentLength() / info.getContentLength());*/
-
         return info.getProcress();
     }
 

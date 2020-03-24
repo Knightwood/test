@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +34,10 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
+import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoViewModel;
+import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static androidx.lifecycle.ViewModelProviders.of;
 
 /**
  * 下载管理界面
@@ -111,8 +117,7 @@ public class DownloadActivity extends AppCompatActivity {
                 //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
                 //FragmentManager fragmentManager=getSupportFragmentManager();
                 //dof.show(fragmentManager,"下载");
-                boolean as = false;
-                downloadBinder.pauseAll();
+                //getList();
             }
         });
 
@@ -141,26 +146,34 @@ public class DownloadActivity extends AppCompatActivity {
         });
 //底栏
         BottomNavigationView bottomView = findViewById(R.id.downloadBottomNavigation);
-        bottomView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.downloading:
-                        if (selectPage != 0)
-                            downloadingFragment();
-                        break;
-                    case R.id.downloadFinish:
-                        if (selectPage != 1)
-                            finishFragment();
-                        break;
-                    case R.id.cancel:
-                        if (selectPage != 2)
-                            settingFragment();
-                        break;
-                }
-                return false;
+        bottomView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.downloading:
+                    if (selectPage != 0)
+                        downloadingFragment();
+                    break;
+                case R.id.downloadFinish:
+                    if (selectPage != 1)
+                        finishFragment();
+                    break;
+                case R.id.cancel:
+                    if (selectPage != 2)
+                        settingFragment();
+                    break;
             }
+            return false;
         });
+    }
+
+    private void getList() {
+        LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
+        List<DownloadEntity> list = listLiveData.getValue();
+        for (int i = 0; i < list.size(); i++) {
+            Log.d("下载管理",
+                    "当前大小" + list.get(i).currentLength
+                            + "总大小" + list.get(i).contentLength
+                            + "文件名称" + list.get(i).filename);
+        }
     }
 
 
@@ -250,20 +263,19 @@ public class DownloadActivity extends AppCompatActivity {
         manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
-    List<DownloadInfo> downloadInfoList = new ArrayList<>();
+    List<SimpleDownloadInfo> downloadInfoList = new ArrayList<>();
 
     /**
      * @return downloadinfo列表
      * 数据库room，使用了livedata，这里观察数据的更新。
      */
-    public List<DownloadInfo> getDownloadList() {
-        DownloadInfoViewModel model = ViewModelProviders.of(this).get(DownloadInfoViewModel.class);
-        model.getiLiveData().observe(this, new Observer<List<DownloadEntity>>() {
-            @RequiresApi(api = Build.VERSION_CODES.N)
-            @Override
-            public void onChanged(List<DownloadEntity> downloadEntities) {
-                downloadInfoList.clear();
-                Stream<DownloadEntity> stream=downloadEntities.stream();
+    public List<SimpleDownloadInfo> getDownloadList() {
+        DownloadInfoViewModel model = of(this).get(DownloadInfoViewModel.class);
+        model.getiLiveData().observe(this, downloadEntities -> {
+            downloadInfoList.clear();
+            for (DownloadEntity entity : downloadEntities) {
+                downloadInfoList.add(InfoTransformToEntitiy.transformToSimple(entity));
+                Log.d("下载管理", "getDownloadList: " + entity.currentLength / entity.contentLength);
             }
         });
 

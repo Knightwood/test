@@ -10,6 +10,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,10 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.databinding.DownloadItemBinding;
-import com.example.kiylx.ti.model.DownloadControlViewModel;
-import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class RecyclerViewBaseFragment extends Fragment {
@@ -37,6 +35,9 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     public int getresId() {
         return R.layout.downloadbasefragments;
     }
+
+
+
     /**
      * @param v    条目视图
      * @param info 绑定到视图的数据
@@ -111,7 +112,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
-            //DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
+            DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
             return new DownloadViewHolder(v);
         }
 

@@ -12,8 +12,8 @@ loc:49:31 - 49:87
     <!--<data>
 
         <variable
-            name="itemcontrol"
-            type="com.example.kiylx.ti.model.DownloadControlViewModel" />
+            name="downloaditeminfo"
+            type="com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo" />
 
     </data>-->
 
@@ -28,6 +28,7 @@ loc:49:31 - 49:87
             android:singleLine="true"
             android:textAlignment="textStart"
             android:textSize="18sp"
+
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintHorizontal_bias="0.48"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +70,7 @@ loc:49:31 - 49:87
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:max="100"
+
             app:layout_constraintBottom_toTopOf="@+id/downloadUrl"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -80,6 +82,7 @@ loc:49:31 - 49:87
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:textSize="16sp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent" />

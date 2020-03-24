@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.downloadFragments;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -63,7 +64,16 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             while (!info.isPause()||!info.isDownloadSuccess()) {
                 try {
                     Thread.sleep(500);
-                    this.bar.setProgress((int) info.getProcress());
+                    this.bar.setProgress((int) (info.getProcress())*100);
+                    Log.d("下载进度", "run: "
+                            +info.getFileName()
+                            +"已下载"
+                            +info.getCurrentLength()
+                            +"总大小"
+                            +info.getContentLength()
+                            +"百分比"
+                            +(info.getProcress())
+                    );
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

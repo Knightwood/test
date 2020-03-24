@@ -8,6 +8,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
+
 import java.util.List;
 
 @Dao
@@ -16,6 +18,9 @@ public interface DownloadDao {
 
     @Query("SELECT * FROM downloadInfo_tab")
     LiveData<List<DownloadEntity>>  getAll();
+
+    /*@Query("select file_name,url,pause_flag,wait_download,cancel_download from downloadInfo_tab")
+    LiveData<List<SimpleDownloadInfo>> getSimpleDataList();*/
 
     @Query("SELECT * FROM downloadInfo_tab WHERE url =:URL")
     List<DownloadEntity> getOne(String URL);

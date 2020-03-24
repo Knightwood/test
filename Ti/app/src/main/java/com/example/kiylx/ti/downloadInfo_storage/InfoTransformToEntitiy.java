@@ -1,7 +1,11 @@
 package com.example.kiylx.ti.downloadInfo_storage;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
 
+/**
+ * downloadinfo和downloadentity互相转换的类
+ */
 public class InfoTransformToEntitiy {
     /**
      * @param info 下载信息
@@ -85,4 +89,15 @@ public class InfoTransformToEntitiy {
         return s.equals("true");
     }
 
+    public static SimpleDownloadInfo transformToSimple(DownloadEntity entity) {
+        return new SimpleDownloadInfo(
+                 entity.filename,
+                entity.url,
+                StringTobollean(entity.pause),
+                StringTobollean(entity.waitDownload),
+                StringTobollean(entity.cancel),
+                (float) entity.currentLength / entity.contentLength);
+
+
+    }
 }

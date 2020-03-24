@@ -5,6 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Transformations;
+
+import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
 
 import java.util.List;
 
@@ -17,16 +21,23 @@ import java.util.List;
 public class DownloadInfoViewModel extends AndroidViewModel {
     private DownloadInfoDatabase database;
     private static LiveData<List<DownloadEntity>> liveData;
-
+    private static LiveData<List<SimpleDownloadInfo>> simpleliveData;
     public DownloadInfoViewModel(@NonNull Application application) {
         super(application);
-        database=DownloadInfoDatabase.getInstance(application);
-        liveData= DownloadInfoDatabaseUtil.getDao(application).getAll();
+        database = DownloadInfoDatabase.getInstance(application);
+        liveData = DownloadInfoDatabaseUtil.getDao(application).getAll();
+        //simpleliveData=DownloadInfoDatabaseUtil.getDao(application).getSimpleDataList();
 
+    }
+
+    public static LiveData<List<SimpleDownloadInfo>> getSimpleliveData() {
+        return simpleliveData;
     }
 
 
     public LiveData<List<DownloadEntity>> getiLiveData() {
         return liveData;
     }
+
+
 }
