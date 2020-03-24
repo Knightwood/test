@@ -426,6 +426,7 @@ public class DownloadManager {
     /**
      * 获取数据库里的所有条目,
      * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
+     * 如果是完成下载的条目,加入completeDownload列表
      */
     class ReadThread extends Thread {
 
@@ -441,6 +442,8 @@ public class DownloadManager {
                         info.setWaitDownload(false);
                         info.setPause(true);
                         pausedownload.add(info);
+                    }else{
+                        completeDownload.add(info);
                     }
 
                 }
