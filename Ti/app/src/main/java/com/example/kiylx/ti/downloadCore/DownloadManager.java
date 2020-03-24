@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresPermission;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
@@ -70,8 +72,9 @@ public class DownloadManager {
         //存入数据库和通知更新进度的线程
 
         completeDownload = new ArrayList<>();
-        //completeDownload从数据库获取数据
-        //pausedownload从数据库拿数据
+
+        //从数据库拿数据
+        resumeInfoFromDB();
         scheduleWrite();
     }
 
@@ -94,6 +97,7 @@ public class DownloadManager {
                 //暂停,一种情况是正在下载时暂停，另一种是准备下载时暂停
                 downloading.remove(info);
                 pausedownload.add(info);
+                updateInfo(info);
             }
             Log.d(TAG, "下载暂停成功");
             return true;
@@ -167,6 +171,7 @@ public class DownloadManager {
     private void afterDownloadComplete(DownloadInfo info) {
         completeDownload.add(info);
         downloading.remove(info);
+        updateInfo(info);
         //更新数据库数据
     }
 
@@ -198,7 +203,7 @@ public class DownloadManager {
             if (downloading.size() == downloadNumLimit) {
                 //加入准备下载
                 readyDownload.add(info);
-                info.setPause(true);
+                info.setWaitDownload(true);
             } else {
                 //注：还没到下载数量限制，这是第一次开始下载
                 //处理下载信息
@@ -209,12 +214,12 @@ public class DownloadManager {
                 //加入下载队列
                 downloading.add(info);
             }
-            //全新开始的下载任务要加入数据库
+            //全新开始的下载任务,不论是加入准备下载列表还是加入正在下载列表,都要把info要加入数据库
             insertInfo(info);
         }
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
-
+        updateInfo(info);//不论是新添加的任务还是旧的任务,在这里更新一次
 
         //重置threadUse
         info.setblockPauseNum(0);
@@ -257,6 +262,7 @@ public class DownloadManager {
             info.setPause(true);
             info.setWaitDownload(false);
             pausedownload.add(info);
+            updateInfo(info);
         }
         readyDownload.clear();
         for (int i = 0; i < downloading.size(); i++) {
@@ -311,6 +317,7 @@ public class DownloadManager {
             }
 
         }
+        updateInfo(info);
     }
 
     /**
@@ -360,6 +367,7 @@ public class DownloadManager {
         if (file.exists() && file.isFile()) {
             file.delete();
         }
+        deleteInfo(info);
     }
 
     /**
@@ -404,6 +412,42 @@ public class DownloadManager {
     }
 
     //-----------------------数据库操作---------------------//
+
+    /**
+     * 在创建manager时,获取数据库里的信息.
+     * 把获取到的信息合并进暂停下载列表
+     */
+    private void resumeInfoFromDB() {
+        Thread thread=new ReadThread();
+        thread.start();
+
+    }
+
+    /**
+     * 获取数据库里的所有条目,
+     * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
+     */
+    class ReadThread extends Thread {
+
+        @Override
+        public void run() {
+            super.run();
+            List<DownloadInfo> infos =getData();
+            if (infos==null||infos.isEmpty()){
+                return;
+            }else {
+                for (DownloadInfo info :infos) {
+                    if (!info.isDownloadSuccess()){
+                        info.setWaitDownload(false);
+                        info.setPause(true);
+                        pausedownload.add(info);
+                    }
+
+                }
+            }
+        }
+    }
+
     private void insertData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
@@ -416,6 +460,25 @@ public class DownloadManager {
         DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info));
     }
 
+    /**
+     * @return 返回downloadInfo类型的list
+     * <p>
+     * 从数据库获取所有条目,然后翻译成downloadInfo类型的list并返回.
+     * 如果获取的数据是空的,什么也不做,返回空的arraylist
+     */
+    private List<DownloadInfo> getData() {
+        List<DownloadEntity> list=DownloadInfoDatabaseUtil.getDao(mContext).getAll();
+        List<DownloadInfo> result = new ArrayList<>();
+        if (list.isEmpty()||list==null){
+
+        }else {
+            for (DownloadEntity en :list ) {
+                result.add(InfoTransformToEntitiy.transformToInfo(en));
+            }
+        }
+
+        return result;
+    }
 
     private void insertInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, (info1) -> {
@@ -423,12 +486,14 @@ public class DownloadManager {
         });
         baseThread.start();
     }
+
     private void deleteInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, (info1) -> {
             DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info1));
         });
         baseThread.start();
     }
+
     private void updateInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, (info1) -> {
             DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info1));
@@ -443,6 +508,7 @@ public class DownloadManager {
     public interface updateItem {
         void update(DownloadInfo info);
     }
+
     /**
      * 这个线程用于执行interface方法,
      * 这个interface是关于对info进行一些数据库操作而写的
@@ -473,6 +539,7 @@ public class DownloadManager {
             updateData(info);
         }
     }
+
     /**
      * 遍历list列表,把下载任务写入数据库以更新数据
      * 这个方法要在非主线程里使用
