@@ -42,11 +42,11 @@ public class DownloadManager {
     private int downloadNumLimit;
     private Context mContext;
 
-    public static DownloadManager getInstance() {
+    public static DownloadManager getInstance(Context context) {
         if (mDownloadManager == null) {
             synchronized (DownloadManager.class) {
                 if (mDownloadManager == null) {
-                    mDownloadManager = new DownloadManager();
+                    mDownloadManager = new DownloadManager(context);
 
                 }
             }
@@ -56,8 +56,17 @@ public class DownloadManager {
 
 
     /**
-     * 超过这个限制，把任务加入readydownload
+     * @param context applicationContext
+     *                有了context,才能做一些数据库之类的操作
      */
+    private DownloadManager(Context context){
+        this();
+        this.mContext=context;
+
+        //从数据库拿数据
+        resumeInfoFromDB();
+        scheduleWrite();
+    }
     private DownloadManager() {
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
         downloadNumLimit = SomeRes.downloadLimit;
@@ -376,18 +385,6 @@ public class DownloadManager {
         return info.getPercent();
     }
 
-    /**
-     * @param context applicationContext
-     *                有了context,才能做一些数据库之类的操作
-     */
-    public void setContext(Context context) {
-        this.mContext = context;
-
-        //从数据库拿数据
-        resumeInfoFromDB();
-        scheduleWrite();
-    }
-
     @NotNull
     public List<DownloadInfo> getDownloading() {
         return downloading;
@@ -430,11 +427,16 @@ public class DownloadManager {
     /**
      * 在创建manager时,获取数据库里的信息.
      * 把获取到的信息合并进暂停下载列表
+     * firstCreate: 每次创建manager时获取数据库数据.之后
      */
+    //private static boolean firstCreate=true;
     private void resumeInfoFromDB() {
+       /* if (firstCreate){
+
+        }
+        firstCreate=false;*/
         Thread thread=new ReadThread();
         thread.start();
-
     }
 
     /**
@@ -462,6 +464,7 @@ public class DownloadManager {
 
                 }
             }
+            Log.d(TAG, "从数据库读取数据 "+pausedownload.size()+"/"+downloading.size()+"/"+readyDownload.size());
         }
     }
 

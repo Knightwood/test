@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DownloadingFragment extends RecyclerViewBaseFragment {
     private DownloadClickMethod controlInterface;
-    private static final String TAG="下载系列fragment";
+    private static final String TAG="正在下载fragment";
 
     /**
      * @param minterface 控制下载任务的接口
@@ -68,11 +68,12 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
 
         @Override
         public void run() {
-            while (!info.isPause()||!info.isDownloadSuccess()) {
+            //正在下载时更新进度条
+            while (!(info.isPause() || info.isDownloadSuccess() || info.isWaitDownload())) {
                 try {
                     Thread.sleep(500);
                     this.bar.setProgress((int) (info.getPercent())*100);
-                    Log.d("下载进度", "run: "
+                    Log.d(TAG, "下载进度: "
                             +info.getFileName()
                             +"已下载"
                             +info.getCurrentLength()
@@ -95,7 +96,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
      * 下载任务不在暂停状态，返回一张“暂停”的图片id，反之，返回一张“播放”的图片id
      */
     private int setPlayButtomBackgroud(DownloadInfo info) {
-        if (!info.isPause()) {
+        if (!(info.isPause() || info.isDownloadSuccess())) {
             return R.drawable.ic_pause_black_24dp;
         } else {
             return R.drawable.ic_play_arrow_black_24dp;

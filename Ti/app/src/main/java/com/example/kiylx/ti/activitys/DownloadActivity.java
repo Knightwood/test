@@ -12,12 +12,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.downloadCore.DownloadManager;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;
@@ -43,6 +40,7 @@ import static androidx.lifecycle.ViewModelProviders.of;
  * 下载管理界面
  */
 public class DownloadActivity extends AppCompatActivity {
+ private static final String TAG=   "下载管理";
 
 
     /**
@@ -52,18 +50,13 @@ public class DownloadActivity extends AppCompatActivity {
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
     private int selectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
-    private DownloadManager downloadManager = DownloadManager.getInstance();
 
-    BottomNavigationView bottomView;
+    BottomNavigationView bottomView;//底部导航栏
 
 
     public DownloadActivity() {
         super();
         downloadList = new ArrayList<>();
-
-        //downloadList.add(new DownloadInfo("https://mobile-asset.majsoul.com/Downloads/android/majsoul_1_7_2.apk"));
-        //downloadList.add(new DownloadInfo("www.baidu.com/ko2"));
-        //downloadList.add(new DownloadInfo("www.baidu.com/ko1"));
     }
 
     //与service通信的中间件
@@ -74,7 +67,8 @@ public class DownloadActivity extends AppCompatActivity {
             //下载条目xml控制下载所调用的方法
             controlMethod = downloadBinder.getInferface();
             downloadList.clear();
-            downloadBinder.getAllDownload(downloadList);
+            downloadBinder.getAllDownload(downloadList);//获取数据库里的数据
+            addFragment();//添加一个默认fragment
         }
 
         @Override
@@ -86,7 +80,7 @@ public class DownloadActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        unbindService(connection);
     }
 
     @Override
@@ -103,14 +97,11 @@ public class DownloadActivity extends AppCompatActivity {
 
         //测试开始下载任务的按钮
         Button bui = findViewById(R.id.ceshianniu);
-        bui.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
-                //FragmentManager fragmentManager=getSupportFragmentManager();
-                //dof.show(fragmentManager,"下载");
-                getList();
-            }
+        bui.setOnClickListener(v -> {
+            //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
+            //FragmentManager fragmentManager=getSupportFragmentManager();
+            //dof.show(fragmentManager,"下载");
+            getList();
         });
 
 
@@ -119,22 +110,19 @@ public class DownloadActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
         toolbar.inflateMenu(R.menu.control_download_toolbat_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.allCancel:
-                        downloadBinder.cancelAll();
-                        break;
-                    case R.id.allStart:
-                        downloadBinder.resumeAll();
-                        break;
-                    case R.id.pauseAll:
-                        downloadBinder.pauseAll();
-                        break;
-                }
-                return false;
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.allCancel:
+                    downloadBinder.cancelAll();
+                    break;
+                case R.id.allStart:
+                    downloadBinder.resumeAll();
+                    break;
+                case R.id.pauseAll:
+                    downloadBinder.pauseAll();
+                    break;
             }
+            return false;
         });
 //底栏
         bottomView = findViewById(R.id.downloadBottomNavigation);
@@ -157,10 +145,14 @@ public class DownloadActivity extends AppCompatActivity {
         });
 
         bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
-        addFragment();//添加一个默认fragment
+
     }
 
 
+    /**
+     * 添加正在下载fragment到downloadavtivity的主界面.
+     * 底部导航栏默认就是第一项.
+     */
     private void addFragment() {
         FragmentManager manager = getSupportFragmentManager();
         RecyclerViewBaseFragment fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
@@ -211,13 +203,15 @@ public class DownloadActivity extends AppCompatActivity {
                 this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
 
                 if (list == null) {
-                    Log.d("下载管理", "getList: 数据库出错");
+                    Log.d(TAG, "getList: 数据库出错");
                 } else {
                     for (int i = 0; i < list.size(); i++) {
-                        Log.d("下载管理",
-                                "当前大小" + list.get(i).currentLength
-                                        + "总大小" + list.get(i).contentLength
-                                        + "文件名称" + list.get(i).filename);
+                        Log.d(TAG, "文件名称" + list.get(i).filename
+                                + "暂停:" + list.get(i).pause
+                                + "等待:" + list.get(i).waitDownload
+                                + "完成:" + list.get(i).downloadSuccess
+                                + "总大小" + list.get(i).contentLength
+                                + "当前大小" + list.get(i).currentLength);
                     }
                 }
 
@@ -276,16 +270,6 @@ public class DownloadActivity extends AppCompatActivity {
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-    /**
-     * 开启正在下载fragment
-     */
-    public void downloadingFragment() {
-        selectPage = 0;
-        DownloadingFragment fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
-
-    }
 
     List<SimpleDownloadInfo> downloadInfoList = new ArrayList<>();
 

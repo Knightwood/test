@@ -74,7 +74,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     }
 
     public void updateUI() {
-        if (mDownloadInfoArrayList == null) {
+        if (mDownloadInfoArrayList == null||mDownloadInfoArrayList.isEmpty()) {
             return;
         }
         viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));

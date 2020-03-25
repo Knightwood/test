@@ -27,8 +27,7 @@ public class DownloadServices extends Service {
     public void onCreate() {
         super.onCreate();
         this.mDownloadBinder = new DownloadBinder();
-        mDownloadManager = DownloadManager.getInstance();
-        mDownloadManager.setContext(getApplicationContext());
+        mDownloadManager = DownloadManager.getInstance(getApplicationContext());
 
     }
 
@@ -46,6 +45,7 @@ public class DownloadServices extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        stopSelf();
     }
 
     public class DownloadBinder extends Binder {
@@ -80,7 +80,7 @@ public class DownloadServices extends Service {
 
         public void startDownload(DownloadInfo info) {
             if (mDownloadManager == null) {
-                mDownloadManager = DownloadManager.getInstance();
+                mDownloadManager = DownloadManager.getInstance(getApplicationContext());
             }
             try {
                 mDownloadManager.startDownload(info);
