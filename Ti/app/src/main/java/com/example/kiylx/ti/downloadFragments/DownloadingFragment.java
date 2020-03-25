@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 import java.util.List;
@@ -30,8 +29,12 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list) {
         super(list);
         controlInterface = minterface;
-        Log.d(TAG, "DownloadingFragment: ");
+    }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Toast.makeText(getContext(),"正在下载fragment",Toast.LENGTH_LONG).show();
     }
 
     //重写的viewholder中的bind方法

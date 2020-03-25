@@ -5,13 +5,15 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
-import com.example.kiylx.ti.myInterface.DownloadMethod;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 下载服务
@@ -85,6 +87,14 @@ public class DownloadServices extends Service {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public void getAllDownload(@NonNull List<DownloadInfo> list){
+            list.addAll(mDownloadManager.getDownloading());
+            list.addAll(mDownloadManager.getPausedownload());
+            list.addAll(mDownloadManager.getReadyDownload());
+            list.addAll(mDownloadManager.getCompleteDownload());
+
         }
 
         /**

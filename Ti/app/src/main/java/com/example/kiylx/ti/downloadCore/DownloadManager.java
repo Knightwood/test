@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresPermission;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -73,9 +72,6 @@ public class DownloadManager {
 
         completeDownload = new ArrayList<>();
 
-        //从数据库拿数据
-        resumeInfoFromDB();
-        scheduleWrite();
     }
 
     /**
@@ -376,18 +372,36 @@ public class DownloadManager {
      * 文件的下载线程数就是文件分块的标号，
      * 那么分块的结束减去分块的开始就是未下载的部分
      */
-    float getPercentage(DownloadInfo info) {
+    public float getPercentage(DownloadInfo info) {
         return info.getPercent();
     }
 
+    /**
+     * @param context applicationContext
+     *                有了context,才能做一些数据库之类的操作
+     */
     public void setContext(Context context) {
         this.mContext = context;
+
+        //从数据库拿数据
+        resumeInfoFromDB();
+        scheduleWrite();
     }
 
     @NotNull
     public List<DownloadInfo> getDownloading() {
         return downloading;
     }
+    public List<DownloadInfo> getPausedownload(){
+        return pausedownload;
+    }
+    public List<DownloadInfo> getReadyDownload(){
+        return readyDownload;
+    }
+    public List<DownloadInfo> getCompleteDownload(){
+        return completeDownload;
+    }
+
 
     /**
      * @return 返回正在下载的任务数量
@@ -484,23 +498,17 @@ public class DownloadManager {
     }
 
     private void insertInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, (info1) -> {
-            DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info1));
-        });
+        Thread baseThread = new BaseThread(info, this::insertData);
         baseThread.start();
     }
 
     private void deleteInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, (info1) -> {
-            DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info1));
-        });
+        Thread baseThread = new BaseThread(info, this::deleteData);
         baseThread.start();
     }
 
     private void updateInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, (info1) -> {
-            DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info1));
-        });
+        Thread baseThread = new BaseThread(info, this::updateData);
         baseThread.start();
 
     }

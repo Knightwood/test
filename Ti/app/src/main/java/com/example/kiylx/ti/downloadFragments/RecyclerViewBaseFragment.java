@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.myFragments;
+package com.example.kiylx.ti.downloadFragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -73,7 +73,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         super.onDetach();
     }
 
-    private void updateUI() {
+    public void updateUI() {
         if (mDownloadInfoArrayList == null) {
             return;
         }

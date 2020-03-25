@@ -1,31 +1,20 @@
 package com.example.kiylx.ti.activitys;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadManager;
@@ -39,7 +28,7 @@ import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoViewModel;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
-import com.example.kiylx.ti.myFragments.RecyclerViewBaseFragment;
+import com.example.kiylx.ti.downloadFragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -47,7 +36,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static androidx.lifecycle.ViewModelProviders.of;
 
@@ -85,6 +73,8 @@ public class DownloadActivity extends AppCompatActivity {
             downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
             //下载条目xml控制下载所调用的方法
             controlMethod = downloadBinder.getInferface();
+            downloadList.clear();
+            downloadBinder.getAllDownload(downloadList);
         }
 
         @Override
@@ -110,9 +100,6 @@ public class DownloadActivity extends AppCompatActivity {
         boundDownloadService();
 
         //downloadList=从存储中获取下载信息
-
-        downloadList = downloadManager.getDownloading();
-        switchFragment(selectPage);
 
         //测试开始下载任务的按钮
         Button bui = findViewById(R.id.ceshianniu);
@@ -168,6 +155,16 @@ public class DownloadActivity extends AppCompatActivity {
             }
             return true;
         });
+
+        bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
+        addFragment();//添加一个默认fragment
+    }
+
+
+    private void addFragment() {
+        FragmentManager manager = getSupportFragmentManager();
+        RecyclerViewBaseFragment fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
+        manager.beginTransaction().add(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
     /**
@@ -211,11 +208,11 @@ public class DownloadActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                this.list  =  DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
+                this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
 
-                if (list==null){
+                if (list == null) {
                     Log.d("下载管理", "getList: 数据库出错");
-                }else{
+                } else {
                     for (int i = 0; i < list.size(); i++) {
                         Log.d("下载管理",
                                 "当前大小" + list.get(i).currentLength
