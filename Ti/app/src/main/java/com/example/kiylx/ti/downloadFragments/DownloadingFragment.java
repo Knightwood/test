@@ -13,9 +13,9 @@ import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
 import java.util.List;
 
-public class DownloadingFragment extends RecyclerViewBaseFragment {
+public class DownloadingFragment extends RecyclerViewBaseFragment{
     private DownloadClickMethod controlInterface;
-    private static final String TAG="正在下载fragment";
+    private static final String TAG = "正在下载fragment";
 
     /**
      * @param minterface 控制下载任务的接口
@@ -34,20 +34,26 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getContext(),"正在下载fragment",Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "正在下载fragment", Toast.LENGTH_LONG).show();
     }
 
     //重写的viewholder中的bind方法
     @Override
     public void bindItemView(View v, DownloadInfo info) {
         TextView title = v.findViewById(R.id.downloadTtitle);
-        TextView url = v.findViewById(R.id.downloadUrl);
+        //TextView url = v.findViewById(R.id.downloadUrl);
         ProgressBar progressBar = v.findViewById(R.id.downloadProgressBar);
         ImageView playButtom = v.findViewById(R.id.resumeDownload);
-        //ImageView deleteButtom=v.findViewById(R.id.deleteDownloadinfo);
-
+        playButtom.setOnClickListener(v12 -> {
+            if (info.isPause()){
+                controlInterface.reasume(info);
+            }else
+                controlInterface.pause(info);
+        });
+        ImageView deleteButtom = v.findViewById(R.id.deleteDownloadinfo);
+        deleteButtom.setOnClickListener(v1 -> controlInterface.cancel(info));
         title.setText(info.getFileName());
-        url.setText(info.getUrl());
+        //url.setText(info.getUrl());
 
         new Thread(new updateProgress(info, progressBar)).start();
         playButtom.setImageResource(setPlayButtomBackgroud(info));
@@ -72,15 +78,15 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             while (!(info.isPause() || info.isDownloadSuccess() || info.isWaitDownload())) {
                 try {
                     Thread.sleep(500);
-                    this.bar.setProgress((int) (info.getPercent())*100);
+                    this.bar.setProgress((int) (info.getPercent()) * 100);
                     Log.d(TAG, "下载进度: "
-                            +info.getFileName()
-                            +"已下载"
-                            +info.getCurrentLength()
-                            +"总大小"
-                            +info.getContentLength()
-                            +"百分比"
-                            +(info.getPercent())
+                            + info.getFileName()
+                            + "已下载"
+                            + info.getCurrentLength()
+                            + "总大小"
+                            + info.getContentLength()
+                            + "百分比"
+                            + (info.getPercent())
                     );
                 } catch (InterruptedException e) {
                     e.printStackTrace();
