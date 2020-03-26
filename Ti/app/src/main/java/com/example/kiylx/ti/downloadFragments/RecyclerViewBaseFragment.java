@@ -59,6 +59,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         //return super.onCreateView(inflater, container, savedInstanceState);
         mRootView = inflater.inflate(getresId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
+        viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         updateUI();
         return mRootView;
     }
@@ -74,10 +75,9 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     }
 
     public void updateUI() {
-        if (mDownloadInfoArrayList == null||mDownloadInfoArrayList.isEmpty()) {
+        if (mDownloadInfoArrayList == null) {
             return;
         }
-        viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));
         if (mAdapter == null) {
             mAdapter = new listAdapter(mDownloadInfoArrayList);
             viewContainer.setAdapter(mAdapter);
@@ -93,9 +93,11 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
      *             传入新的数据，更新界面
      */
     public void updateUI(List<DownloadInfo> list){
+        this.mDownloadInfoArrayList.clear();
         this.mDownloadInfoArrayList=list;
         updateUI();
     }
+
     private class listAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
         private List<DownloadInfo> mLists;//recyclerview所用的数据
 

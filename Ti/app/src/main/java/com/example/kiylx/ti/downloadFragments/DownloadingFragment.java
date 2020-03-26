@@ -29,8 +29,8 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
      * @return downloadingFragment
      */
     public static DownloadingFragment getInstance(DownloadClickMethod minterface) {
-        downloadInfoList = new ArrayList<>();
-        minterface.getAllDownload(downloadInfoList);
+
+        downloadInfoList= minterface.getAllDownload();
         return new DownloadingFragment(minterface, downloadInfoList);
     }
 
@@ -59,7 +59,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     public void onReceiveMsg(EventMessage message) {
         if (message.getType() == 1) {
             Log.d(TAG, "eventbus接受到了事件，正在更新视图");
-            controlInterface.getAllDownload(downloadInfoList);
+            downloadInfoList= controlInterface.getAllDownload();
             updateUI(downloadInfoList);
         }
     }
@@ -69,7 +69,10 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     public void bindItemView(View v, DownloadInfo info) {
         TextView title = v.findViewById(R.id.downloadTtitle);
         //TextView url = v.findViewById(R.id.downloadUrl);
+
         ProgressBar progressBar = v.findViewById(R.id.downloadProgressBar);
+        progressBar.setProgress(info.getIntPercent());
+
         ImageView playButtom = v.findViewById(R.id.resumeDownload);
         playButtom.setOnClickListener(v12 -> {
             if (info.isPause()) {
@@ -81,10 +84,12 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             }
 
         });
+
         ImageView deleteButtom = v.findViewById(R.id.deleteDownloadinfo);
         deleteButtom.setOnClickListener(v1 -> {
             controlInterface.cancel(info);
         });
+
         title.setText(info.getFileName());
         //url.setText(info.getUrl());
 
@@ -111,7 +116,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             while (!(info.isPause() || info.isDownloadSuccess() || info.isWaitDownload())) {
                 try {
                     Thread.sleep(500);
-                    this.bar.setProgress((int) (info.getPercent()) * 100);
+                    this.bar.setProgress(info.getIntPercent());
                     Log.d(TAG, "下载进度: "
                             + info.getFileName()
                             + "已下载"

@@ -22,6 +22,8 @@ public class DownloadServices extends Service {
     private DownloadBinder mDownloadBinder;
     private DownloadManager mDownloadManager;
     private DownloadClickMethod controlMethod;
+    private List<DownloadInfo> downloadInfoList;
+    private List<DownloadInfo> completeInfoList;
 
     @Override
     public void onCreate() {
@@ -90,7 +92,6 @@ public class DownloadServices extends Service {
         }
 
 
-
         /**
          * @return 返回控制下载任务的接口
          * <p>
@@ -123,17 +124,28 @@ public class DownloadServices extends Service {
                     public float getPercent(DownloadInfo info) {
                         return mDownloadManager.getPercentage(info);
                     }
-                    public void getAllDownload(@NonNull List<DownloadInfo> list){
-                        list.clear();
-                        list.addAll(mDownloadManager.getDownloading());
-                        list.addAll(mDownloadManager.getPausedownload());
-                        list.addAll(mDownloadManager.getReadyDownload());
+
+                    @Override
+                    public List<DownloadInfo> getAllDownload() {
+                        if (downloadInfoList == null) {
+                            downloadInfoList = new ArrayList<>();
+                        }
+                        downloadInfoList.clear();
+                        downloadInfoList.addAll(mDownloadManager.getDownloading());
+                        downloadInfoList.addAll(mDownloadManager.getPausedownload());
+                        downloadInfoList.addAll(mDownloadManager.getReadyDownload());
+                        return downloadInfoList;
 
                     }
-                    public void getAllComplete(@NonNull List<DownloadInfo> list){
-                        list.clear();
-                        list.addAll(mDownloadManager.getCompleteDownload());
 
+                    @Override
+                    public List<DownloadInfo> getAllComplete() {
+                        if (completeInfoList == null) {
+                            completeInfoList = new ArrayList<>();
+                        }
+                        completeInfoList.clear();
+                        completeInfoList.addAll(mDownloadManager.getCompleteDownload());
+                        return completeInfoList;
                     }
                 };
 

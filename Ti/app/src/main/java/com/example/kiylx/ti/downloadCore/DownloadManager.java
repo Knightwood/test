@@ -192,11 +192,10 @@ public class DownloadManager {
      * 发送列表更新的通知
      */
     private void sendMes() {
-        /*Message message = new Message();
-        message.what = SomeRes.UPDATE_LIST;
-        handler.sendMessage(message);*/
         EventMessage msg=new EventMessage(1,"更新下载列表");
         EventBus.getDefault().post(msg);
+
+        Log.d(TAG,"下载数："+downloading.size()+"暂停数："+pausedownload.size());
 
     }
 

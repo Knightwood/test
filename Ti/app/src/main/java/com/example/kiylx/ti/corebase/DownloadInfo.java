@@ -303,4 +303,8 @@ public class DownloadInfo {
         //返回已下载百分比
         return ((float)this.getCurrentLength() / (float) this.getContentLength());
     }
+    public int getIntPercent(){
+       return (int) (((float)this.getCurrentLength() / (float) this.getContentLength())*100);
+    }
+
 }

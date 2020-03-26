@@ -25,6 +25,6 @@ public interface DownloadClickMethod {
     void reasume(DownloadInfo info);
 
     float getPercent(DownloadInfo info);
-    void getAllDownload(@NonNull List<DownloadInfo> list);
-    void getAllComplete(@NonNull List<DownloadInfo> list);
+    List<DownloadInfo> getAllDownload();
+    List<DownloadInfo> getAllComplete();
 }

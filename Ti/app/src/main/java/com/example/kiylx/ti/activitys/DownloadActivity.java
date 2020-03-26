@@ -42,40 +42,14 @@ import static androidx.lifecycle.ViewModelProviders.of;
 public class DownloadActivity extends AppCompatActivity {
     private static final String TAG = "下载管理";
 
-
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
     private int selectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
     BottomNavigationView bottomView;//底部导航栏
 
-
     public DownloadActivity() {
         super();
-
-    }
-
-    //与service通信的中间件
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
-            //下载条目xml控制下载所调用的方法
-            controlMethod = downloadBinder.getInferface();
-
-            addFragment();//添加一个默认fragment
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            controlMethod = null;
-        }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(connection);
     }
 
     @Override
@@ -83,20 +57,14 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
 
-        //开启下载服务
-        //startDownoadService();
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
-
-        //downloadList=从存储中获取下载信息
 
         //测试开始下载任务的按钮
         Button bui = findViewById(R.id.ceshianniu);
         bui.setOnClickListener(v -> {
-            //DownloadWindow dof= DownloadWindow.getInstance(new DownloadInfo("www.baidu.com/ko"));
-            //FragmentManager fragmentManager=getSupportFragmentManager();
-            //dof.show(fragmentManager,"下载");
             getList();
+
         });
 
 
@@ -143,6 +111,28 @@ public class DownloadActivity extends AppCompatActivity {
 
     }
 
+    //与service通信的中间件
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
+            //下载条目xml控制下载所调用的方法
+            controlMethod = downloadBinder.getInferface();
+
+            addFragment();//添加一个默认fragment
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            controlMethod = null;
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
+    }
 
     /**
      * 添加正在下载fragment到downloadavtivity的主界面.
