@@ -6,7 +6,7 @@
     <data>
         <variable
             name="infos"
-            type="com.example.kiylx.ti.model.MultiPage_ViewModel" />
+            type="com.example.kiylx.ti.model.MultiPage_Bean" />
         <variable
             name="clickon"
             type="android.view.View.OnClickListener" />

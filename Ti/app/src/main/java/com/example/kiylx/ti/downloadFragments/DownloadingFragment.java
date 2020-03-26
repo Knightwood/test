@@ -9,21 +9,29 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class DownloadingFragment extends RecyclerViewBaseFragment{
+public class DownloadingFragment extends RecyclerViewBaseFragment {
     private DownloadClickMethod controlInterface;
     private static final String TAG = "正在下载fragment";
+    private static List<DownloadInfo> downloadInfoList;
 
     /**
      * @param minterface 控制下载任务的接口
-     * @param list       下载任务列表
      * @return downloadingFragment
      */
-    public static DownloadingFragment getInstance(DownloadClickMethod minterface, List<DownloadInfo> list) {
-        return new DownloadingFragment(minterface, list);
+    public static DownloadingFragment getInstance(DownloadClickMethod minterface) {
+        downloadInfoList = new ArrayList<>();
+        minterface.getAllDownload(downloadInfoList);
+        return new DownloadingFragment(minterface, downloadInfoList);
     }
 
     public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list) {
@@ -35,6 +43,25 @@ public class DownloadingFragment extends RecyclerViewBaseFragment{
     public void onStart() {
         super.onStart();
         Toast.makeText(getContext(), "正在下载fragment", Toast.LENGTH_LONG).show();
+
+        //注册eventbus，用于downloadManager中数据发生改变时，在这里重新获取数据更新界面
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+        downloadInfoList=null;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiveMsg(EventMessage message) {
+        if (message.getType() == 1) {
+            Log.d(TAG, "eventbus接受到了事件，正在更新视图");
+            controlInterface.getAllDownload(downloadInfoList);
+            updateUI(downloadInfoList);
+        }
     }
 
     //重写的viewholder中的bind方法
@@ -45,13 +72,19 @@ public class DownloadingFragment extends RecyclerViewBaseFragment{
         ProgressBar progressBar = v.findViewById(R.id.downloadProgressBar);
         ImageView playButtom = v.findViewById(R.id.resumeDownload);
         playButtom.setOnClickListener(v12 -> {
-            if (info.isPause()){
+            if (info.isPause()) {
                 controlInterface.reasume(info);
-            }else
+                playButtom.setImageResource(setPlay_Arrow(false));
+            } else {
                 controlInterface.pause(info);
+                playButtom.setImageResource(setPlay_Arrow(true));
+            }
+
         });
         ImageView deleteButtom = v.findViewById(R.id.deleteDownloadinfo);
-        deleteButtom.setOnClickListener(v1 -> controlInterface.cancel(info));
+        deleteButtom.setOnClickListener(v1 -> {
+            controlInterface.cancel(info);
+        });
         title.setText(info.getFileName());
         //url.setText(info.getUrl());
 
@@ -63,7 +96,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment{
     /**
      * 更新进度条进度
      */
-    private class updateProgress implements Runnable {
+    private static class updateProgress implements Runnable {
         private final DownloadInfo info;
         private final ProgressBar bar;
 
@@ -108,5 +141,12 @@ public class DownloadingFragment extends RecyclerViewBaseFragment{
             return R.drawable.ic_play_arrow_black_24dp;
         }
     }
-
+    /**
+     * @return 根据暂停与否返回不同的资源id
+     * <p>
+     * true则设置play_arrow图片，false设置pause图片
+     */
+    private int setPlay_Arrow(boolean b) {
+        return b? R.drawable.ic_play_arrow_black_24dp:R.drawable.ic_pause_black_24dp;
+    }
 }

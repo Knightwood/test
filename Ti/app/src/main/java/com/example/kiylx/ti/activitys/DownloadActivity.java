@@ -40,13 +40,9 @@ import static androidx.lifecycle.ViewModelProviders.of;
  * 下载管理界面
  */
 public class DownloadActivity extends AppCompatActivity {
- private static final String TAG=   "下载管理";
+    private static final String TAG = "下载管理";
 
 
-    /**
-     * 存放下载的信息的列表
-     */
-    private List<DownloadInfo> downloadList;
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
     private int selectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
@@ -56,7 +52,7 @@ public class DownloadActivity extends AppCompatActivity {
 
     public DownloadActivity() {
         super();
-        downloadList = new ArrayList<>();
+
     }
 
     //与service通信的中间件
@@ -66,8 +62,7 @@ public class DownloadActivity extends AppCompatActivity {
             downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
             //下载条目xml控制下载所调用的方法
             controlMethod = downloadBinder.getInferface();
-            downloadList.clear();
-            downloadBinder.getAllDownload(downloadList);//获取数据库里的数据
+
             addFragment();//添加一个默认fragment
         }
 
@@ -155,7 +150,7 @@ public class DownloadActivity extends AppCompatActivity {
      */
     private void addFragment() {
         FragmentManager manager = getSupportFragmentManager();
-        RecyclerViewBaseFragment fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
+        RecyclerViewBaseFragment fragment = DownloadingFragment.getInstance(controlMethod);
         manager.beginTransaction().add(R.id.downloadfragmentcontainer, fragment).commit();
     }
 
@@ -170,7 +165,7 @@ public class DownloadActivity extends AppCompatActivity {
         RecyclerViewBaseFragment fragment;
         switch (i) {
             case 0:
-                fragment = DownloadingFragment.getInstance(controlMethod, downloadList);
+                fragment = DownloadingFragment.getInstance(controlMethod);
                 manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
                 break;
             case 1:
@@ -185,6 +180,9 @@ public class DownloadActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 测试方法
+     */
     private void getList() {
         /*LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
         List<DownloadEntity> list = listLiveData.getValue();
@@ -201,9 +199,10 @@ public class DownloadActivity extends AppCompatActivity {
             @Override
             public void run() {
                 this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
-
                 if (list == null) {
                     Log.d(TAG, "getList: 数据库出错");
+                } else if (list.isEmpty()) {
+                    Log.d(TAG, "下载activity：数据库里是空的");
                 } else {
                     for (int i = 0; i < list.size(); i++) {
                         Log.d(TAG, "文件名称" + list.get(i).filename

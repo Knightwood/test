@@ -8,13 +8,13 @@ import androidx.databinding.Bindable;
 /**
  * 用于多窗口更新文字，使用的databinding
  */
-public class MultiPage_ViewModel {
-    private static final String TAG = "MultiPage_ViewModel";
+public class MultiPage_Bean {
+    private static final String TAG = "MultiPage_Bean";
     private String title;
     private String Url;
     private int pos;
 
-    public MultiPage_ViewModel() {
+    public MultiPage_Bean() {
     }
 
     public String getTitle() {

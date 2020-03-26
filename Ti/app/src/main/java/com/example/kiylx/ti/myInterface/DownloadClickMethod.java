@@ -1,6 +1,10 @@
 package com.example.kiylx.ti.myInterface;
 
+import androidx.annotation.NonNull;
+
 import com.example.kiylx.ti.corebase.DownloadInfo;
+
+import java.util.List;
 
 /**
  * 这是下载的条目中的databinding所用到的。
@@ -21,4 +25,6 @@ public interface DownloadClickMethod {
     void reasume(DownloadInfo info);
 
     float getPercent(DownloadInfo info);
+    void getAllDownload(@NonNull List<DownloadInfo> list);
+    void getAllComplete(@NonNull List<DownloadInfo> list);
 }

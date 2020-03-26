@@ -89,13 +89,7 @@ public class DownloadServices extends Service {
             }
         }
 
-        public void getAllDownload(@NonNull List<DownloadInfo> list){
-            list.addAll(mDownloadManager.getDownloading());
-            list.addAll(mDownloadManager.getPausedownload());
-            list.addAll(mDownloadManager.getReadyDownload());
-            list.addAll(mDownloadManager.getCompleteDownload());
 
-        }
 
         /**
          * @return 返回控制下载任务的接口
@@ -128,6 +122,18 @@ public class DownloadServices extends Service {
                     @Override
                     public float getPercent(DownloadInfo info) {
                         return mDownloadManager.getPercentage(info);
+                    }
+                    public void getAllDownload(@NonNull List<DownloadInfo> list){
+                        list.clear();
+                        list.addAll(mDownloadManager.getDownloading());
+                        list.addAll(mDownloadManager.getPausedownload());
+                        list.addAll(mDownloadManager.getReadyDownload());
+
+                    }
+                    public void getAllComplete(@NonNull List<DownloadInfo> list){
+                        list.clear();
+                        list.addAll(mDownloadManager.getCompleteDownload());
+
                     }
                 };
 

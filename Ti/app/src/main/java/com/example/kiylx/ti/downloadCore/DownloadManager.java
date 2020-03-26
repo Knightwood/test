@@ -1,6 +1,8 @@
 package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -10,8 +12,10 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadInfo_storage.InfoTransformToEntitiy;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -19,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,6 +38,7 @@ public class DownloadManager {
 
     private volatile static DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
+    private Handler handler = new Handler();
 
     private List<DownloadInfo> readyDownload;
     private List<DownloadInfo> downloading;
@@ -59,14 +65,15 @@ public class DownloadManager {
      * @param context applicationContext
      *                有了context,才能做一些数据库之类的操作
      */
-    private DownloadManager(Context context){
+    private DownloadManager(Context context) {
         this();
-        this.mContext=context;
+        this.mContext = context;
 
         //从数据库拿数据
         resumeInfoFromDB();
         scheduleWrite();
     }
+
     private DownloadManager() {
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
         downloadNumLimit = SomeRes.downloadLimit;
@@ -176,8 +183,21 @@ public class DownloadManager {
     private void afterDownloadComplete(DownloadInfo info) {
         completeDownload.add(info);
         downloading.remove(info);
-        updateInfo(info);
-        //更新数据库数据
+        updateInfo(info);//更新数据库数据
+
+        sendMes();//通知别的类，这里的列表发生了改变
+    }
+
+    /**
+     * 发送列表更新的通知
+     */
+    private void sendMes() {
+        /*Message message = new Message();
+        message.what = SomeRes.UPDATE_LIST;
+        handler.sendMessage(message);*/
+        EventMessage msg=new EventMessage(1,"更新下载列表");
+        EventBus.getDefault().post(msg);
+
     }
 
     /**
@@ -346,6 +366,7 @@ public class DownloadManager {
         pausedownload.remove(info);
         deleteFile(info);
 
+        sendMes();//通知别的类，这里的列表发生了改变
     }
 
     /**
@@ -389,13 +410,16 @@ public class DownloadManager {
     public List<DownloadInfo> getDownloading() {
         return downloading;
     }
-    public List<DownloadInfo> getPausedownload(){
+
+    public List<DownloadInfo> getPausedownload() {
         return pausedownload;
     }
-    public List<DownloadInfo> getReadyDownload(){
+
+    public List<DownloadInfo> getReadyDownload() {
         return readyDownload;
     }
-    public List<DownloadInfo> getCompleteDownload(){
+
+    public List<DownloadInfo> getCompleteDownload() {
         return completeDownload;
     }
 
@@ -435,7 +459,7 @@ public class DownloadManager {
 
         }
         firstCreate=false;*/
-        Thread thread=new ReadThread();
+        Thread thread = new ReadThread();
         thread.start();
     }
 
@@ -449,22 +473,22 @@ public class DownloadManager {
         @Override
         public void run() {
             super.run();
-            List<DownloadInfo> infos =getData();
-            if (infos==null||infos.isEmpty()){
+            List<DownloadInfo> infos = getData();
+            if (infos == null || infos.isEmpty()) {
                 return;
-            }else {
-                for (DownloadInfo info :infos) {
-                    if (!info.isDownloadSuccess()){
+            } else {
+                for (DownloadInfo info : infos) {
+                    if (!info.isDownloadSuccess()) {
                         info.setWaitDownload(false);
                         info.setPause(true);
                         pausedownload.add(info);
-                    }else{
+                    } else {
                         completeDownload.add(info);
                     }
 
                 }
             }
-            Log.d(TAG, "从数据库读取数据 "+pausedownload.size()+"/"+downloading.size()+"/"+readyDownload.size());
+            Log.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
         }
     }
 
@@ -487,12 +511,12 @@ public class DownloadManager {
      * 如果获取的数据是空的,什么也不做,返回空的arraylist
      */
     private List<DownloadInfo> getData() {
-        List<DownloadEntity> list=DownloadInfoDatabaseUtil.getDao(mContext).getAll();
+        List<DownloadEntity> list = DownloadInfoDatabaseUtil.getDao(mContext).getAll();
         List<DownloadInfo> result = new ArrayList<>();
-        if (list.isEmpty()||list==null){
+        if (list.isEmpty() || list == null) {
 
-        }else {
-            for (DownloadEntity en :list ) {
+        } else {
+            for (DownloadEntity en : list) {
                 result.add(InfoTransformToEntitiy.transformToInfo(en));
             }
         }

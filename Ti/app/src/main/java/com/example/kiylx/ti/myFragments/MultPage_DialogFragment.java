@@ -25,7 +25,7 @@ import android.widget.ImageButton;
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.model.MultiPage_ViewModel;
+import com.example.kiylx.ti.model.MultiPage_Bean;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
@@ -187,7 +187,7 @@ public class MultPage_DialogFragment extends DialogFragment {
             mBinding=binding;
 
             //绑定上viewmodel
-            mBinding.setInfos(new MultiPage_ViewModel());
+            mBinding.setInfos(new MultiPage_Bean());
             mBinding.setClickon(this);
             Log.d(TAG, "onClick: WebsiteHolder构造方法被触发");
 

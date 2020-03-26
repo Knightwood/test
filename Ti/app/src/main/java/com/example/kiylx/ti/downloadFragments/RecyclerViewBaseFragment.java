@@ -96,7 +96,6 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         this.mDownloadInfoArrayList=list;
         updateUI();
     }
-
     private class listAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
         private List<DownloadInfo> mLists;//recyclerview所用的数据
 
