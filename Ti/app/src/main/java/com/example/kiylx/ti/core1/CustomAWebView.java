@@ -98,7 +98,7 @@ public class CustomAWebView extends WebView {
     public void setHandleClickLinks(HandleClickedLinks handleClickLinks) {
         this.handlerClick = handleClickLinks;
     }
-
+//===============================================================================
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {

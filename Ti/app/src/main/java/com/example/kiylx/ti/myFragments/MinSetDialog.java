@@ -8,10 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -26,11 +24,9 @@ import com.example.kiylx.ti.activitys.HistoryActivity;
 import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.myInterface.SearchTextOnWebview;
-import com.example.kiylx.ti.myInterface.Setmessage;
+import com.example.kiylx.ti.myInterface.ControlWebView;
 
 /**
  * 主界面的功能界面
@@ -44,8 +40,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     //private RecyclerView mRecyclerView;
     //private View mView;
     private static WebPage_Info info;
-    private SearchTextOnWebview mInterface;
-    private WebViewManager webManager;
+    //private SearchTextOnWebview mInterface;
+    //private WebViewManager webManager;
+    private ControlWebView controlWebViewInterface;
 
 
     public static MinSetDialog newInstance(WebPage_Info info) {
@@ -93,21 +90,26 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.reload_webview:
-                reload();
+                controlWebViewInterface.reload();
+                //reload();
                 break;
             case R.id.findtext:
-                find();
+                controlWebViewInterface.searchText();
+                //find();
                 break;
             case R.id.share:
-                sharing();
+                controlWebViewInterface.sharing(info.getUrl());
+                //sharing();
                 break;
             case R.id.pcMode:
-                usePcMode();
+                controlWebViewInterface.usePcMode();
+                //usePcMode();
                 break;
             case R.id.hideSelf:
                 break;
             case R.id.addBookmark:
-                addtobookmark();
+                //addtobookmark();
+                controlWebViewInterface.addtobookmark(info.getUrl());
                 break;
             case R.id.menu:
                 startSetting();
@@ -125,10 +127,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         }
         dismiss();
         Log.d(TAG, "onClick: " + v.getId());
-    }
-
-    private void usePcMode() {
-        webManager.reLoad_pcmode();
     }
 
     private void startDownload() {
@@ -157,44 +155,10 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         startActivity(Bookmark_intent);
     }
 
-    /**
-     * 分享
-     */
-    private void sharing() {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_TEXT, info.getUrl());
-        i.putExtra(Intent.EXTRA_SUBJECT, "网址");
-        startActivity(i);
-
-    }
-    public void setInterafce(SearchTextOnWebview mInterface){
-        this.mInterface=mInterface;
+    public void setInterafce(ControlWebView mInterface){
+        this.controlWebViewInterface=mInterface;
     }
 
-    /**
-     * 调用mainActivity中实现的接口，打开网页内搜索
-     */
-    private void find() {
-        mInterface.search();
-    }
-
-    private void addtobookmark() {
-        WebPage_Info tmp = info;
-        FragmentManager fm = getFragmentManager();
-        //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
-        dialog.show(fm, "收藏当前网页");
-
-    }
-
-    private void reload() {
-        webManager.reLoad((AppCompatActivity) getActivity());
-    }
-
-    public void setWebViewManager(WebViewManager mWebViewManager) {
-        this.webManager=mWebViewManager;
-    }
 }
 /*private void updateUI(String[] lists) {
         if (mAdapter==null){
@@ -261,3 +225,38 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
         }
     }*/
+/*
+ private void usePcMode() {
+        webManager.reLoad_pcmode();
+    }
+
+private void sharing() {
+    Intent i = new Intent(Intent.ACTION_SEND);
+    i.setType("text/plain");
+    i.putExtra(Intent.EXTRA_TEXT, info.getUrl());
+    i.putExtra(Intent.EXTRA_SUBJECT, "网址");
+    startActivity(i);
+
+}
+public void setInterafce(SearchTextOnWebview mInterface){
+        this.mInterface=mInterface;
+    }
+private void find() {
+        mInterface.search();
+    }
+    private void addtobookmark() {
+        WebPage_Info tmp = info;
+        FragmentManager fm = getFragmentManager();
+        //把当前网页信息传给收藏dialog
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
+        dialog.show(fm, "收藏当前网页");
+
+    }
+private void reload() {
+        webManager.reLoad((AppCompatActivity) getActivity());
+    }
+
+    public void setWebViewManager(WebViewManager mWebViewManager) {
+        this.webManager=mWebViewManager;
+    }
+ */

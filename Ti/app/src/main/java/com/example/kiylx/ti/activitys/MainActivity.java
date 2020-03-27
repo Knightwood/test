@@ -35,16 +35,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.core1.CustomAWebView;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
-import com.example.kiylx.ti.downloadFragments.DownloadWindow;
+import com.example.kiylx.ti.downloadFragments.DownloadDialog;
 import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
+import com.example.kiylx.ti.myInterface.ControlWebView;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
@@ -53,7 +53,6 @@ import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.myInterface.SearchTextOnWebview;
 import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.Tool.ProcessUrl;
 
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private View inflated;//搜索webview文字的搜索框
     private MultPage_DialogFragment md;//多窗口dialogFragment
     private static HandleClickedLinks handleClickedLinks;
+    private ControlWebView controlInterface;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
@@ -93,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         //实现处理webview长按事件的接口
         achieveHandlerClickInterface();
+        //实现控制webview的接口
+        implControlWebview();
         //获取WebViewManager的实例
         mWebViewManager = WebViewManager.getInstance(MainActivity.this, handleClickedLinks);
 
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //判断webviewmanager中有没有webview，有的话执行恢复方法，把webview重新放进屏幕。当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来
         if (mWebViewManager.isempty()) {
             Log.d(TAG, "onCreate: isempty");
-            newTab();
+            newTab(null);
         } else {
             mWebViewManager.getTop(currect).onResume();
 
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //接口回调
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
-        downloadWindow_startDownload();
+        downloadDialog_startDownload();
 
         mWebViewManager.setInterface(new Setmessage() {
             @Override
@@ -262,24 +264,33 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     public void click_newPagebutton() {
         //新建标签页
-        newTab();
+        newTab(null);
     }
 
     /**
      * 读取preference中的是否自定义主页，并且处理获取到的自定义主页网址。
+     * 传入的参数是null时，获取默认的主页，然后新建标签页，并载入默认主页
+     * 传入的参数不是null时，新建标签页，并载入传入的网址
      */
-    public void newTab() {
-        //是否使用自定义的主页
+    public void newTab(String url) {
+
         String home_url = null;
-        if (PreferenceTools.getBoolean(this, WebviewConf.useCustomHomepage)) {//条件true时获取自定义网址，是false时则使用默认主页
-            home_url = PreferenceTools.getString(this, WebviewConf.homepageurl);
-            //补全网址，以及如果没有填写任何字符，使用默认主页
-            if (home_url.equals("")) {
-                home_url = SomeRes.default_homePage_url;
-            } else {
-                home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
+        if (url == null) {
+            //条件true时获取自定义网址，是false时则使用默认主页
+            if (PreferenceTools.getBoolean(this, WebviewConf.useCustomHomepage)) {
+                home_url = PreferenceTools.getString(this, WebviewConf.homepageurl);
+                //补全网址，以及如果开了自定义网址，但是没有填写任何字符，也使用默认主页
+                if (home_url.equals("")) {
+                    home_url = SomeRes.default_homePage_url;
+                } else {
+                    home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
+                }
             }
+        } else {
+            //传入参数不是null
+            home_url = url;
         }
+
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         if (!mWebViewManager.isempty()) {
             mWebViewManager.stop(currect);
@@ -297,7 +308,22 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         f1.addView(mWebViewManager.getTop(currect));
 
-        mWebViewManager.loadHomePage(-1, home_url);//新建标签页载入主页
+        mWebViewManager.loadHomePage(-1, home_url);//新建标签页载入主页，新建标签页默认插入0号位置，所以需要传入-1，让新添加的网页载入网址
+    }
+
+    /**
+     * @param url 网址
+     *            后台打开网页使用此方法
+     */
+    public void newTabInBackground(String url) {
+        mWebViewManager.newWebView(currect + 1, getApplicationContext(), MainActivity.this);
+        mWebViewManager.getTop(currect + 1).setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
+            }
+        });
+        mWebViewManager.loadHomePage(currect + 1, url);
     }
 
     @Override
@@ -371,23 +397,23 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public void openwebpage_fromhistoryORbookmark() {
         BookmarkPageActivity.setInterface(new OpenOneWebpage() {
             @Override
-            public void loadUrl(String urlname, boolean flags) {
+            public void loadUrl(String url, boolean flags) {
                 if (flags) {
-                    newTab();
-                    mWebViewManager.getTop(currect).loadUrl(urlname);
+                    newTab(url);
+                    // mWebViewManager.getTop(currect).loadUrl(url);
                 } else
-                    mWebViewManager.getTop(currect).loadUrl(urlname);
+                    mWebViewManager.getTop(currect).loadUrl(url);
 
             }
         });
         HistoryActivity.setInterface(new OpenOneWebpage() {
             @Override
-            public void loadUrl(String urlname, boolean flags) {
+            public void loadUrl(String url, boolean flags) {
                 if (flags) {
-                    newTab();
-                    mWebViewManager.getTop(currect).loadUrl(urlname);
+                    newTab(url);
+                    //mWebViewManager.getTop(currect).loadUrl(url);
                 } else
-                    mWebViewManager.getTop(currect).loadUrl(urlname);
+                    mWebViewManager.getTop(currect).loadUrl(url);
 
             }
         });
@@ -505,15 +531,17 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
-        md.setWebViewManager(mWebViewManager);//提供webviewManager，以便重新设置可以调用加载网页之类的方法
-        md.setInterafce(new SearchTextOnWebview() {
+        //md.setWebViewManager(mWebViewManager);//提供webviewManager，以便重新设置可以调用加载网页之类的方法
+        /*md.setInterafce(new SearchTextOnWebview() {
             //使minsetDialog可以调用此方法，打开网页内搜索功能
             @Override
             public void search() {
                 //打开webview搜索文本
                 openSearchText();
             }
-        });
+        });*/
+        md.setInterafce(controlInterface);//控制网页的一些方法交给MinSetDialog
+
         md.show(fm, "minSetDialog");
     }
 
@@ -525,7 +553,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 展示搜索框
+     * 展示搜索框,输入文本，载入网页
      */
     private void search_dialog() {
 
@@ -538,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 把webview上的文本搜索收起来
+     * 把webview的页内文本搜索收起来
      */
     private void closeSearchText() {
         inflated.setVisibility(View.INVISIBLE);
@@ -547,7 +575,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 打开文本搜索功能
+     * 打开页内文本搜索功能
      */
     public void openSearchText() {
 
@@ -614,11 +642,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 设置下载接口。
-     * 让开始下载任务的dialog可以调用这个方法来开启并绑定服务。
+     * 检查下载所需的权限，并实现下载接口，以及开启下载服务
+     * 让开始下载任务的dialog调用这个方法来开启并绑定服务，开始下载。
      */
-    private void downloadWindow_startDownload() {
-        DownloadWindow.setMinterface(new DownloadInterfaceImpl() {
+    private void downloadDialog_startDownload() {
+        DownloadDialog.setMinterface(new DownloadInterfaceImpl() {
 
             @Override
             public void startDownoadService(DownloadInfo info) {
@@ -692,56 +720,94 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             handleClickedLinks = new HandleClickedLinks() {
                 @Override
                 public void onImgSelected(int x, int y, int type, String extra) {
-                    Log.d(TAG, "onImgSelected: "+extra);
+                    Log.d(TAG, "onImgSelected: " + extra);
                 }
 
                 @Override
                 public void onLinkSelected(int x, int y, int type, String extra) {
-                    Log.d(TAG, "onLinkSelected: "+extra);
-                    String[] menu=new String[]{"复制链接地址", "新窗口打开","分享","后台打开","添加到书签"};
-                   new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
-                       @Override
-                       public void onClick(DialogInterface dialog, int which) {
-                           switch (which){
-                               case 0:
-                                   Toast.makeText(MainActivity.this, "点了链接："+extra, Toast.LENGTH_LONG).show();
-                                   break;
-                               case 1:
-                                   break;
-                               case 2:
-                                   sharing(extra);
-                                   break;
-                               case 3:
-                                   break;
-                               case 4:
-                                   //addtobookmark(extra);
-                                   break;
+                    Log.d(TAG, "onLinkSelected: " + extra);
+                    String[] menu = new String[]{"复制链接地址", "新窗口打开", "分享", "后台打开", "添加到书签"};
+                    new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    //复制链接地址
+                                    Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
 
-                           }
-                           dialog.dismiss();
-                       }
-                   }).show();
+                                    break;
+                                case 1:
+                                    //新窗口打开
+                                    newTab(extra);
+                                    break;
+                                case 2:
+                                    //分享
+                                    controlInterface.sharing(extra);
+                                    break;
+                                case 3:
+                                    //后台打开
+                                    newTabInBackground(extra);
+                                    break;
+                                case 4:
+                                    //添加到书签
+                                    controlInterface.addtobookmark(extra);
+                                    break;
+
+                            }
+                            dialog.dismiss();
+                        }
+                    }).show();
                 }
             };
         }
     }
+
     /**
-     * 分享
+     * 实现一些控制网页的方法，用于minsetDialog或者长按菜单
      */
-    private void sharing(String url) {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.setType("text/plain");
-        i.putExtra(Intent.EXTRA_TEXT, url);
-        i.putExtra(Intent.EXTRA_SUBJECT, "网址");
-        startActivity(i);
+    private void implControlWebview() {
+        if (controlInterface == null) {
+            controlInterface = new ControlWebView() {
+                @Override
+                public void sharing(String url) {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("text/plain");
+                    i.putExtra(Intent.EXTRA_TEXT, url);
+                    i.putExtra(Intent.EXTRA_SUBJECT, "网址");
+                    startActivity(i);
+                }
+
+                @Override
+                public void addtobookmark(String url) {
+                    FragmentManager fm = getSupportFragmentManager();
+                    //把当前网页信息传给收藏dialog
+                    Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
+                    dialog.show(fm, "收藏当前网页");
+                }
+
+                @Override
+                public void reload() {
+                    mWebViewManager.reLoad((MainActivity.this));
+                }
+
+                @Override
+                public void searchText() {
+                    //打开搜索webview内的文本
+                    openSearchText();
+                }
+
+                @Override
+                public void usePcMode() {
+                    mWebViewManager.reLoad_pcmode();
+                }
+
+                @Override
+                public void newPage(String url) {
+                    newTab(url);
+                }
+            };
+        }
 
     }
-    /*private void addtobookmark(String url) {
-        FragmentManager fm = getSupportFragmentManager();
-        //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
-        dialog.show(fm, "收藏当前网页");
-
-    }*/
 
 }

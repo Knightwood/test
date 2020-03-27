@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.myInterface;
+package com.example.kiylx.ti.Trash;
 
 /**
  * @创建者 kiylx

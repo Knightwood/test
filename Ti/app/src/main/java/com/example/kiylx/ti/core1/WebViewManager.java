@@ -195,6 +195,7 @@ private HandleClickedLinks mHandleClickedLinks;
 
     /**
      * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
+     *            新建标签页默认插入0号位置，所以需要传入-1，让新添加的网页载入网址
      * @param url 要载入的主页网址，若是null，载入默认主页
      *            载入主页
      */
@@ -294,7 +295,7 @@ private HandleClickedLinks mHandleClickedLinks;
         int pos = webViewArrayList.indexOf(webView);
         notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
         if (MainActivity.getCurrect() != pos) {
-            stop(pos);
+            stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
         }
         setmessage.setInfos();
 
@@ -364,10 +365,18 @@ private HandleClickedLinks mHandleClickedLinks;
         }
     }
 
+    /**
+     * @param i
+     * 让位置i的网页停止加载
+     */
     public void stop(int i) {
         webViewArrayList.get(i).onPause();
     }
 
+    /**
+     * @param i
+     * 让位置i的网页恢复加载
+     */
     public void reStart(int i) {
         webViewArrayList.get(i).onResume();
     }

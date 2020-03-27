@@ -60,7 +60,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
     /**
      * @param id   标识是谁启动的intent的id
-     * @param info 要添加进数据库的网页信息
+     * @param info 要添加进数据库的网页信息,url,title是必须的，bookmarkFolder可以为null，即将新添加到收藏网页，bookmarkFolder一定是null
      * @return bookmark_dialog
      * id标识是哪个activity启动的这个对话框,1表示是MainActivity，2表示是BookmarkPageActivity
      */
@@ -171,7 +171,7 @@ public class Bookmark_Dialog extends DialogFragment {
             }
         });
         mSpinner = view.findViewById(R.id.select_Tags);
-        //设置spinner显示的选项
+        //设置spinner显示的选项，即将新添加的网页的书签文件夹信息是null，这里会默认显示为“未分类”。
         selectOneFolder(mBookMarkFolderManager.getPosfromLists(beBookmarked_info.getBookmarkFolderName()));
 
         return builder.create();
@@ -229,8 +229,8 @@ public class Bookmark_Dialog extends DialogFragment {
     }
 
     /**
-     * @param str “标签”名称
-     *            更新beBookmarked_info的“标签”信息
+     * @param str “收藏文件夹”名称
+     *            更新beBookmarked_info的“收藏文件夹”信息
      */
     private void updateWebinfo(String str) {
         beBookmarked_info.setBookmarkFolderName(str);

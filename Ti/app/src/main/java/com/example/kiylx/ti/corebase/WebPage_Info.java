@@ -24,6 +24,9 @@ public class WebPage_Info {
      * @param url                 网址
      * @param bookmarkFolderName 收藏网页时标识所属文件夹。
      * @param web_feature         标识是否被收藏了  -标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
+     *                            使用的地方：1，在webviewManager中会写为0，传入webpageinfo到webViewInfo_Manager类
+     *                            2，在收藏里没有使用，所以默认给一个0就可以
+     *                            3.Fragment_DoSearch中有使用
      * @param date                网页加载时间
      */
     public WebPage_Info(String title, String url, String bookmarkFolderName, int web_feature, String date) {
@@ -34,9 +37,17 @@ public class WebPage_Info {
         this.date = date;
 
     }
-    /*public WebPage_Info(String URL){
-        this("",URL,)
-    }*/
+    public WebPage_Info(String URL){
+        this("",URL,null,0,null);
+    }
+
+    /**
+     * @param URL 网址
+     * @param feature 标志，0或者-1都可以，0在不计入收藏时，-1是计入收藏时写入的，但是在收藏记录那，压根就没用过。所以，以后要删除这个标志
+     */
+    public WebPage_Info(String URL,int feature){
+        this("",URL,null,feature,null);
+    }
 
     public String getTitle() {
         return title;

@@ -5,8 +5,8 @@ package com.example.kiylx.ti.myInterface;
  */
 public interface OpenOneWebpage {
     /**
-     * @param urlname 要打开的url名称
+     * @param url 要打开的url名称
      * @param flags true代表用新标签页打开，flase表示直接用当前页面打开
      */
-    void loadUrl(String urlname, boolean flags);
+    void loadUrl(String url, boolean flags);
 }

@@ -28,7 +28,7 @@ import java.util.Objects;
 /**
  * 开始一个下载任务的弹窗
  */
-public class DownloadWindow extends DialogFragment {
+public class DownloadDialog extends DialogFragment {
     private static DownloadInterfaceImpl minterface;
     private DownloadInfo mDownloadInfo;
 
@@ -36,20 +36,20 @@ public class DownloadWindow extends DialogFragment {
     private EditText fileNameView;
     private TextView fileUrlView;
 
-    private DownloadWindow(DownloadInfo info) {
+    private DownloadDialog(DownloadInfo info) {
         this.mDownloadInfo = info;
     }
 
-    public static DownloadWindow getInstance(DownloadInfo info) {
+    public static DownloadDialog getInstance(DownloadInfo info) {
 
-        return new DownloadWindow(info);
+        return new DownloadDialog(info);
     }
 
     /**
      * @param minterface 传入实现了DownloadInterfaceImpl接口的实例
      */
     public static void setMinterface(DownloadInterfaceImpl minterface) {
-        DownloadWindow.minterface = minterface;
+        DownloadDialog.minterface = minterface;
     }
 
     @Override
