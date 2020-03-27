@@ -3,6 +3,7 @@ package com.example.kiylx.ti.activitys;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
@@ -19,7 +20,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.core1.AboutHistory;
-import com.example.kiylx.ti.myInterface.HistoryInterface;
+import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.dateProcess.KindsofDate;
@@ -27,27 +28,20 @@ import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
     HistoryAdapter mAdapter;
-    List<WebPage_Info> mHistorys;
-    View view;
+    List<WebPage_Info> historyList;
     RecyclerView listView;
     AboutHistory sAboutHistory;
     ChipGroup mChipGroup;
     String[] mDateli;
     private static final String TAG = "历史记录";
     private static OpenOneWebpage sOpenOneWebpage;//打开网页的接口
-    private HistoryInterface m_historyInterface;//获取历史记录的接口
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
-    }
-
-    public void setM_historyInterface(HistoryInterface m_historyInterface) {
-        this.m_historyInterface = m_historyInterface;
     }
 
     @Override
@@ -58,7 +52,6 @@ public class HistoryActivity extends AppCompatActivity {
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 
         sAboutHistory = AboutHistory.get(this);
-        setM_historyInterface(sAboutHistory);
 
         //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
@@ -66,7 +59,7 @@ public class HistoryActivity extends AppCompatActivity {
         updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
         //搜索记录
-        search();
+        searchHistory();
     }
 
     //监听chipgroup以更新recyclerview视图
@@ -120,15 +113,15 @@ public class HistoryActivity extends AppCompatActivity {
         //str1:开始日期。str2:结束日期
         Log.d(TAG, "updateUI: " + startDate + "---" + endDate);
 
-        //用统一的接口获取数据
-        mHistorys = m_historyInterface.getDataLists(startDate, endDate);
+        //获取数据
+        historyList = sAboutHistory.getDataLists(startDate, endDate);
 
         if (null == mAdapter) {
-            mAdapter = new HistoryAdapter(mHistorys);
+            mAdapter = new HistoryAdapter(historyList);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
         } else {
-            mAdapter.setLists(mHistorys);
+            mAdapter.setLists(historyList);
             mAdapter.notifyDataSetChanged();
         }
 
@@ -139,21 +132,21 @@ public class HistoryActivity extends AppCompatActivity {
      */
     private void updateUI() {
         //没有历史记录的话什么也不做
-        if (mHistorys.isEmpty()) {
+        if (historyList.isEmpty()) {
             return;
         }
         if (null == mAdapter) {
-            mAdapter = new HistoryAdapter(mHistorys);
+            mAdapter = new HistoryAdapter(historyList);
             listView.setAdapter(mAdapter);
             Log.d("历史activity", "onClick: 创建adapter函数被触发");
         } else {
-            mAdapter.setLists(mHistorys);
+            mAdapter.setLists(historyList);
             mAdapter.notifyDataSetChanged();
         }
 
     }
 
-    private void itemPopmenu(View v) {
+    private void itemPopmenu(View v,WebPage_Info info) {
         PopupMenu itemMenu = new PopupMenu(this, v);
         MenuInflater inflater = itemMenu.getMenuInflater();
         inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
@@ -162,13 +155,20 @@ public class HistoryActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-
+                        finish();
+                        sOpenOneWebpage.loadUrl(info.getUrl(),false);
                         break;
                     case R.id.open1:
+                        finish();
+                        sOpenOneWebpage.loadUrl(info.getUrl(),true);
                         break;
                     case R.id.delete_hiatory:
+                        sAboutHistory.delete(info.getUrl());
+                        historyList.remove(info);
+                        updateUI();
                         break;
                     case R.id.addToBookmark:
+                        addToBookMark(info.getUrl());
                         break;
                 }
                 return false;
@@ -177,15 +177,22 @@ public class HistoryActivity extends AppCompatActivity {
         itemMenu.show();
     }
 
+    private void addToBookMark(String url){
+        FragmentManager fm = getSupportFragmentManager();
+        //把当前网页信息传给收藏dialog
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
+        dialog.show(fm, "收藏当前网页");
+    }
+
     /**
      * 搜索历史记录
      */
-    private void search() {
+    private void searchHistory() {
         SearchView searchView = findViewById(R.id.history_searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mHistorys = sAboutHistory.query(query);
+                historyList = sAboutHistory.query(query);
                 updateUI();
                 return false;
             }
@@ -237,10 +244,12 @@ public class HistoryActivity extends AppCompatActivity {
         TextView url;
         ImageView itemMenu;
         String URL;
+        WebPage_Info info;
 
         HistoryViewHolder(@NonNull View itemView) {
             super(itemView);
             Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
+
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
             itemMenu = itemView.findViewById(R.id.more_setting);
@@ -250,6 +259,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         public void bind(WebPage_Info info) {
+            this.info=info;
             URL = info.getUrl();
             title.setText(info.getTitle());
             url.setText(info.getUrl());
@@ -260,11 +270,12 @@ public class HistoryActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.more_setting:
-                    itemPopmenu(v);
+                    itemPopmenu(v,info);
                     break;
                 case R.id.itemTitle:
                     sOpenOneWebpage.loadUrl(URL, true);
                     finish();
+                    break;
 
             }
         }

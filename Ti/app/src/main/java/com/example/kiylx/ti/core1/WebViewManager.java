@@ -17,12 +17,13 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.myInterface.HandleClickedLinks;
-import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
-import com.example.kiylx.ti.myInterface.Setmessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.Observable;
  * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
  * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
  */
-public class WebViewManager extends Observable implements NotifyWebViewUpdate{
+public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     //存着当前打开的所有webview对象
     private List<WebView> webViewArrayList;
@@ -43,12 +44,12 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate{
     private CustomWebviewClient customWebviewClient;
     private CustomWebchromeClient customWebchromeClient;
 
-    private HistoryInterface m_historyInterface;
-    private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
-private HandleClickedLinks mHandleClickedLinks;
+    private AboutHistory aboutHistory;
+    //private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
+    private HandleClickedLinks mHandleClickedLinks;
 
     private WebViewManager(Context context, HandleClickedLinks handleClickedLinks) {
-        m_historyInterface = AboutHistory.get(context);
+        aboutHistory = AboutHistory.get(context);
 
         if (webViewArrayList == null) {
             webViewArrayList = new ArrayList<>();
@@ -57,14 +58,14 @@ private HandleClickedLinks mHandleClickedLinks;
         customWebchromeClient = new CustomWebchromeClient();
         customWebviewClient = new CustomWebviewClient(context);
 
-        mHandleClickedLinks=handleClickedLinks;
+        mHandleClickedLinks = handleClickedLinks;
     }
 
-    public static WebViewManager getInstance(@NonNull Context context,@NonNull HandleClickedLinks handleClickedLinks) {
+    public static WebViewManager getInstance(@NonNull Context context, @NonNull HandleClickedLinks handleClickedLinks) {
         if (sWebViewManager == null) {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
-                    sWebViewManager = new WebViewManager(context,handleClickedLinks);
+                    sWebViewManager = new WebViewManager(context, handleClickedLinks);
                     //传入实现了接口的实例变量
                     CustomWebchromeClient.setInterface(sWebViewManager);
 
@@ -74,9 +75,9 @@ private HandleClickedLinks mHandleClickedLinks;
         return sWebViewManager;
     }
 
-    public void setInterface(@NonNull Setmessage interface_1) {
+   /* public void setInterface(@NonNull Setmessage interface_1) {
         this.setmessage = interface_1;
-    }
+    }*/
 
     /**
      * @param i pos，webview要添加进的位置，默认传0
@@ -205,7 +206,6 @@ private HandleClickedLinks mHandleClickedLinks;
         } else {
             getTop(pos == -1 ? 0 : pos).loadUrl(url);
         }
-        //setmessage.setInfos();
 
     }
 
@@ -251,7 +251,6 @@ private HandleClickedLinks mHandleClickedLinks;
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
         return tmpData;
-        //tmpData.setWEB_feature(1);
 
     }
 
@@ -268,6 +267,7 @@ private HandleClickedLinks mHandleClickedLinks;
 
 
     /**
+     * CustomWebchromeClient中网页加载完成时调用
      * 网页加载完成时会调用他更新网页信息
      *
      * @param webView 传入webview，
@@ -297,13 +297,22 @@ private HandleClickedLinks mHandleClickedLinks;
         if (MainActivity.getCurrect() != pos) {
             stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
         }
-        setmessage.setInfos();
+        notifyTitleUpdate();
 
-        for (int p = 0; p < webViewArrayList.size(); p++) {
+        /*for (int p = 0; p < webViewArrayList.size(); p++) {
             Log.d(TAG, "updateWebViewInfo: " + webViewArrayList.get(p).getUrl());
 
-        }
+        }*/
 
+    }
+
+    /**
+     * 网页加载完成时，通过这里发送事件，
+     * mainactivity和多窗口可以接受到此事件，便于更新视图的标题
+     */
+    private void notifyTitleUpdate() {
+        EventMessage message = new EventMessage(2, "更新在view上网页的标题");
+        EventBus.getDefault().post(message);
     }
 
     /**
@@ -339,7 +348,7 @@ private HandleClickedLinks mHandleClickedLinks;
         //如果不是默认新标签页就加入数据库
         if (action != Action.DELETE && !(info.getUrl().equals(SomeRes.default_homePage_url))) {
             //历史记录加入数据库
-            m_historyInterface.addData(info);
+            aboutHistory.addToDataBase(info);
         }
 
 
@@ -366,16 +375,14 @@ private HandleClickedLinks mHandleClickedLinks;
     }
 
     /**
-     * @param i
-     * 让位置i的网页停止加载
+     * @param i 让位置i的网页停止加载
      */
     public void stop(int i) {
         webViewArrayList.get(i).onPause();
     }
 
     /**
-     * @param i
-     * 让位置i的网页恢复加载
+     * @param i 让位置i的网页恢复加载
      */
     public void reStart(int i) {
         webViewArrayList.get(i).onResume();
@@ -412,7 +419,7 @@ private HandleClickedLinks mHandleClickedLinks;
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(Integer.parseInt(PreferenceTools.getString(context, WebviewConf.textZoom,"100")));
+        settings.setTextZoom(Integer.parseInt(PreferenceTools.getString(context, WebviewConf.textZoom, "100")));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能

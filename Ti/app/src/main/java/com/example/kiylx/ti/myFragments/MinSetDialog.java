@@ -35,13 +35,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
     private DialogHomepageSettingBinding homepageSettingBinding;
     private static final String TAG = "MinSetDialog";
-    //private listAdapter mAdapter;
-    //private String[] optionslist = new String[]{"隐身", "电脑模式", "分享", "在页面上查找", "添加到书签", "设置"};
-    //private RecyclerView mRecyclerView;
-    //private View mView;
     private static WebPage_Info info;
-    //private SearchTextOnWebview mInterface;
-    //private WebViewManager webManager;
     private ControlWebView controlWebViewInterface;
 
 
@@ -91,24 +85,19 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         switch (v.getId()) {
             case R.id.reload_webview:
                 controlWebViewInterface.reload();
-                //reload();
                 break;
             case R.id.findtext:
                 controlWebViewInterface.searchText();
-                //find();
                 break;
             case R.id.share:
                 controlWebViewInterface.sharing(info.getUrl());
-                //sharing();
                 break;
             case R.id.pcMode:
                 controlWebViewInterface.usePcMode();
-                //usePcMode();
                 break;
             case R.id.hideSelf:
                 break;
             case R.id.addBookmark:
-                //addtobookmark();
                 controlWebViewInterface.addtobookmark(info.getUrl());
                 break;
             case R.id.menu:
@@ -160,103 +149,3 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
 
 }
-/*private void updateUI(String[] lists) {
-        if (mAdapter==null){
-            mAdapter=new listAdapter(lists);
-        }else{
-            mAdapter.notifyDataSetChanged();
-        }
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-
-    public class listAdapter extends RecyclerView.Adapter<OptionViewHolder> {
-        private String[] options;
-        //SettingItemBinding mBinding;
-
-        public listAdapter(String[] lists) {
-            options = lists;
-            Log.d(FOLDER, "onCreateView: "+options[0]);
-        }
-
-        public void setOptionList(String[] list) {
-            this.options = list;
-        }
-
-        @NonNull
-        @Override
-        public OptionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            OptionsItemBinding mBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.options_item, parent, false);
-            return new OptionViewHolder(mBinding);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull OptionViewHolder holder, int position) {
-            holder.bind(options[position]);
-            Log.d(FOLDER, "onCreateView: "+optionslist[position]);
-        }
-
-        @Override
-        public int getItemCount() {
-            return options.length;
-        }
-    }
-
-    public class OptionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private OptionsItemBinding mBinding;
-        private int i;
-
-        public OptionViewHolder(@NonNull OptionsItemBinding binding) {
-            super(binding.getRoot());
-            mBinding=binding;
-            mBinding.optionsName.setOnClickListener(this);
-            mBinding.setOptionViewModel(new HomePageOptionsViewModel());
-
-        }
-
-        public void bind(String optionName) {
-            mBinding.getOptionViewModel().setOptionsName(optionName);
-            Log.d(FOLDER, "bind: "+optionName);
-        }
-
-        @Override
-        public void onClick(View v) {
-            Log.d(FOLDER, "点击选项 ");
-
-        }
-    }*/
-/*
- private void usePcMode() {
-        webManager.reLoad_pcmode();
-    }
-
-private void sharing() {
-    Intent i = new Intent(Intent.ACTION_SEND);
-    i.setType("text/plain");
-    i.putExtra(Intent.EXTRA_TEXT, info.getUrl());
-    i.putExtra(Intent.EXTRA_SUBJECT, "网址");
-    startActivity(i);
-
-}
-public void setInterafce(SearchTextOnWebview mInterface){
-        this.mInterface=mInterface;
-    }
-private void find() {
-        mInterface.search();
-    }
-    private void addtobookmark() {
-        WebPage_Info tmp = info;
-        FragmentManager fm = getFragmentManager();
-        //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, tmp);
-        dialog.show(fm, "收藏当前网页");
-
-    }
-private void reload() {
-        webManager.reLoad((AppCompatActivity) getActivity());
-    }
-
-    public void setWebViewManager(WebViewManager mWebViewManager) {
-        this.webManager=mWebViewManager;
-    }
- */

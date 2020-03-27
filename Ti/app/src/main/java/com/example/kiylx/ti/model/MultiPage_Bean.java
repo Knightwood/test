@@ -5,10 +5,12 @@ import android.util.Log;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
+import com.example.kiylx.ti.BR;
+
 /**
  * 用于多窗口更新文字，使用的databinding
  */
-public class MultiPage_Bean {
+public class MultiPage_Bean extends BaseObservable {
     private static final String TAG = "MultiPage_Bean";
     private String title;
     private String Url;
@@ -17,12 +19,14 @@ public class MultiPage_Bean {
     public MultiPage_Bean() {
     }
 
+    @Bindable
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+        notifyPropertyChanged(com.example.kiylx.ti.BR.title);
 
     }
 

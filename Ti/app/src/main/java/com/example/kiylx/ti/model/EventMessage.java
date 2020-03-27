@@ -3,6 +3,9 @@ package com.example.kiylx.ti.model;
 /**
  * 创建者 kiylx
  * 创建时间 2020/3/26 15:44
+ *
+ * type: 1; message:"更新下载列表" 发送源：DownloadManager 接收方：downloadingFragment
+ * type: 2: message:"更新在view上网页的标题"发送源：WebViewManager 接收方：multPage_Dialog,MainActivity //在mainActivity下面和多窗口部分的网址或标题的更新
  */
 public class EventMessage {
     private int type;

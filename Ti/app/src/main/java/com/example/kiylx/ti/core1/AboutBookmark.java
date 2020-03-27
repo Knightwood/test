@@ -124,7 +124,6 @@ public class AboutBookmark {
      *                      根据tag批量更改条目的信息,更新书签记录的tag名称
      */
     public void updateFolderforItems(String oldfolderName, String newFolderName) {
-
         mDatabase.execSQL("UPDATE FavoriteTab SET folderName = ? where folderName = ?", new String[]{newFolderName, oldfolderName});
     }
 

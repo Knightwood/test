@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.historyDataBase.HistoryBaseHelper;
 import com.example.kiylx.ti.historyDataBase.HistoryDbSchema.HistoryTable;
 import com.example.kiylx.ti.historyDataBase.ItemCursorWrapper;
@@ -14,7 +13,7 @@ import com.example.kiylx.ti.historyDataBase.ItemCursorWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AboutHistory implements HistoryInterface {
+public class AboutHistory {
     private static AboutHistory sAboutHistory;
     private SQLiteDatabase mDatabase;
 
@@ -63,19 +62,6 @@ public class AboutHistory implements HistoryInterface {
     }
 
     /**
-     * @param info webviewpageinfo
-     *             要删除的历史记录信息
-     */
-    private void remove(WebPage_Info info) {
-    }
-
-    /**
-     * 删除所有历史记录
-     */
-    private void removeAll() {
-    }
-
-    /**
      * @param queryText 要查找的文本
      * @return 返回匹配的历史记录
      * 这是历史记录查询功能
@@ -116,12 +102,10 @@ public class AboutHistory implements HistoryInterface {
     }
 
 
-//====================================以下是实现的接口=================================//
-
     /**
      * @return 返回所有历史记录
      */
-    @Override
+
     public List<WebPage_Info> getDataLists() {
         return getlistswithDate(null, null);
     }
@@ -131,33 +115,31 @@ public class AboutHistory implements HistoryInterface {
      * @param endDate   结束日期
      * @return 返回开始到结束日期的历史记录
      */
-    @Override
+
     public List<WebPage_Info> getDataLists(String startdate, String endDate) {
         return getlistswithDate(startdate, endDate);
     }
 
     /**
-     * @param info 要添加进lists中的WebPage_Info
+     * @param url 要删除的历史记录的网址
      */
-    @Override
-    public void addData(WebPage_Info info) {
-        addToDataBase(info);
-    }
+    public void delete(String url) {
+        mDatabase.execSQL("DELETE FROM history_item where url =?",new String[]{url});
 
-    /**
-     * @param info 要删除lists中的WebPage_Info
-     */
-    @Override
-    public void delete(WebPage_Info info) {
-        remove(info);
     }
 
     /**
      * 删除所有历史记录
      */
-    @Override
+
     public void deleteAll() {
-        removeAll();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mDatabase.execSQL("DELETE FROM history_item");
+            }
+        });
+
     }
 
 }

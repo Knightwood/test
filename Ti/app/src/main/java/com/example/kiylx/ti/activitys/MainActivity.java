@@ -42,7 +42,9 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadFragments.DownloadDialog;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
+import com.example.kiylx.ti.myFragments.MultPage_Dialog;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.ControlWebView;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
@@ -51,10 +53,13 @@ import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
-import com.example.kiylx.ti.myFragments.MultPage_DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.Tool.ProcessUrl;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Objects;
 
@@ -77,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private TextView mTextView;//主界面的工具栏里的搜索框
     private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
     private View inflated;//搜索webview文字的搜索框
-    private MultPage_DialogFragment md;//多窗口dialogFragment
-    private static HandleClickedLinks handleClickedLinks;
+    private MultPage_Dialog md;//多窗口dialogFragment
+    private HandleClickedLinks handleClickedLinks;
     private ControlWebView controlInterface;
 
     //权限
@@ -100,11 +105,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
-
-        //初次设置偏好值
-        //initSefaultValues();
-        //监听默认值的改变
-        //getDefaultValues();
 
         //实例化某些view
         f1 = findViewById(R.id.Webview_group);
@@ -134,16 +134,25 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
 
-        mWebViewManager.setInterface(new Setmessage() {
+        /*mWebViewManager.setInterface(new Setmessage() {
             @Override
             public void setInfos() {
                 //网页加载完成后会通过这里更新底栏的文字
                 setTextForbar(currect);
             }
 
-        });
+        });*/
     }
-
+    /**
+     * 接受网页加载完成信息，重新获取数据更新界面
+     * @param massage
+     */
+    @Subscribe(threadMode= ThreadMode.MAIN)
+    public void updateData(EventMessage massage){
+        if (massage.getType()==2){
+            setTextForbar(currect);
+        }
+    }
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -156,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     protected void onStart() {
         super.onStart();
         Log.d("lifecycle", "onStart'");
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -176,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         super.onStop();
         mWebViewManager.getTop(currect).onPause();
         //f1.removeAllViews();//移除所有视图
+        EventBus.getDefault().unregister(this);
         Log.d("lifecycle", "onStop()");
     }
 
@@ -244,21 +255,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void reasumeWebview() {
     }
-
-    /*
-     * @param i pos，webview要添加进的位置
-     *          新建一个webview并放进WebViewManager
-     *
-       private void newWebView(int i) {
-        //新建webview并放进数组
-        WebView web = new WebView(getApplicationContext());
-        set1(web);
-        //给new出来的webview执行设置
-        web.setWebViewClient(new CustomWebviewClient(MainActivity.this));
-        web.setWebChromeClient(new CustomWebchromeClient());
-        mWebViewManager.addInWebManager(web, i, 0);
-
-    }*/
 
 
     @Override
@@ -421,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     public void useMultPage_DialogFragmentInterface() {
-        MultPage_DialogFragment.setInterface(this);
+        MultPage_Dialog.setInterface(this);
     }
 
     /**
@@ -437,17 +433,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
         mTextView.setText(mt);
     }
-/*
-//测试方法
-    private ArrayList<WebPage_Info> genItem() {
-        ArrayList<WebPage_Info> tmp = new ArrayList<>();
-        String[] datearr = new String[]{"2019-10-13", "2019-10-06", "2019-07-01", "2019-09-08", "2019-09-11"};
-        for (int i = 0; i < 5; i++) {
-            tmp.add(new WebPage_Info("title" + i, "null", datearr[i]));
-        }
-        return tmp;
-    }*/
-
 
     //工具栏设置
     private void toolbaract() {
@@ -498,14 +483,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         });
 
     }
-/*
-    public void showBookmarkDialog() {
-        WebPage_Info tmp = mConverted_lists.getInfo(currect);
-        FragmentManager fm = getSupportFragmentManager();
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1);
-        dialog.putInfo(tmp);//把当前网页信息传给收藏dialog
-        dialog.show(fm, "收藏当前网页");
-    }*/
 
     /**
      * @param menu
@@ -527,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void mult_dialog() {
 
         FragmentManager fm = getSupportFragmentManager();
-        md = new MultPage_DialogFragment();
+        md = new MultPage_Dialog();
         md.show(fm, "fragment_multPage_dialog");
     }
 
@@ -538,17 +515,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
-        //md.setWebViewManager(mWebViewManager);//提供webviewManager，以便重新设置可以调用加载网页之类的方法
-        /*md.setInterafce(new SearchTextOnWebview() {
-            //使minsetDialog可以调用此方法，打开网页内搜索功能
-            @Override
-            public void search() {
-                //打开webview搜索文本
-                openSearchText();
-            }
-        });*/
         md.setInterafce(controlInterface);//控制网页的一些方法交给MinSetDialog
-
         md.show(fm, "minSetDialog");
     }
 

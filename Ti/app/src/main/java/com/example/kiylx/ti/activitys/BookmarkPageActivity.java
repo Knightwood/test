@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myFragments.DeleteTag_Dialog;
@@ -157,13 +158,13 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     /**
      * @param folderName 书签文件夹名称，根据文件夹名称更新recycler
      *                   更新BookmarkPageActivity里的那些书签recyclerview视图
-     *
+     *                   <p>
      *                   1.在Bookmark_Dialog编辑详细一个书签条目后，会用当前的bookmarkFolderName刷新视图（这时传入的是参数null）。
      *                   2.在BookmarkPageActivity编辑文件夹名称后，会传入新的文件夹名称，用它刷新视图
      */
     @Override
     public void refresh(String folderName) {
-        if (folderName != null){
+        if (folderName != null) {
             bookmarkFolderName = folderName;
             mSpinnerAdapter.notifyDataSetChanged();//通知spinner的适配器更新数据
         }
@@ -183,7 +184,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     @Override
     public void refresh() {
         //重新获取文件夹列表
-        mbookmarkFolderLists=mBookmarkFolderManager.reGetList();
+        mbookmarkFolderLists = mBookmarkFolderManager.reGetList();
         bookmarkFolderName = mbookmarkFolderLists.get(0);//置为“未分类”
         mSpinnerAdapter.notifyDataSetChanged();//通知适配器数据改变
         mSpinner.setSelection(0);
@@ -345,13 +346,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             switch (v.getId()) {
                 case R.id.itemTitle:
                     //点击item后访问网址
-                    if (url_1.equals("about:newTab")) {
-                        finish();
-                        mopenWeb.loadUrl(null, false);
-                    } else {
-                        finish();
-                        mopenWeb.loadUrl(url_1, false);
-                    }
+                    finish();
+                    mopenWeb.loadUrl(url_1, false);
                     break;
                 case R.id.more_setting:
                     Log.d("BookmarkPageActivity", "more_setting被触发");

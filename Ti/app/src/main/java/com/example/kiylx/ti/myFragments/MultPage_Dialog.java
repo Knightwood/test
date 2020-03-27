@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -25,17 +26,22 @@ import android.widget.ImageButton;
 import com.example.kiylx.ti.activitys.MainActivity;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.model.MultiPage_Bean;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 
-public class MultPage_DialogFragment extends DialogFragment {
-    private static final String TAG = "MultPage_DialogFragment";
+public class MultPage_Dialog extends DialogFragment {
+    private static final String TAG = "MultPage_Dialog";
     private RecyclerView mRecyclerView;
     private WebSiteAdapter mWebSiteAdapter;
     private int mCurrect;
@@ -94,12 +100,16 @@ public class MultPage_DialogFragment extends DialogFragment {
         Log.d(TAG, "onBookmarkt: ");
         //获取当前网页的pos
         mCurrect = MainActivity.getCurrect();
+
+        EventBus.getDefault().register(this);
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: ");
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -115,9 +125,19 @@ public class MultPage_DialogFragment extends DialogFragment {
     }
 
     public static void setInterface(MultiDialog_Functions minterface) {
-        MultPage_DialogFragment.minterface = minterface;
+        MultPage_Dialog.minterface = minterface;
     }
 
+    /**
+     * 接受网页加载完成信息，重新获取数据更新界面
+     * @param massage
+     */
+    @Subscribe(threadMode= ThreadMode.MAIN)
+    public void updateData(EventMessage massage){
+        if (massage.getType()==2){
+            updateUI();
+        }
+    }
 
     private void updateUI() {
         List<WebPage_Info> lists = WebViewInfo_Manager.getPageList();
@@ -142,7 +162,7 @@ public class MultPage_DialogFragment extends DialogFragment {
         WebSiteAdapter(List<WebPage_Info> mlists) {
             this.lists = mlists;
             boolean ta = lists.isEmpty();
-            Log.d("MultPage_DialogFragment", "onClick: Adapter构造函数被触发" + ta);
+            Log.d("MultPage_Dialog", "onClick: Adapter构造函数被触发" + ta);
         }
 
         @NonNull
