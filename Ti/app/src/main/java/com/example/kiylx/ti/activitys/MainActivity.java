@@ -2,10 +2,12 @@ package com.example.kiylx.ti.activitys;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,14 +35,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
+import com.example.kiylx.ti.core1.CustomAWebView;
 import com.example.kiylx.ti.core1.WebViewInfo_Manager;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadFragments.DownloadWindow;
+import com.example.kiylx.ti.myFragments.Bookmark_Dialog;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
+import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.core1.WebViewManager;
@@ -73,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
     private View inflated;//搜索webview文字的搜索框
     private MultPage_DialogFragment md;//多窗口dialogFragment
+    private static HandleClickedLinks handleClickedLinks;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
@@ -84,8 +91,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         firstInstall();//判断是不是第一次安装
         setContentView(R.layout.activity_main);
 
-        //获取类的实例
-        mWebViewManager = WebViewManager.getInstance(MainActivity.this);
+        //实现处理webview长按事件的接口
+        achieveHandlerClickInterface();
+        //获取WebViewManager的实例
+        mWebViewManager = WebViewManager.getInstance(MainActivity.this, handleClickedLinks);
+
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
 
@@ -495,7 +505,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
+        md.setWebViewManager(mWebViewManager);//提供webviewManager，以便重新设置可以调用加载网页之类的方法
         md.setInterafce(new SearchTextOnWebview() {
+            //使minsetDialog可以调用此方法，打开网页内搜索功能
             @Override
             public void search() {
                 //打开webview搜索文本
@@ -623,7 +635,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 }
 
 
-
             }
         });
     }
@@ -644,7 +655,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 /*
     @Override
@@ -671,5 +682,66 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
 */
+
+    /**
+     * 实现处理webview长按事件处理的接口，把接口传入webViewManager，
+     * 由WebViewManager在new CustomAWebView后调用CustomAWebView 的 setHandleClickLinks()方法实现处理
+     */
+    private void achieveHandlerClickInterface() {
+        if (handleClickedLinks == null) {
+            handleClickedLinks = new HandleClickedLinks() {
+                @Override
+                public void onImgSelected(int x, int y, int type, String extra) {
+                    Log.d(TAG, "onImgSelected: "+extra);
+                }
+
+                @Override
+                public void onLinkSelected(int x, int y, int type, String extra) {
+                    Log.d(TAG, "onLinkSelected: "+extra);
+                    String[] menu=new String[]{"复制链接地址", "新窗口打开","分享","后台打开","添加到书签"};
+                   new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
+                       @Override
+                       public void onClick(DialogInterface dialog, int which) {
+                           switch (which){
+                               case 0:
+                                   Toast.makeText(MainActivity.this, "点了链接："+extra, Toast.LENGTH_LONG).show();
+                                   break;
+                               case 1:
+                                   break;
+                               case 2:
+                                   sharing(extra);
+                                   break;
+                               case 3:
+                                   break;
+                               case 4:
+                                   //addtobookmark(extra);
+                                   break;
+
+                           }
+                           dialog.dismiss();
+                       }
+                   }).show();
+                }
+            };
+        }
+    }
+    /**
+     * 分享
+     */
+    private void sharing(String url) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TEXT, url);
+        i.putExtra(Intent.EXTRA_SUBJECT, "网址");
+        startActivity(i);
+
+    }
+    /*private void addtobookmark(String url) {
+        FragmentManager fm = getSupportFragmentManager();
+        //把当前网页信息传给收藏dialog
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
+        dialog.show(fm, "收藏当前网页");
+
+    }*/
 
 }

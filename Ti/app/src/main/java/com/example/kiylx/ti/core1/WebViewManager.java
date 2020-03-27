@@ -6,6 +6,7 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.activitys.MainActivity;
@@ -16,6 +17,7 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.HistoryInterface;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
@@ -32,7 +34,7 @@ import java.util.Observable;
  * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
  * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
  */
-public class WebViewManager extends Observable implements NotifyWebViewUpdate {
+public class WebViewManager extends Observable implements NotifyWebViewUpdate{
 
     //存着当前打开的所有webview对象
     private List<WebView> webViewArrayList;
@@ -43,9 +45,9 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private HistoryInterface m_historyInterface;
     private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
+private HandleClickedLinks mHandleClickedLinks;
 
-
-    private WebViewManager(Context context) {
+    private WebViewManager(Context context, HandleClickedLinks handleClickedLinks) {
         m_historyInterface = AboutHistory.get(context);
 
         if (webViewArrayList == null) {
@@ -54,23 +56,25 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         }
         customWebchromeClient = new CustomWebchromeClient();
         customWebviewClient = new CustomWebviewClient(context);
+
+        mHandleClickedLinks=handleClickedLinks;
     }
 
-    public static WebViewManager getInstance(Context context) {
+    public static WebViewManager getInstance(@NonNull Context context,@NonNull HandleClickedLinks handleClickedLinks) {
         if (sWebViewManager == null) {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
-                    sWebViewManager = new WebViewManager(context);
+                    sWebViewManager = new WebViewManager(context,handleClickedLinks);
                     //传入实现了接口的实例变量
-
                     CustomWebchromeClient.setInterface(sWebViewManager);
+
                 }
             }
         }
         return sWebViewManager;
     }
 
-    public void setInterface(Setmessage interface_1) {
+    public void setInterface(@NonNull Setmessage interface_1) {
         this.setmessage = interface_1;
     }
 
@@ -79,17 +83,15 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      *          新建一个webview并放进WebViewManager（webview2类型）
      */
     public void newWebView(int i, Context applicationContext, AppCompatActivity appCompatActivity) {
-        //新建webview并放进数组
 
 //注：new一个webview
-        CustomActionWebView web = new CustomActionWebView(applicationContext);
+        CustomAWebView web = new CustomAWebView(applicationContext);
+        web.setHandleClickLinks(mHandleClickedLinks);
 
         web.setActionList();//点击浏览webview的菜单项
 
         setWebview(web, appCompatActivity);
         //给new出来的webview执行设置
-        //web.setWebViewClient(new CustomWebviewClient(appCompatActivity));
-        //web.setWebChromeClient(new CustomWebchromeClient());
         web.setWebViewClient(customWebviewClient);
         web.setWebChromeClient(customWebchromeClient);
         //添加js，用来展开菜单的方法。
@@ -212,8 +214,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      * <p>
      * 这个方法是返回自定义的webview子类类型。
      */
-    public CustomActionWebView getTop(int i) {
-        return (CustomActionWebView) webViewArrayList.get(i);
+    public CustomAWebView getTop(int i) {
+        return (CustomAWebView) webViewArrayList.get(i);
     }
 
     /**
@@ -412,6 +414,8 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         settings.setDisplayZoomControls(false);
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
+        settings.setNeedInitialFocus(true);
+        settings.setBlockNetworkImage(false);
         //设置WebView的访问UserAgent
         settings.setUserAgentString(PreferenceTools.getString(context, WebviewConf.userAgent));
         //设置脚本是否允许自动打开弹窗
@@ -471,4 +475,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         //回到上一个
         webViewArrayList.get(pos).findNext(false);
     }
+
+
 }

@@ -45,6 +45,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     //private View mView;
     private static WebPage_Info info;
     private SearchTextOnWebview mInterface;
+    private WebViewManager webManager;
+
 
     public static MinSetDialog newInstance(WebPage_Info info) {
         MinSetDialog fragment = new MinSetDialog();
@@ -126,8 +128,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
 
     private void usePcMode() {
-        WebViewManager manager = WebViewManager.getInstance(getActivity());
-        manager.reLoad_pcmode();
+        webManager.reLoad_pcmode();
     }
 
     private void startDownload() {
@@ -171,6 +172,9 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         this.mInterface=mInterface;
     }
 
+    /**
+     * 调用mainActivity中实现的接口，打开网页内搜索
+     */
     private void find() {
         mInterface.search();
     }
@@ -185,8 +189,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
 
     private void reload() {
-        WebViewManager manager = WebViewManager.getInstance(getActivity());
-        manager.reLoad((AppCompatActivity) getActivity());
+        webManager.reLoad((AppCompatActivity) getActivity());
+    }
+
+    public void setWebViewManager(WebViewManager mWebViewManager) {
+        this.webManager=mWebViewManager;
     }
 }
 /*private void updateUI(String[] lists) {

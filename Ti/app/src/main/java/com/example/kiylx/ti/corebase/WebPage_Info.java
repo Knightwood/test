@@ -34,6 +34,9 @@ public class WebPage_Info {
         this.date = date;
 
     }
+    /*public WebPage_Info(String URL){
+        this("",URL,)
+    }*/
 
     public String getTitle() {
         return title;
