@@ -507,6 +507,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         dialog.show(fm, "收藏当前网页");
     }*/
 
+    /**
+     * @param menu
+     * @return
+     *
+     * <p>
+     *     optionMenu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);

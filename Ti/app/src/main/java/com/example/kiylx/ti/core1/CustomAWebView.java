@@ -102,14 +102,17 @@ public class CustomAWebView extends WebView {
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback) {
-        ActionMode actionMode = super.startActionMode(callback);
-        return resolveActionMode(actionMode);
+        /*ActionMode actionMode = super.startActionMode(callback);
+        return resolveActionMode(actionMode);*/
+        return super.startActionMode(callback);
     }
+
 
     @Override
     public ActionMode startActionMode(ActionMode.Callback callback, int type) {
-        ActionMode actionMode = super.startActionMode(callback, type);
-        return resolveActionMode(actionMode);
+        /*ActionMode actionMode = super.startActionMode(callback, type);
+        return resolveActionMode(actionMode);*/
+        return super.startActionMode(callback, type);
     }
 
     /**
@@ -219,7 +222,7 @@ public class CustomAWebView extends WebView {
         public void callback(final String value, final String title) {
             if (mActionSelectListener != null) {
                 mActionSelectListener.onClick(title, value);
-                Toast.makeText(getContext(), "触发了长按", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "触发了长按", Toast.LENGTH_SHORT).show();
             }
         }
     }
