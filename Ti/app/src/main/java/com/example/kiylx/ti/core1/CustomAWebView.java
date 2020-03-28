@@ -68,7 +68,6 @@ public class CustomAWebView extends WebView {
                         }
                        return true;
                     case HitTestResult.SRC_IMAGE_ANCHOR_TYPE://带图片的超链接
-                        break;
                     case HitTestResult.IMAGE_TYPE://图片类型
                         if (handlerClick !=null&&extra!=null&& URLUtil.isValidUrl(extra)){//URLUtil.isValidUrl(extra)是否是有效链接
                             handlerClick.onImgSelected(touchX,touchY,result.getType(),extra);

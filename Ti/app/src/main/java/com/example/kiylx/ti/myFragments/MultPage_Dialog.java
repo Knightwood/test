@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -101,7 +100,7 @@ public class MultPage_Dialog extends DialogFragment {
         }
         Log.d(TAG, "onBookmarkt: ");
         //获取当前网页的pos
-        mCurrect = MainActivity.getCurrect();
+        mCurrect = MainActivity.getCurrent();
 
         EventBus.getDefault().register(this);
 
@@ -111,6 +110,7 @@ public class MultPage_Dialog extends DialogFragment {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: ");
+        notifyThrowTrash();//通知MainActivity销毁被删除的webview
         EventBus.getDefault().unregister(this);
     }
 
@@ -125,6 +125,15 @@ public class MultPage_Dialog extends DialogFragment {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: ");
     }
+    /**
+     * 删除标签页会把webview放进WebviewManager的trashList。
+     * 在onStop()中发送消息，让mainActivity销毁trashList中的webview
+     */
+    private void notifyThrowTrash(){
+        EventMessage message = new EventMessage(3, "销毁trashList中的垃圾");
+        EventBus.getDefault().post(message);
+    }
+
 
     public static void setInterface(MultiDialog_Functions minterface) {
         MultPage_Dialog.minterface = minterface;
@@ -150,7 +159,7 @@ public class MultPage_Dialog extends DialogFragment {
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         } else {
-            mCurrect = MainActivity.getCurrect();
+            mCurrect = MainActivity.getCurrent();
             //重新拿到current值，用于当删除某个标签页时能正确设置颜色
             mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
@@ -240,7 +249,8 @@ public class MultPage_Dialog extends DialogFragment {
                     Log.d("多窗口关闭点击", "onClick:" + pos);
                     mWebSiteAdapter.notifyItemRemoved(pos);
                     minterface.delete_page(pos);//移除webview
-                    mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
+                    //mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
+                    updateUI();
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");

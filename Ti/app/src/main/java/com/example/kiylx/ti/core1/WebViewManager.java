@@ -22,11 +22,11 @@ import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
-import com.google.android.gms.dynamic.IFragmentWrapper;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Observable;
 
@@ -44,9 +44,9 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private static final String TAG = "WebViewManager";
     private CustomWebviewClient customWebviewClient;
     private CustomWebchromeClient customWebchromeClient;
+    private List<WebView> trashList;//要删除的webview先转移到这里，之后整体删除，避免在原list中操作耗时
 
     private AboutHistory aboutHistory;
-    //private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
     private HandleClickedLinks mHandleClickedLinks;
     private NotifyWebViewUpdate mUpdateInterface;
 
@@ -84,10 +84,10 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }*/
 
     /**
-     * @param i pos，webview要添加进的位置，默认传0
-     *          新建一个webview并放进WebViewManager（webview2类型）
+     * @param pos pos，webview要添加进的位置
+     *            新建一个webview并放进WebViewManager（webview2类型）
      */
-    public void newWebView(int i, Context applicationContext, AppCompatActivity appCompatActivity) {
+    public void newWebView(int pos, Context applicationContext, AppCompatActivity appCompatActivity) {
 
 //注：new一个webview
         CustomAWebView web = new CustomAWebView(applicationContext);
@@ -102,55 +102,31 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //添加js，用来展开菜单的方法。
         web.MenuJSInterface();
 
-        addInWebManager(web, i);
+        addInWebManager(web, pos);
 
     }
 
     /**
-     * @param v 要添加的webview
-     * @param i 添加到第一个位置，但是也可以指定i的值添加到其他位置
-     *          <p>
-     *          把webview放入manager管理的list
+     * @param v   要添加的webview
+     * @param pos 添加到位置，可以指定添加到其他位置
+     *            <p>
+     *            把webview放入manager管理的list
      */
-    public void addInWebManager(WebView v, int i) {
-        insert_12(v, i);
+    public void addInWebManager(WebView v, int pos) {
+        insert_12(v, pos);
+        //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
         Log.d(TAG, "addInWebManager: ");
 
     }
 
     /**
-     * @param v 要添加进mArrayList的webview
-     * @param i 要添加到的位置
+     * @param v   要添加进mArrayList的webview
+     * @param pos 要添加到的位置
      */
-    private void insert_12(WebView v, int i) {
-        webViewArrayList.add(i, v);
-        notifyupdate(v, i, Action.ADD, true);//更新网页信息的数据
+    private void insert_12(WebView v, int pos) {
+        webViewArrayList.add(pos, v);
+        notifyupdate(v, pos, Action.ADD, true);//更新网页信息的数据
     }
-
-    /* *//**
-     * @param v    要添加的webview
-     * @param i    添加到第一个位置，但是也可以指定i的值添加到其他位置
-     * @param web_feature 标识这是什么网页，0表示这是新标签页
-     *//*
-    public void addInWebManager(WebView v, int i, int web_feature) {
-        //一个新的空白的webview，title是“空白页”，url是“about:newTab”,flags是“未分类”
-        //把网页信息保存进去，web_feature记为0，表示是一个新标签页，不计入历史记录
-        insert_1(v, i, web_feature == 0 ? 0 : 1);
-
-    }
-
-    *//**
-     * @param v    要添加进mArrayList的webview
-     * @param i    要添加到的位置
-     * @param web_feature 如果是0，标识这是新标签页，执行特定操作
-     *//*
-    private void insert_1(WebView v, int i, int web_feature) {
-        webViewArrayList.add(i, v);
-        if (web_feature == 0) {
-            notifyupdate(null, i, Action.ADD);
-        } else
-            notifyupdate(v, i, Action.ADD);
-    }*/
 
     /**
      * 标记观察者更新
@@ -165,28 +141,107 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     /**
      * @param i 将要删除的元素位置
      */
-    public void delete(int i) {
-        removeWebView(i);
-    }
-
-    private void removeWebView(int i) {
+   /* public void delete(int i) {
         this.webViewArrayList.remove(i);
         notifyupdate(null, i, Action.DELETE, false);
+    }
+
+    public void destroy(int pos) {
+        WebView tmp = webViewArrayList.get(pos);
+        if (tmp != null) {
+            //先加载空内容
+            tmp.setWebViewClient(null);
+            tmp.setWebChromeClient(null);
+            tmp.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+
+            tmp.clearSslPreferences();
+            tmp.clearMatches();
+            tmp.removeAllViews();
+            //清空历史
+            tmp.clearHistory();
+            //然后销毁
+            tmp.destroy();
+            //然后置为空
+            delete(pos);
+        }
+    }*/
+
+    /**
+     * @param pos webview在list中的位置
+     *            <p>
+     *            把要删除的webview放进trashList，在合适的时机调用throwTrash()把这些webview全部删除
+     */
+    public void removeToTrash(int pos) {
+        if (this.trashList == null) {
+            trashList = new ArrayList<>();
+        }
+        trashList.add(webViewArrayList.remove(pos));
+        notifyupdate(null, pos, Action.DELETE, false);
+    }
+
+    /**
+     * 遍历trashList，把里面所有的webview摧毁
+     */
+    public void throwTrash() {
+        if (trashList.isEmpty()) {
+            return;
+        }
+        Iterator iterator = trashList.iterator();
+        while (iterator.hasNext()) {
+            destroy2((WebView) iterator.next());
+        }
+        trashList=null;
+    }
+
+    /**
+     * @param v 要摧毁的webview
+     *          <p>
+     *          摧毁这个webview。防止内存泄漏
+     */
+    private void destroy2(WebView v) {
+        if (v != null) {
+            //先加载空内容
+            v.setWebViewClient(null);
+            v.setWebChromeClient(null);
+            v.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+
+            v.clearSslPreferences();
+            v.clearMatches();
+            v.removeAllViews();
+            //清空历史
+            v.clearHistory();
+            //然后销毁
+            v.destroy();
+        }
+    }
+
+    /**
+     * @param pos webview在list中的位置
+     * @param url 网址（主页网址）
+     *
+     *            <p>
+     *            把pos位置的webview删除历史记录，然后加载url
+     */
+    public void wash(int pos, String url) {
+        WebView tmp;
+        tmp = webViewArrayList.get(pos);
+        tmp.clearHistory();
+        tmp.loadUrl(url);
     }
 
     /**
      * 刷新网页
      */
     public void reLoad(AppCompatActivity context) {
-        setWebview(getTop(MainActivity.getCurrect()), context);
-        getTop(MainActivity.getCurrect()).reload();
+        setWebview(getTop(MainActivity.getCurrent()), context);
+        getTop(MainActivity.getCurrent()).reload();
     }
 
     /**
      * 使用桌面版的useragent达到访问桌面版的效果
      */
     public void reLoad_pcmode() {
-        WebView webView = getTop(MainActivity.getCurrect());
+        WebView webView = getTop(MainActivity.getCurrent());
         webView.getSettings().setUserAgentString(SomeRes.PCuserAgent);
         webView.reload();
 
@@ -200,22 +255,22 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     * @param pos webview位置，如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页
-     *            新建标签页默认插入0号位置，所以需要传入-1，让新添加的网页载入网址
+     * @param pos webview位置，让pos位置的webview加载网址
+     *            废弃： 如果传入的是-1，让0位置的webview加载主页，否则按照pos位置的webview加载主页,新建标签页默认插入0号位置，所以需要传入-1，让新添加的网页载入网址
      * @param url 要载入的主页网址，若是null，载入默认主页
      *            载入主页
      */
     public void loadHomePage(int pos, String url) {
-        if (url == null) {
-            getTop(pos == -1 ? 0 : pos).loadUrl(SomeRes.default_homePage_url);
+        if (url == null) {//pos == -1 ? 0 :
+            getTop(pos).loadUrl(SomeRes.default_homePage_url);
         } else {
-            getTop(pos == -1 ? 0 : pos).loadUrl(url);
+            getTop(pos).loadUrl(url);
         }
 
     }
 
     /**
-     * @param i webview列表的指定位置，默认传入0
+     * @param i webview列表的指定位置
      * @return 列表中的webview(转制为CustomActionWebView类型)
      * <p>
      * 这个方法是返回自定义的webview子类类型。
@@ -225,7 +280,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     * @param i webview列表的指定位置，默认传入0
+     * @param i webview列表的指定位置
      * @return 列表中的webview
      */
     public WebView getTop1(int i) {
@@ -296,7 +351,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                     int pos = webViewArrayList.indexOf(webView);
                     notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO, true);
                     Log.d(TAG, "updateWebViewInfo: pos" + pos + "current" + pos);
-                    if (MainActivity.getCurrect() != pos) {
+                    if (MainActivity.getCurrent() != pos) {
                         stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
                     }
                 }
@@ -378,25 +433,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         return webViewArrayList.isEmpty();
     }
 
-    public void destroy(int pos) {
-        WebView tmp = webViewArrayList.get(pos);
-        if (tmp != null) {
-            //先加载空内容
-            tmp.setWebViewClient(null);
-            tmp.setWebChromeClient(null);
-            tmp.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
-
-            tmp.clearSslPreferences();
-            tmp.clearMatches();
-            tmp.removeAllViews();
-            //清空历史
-            tmp.clearHistory();
-            //然后销毁
-            tmp.destroy();
-            //然后置为空
-            delete(pos);
-        }
-    }
 
     /**
      * @param i 让位置i的网页停止加载

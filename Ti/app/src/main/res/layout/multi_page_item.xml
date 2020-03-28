@@ -23,6 +23,7 @@
             android:id="@+id/website_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
             android:background="#00FFFFFF"
             android:onClick="@{clickon}"
             android:singleLine="true"

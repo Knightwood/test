@@ -153,7 +153,7 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
         //默认不使用自定义主页
         PreferenceTools.putBoolean(this, WebviewConf.useCustomHomepage, false);
         //主页网址初始化为“”
-        PreferenceTools.putString(this, WebviewConf.homepageurl, "");
+        PreferenceTools.putString(this, WebviewConf.homepageurl, SomeRes.default_homePage_url);
         {
             //默认useragent，设置时从useragent列表中选择一个写入到这个preference
             PreferenceTools.putString(this, WebviewConf.userAgent, null);

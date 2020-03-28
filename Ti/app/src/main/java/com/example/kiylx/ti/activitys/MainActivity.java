@@ -1,7 +1,10 @@
 package com.example.kiylx.ti.activitys;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -54,7 +57,6 @@ import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.Tool.ProcessUrl;
 
 import org.greenrobot.eventbus.EventBus;
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
 
-    static int currect = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
+    static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
     private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
 
@@ -115,10 +117,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             Log.d(TAG, "onCreate: isempty");
             newTab(null);
         } else {
-            mWebViewManager.getTop(currect).onResume();
+            mWebViewManager.getTop(current).onResume();
 
             //注：获取当前webview的父视图，然后再把这个webview从父视图中移除，然后再重新添加，已解决白屏问题。
-            WebView webView = mWebViewManager.getTop(currect);
+            WebView webView = mWebViewManager.getTop(current);
             if (webView.getParent() != null) {
                 ((ViewGroup) webView.getParent()).removeView(webView);
             }
@@ -138,26 +140,31 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             @Override
             public void setInfos() {
                 //网页加载完成后会通过这里更新底栏的文字
-                setTextForbar(currect);
+                setTextForbar(current);
             }
 
         });*/
     }
+
     /**
-     * 接受网页加载完成信息，重新获取数据更新界面
+     * 接受网页加载完成信息，重新获取数据更新界面,以及倒掉被删除的webview垃圾
+     *
      * @param massage
      */
-    @Subscribe(threadMode= ThreadMode.MAIN)
-    public void updateData(EventMessage massage){
-        if (massage.getType()==2){
-            setTextForbar(currect);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateData(EventMessage massage) {
+        if (massage.getType() == 2) {
+            setTextForbar(current);
+        }else if (massage.getType()==3){
+            mWebViewManager.throwTrash();
         }
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();
-        mWebViewManager.getTop(currect).onResume();
-        //f1.addView(mWebViewManager.getTop(currect));
+        mWebViewManager.getTop(current).onResume();
+        //f1.addView(mWebViewManager.getTop(current));
         Log.d("lifecycle", "onReStart()");
     }
 
@@ -184,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     protected void onStop() {
         super.onStop();
-        mWebViewManager.getTop(currect).onPause();
+        mWebViewManager.getTop(current).onPause();
         //f1.removeAllViews();//移除所有视图
         EventBus.getDefault().unregister(this);
         Log.d("lifecycle", "onStop()");
@@ -213,8 +220,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             closeSearchText();
         } else {
             //处理在没有文本搜索的时候
-            if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(currect).canGoBack()) {
-                mWebViewManager.getTop(currect).goBack();
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(current).canGoBack()) {
+                mWebViewManager.getTop(current).goBack();
             } else {
                 exit();
                 return true;
@@ -268,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 传入的参数是null时，获取默认的主页，然后新建标签页，并载入默认主页
      * 传入的参数不是null时，新建标签页，并载入传入的网址
      */
-    public void newTab(String url) {
+    /*public void newTab(String url) {
 
         String home_url = null;
         if (url == null) {
@@ -289,22 +296,66 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的第0号位置，remove掉旧的webivew视图，刷新视图。
         if (!mWebViewManager.isempty()) {
-            mWebViewManager.stop(currect);
-            f1.removeView(mWebViewManager.getTop(currect));
-            currect = 0;
+            mWebViewManager.stop(current);
+            f1.removeView(mWebViewManager.getTop(current));
+            current = 0;
         }
 
         mWebViewManager.newWebView(0, getApplicationContext(), MainActivity.this);
-        mWebViewManager.getTop(currect).setActionSelectListener(new ActionSelectListener() {
+        mWebViewManager.getTop(current).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
                 Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
             }
         });
 
-        f1.addView(mWebViewManager.getTop(currect));
+        f1.addView(mWebViewManager.getTop(current));
 
         mWebViewManager.loadHomePage(-1, home_url);//新建标签页载入主页，新建标签页默认插入0号位置，所以需要传入-1，让新添加的网页载入网址
+    }*/
+
+
+    /**
+     * 读取preference中的是否自定义主页，并且处理获取到的自定义主页网址。
+     * 传入的参数是null时，获取默认的主页，然后新建标签页，并载入默认主页
+     * 传入的参数不是null时，新建标签页，并载入传入的网址
+     */
+    public void newTab(String url) {
+        String home_url = null;
+        if (url == null) {
+            //条件true时获取自定义网址，是false时则使用默认主页
+            if (PreferenceTools.getBoolean(this, WebviewConf.useCustomHomepage)) {
+                home_url = PreferenceTools.getString(this, WebviewConf.homepageurl);
+                //补全网址，以及如果开了自定义网址，但是没有填写任何字符，也使用默认主页
+                if (home_url.equals("")) {
+                    home_url = SomeRes.default_homePage_url;
+                } else {
+                    home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
+                }
+            }
+        } else {
+            //传入参数不是null
+            home_url = url;
+        }
+
+        //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的最后的位置，remove掉旧的webivew视图，刷新视图。
+        if (!mWebViewManager.isempty()) {
+            mWebViewManager.stop(current);
+            f1.removeView(mWebViewManager.getTop(current));
+            current = mWebViewManager.size();
+        }
+
+        mWebViewManager.newWebView(current, getApplicationContext(), MainActivity.this);
+        mWebViewManager.getTop(current).setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        f1.addView(mWebViewManager.getTop(current));
+
+        mWebViewManager.loadHomePage(current, home_url);//新建标签页载入主页，新建标签页默认插入最后的位置。
     }
 
     /**
@@ -312,80 +363,71 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      *            后台打开网页使用此方法
      */
     public void newTabInBackground(String url) {
-        mWebViewManager.newWebView(currect + 1, getApplicationContext(), MainActivity.this);
-        mWebViewManager.getTop(currect + 1).setActionSelectListener(new ActionSelectListener() {
+        mWebViewManager.newWebView(current + 1, getApplicationContext(), MainActivity.this);
+        mWebViewManager.getTop(current + 1).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
                 Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
             }
         });
-        mWebViewManager.loadHomePage(currect + 1, url);
+        mWebViewManager.loadHomePage(current + 1, url);
     }
 
     @Override
     public void delete_page(int position) {
-        if (1 == mWebViewManager.size()) {
-            //如果删除这个webview后没有其他的webview了，那就新建标签页
-            mWebViewManager.getTop(0).loadUrl(SomeRes.default_homePage_url);
+        deleteWebview(position);
+    }
+
+    public void deleteWebview(int position) {
+        if (mWebViewManager.size() == 1) {
+            String url = PreferenceTools.getString(MainActivity.this, WebviewConf.homepageurl);
+            mWebViewManager.wash(position, url);
             md.dismiss();//关闭多窗口
             return;
         }
-        if (position > currect) {
-            mWebViewManager.destroy(position);
-
-        } else if (position < currect) {
-            //把当前页面暂停并移除，然后加载新的currect处页面
-            mWebViewManager.stop(currect);
-            f1.removeView(mWebViewManager.getTop(currect));
-            mWebViewManager.destroy(position);
-
-            currect--;
-            f1.addView(mWebViewManager.getTop(currect));
-            mWebViewManager.reStart(currect);
-        } else {//position==currect的情况
-            if (position != mWebViewManager.size() - 1) {
-                //当前位置或者说position位置在webview的列表中不是最后一个。
-                /*删除的位置是当前位置，但删除的位置不是最后一个，
-                所以，直接移除视图，删除webview，
-                这时后面一个webview在webviewmanager的arraylist中会被向前移动，
-                这时直接添加上当前位置的webview（这个位置没变，但指代的已经是被删除的webview后面的webview）视图*/
-                mWebViewManager.stop(currect);
-                f1.removeView(mWebViewManager.getTop(position));
-                mWebViewManager.destroy(position);
-                //delete_CUWL(position);
-                f1.addView(mWebViewManager.getTop(position));
-                mWebViewManager.reStart(currect);
+        if (position < current) {
+            mWebViewManager.removeToTrash(position);
+            current-=1;
+        }else if (position == current) {
+            /*
+             * pos和current相等，也就是要删除的webview就是当前浏览的webview，那先把pos位置的webview从f1中移除。
+             * 1.如果是最后一个元素，把前一个元素添加到f1，然后把current减一
+             * 2.如果是倒数第二个元素或者说不是会有一个元素，把后面的元素添加到f1，current不用改
+             * <p>
+             * 再然后调用removeToTrash()，把webview移动到垃圾桶
+             * */
+            f1.removeView(mWebViewManager.getTop(position));
+            if (position == mWebViewManager.size() - 1) {//列表中最后面的元素
+                f1.addView(mWebViewManager.getTop(position - 1));
+                current-=1;
+                mWebViewManager.reStart(current);
             } else {
-                //当前位置或者说position位置在webview的列表中是最后一个。
-                /*删除当前webview和视图，把列表中被删除webview前面的视图挪到屏幕上*/
-                mWebViewManager.stop(currect);
-                f1.removeView(mWebViewManager.getTop(position));
-                currect--;
-                mWebViewManager.destroy(position);
-                //delete_CUWL(position);
-                f1.addView(mWebViewManager.getTop(currect));
-                mWebViewManager.reStart(currect);
+                f1.addView(mWebViewManager.getTop(position + 1));
+                mWebViewManager.reStart(position+1);
             }
+            mWebViewManager.removeToTrash(position);
+        }else {//pos>current的情况
+            mWebViewManager.removeToTrash(position);
         }
-        setTextForbar(currect);
+        setTextForbar(current);//更新标题栏
     }
 
     @Override
     public void switchPage(int pos) {
         //pos是指要切换到的页面
-        mWebViewManager.stop(currect);
-        f1.removeView(mWebViewManager.getTop(currect));
+        mWebViewManager.stop(current);
+        f1.removeView(mWebViewManager.getTop(current));
         f1.addView(mWebViewManager.getTop(pos));
-        currect = pos;
-        mWebViewManager.reStart(currect);
-        setTextForbar(currect);//更新工具栏上的文字
+        current = pos;
+        mWebViewManager.reStart(current);
+        setTextForbar(current);//更新工具栏上的文字
     }
 
     /**
      * @return 获取当前webview在arraylist中的位置
      */
-    public static int getCurrect() {
-        return currect;
+    public static int getCurrent() {
+        return current;
     }
 
     /**
@@ -397,9 +439,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             public void loadUrl(String url, boolean flags) {
                 if (flags) {
                     newTab(url);
-                    // mWebViewManager.getTop(currect).loadUrl(url);
+                    // mWebViewManager.getTop(current).loadUrl(url);
                 } else
-                    mWebViewManager.getTop(currect).loadUrl(url);
+                    mWebViewManager.getTop(current).loadUrl(url);
 
             }
         });
@@ -408,9 +450,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             public void loadUrl(String url, boolean flags) {
                 if (flags) {
                     newTab(url);
-                    //mWebViewManager.getTop(currect).loadUrl(url);
+                    //mWebViewManager.getTop(current).loadUrl(url);
                 } else
-                    mWebViewManager.getTop(currect).loadUrl(url);
+                    mWebViewManager.getTop(current).loadUrl(url);
 
             }
         });
@@ -446,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         /*bar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWebViewManager.getTop(currect).goBack();
+                mWebViewManager.getTop(current).goBack();
 
             }
         });*/
@@ -471,7 +513,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                         break;
                     case R.id.action_flash:
                         Log.i(TAG, "onClick: 刷新按钮被触发");
-                        mWebViewManager.getTop(currect).reload();
+                        mWebViewManager.getTop(current).reload();
                         break;*/
                     case R.id.action_menu:
                         Log.i(TAG, "onClick: 菜单按钮被触发");
@@ -487,10 +529,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     /**
      * @param menu
-     * @return
-     *
-     * <p>
-     *     optionMenu
+     * @return <p>
+     * optionMenu
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -515,7 +555,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void minset() {
 
         FragmentManager fm = getSupportFragmentManager();
-        MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(currect));
+        MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(current));
         md.setInterafce(controlInterface);//控制网页的一些方法交给MinSetDialog
         md.show(fm, "minSetDialog");
     }
@@ -533,11 +573,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void search_dialog() {
 
         Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
-        intent.putExtra(CURRENT_URL, mWebViewManager.getTop(currect).getUrl());
+        intent.putExtra(CURRENT_URL, mWebViewManager.getTop(current).getUrl());
         //把当前网页网址传进去
         startActivityForResult(intent, 21);
-
-
     }
 
     /**
@@ -546,7 +584,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void closeSearchText() {
         inflated.setVisibility(View.INVISIBLE);
         isOpenedSearchText = false;
-        mWebViewManager.clearMatches(currect);
+        mWebViewManager.clearMatches(current);
     }
 
     /**
@@ -569,13 +607,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         goaHead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWebViewManager.goaHead(currect);
+                mWebViewManager.goaHead(current);
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mWebViewManager.text_back(currect);
+                mWebViewManager.text_back(current);
             }
         });
 
@@ -594,7 +632,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             public void afterTextChanged(Editable s) {
                 String content = s.toString();
                 if (!TextUtils.isEmpty(content)) {
-                    mWebViewManager.findAllAsync(currect, content);
+                    mWebViewManager.findAllAsync(current, content);
                 }
             }
         });
@@ -609,9 +647,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (requestCode == 21) {
             //把DoSearchActivity的requestCode定义为21
             assert data != null;
-            mWebViewManager.getTop(currect).loadUrl(data.getStringExtra("text_or_url"));
+            mWebViewManager.getTop(current).loadUrl(data.getStringExtra("text_or_url"));
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
-            //mConverted_lists.setWEB_feature_1(currect, 1);
+            //mConverted_lists.setWEB_feature_1(current, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
     }
@@ -671,6 +709,29 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 @Override
                 public void onImgSelected(int x, int y, int type, String extra) {
                     Log.d(TAG, "onImgSelected: " + extra);
+                    String[] menu = new String[]{"复制图片链接地址", "新窗口打开图片", "分享"};
+                    new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    //复制链接地址
+                                    Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
+                                    clipData(extra);
+                                    break;
+                                case 1:
+                                    //新窗口打开
+                                    newTab(extra);
+                                    break;
+                                case 2:
+                                    //分享
+                                    controlInterface.sharing(extra);
+                                    break;
+
+                            }
+                            dialog.dismiss();
+                        }
+                    }).show();
                 }
 
                 @Override
@@ -684,7 +745,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                                 case 0:
                                     //复制链接地址
                                     Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
-
+                                    clipData(extra);
                                     break;
                                 case 1:
                                     //新窗口打开
@@ -710,6 +771,18 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 }
             };
         }
+    }
+
+    /**
+     * @param text text文本
+     *             复制文本到剪切板
+     */
+    public void clipData(String text) {
+        ClipboardManager manager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("网址", text);
+        manager.setPrimaryClip(clip);
+
+
     }
 
     /**
