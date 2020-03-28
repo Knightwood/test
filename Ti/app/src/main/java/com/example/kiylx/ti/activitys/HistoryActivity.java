@@ -28,6 +28,7 @@ import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -52,7 +53,6 @@ public class HistoryActivity extends AppCompatActivity {
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
 
         sAboutHistory = AboutHistory.get(this);
-
         //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
@@ -106,15 +106,14 @@ public class HistoryActivity extends AppCompatActivity {
 
     /**
      * @param startDate 开始时间
-     * @param endDate 结束时间
-     *                返回这段时间范围内的历史记录
+     * @param endDate   结束时间
+     *                  返回这段时间范围内的历史记录
      */
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
         Log.d(TAG, "updateUI: " + startDate + "---" + endDate);
-
         //获取数据
-        historyList = sAboutHistory.getDataLists(startDate, endDate);
+        historyList =sAboutHistory.getDataLists(startDate, endDate);
 
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(historyList);
@@ -147,8 +146,7 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
 
-
-    private void addToBookMark(String url){
+    private void addToBookMark(String url) {
         FragmentManager fm = getSupportFragmentManager();
         //把当前网页信息传给收藏dialog
         Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
@@ -181,7 +179,7 @@ public class HistoryActivity extends AppCompatActivity {
         HistoryAdapter(List<WebPage_Info> list) {
             this.lists = list;
             boolean ta = lists.isEmpty();
-            Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta + lists.get(0).getUrl());
+            Log.d("历史activity", "onClick: Adapter构造函数被触发  lists是否为空" + ta);
         }
 
 
@@ -230,7 +228,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
 
         public void bind(WebPage_Info info) {
-            this.info=info;
+            this.info = info;
             URL = info.getUrl();
             title.setText(info.getTitle());
             url.setText(info.getUrl());
@@ -241,7 +239,7 @@ public class HistoryActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.more_setting:
-                    itemPopmenu(v,info,getAdapterPosition());
+                    itemPopmenu(v, info, getAdapterPosition());
                     break;
                 case R.id.itemTitle:
                     sOpenOneWebpage.loadUrl(URL, true);
@@ -252,7 +250,7 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
-    private void itemPopmenu(View v,WebPage_Info info,int pos) {
+    private void itemPopmenu(View v, WebPage_Info info, int pos) {
         PopupMenu itemMenu = new PopupMenu(this, v);
         MenuInflater inflater = itemMenu.getMenuInflater();
         inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
@@ -262,17 +260,17 @@ public class HistoryActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.open:
                         finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(),false);
+                        sOpenOneWebpage.loadUrl(info.getUrl(), false);
                         break;
                     case R.id.open1:
                         finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(),true);
+                        sOpenOneWebpage.loadUrl(info.getUrl(), true);
                         break;
                     case R.id.delete_hiatory:
                         sAboutHistory.delete(info.getUrl());
                         mAdapter.notifyItemRemoved(pos);
                         historyList.remove(info);
-                        mAdapter.notifyItemRangeChanged(0,historyList.size());
+                        mAdapter.notifyItemRangeChanged(0, historyList.size());
                         break;
                     case R.id.addToBookmark:
                         addToBookMark(info.getUrl());

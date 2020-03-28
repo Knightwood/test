@@ -116,8 +116,25 @@ public class CustomWebchromeClient extends WebChromeClient {
         return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
     }
 
+    /**
+     * @param view 请求新窗口的WebView
+     * @param isDialog 如果是true，代表这个新窗口只是个对话框，如果是false，则是一个整体的大小的窗口
+     * @param isUserGesture 如果是true，代表这个请求是用户触发的，例如点击一个页面上的一个连接
+     * @param resultMsg 当一个新的WebView被创建时这个只被传递给他，
+     *                  resultMsg.obj是一个WebViewTransport的对象，它被用来传送给新创建的WebView
+     *                  使用方法：WebView.WebViewTransport.setWebView(WebView)
+     * @return 这个方法如果返回true，代表这个主机应用会创建一个新的窗口，否则应该返回fasle。如果你返回了false，但是依然发送resulMsg会导致一个未知的结果。
+     */
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
         return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+        /*
+            下面是重写onCreateWindow的必要代码：
+
+            WebView.WebViewTransport transport = (WebView.WebViewTransport) msg.obj;
+            transport.setWebView(webview);    //此webview可以是一般新创建的
+            msg.sendToTarget();
+
+        */
     }
 }

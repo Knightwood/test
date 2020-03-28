@@ -353,7 +353,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
             //更新数据库中网址的标题
             aboutHistory.updateTitle(info);
         }
-
         setChanged();
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(info, i, action));
@@ -467,7 +466,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         settings.setDefaultTextEncodingName("utf-8");
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
-        //打开新的窗口
+        //打开新的窗口，如果是true，在webchromeclient中处理，这里我已经用长按菜单实现了，没必要再用这个方法
         settings.setSupportMultipleWindows(false);
 
     }
