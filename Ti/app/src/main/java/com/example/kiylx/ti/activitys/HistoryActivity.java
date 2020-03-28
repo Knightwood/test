@@ -146,36 +146,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     }
 
-    private void itemPopmenu(View v,WebPage_Info info) {
-        PopupMenu itemMenu = new PopupMenu(this, v);
-        MenuInflater inflater = itemMenu.getMenuInflater();
-        inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
-        itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.open:
-                        finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(),false);
-                        break;
-                    case R.id.open1:
-                        finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(),true);
-                        break;
-                    case R.id.delete_hiatory:
-                        sAboutHistory.delete(info.getUrl());
-                        historyList.remove(info);
-                        updateUI();
-                        break;
-                    case R.id.addToBookmark:
-                        addToBookMark(info.getUrl());
-                        break;
-                }
-                return false;
-            }
-        });
-        itemMenu.show();
-    }
+
 
     private void addToBookMark(String url){
         FragmentManager fm = getSupportFragmentManager();
@@ -270,7 +241,7 @@ public class HistoryActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.more_setting:
-                    itemPopmenu(v,info);
+                    itemPopmenu(v,info,getAdapterPosition());
                     break;
                 case R.id.itemTitle:
                     sOpenOneWebpage.loadUrl(URL, true);
@@ -279,5 +250,38 @@ public class HistoryActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void itemPopmenu(View v,WebPage_Info info,int pos) {
+        PopupMenu itemMenu = new PopupMenu(this, v);
+        MenuInflater inflater = itemMenu.getMenuInflater();
+        inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
+        itemMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.open:
+                        finish();
+                        sOpenOneWebpage.loadUrl(info.getUrl(),false);
+                        break;
+                    case R.id.open1:
+                        finish();
+                        sOpenOneWebpage.loadUrl(info.getUrl(),true);
+                        break;
+                    case R.id.delete_hiatory:
+                        sAboutHistory.delete(info.getUrl());
+                        mAdapter.notifyItemRemoved(pos);
+                        historyList.remove(info);
+                        mAdapter.notifyItemRangeChanged(0,historyList.size());
+                        break;
+                    case R.id.addToBookmark:
+                        addToBookMark(info.getUrl());
+                        break;
+                }
+                return false;
+            }
+        });
+        itemMenu.show();
+
     }
 }

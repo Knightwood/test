@@ -142,6 +142,9 @@ public class AboutHistory {
 
     }
 
+    public void updateTitle(WebPage_Info info) {
+        mDatabase.execSQL("UPDATE history_item set title=? where url=?",new String[]{info.getTitle(),info.getUrl()});
+    }
 }
 /*
     private ItemCursorWrapper queryHistory(String whereClause, String[] whereArgs) {

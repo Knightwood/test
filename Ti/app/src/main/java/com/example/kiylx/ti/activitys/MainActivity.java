@@ -367,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 mWebViewManager.reStart(currect);
             }
         }
+        setTextForbar(currect);
     }
 
     @Override
@@ -659,31 +660,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
-/*
-    @Override
-    protected void onDestroy() {
-        WebView t = WebList.get(i).t;
-        super.onDestroy();
-        if (mRoot != null) {
-            mRoot.removeView(WebList.get(i));
-        }
-        if (t != null) {
-            t.stopLoading();
-            t.clearMatches();
-            t.clearHistory();
-            t.clearSslPreferences();
-            t.clearCache(true);
-            t.loadUrl("about:blank");
-            t.removeAllViews();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                t.removeJavascriptInterface("AndroidNative");
-            }
-            t.destroy();
-        }
-        t = null;
-    }
-
-*/
 
     /**
      * 实现处理webview长按事件处理的接口，把接口传入webViewManager，

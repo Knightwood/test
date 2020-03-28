@@ -22,6 +22,7 @@ import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
+import com.google.android.gms.dynamic.IFragmentWrapper;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,7 +36,7 @@ import java.util.Observable;
  * Converted_WebPage_Lists中的抽取出的特定信息的webviewpageinfo和WebViewManager中的webview是一一对应的；webview更新就要用观察者模式更新Converted_WebPage_Lists
  * 通知更新时，数字表示删除的元素位置，webviewpageinfo类型则表示要添加进去。
  */
-public class WebViewManager extends Observable implements NotifyWebViewUpdate {
+public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
     //存着当前打开的所有webview对象
     private List<WebView> webViewArrayList;
@@ -47,6 +48,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     private AboutHistory aboutHistory;
     //private Setmessage setmessage;//用来向mainactivity设置东西,比如网页加载完成后更新MainActivity底栏的文字
     private HandleClickedLinks mHandleClickedLinks;
+    private NotifyWebViewUpdate mUpdateInterface;
 
     private WebViewManager(Context context, HandleClickedLinks handleClickedLinks) {
         aboutHistory = AboutHistory.get(context);
@@ -59,6 +61,11 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         customWebviewClient = new CustomWebviewClient(context);
 
         mHandleClickedLinks = handleClickedLinks;
+
+        implUpdateWebInfo();
+        //传入实现了接口的实例变量
+        CustomWebviewClient.setInterface(mUpdateInterface);
+        CustomWebchromeClient.setInterface(mUpdateInterface);
     }
 
     public static WebViewManager getInstance(@NonNull Context context, @NonNull HandleClickedLinks handleClickedLinks) {
@@ -66,9 +73,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
                     sWebViewManager = new WebViewManager(context, handleClickedLinks);
-                    //传入实现了接口的实例变量
-                    CustomWebchromeClient.setInterface(sWebViewManager);
-
                 }
             }
         }
@@ -110,6 +114,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     public void addInWebManager(WebView v, int i) {
         insert_12(v, i);
+        Log.d(TAG, "addInWebManager: ");
 
     }
 
@@ -119,7 +124,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
      */
     private void insert_12(WebView v, int i) {
         webViewArrayList.add(i, v);
-        notifyupdate(v, i, Action.ADD);//更新网页信息的数据
+        notifyupdate(v, i, Action.ADD, true);//更新网页信息的数据
     }
 
     /* *//**
@@ -166,7 +171,7 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
 
     private void removeWebView(int i) {
         this.webViewArrayList.remove(i);
-        notifyupdate(null, i, Action.DELETE);
+        notifyupdate(null, i, Action.DELETE, false);
     }
 
     /**
@@ -246,7 +251,6 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         if (webView == null) {
             return tmpData;
         }
-
         tmpData.setTitle(webView.getTitle());
         tmpData.setUrl(webView.getUrl());
         tmpData.setDate(TimeProcess.getTime());
@@ -265,45 +269,49 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         return new SealedWebPageInfo(info, pos, action);
     }
 
-
     /**
-     * CustomWebchromeClient中网页加载完成时调用
-     * 网页加载完成时会调用他更新网页信息
-     *
-     * @param webView 传入webview，
-     *                然后在方法里找到WebView在list中的位置，再进行更新操作，
-     *                这样，就可以保证在切换webview时保证更新不会出错
-     *                且，这个方法是在网页加载完成时调用的，所以，只要判断不是在用户界面上的webview，就可以调用暂停webview以节省性能
-     *                <p>
-     *                <p>
-     *                网页加载完成时调用的更新方法！！！
-     *                当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
+     * 一个方法用于更新数据库
+     * 一个方法用于网页加载完成时更新标题
      */
-    @Override
-    public void updateWebViewInfo(WebView webView) {
+    private void implUpdateWebInfo() {
+        if (mUpdateInterface == null)
+            mUpdateInterface = new NotifyWebViewUpdate() {
+                /**
+                 * @param webView webview
+                 *                <p>
+                 *                在CustomWebviewClient中的doUpdateVisitedHistory方法中调用了该方法
+                 *                <p>
+                 *                1.更新标题
+                 *                2.后台加载时，会在此时停止加载
+                 *                3.以及加入数据库
+                 *                <p>
+                 *                然后在方法里找到WebView在list中的位置，再进行更新操作，
+                 *                这样，就可以保证在切换webview时保证更新不会出错
+                 *                且，这个方法是在url可见时（doUpdateVisitedHistory()）调用的，所以，只要判断不是在用户界面上的webview，就可以调用暂停webview以节省性能
+                 *                <p>
+                 *                当WebView更新时，就要相应的更新Converted_WebPage_Lists中相应的条目信息
+                 */
+                @Override
+                public void updateWebViewInfo(WebView webView) {
+                    int pos = webViewArrayList.indexOf(webView);
+                    notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO, true);
+                    Log.d(TAG, "updateWebViewInfo: pos" + pos + "current" + pos);
+                    if (MainActivity.getCurrect() != pos) {
+                        stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
+                    }
+                }
 
-        /*
-    //方1，遍历所有，进行更新
-        for(int pos=0;pos<webViewArrayList.size();pos++){
-            notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
-            Log.d(FOLDER, "updateWebViewInfo: "+webViewArrayList.get(pos).getTitle());
-            if (MainActivity.getCurrect() != pos) {
-                stop(pos);
-            }
-        }*/
-        //方2
-        int pos = webViewArrayList.indexOf(webView);
-        notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO);
-        if (MainActivity.getCurrect() != pos) {
-            stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
-        }
-        notifyTitleUpdate();
-
-        /*for (int p = 0; p < webViewArrayList.size(); p++) {
-            Log.d(TAG, "updateWebViewInfo: " + webViewArrayList.get(p).getUrl());
-
-        }*/
-
+                /**
+                 * @param webView
+                 * 在网页加载到100时在webchromeclient中调用，更新webpageinfo信息，更新多窗口的标题
+                 */
+                @Override
+                public void updateTitle(WebView webView) {
+                    int pos = webViewArrayList.indexOf(webView);
+                    notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO, false);
+                    notifyTitleUpdate();
+                }
+            };
     }
 
     /**
@@ -316,16 +324,18 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
     }
 
     /**
-     * @param arg    发生变化的Webview
-     * @param i      webview在arraylist中的位置。
-     * @param action 要执行的动作：添加，删除，或是更新
-     *               <p>
-     *               如果webview传入的是null，那意味着这是一个新标签页，调用另一版本setData
-     *               观察者模式的更新操作！！！
-     *               网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
-     *               并且，把被更新的网页信息加入历史记录数据库
+     * @param arg        发生变化的Webview
+     * @param i          webview在arraylist中的位置。
+     * @param action     要执行的动作：添加，删除，或是更新
+     * @param insertToDB 是否要加入数据库
+     *                   <p>
+     *                   如果webview传入的是null，那意味着这是一个新标签页，调用另一版本setData
+     *                   观察者模式的更新操作！！！
+     *                   网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
+     *                   并且，根据“insertToDB”参数决定是否把“被更新的网页信息”加入历史记录数据库
+     *                   并且，在更新网页信息的时候，还会更新数据库里这条记录的网页标题
      */
-    private void notifyupdate(WebView arg, int i, Action action) {
+    private void notifyupdate(WebView arg, int i, Action action, boolean insertToDB) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         WebPage_Info info = null;
         Log.d("网页管理", action.toString());
@@ -340,18 +350,29 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
         } else {
             //更新
             info = setTmpData(arg);
+            //更新数据库中网址的标题
+            aboutHistory.updateTitle(info);
         }
 
         setChanged();
         //用封装的WebPageInfo执行推送
         notifyObservers(getSealedData(info, i, action));
-        //如果不是默认新标签页就加入数据库
-        if (action != Action.DELETE && !(info.getUrl().equals(SomeRes.default_homePage_url))) {
-            //历史记录加入数据库
-            aboutHistory.addToDataBase(info);
+
+        if (insertToDB) {
+            //如果不是默认新标签页就加入数据库
+            if (!(info.getUrl().equals(SomeRes.default_homePage_url))) {
+                //历史记录加入数据库
+                insertToDB(info);
+            }
         }
 
+    }
 
+    /**
+     * 插入数据库
+     */
+    private void insertToDB(WebPage_Info info) {
+        aboutHistory.addToDataBase(info);
     }
 
     public boolean isempty() {
@@ -365,6 +386,10 @@ public class WebViewManager extends Observable implements NotifyWebViewUpdate {
             tmp.setWebViewClient(null);
             tmp.setWebChromeClient(null);
             tmp.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+
+            tmp.clearSslPreferences();
+            tmp.clearMatches();
+            tmp.removeAllViews();
             //清空历史
             tmp.clearHistory();
             //然后销毁

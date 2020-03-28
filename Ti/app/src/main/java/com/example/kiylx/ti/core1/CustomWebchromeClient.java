@@ -3,6 +3,7 @@ package com.example.kiylx.ti.core1;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
+import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -14,12 +15,13 @@ import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
 
 public class CustomWebchromeClient extends WebChromeClient {
     private static NotifyWebViewUpdate mNotifyWebViewUpdate;
+    private static final String TAG = "CustomWebchromeClient";
 
-    public static void setInterface(NotifyWebViewUpdate minterface){
-        CustomWebchromeClient.mNotifyWebViewUpdate=minterface;
+
+    public static void setInterface(NotifyWebViewUpdate minterface) {
+        CustomWebchromeClient.mNotifyWebViewUpdate = minterface;
 
     }
-
 
 
     @Override
@@ -30,22 +32,25 @@ public class CustomWebchromeClient extends WebChromeClient {
     /**
      * 当前 WebView 加载网页进度
      *
-     * @param view WebView
+     * @param view        WebView
      * @param newProgress 进度
      */
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
-            if(newProgress==100){
-                mNotifyWebViewUpdate.updateWebViewInfo(view);
-            }
+        if (newProgress == 100) {
+                mNotifyWebViewUpdate.updateTitle(view);
+                Log.d(TAG, "onProgressChanged: 网页加载完成,更新标题");
+        }
+
+
     }
 
     /**
      * Js 中调用 alert() 函数，产生的对话框
      *
-     * @param view Webview
-     * @param url url
+     * @param view    Webview
+     * @param url     url
      * @param message
      * @param result
      * @return

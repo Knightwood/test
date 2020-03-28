@@ -16,18 +16,24 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
+
 import java.net.URISyntaxException;
 import java.util.List;
 
 public class CustomWebviewClient extends WebViewClient {
     private Context mContext;
+    private static NotifyWebViewUpdate mNotifyWebViewUpdate;
 
 
     public CustomWebviewClient(Context context){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
         mContext=context;
     }
+    public static void setInterface(NotifyWebViewUpdate minterface) {
+        CustomWebviewClient.mNotifyWebViewUpdate = minterface;
 
+    }
     /**
      * 是否在 WebView 内加载页面
      * 当要在当前WebView中加载新的URL时，给主机应用程序一个接管控件的机会。
@@ -132,19 +138,8 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
-
-        // 判断网址是否被收藏
         // 更新工具栏上的文字
-        boolean isBookmark;
         super.onPageFinished(view, url);
-/*
-        mAboutBookmark=AboutBookmark.get(mContext);
-        isBookmark= mAboutBookmark.isMarked(new WebPage_Info(view.getTitle(),view.getFileUrl(),1));
-        if (isBookmark){
-            //如果网页已经被收藏，让收藏按键变色
-        }else{
-            Toast.makeText(mContext,"未收藏",Toast.LENGTH_LONG).show();
-        }*/
     }
     /**
      * WebView 加载页面资源时会回调，每一个资源产生的一次网络加载，除非本地有当前 url 对应有缓存，否则就会加载。
@@ -190,4 +185,9 @@ public class CustomWebviewClient extends WebViewClient {
         super.onReceivedSslError(view, handler, error);
     }
 
+    @Override
+    public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+        super.doUpdateVisitedHistory(view, url, isReload);
+        mNotifyWebViewUpdate.updateWebViewInfo(view);
+    }
 }

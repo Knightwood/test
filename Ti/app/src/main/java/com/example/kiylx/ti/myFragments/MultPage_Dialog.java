@@ -46,6 +46,8 @@ public class MultPage_Dialog extends DialogFragment {
     private WebSiteAdapter mWebSiteAdapter;
     private int mCurrect;
     private static MultiDialog_Functions minterface;
+    private List<WebPage_Info> lists;//webpageinfo 的list
+
 
     @Nullable
     @Override
@@ -130,18 +132,19 @@ public class MultPage_Dialog extends DialogFragment {
 
     /**
      * 接受网页加载完成信息，重新获取数据更新界面
+     *
      * @param massage
      */
-    @Subscribe(threadMode= ThreadMode.MAIN)
-    public void updateData(EventMessage massage){
-        if (massage.getType()==2){
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateData(EventMessage massage) {
+        if (massage.getType() == 2) {
             updateUI();
         }
     }
 
     private void updateUI() {
-        List<WebPage_Info> lists = WebViewInfo_Manager.getPageList();
-        Log.d(TAG, "updateUI: 多窗口处的数组大小"+lists.size());
+        lists  = WebViewInfo_Manager.getPageList();
+        Log.d(TAG, "updateUI: 多窗口处的数组大小" + lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
@@ -169,7 +172,7 @@ public class MultPage_Dialog extends DialogFragment {
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
-            pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.multi_page_item,viewGroup,false);
+            pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.multi_page_item, viewGroup, false);
             return new WebsiteHolder(pageitemBinding);
 
         }
@@ -204,7 +207,7 @@ public class MultPage_Dialog extends DialogFragment {
 
         WebsiteHolder(@NonNull MultiPageItemBinding binding) {
             super(binding.getRoot());
-            mBinding=binding;
+            mBinding = binding;
 
             //绑定上viewmodel
             mBinding.setInfos(new MultiPage_Bean());
@@ -235,9 +238,9 @@ public class MultPage_Dialog extends DialogFragment {
             switch ((v.getId())) {
                 case R.id.close_button:
                     Log.d("多窗口关闭点击", "onClick:" + pos);
-                    minterface.delete_page(pos);
-                    updateUI();
-                    //删除完页面要更新视图
+                    mWebSiteAdapter.notifyItemRemoved(pos);
+                    minterface.delete_page(pos);//移除webview
+                    mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");
@@ -246,6 +249,5 @@ public class MultPage_Dialog extends DialogFragment {
                     break;
             }
         }
-
     }
 }
