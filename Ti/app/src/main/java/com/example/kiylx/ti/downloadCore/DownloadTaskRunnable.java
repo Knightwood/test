@@ -4,7 +4,6 @@ import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.myInterface.DOWNLOAD_TASK_FUN;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;

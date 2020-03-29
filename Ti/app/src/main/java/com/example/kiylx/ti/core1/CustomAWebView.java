@@ -11,7 +11,6 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.HandleClickedLinks;

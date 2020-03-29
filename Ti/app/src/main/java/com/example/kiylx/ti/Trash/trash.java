@@ -1,28 +1,5 @@
 package com.example.kiylx.ti.Trash;
 
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-
 /**
  * 创建者 kiylx
  * 创建时间 2020/3/29 17:44

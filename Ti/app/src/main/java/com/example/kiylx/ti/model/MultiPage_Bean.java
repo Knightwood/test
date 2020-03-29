@@ -5,8 +5,6 @@ import android.util.Log;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.example.kiylx.ti.BR;
-
 /**
  * 用于多窗口更新文字，使用的databinding
  */

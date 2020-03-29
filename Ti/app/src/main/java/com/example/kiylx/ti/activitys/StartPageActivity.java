@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -119,10 +118,6 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         Toast.makeText(getApplicationContext(), "用户授权失败", Toast.LENGTH_LONG).show();
-        /**
-         * 若是在权限弹窗中，用户勾选了'NEVER ASK AGAIN.'或者'不在提示'，且拒绝权限。
-         * 这时候，需要跳转到设置界面去，让用户手动开启。
-         */
         //(可选的)这里检查用户是否拒绝授权权限，以及点击了“不再询问”，这时，将展示一个对话框指导用户在应用设置里授权权限
         //如果没有点击不再询问，这里是不会被调用的，如果点击了不再询问，则展示对话框提示设置权限
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {

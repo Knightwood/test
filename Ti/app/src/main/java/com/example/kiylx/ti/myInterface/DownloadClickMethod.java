@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.myInterface;
 
-import androidx.annotation.NonNull;
-
 import com.example.kiylx.ti.corebase.DownloadInfo;
 
 import java.util.List;

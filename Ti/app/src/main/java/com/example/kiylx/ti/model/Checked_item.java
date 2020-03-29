@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.model;
 
-import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;

@@ -39,9 +39,6 @@ public class minsetViewgroup extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        /**
-         * 获得此ViewGroup上级容器为其推荐的宽和高，以及计算模式
-         */
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode =MeasureSpec.getMode(heightMeasureSpec);
         int sizeWidth =MeasureSpec.getSize(widthMeasureSpec);
@@ -51,9 +48,6 @@ public class minsetViewgroup extends ViewGroup {
 
         int width = 0;
         int height = 0;
-        /**
-         * 根据childView计算的出的宽和高，以及设置的margin计算容器的宽和高，主要用于容器是warp_content时
-         */
         for(int i=0;i<getChildCount();i++){
             View childView = getChildAt(i);
             MarginLayoutParams cParams =(MarginLayoutParams) childView.getLayoutParams();
@@ -67,19 +61,12 @@ public class minsetViewgroup extends ViewGroup {
             width =cWidthWithMargin>width?cWidthWithMargin:width;
 
         }
-        /**
-         * 如果是wrap_content设置为我们计算的值
-         * 否则：直接设置为父容器计算的值
-         */
         setMeasuredDimension((widthMode ==MeasureSpec.EXACTLY)?sizeWidth:width,(heightMode==MeasureSpec.EXACTLY)?sizeHeight:height);
 
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        /**
-         * 遍历所有childView根据其宽和高，以及margin进行布局
-         */
         for(int i=0;i<getChildCount();i++){
             View childView = getChildAt(i);
             int cWidth = childView.getMeasuredWidth();

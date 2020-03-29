@@ -3,10 +3,6 @@ package com.example.kiylx.ti.downloadFragments;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.example.kiylx.ti.BR;
-
-import java.util.Observable;
-
 /**
  * 创建者 kiylx
  * 创建时间 2020/3/23 17:34

@@ -62,8 +62,7 @@ public class GeneralFragment extends Fragment {
 
 
     public static GeneralFragment newInstance() {
-        GeneralFragment fragment = new GeneralFragment();
-        return fragment;
+        return new GeneralFragment();
     }
 
     @Override

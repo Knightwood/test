@@ -5,9 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Transformations;
 
-import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo;
 
 import java.util.List;

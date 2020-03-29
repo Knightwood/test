@@ -2,7 +2,6 @@ package com.example.kiylx.ti.downloadCore;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 

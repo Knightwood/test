@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.downloadInfo_storage;
 
-import android.util.Log;
-
 import org.junit.Test;
 
 

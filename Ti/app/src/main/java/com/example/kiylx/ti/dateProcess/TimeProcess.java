@@ -41,8 +41,7 @@ public class TimeProcess {
     public static String getTime() {
         init();
         // 获取当前时间
-        String time = simpleDateFormat.format(new Date(System.currentTimeMillis()));
-        return time;
+        return simpleDateFormat.format(new Date(System.currentTimeMillis()));
     }
 
     public static String getTime2() {

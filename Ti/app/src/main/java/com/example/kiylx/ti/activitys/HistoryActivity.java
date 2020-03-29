@@ -28,7 +28,6 @@ import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity {

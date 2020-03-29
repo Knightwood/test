@@ -6,7 +6,6 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Build;
 import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;

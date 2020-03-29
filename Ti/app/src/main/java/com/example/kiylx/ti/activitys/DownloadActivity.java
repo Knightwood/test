@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Button;
 
-import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;

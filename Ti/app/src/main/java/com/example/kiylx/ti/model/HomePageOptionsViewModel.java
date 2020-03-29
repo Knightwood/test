@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.model;
 
-import android.util.Log;
-
 /**
  * 主界面的设置选项模型
  */

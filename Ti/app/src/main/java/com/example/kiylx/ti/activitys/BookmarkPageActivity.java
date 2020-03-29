@@ -23,7 +23,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.core1.AboutBookmark;
 import com.example.kiylx.ti.core1.BookMarkFolderManager;
 import com.example.kiylx.ti.myFragments.DeleteTag_Dialog;

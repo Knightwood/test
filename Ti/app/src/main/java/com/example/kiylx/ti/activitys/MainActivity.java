@@ -1,11 +1,7 @@
 package com.example.kiylx.ti.activitys;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
@@ -16,9 +12,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -39,8 +33,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.example.kiylx.ti.Tool.SavePNG_copyText;
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
@@ -64,30 +56,20 @@ import com.example.kiylx.ti.core1.WebViewManager;
 import com.example.kiylx.ti.myFragments.MinSetDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Tool.ProcessUrl;
-import com.example.kiylx.ti.conf.CustomGlideModule;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements MultiDialog_Functions {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
 
-    static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
+    public static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
     private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
 
@@ -712,7 +694,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                                 case 3:
                                     //"保存图片"
                                     //saveImage(extra);
-                                    png_copyText.saveImage(extra);
+                                    png_copyText.savePic(extra);
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {

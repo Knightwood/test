@@ -44,8 +44,7 @@ public class SearchEngineListDialog extends DialogFragment {
 
 
     public static SearchEngineListDialog getInstance() {
-        SearchEngineListDialog dialog = new SearchEngineListDialog();
-        return dialog;
+        return new SearchEngineListDialog();
     }
 
     @Override

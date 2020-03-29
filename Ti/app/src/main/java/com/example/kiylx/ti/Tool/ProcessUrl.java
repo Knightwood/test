@@ -1,21 +1,13 @@
 package com.example.kiylx.ti.Tool;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.text.TextUtils;
-
-import androidx.preference.Preference;
-import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
-import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
-import com.example.kiylx.ti.search_engine_db.SearchEngine_db_Util;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
