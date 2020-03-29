@@ -168,14 +168,17 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
     /**
      * @param pos webview在list中的位置
+     * @param b 让webview恢复加载(在删除webview时，有些webview是处于onStop的。)
      *            <p>
      *            把要删除的webview放进trashList，在合适的时机调用throwTrash()把这些webview全部删除
      */
-    public void removeToTrash(int pos) {
+    public void removeToTrash(int pos,boolean b) {
         if (this.trashList == null) {
             trashList = new ArrayList<>();
         }
-        trashList.add(webViewArrayList.remove(pos));
+        WebView tmp=webViewArrayList.remove(pos);
+        tmp.onResume();
+        trashList.add(tmp);
         notifyupdate(null, pos, Action.DELETE, false);
     }
 
@@ -183,7 +186,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 遍历trashList，把里面所有的webview摧毁
      */
     public void throwTrash() {
-        if (trashList.isEmpty()) {
+        if (trashList==null||trashList.isEmpty()) {
             return;
         }
         Iterator iterator = trashList.iterator();
@@ -200,16 +203,15 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      */
     private void destroy2(WebView v) {
         if (v != null) {
-            //先加载空内容
-            v.setWebViewClient(null);
-            v.setWebChromeClient(null);
-            v.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
-
+            v.loadUrl("about:blank");
+            v.stopLoading();
+            v.onPause();
             v.clearSslPreferences();
             v.clearMatches();
-            v.removeAllViews();
-            //清空历史
             v.clearHistory();
+            v.setWebViewClient(null);
+            v.setWebChromeClient(null);
+            v.removeAllViews();
             //然后销毁
             v.destroy();
         }

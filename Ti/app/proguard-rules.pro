@@ -19,3 +19,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#glide图片库
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+#使用glide图片库时，target API低于27
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+#网络上还添加了两行
+-dontwarn com.bumptech.glide.**
+-keep class com.bumptech.glide.**{*;}

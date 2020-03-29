@@ -19,7 +19,7 @@ public class DownloadTaskRunnable implements Runnable {
 
     private int blockid;
     private DownloadInfo mDownloadInfo;
-    private OkhttpManager mOkhttpManager;
+    //private OkhttpManager mOkhttpManager;
     private DOWNLOAD_TASK_FUN mTASK_fun;
 
 
@@ -31,7 +31,7 @@ public class DownloadTaskRunnable implements Runnable {
     public DownloadTaskRunnable(DownloadInfo info, int blockid, DOWNLOAD_TASK_FUN Interface) {
         this.mDownloadInfo = info;
         this.blockid = blockid;
-        mOkhttpManager = OkhttpManager.getInstance();
+        //mOkhttpManager = OkhttpManager.getInstance();
         mTASK_fun = Interface;
 
     }

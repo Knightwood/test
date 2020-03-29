@@ -94,7 +94,7 @@ public class DownloadInfo {
         this.url = url;
 
         if (fileName == null) {
-            this.fileName = url.substring(url.lastIndexOf("/"));
+            this.fileName = url.substring(url.lastIndexOf("/"));//斜杠不能丢，因为是路径加文件名，如果文件名不包含“/”，那路径会不正确会出错
         }
         if (this.path == null) {
             //默认路径
@@ -200,8 +200,9 @@ public class DownloadInfo {
         return threadNum;
     }
 
-    public void setThreadNum(int threadNum) {
+    public int setThreadNum(int threadNum) {
         this.threadNum = threadNum;
+        return threadNum;
     }
 
     public boolean isPause() {

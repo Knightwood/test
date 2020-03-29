@@ -46,6 +46,13 @@ public class OkhttpManager {
         return mOkHttpClient.newCall(request).execute();
     }
 
+    public Response getImgResponse(String url)throws IOException{
+        Request request =new Request.Builder()
+                .url(url)
+                .build();
+        return mOkHttpClient.newCall(request).execute();
+    }
+
     /**
      * @param url 下载地址
      * @return 返回下载文件大小

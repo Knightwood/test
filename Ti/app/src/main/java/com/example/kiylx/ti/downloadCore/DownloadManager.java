@@ -161,6 +161,9 @@ public class DownloadManager {
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
 
         //文件的分块大小
+        if (info.getContentLength()<10000){
+            threadNum= info.setThreadNum(1);
+        }
         long blocksize = info.getContentLength() / threadNum;
         info.setBlockSize(blocksize);
 

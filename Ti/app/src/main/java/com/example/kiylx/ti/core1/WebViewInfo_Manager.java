@@ -60,12 +60,7 @@ public class WebViewInfo_Manager implements Observer {
         mCurrectList.remove(index);
     }
 
-    public static List<WebPage_Info> getPageList() {
-        try {
-            return mCurrectList;
-        } catch (NullPointerException m) {
-            m.printStackTrace();
-        }
+    public static List<WebPage_Info> getPageList() throws NullPointerException{
         return mCurrectList;
     }
 

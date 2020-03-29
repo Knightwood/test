@@ -46,6 +46,7 @@ public class MultPage_Dialog extends DialogFragment {
     private int mCurrect;
     private static MultiDialog_Functions minterface;
     private List<WebPage_Info> lists;//webpageinfo 的list
+    private int trashNum;//被删除的webview数量，大于0时在onStop中发消息让manager回收Webview
 
 
     @Nullable
@@ -110,7 +111,9 @@ public class MultPage_Dialog extends DialogFragment {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: ");
-        notifyThrowTrash();//通知MainActivity销毁被删除的webview
+        if(trashNum>0){
+            notifyThrowTrash();//通知MainActivity销毁被删除的webview
+        }
         EventBus.getDefault().unregister(this);
     }
 
@@ -248,6 +251,7 @@ public class MultPage_Dialog extends DialogFragment {
                 case R.id.close_button:
                     Log.d("多窗口关闭点击", "onClick:" + pos);
                     mWebSiteAdapter.notifyItemRemoved(pos);
+                    trashNum+=1;
                     minterface.delete_page(pos);//移除webview
                     //mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
                     updateUI();
