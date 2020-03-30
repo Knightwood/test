@@ -1,7 +1,9 @@
 package com.example.kiylx.ti.myFragments;
 
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 
 
 public class MultPage_Dialog extends DialogFragment {
@@ -84,18 +89,31 @@ public class MultPage_Dialog extends DialogFragment {
         Dialog dialog = getDialog();
         if (dialog != null && dialog.getWindow() != null) {
             Window window = dialog.getWindow();
-            WindowManager.LayoutParams layoutParams = window.getAttributes();
-            //指定显示位置
-            layoutParams.gravity = Gravity.BOTTOM;
-            //指定显示大小
-            layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-            layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            WindowManager.LayoutParams lp = window.getAttributes();
+            WindowManager manager = getActivity().getWindowManager();
+            Display d = manager.getDefaultDisplay();
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //如果是横屏
+                lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+                Point point=new Point();
+                d.getSize(point);
+                lp.width = (int) (0.5 * point.x);
+
+            } else {
+                //竖屏
+                lp.gravity = Gravity.BOTTOM;
+                //指定显示大小
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            }
+
+
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             //设置背景，不然无法扩展到屏幕边缘
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91, 90, 92)));
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效
-            window.setAttributes(layoutParams);
+            window.setAttributes(lp);
             //设置点击外部可以取消对话框
             setCancelable(true);
         }
@@ -111,7 +129,7 @@ public class MultPage_Dialog extends DialogFragment {
     public void onStop() {
         super.onStop();
         Log.d(TAG, "onStop: ");
-        if(trashNum>0){
+        if (trashNum > 0) {
             notifyThrowTrash();//通知MainActivity销毁被删除的webview
         }
         EventBus.getDefault().unregister(this);
@@ -128,11 +146,12 @@ public class MultPage_Dialog extends DialogFragment {
         super.onDestroyView();
         Log.d(TAG, "onDestroyView: ");
     }
+
     /**
      * 删除标签页会把webview放进WebviewManager的trashList。
      * 在onStop()中发送消息，让mainActivity销毁trashList中的webview
      */
-    private void notifyThrowTrash(){
+    private void notifyThrowTrash() {
         EventMessage message = new EventMessage(3, "销毁trashList中的垃圾");
         EventBus.getDefault().post(message);
     }
@@ -155,7 +174,7 @@ public class MultPage_Dialog extends DialogFragment {
     }
 
     private void updateUI() {
-        lists  = WebViewInfo_Manager.getPageList();
+        lists = WebViewInfo_Manager.getPageList();
         Log.d(TAG, "updateUI: 多窗口处的数组大小" + lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);
@@ -251,7 +270,7 @@ public class MultPage_Dialog extends DialogFragment {
                 case R.id.close_button:
                     Log.d("多窗口关闭点击", "onClick:" + pos);
                     mWebSiteAdapter.notifyItemRemoved(pos);
-                    trashNum+=1;
+                    trashNum += 1;
                     minterface.delete_page(pos);//移除webview
                     //mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
                     updateUI();

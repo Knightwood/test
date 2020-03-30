@@ -60,11 +60,11 @@ public class DownloadActivity extends AppCompatActivity {
         boundDownloadService();
 
         //测试开始下载任务的按钮
-        Button bui = findViewById(R.id.ceshianniu);
+        /*Button bui = findViewById(R.id.ceshianniu);
         bui.setOnClickListener(v -> {
             getList();
 
-        });
+        });*/
 
 
 //工具栏

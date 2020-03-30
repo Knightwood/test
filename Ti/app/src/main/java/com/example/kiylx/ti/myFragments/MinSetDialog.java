@@ -2,6 +2,7 @@ package com.example.kiylx.ti.myFragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,8 +71,17 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         if (dialog != null && dialog.getWindow() != null) {
             Window window = dialog.getWindow();
             WindowManager.LayoutParams lp = window.getAttributes();
-            lp.gravity = Gravity.BOTTOM;
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                //如果是横屏
+
+                lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+            } else {
+                //竖屏
+                lp.gravity = Gravity.BOTTOM;
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+
+            }
+
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);
@@ -144,8 +155,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         startActivity(Bookmark_intent);
     }
 
-    public void setInterafce(ControlWebView mInterface){
-        this.controlWebViewInterface=mInterface;
+    public void setInterafce(ControlWebView mInterface) {
+        this.controlWebViewInterface = mInterface;
     }
 
 }

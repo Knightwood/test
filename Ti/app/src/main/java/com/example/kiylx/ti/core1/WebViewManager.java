@@ -139,34 +139,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     * @param i 将要删除的元素位置
-     */
-   /* public void delete(int i) {
-        this.webViewArrayList.remove(i);
-        notifyupdate(null, i, Action.DELETE, false);
-    }
-
-    public void destroy(int pos) {
-        WebView tmp = webViewArrayList.get(pos);
-        if (tmp != null) {
-            //先加载空内容
-            tmp.setWebViewClient(null);
-            tmp.setWebChromeClient(null);
-            tmp.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
-
-            tmp.clearSslPreferences();
-            tmp.clearMatches();
-            tmp.removeAllViews();
-            //清空历史
-            tmp.clearHistory();
-            //然后销毁
-            tmp.destroy();
-            //然后置为空
-            delete(pos);
-        }
-    }*/
-
-    /**
      * @param pos webview在list中的位置
      * @param b 让webview恢复加载(在删除webview时，有些webview是处于onStop的。)
      *            <p>
@@ -263,7 +235,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      *            载入主页
      */
     public void loadHomePage(int pos, String url) {
-        if (url == null) {//pos == -1 ? 0 :
+        if (url == null) {
             getTop(pos).loadUrl(SomeRes.default_homePage_url);
         } else {
             getTop(pos).loadUrl(url);

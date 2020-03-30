@@ -73,20 +73,26 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
         progressBar.setProgress(info.getIntPercent());
 
         ImageView playButtom = v.findViewById(R.id.resumeDownload);
-        playButtom.setOnClickListener(v12 -> {
-            if (info.isPause()) {
-                controlInterface.reasume(info);
-                playButtom.setImageResource(setPlay_Arrow(false));
-            } else {
-                controlInterface.pause(info);
-                playButtom.setImageResource(setPlay_Arrow(true));
-            }
+        playButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v12) {
+                if (info.isPause()) {
+                    controlInterface.reasume(info);
+                    playButtom.setImageResource(DownloadingFragment.this.setPlay_Arrow(false));
+                } else {
+                    controlInterface.pause(info);
+                    playButtom.setImageResource(DownloadingFragment.this.setPlay_Arrow(true));
+                }
 
+            }
         });
 
         ImageView deleteButtom = v.findViewById(R.id.deleteDownloadinfo);
-        deleteButtom.setOnClickListener(v1 -> {
-            controlInterface.cancel(info);
+        deleteButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v1) {
+                controlInterface.cancel(info);
+            }
         });
 
         title.setText(info.getFileName());

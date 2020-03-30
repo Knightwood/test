@@ -134,15 +134,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
-
-        /*mWebViewManager.setInterface(new Setmessage() {
-            @Override
-            public void setInfos() {
-                //网页加载完成后会通过这里更新底栏的文字
-                setTextForbar(current);
-            }
-
-        });*/
     }
 
     /**
@@ -159,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             case 3:
                 mWebViewManager.throwTrash();
                 break;
-
         }
     }
 
@@ -219,12 +209,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
-        if (keyCode == KeyEvent.KEYCODE_BACK && isOpenedSearchText) {
-            //先处理webview的文本搜索
-            closeSearchText();
-        } else {
-            //处理在没有文本搜索的时候
-            if ((keyCode == KeyEvent.KEYCODE_BACK) && mWebViewManager.getTop(current).canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (isOpenedSearchText){
+                //先处理webview的文本搜索
+                closeSearchText();
+            }else if (mWebViewManager.getTop(current).canGoBack()) {//处理在没有文本搜索的时候
                 mWebViewManager.getTop(current).goBack();
             } else {
                 exit();
@@ -232,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -746,6 +735,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                     }).show();
                 }
 
+                @Override
+                public void onImgLink(int touchX, int touchY, int type, String extra) {
+
+                }
+
             };
         }
     }
@@ -800,3 +794,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
 }
+/*
+*
+* View decorView = getActivity().getWindow().getDecorView();
+                //隐藏NavigationBar
+                    int option = SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                    decorView.setSystemUiVisibility(option);
+* */

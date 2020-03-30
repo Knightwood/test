@@ -45,27 +45,27 @@ public class SavePNG_copyText {
 
     @SuppressLint("CheckResult")
     public void savePic(String url) {
-                Observable.create(new ObservableOnSubscribe<File>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<File> emitter) throws Exception {
-                        emitter.onNext(Glide.with(weakReference.get().getApplicationContext())
-                                .asFile()
-                                .load(url)
-                                .submit()
-                                .get());
-                        emitter.onComplete();
-                    }
-                }).observeOn(Schedulers.newThread())
-                        .subscribeOn(Schedulers.io())
+        Observable.create(new ObservableOnSubscribe<File>() {
+            @Override
+            public void subscribe(ObservableEmitter<File> emitter) throws Exception {
+                emitter.onNext(Glide.with(weakReference.get().getApplicationContext())
+                        .asFile()
+                        .load(url)
+                        .submit()
+                        .get());
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(Schedulers.io())
                 .subscribe(new Consumer<File>() {
                     @Override
                     public void accept(File file) throws Exception {
                         //获取到下载得到的图片，进行本地保存
-                        File folder=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile();
+                        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile();
                         if (!folder.exists()) {
                             folder.mkdirs();
                         }
-                        String fileName=System.currentTimeMillis() + ".jpg";
+                        String fileName = System.currentTimeMillis() + ".jpg";
 
                         File destFile = new File(folder, fileName);
                         //把gilde下载得到图片复制到定义好的目录中去

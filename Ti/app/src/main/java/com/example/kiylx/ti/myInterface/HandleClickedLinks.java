@@ -10,4 +10,6 @@ public interface HandleClickedLinks {
     void onImgSelected(int x, int y, int type, String extra);
 
     void onLinkSelected(int x, int y, int type, String extra);
+
+    void onImgLink(int touchX, int touchY, int type, String extra);
 }

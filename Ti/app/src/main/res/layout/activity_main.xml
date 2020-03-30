@@ -41,7 +41,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline3"
-            app:layout_constraintVertical_bias="0.727"
             app:popupTheme="@style/Widget.AppCompat.Light.PopupMenu">
 
             <RelativeLayout

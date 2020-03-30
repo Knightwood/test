@@ -61,13 +61,16 @@ public class CustomAWebView extends WebView {
                 int type = result.getType();
                 String extra=result.getExtra();
                 switch (type) {
+                    case HitTestResult.SRC_IMAGE_ANCHOR_TYPE://带图片的超链接
+                    /*if (handlerClick!=null&&extra!=null&&URLUtil.isValidUrl(extra)){
+                        handlerClick.onImgLink(touchX,touchY,result.getType(),extra);
+
+                    }return true;*/
                     case HitTestResult.SRC_ANCHOR_TYPE://超链接
                         if (handlerClick !=null&&extra!=null&& URLUtil.isValidUrl(extra)){
                             handlerClick.onLinkSelected(touchX,touchY,result.getType(),extra);
                         }
                        return true;
-                    case HitTestResult.SRC_IMAGE_ANCHOR_TYPE://带图片的超链接
-                        break;
                     case HitTestResult.IMAGE_TYPE://图片类型
                         if (handlerClick !=null&&extra!=null&& URLUtil.isValidUrl(extra)){//URLUtil.isValidUrl(extra)是否是有效链接
                             handlerClick.onImgSelected(touchX,touchY,result.getType(),extra);
