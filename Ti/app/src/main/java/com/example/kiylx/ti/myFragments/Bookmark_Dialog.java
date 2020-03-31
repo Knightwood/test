@@ -157,7 +157,7 @@ public class Bookmark_Dialog extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //关闭dialog
-
+                dismiss();
 
             }
         });

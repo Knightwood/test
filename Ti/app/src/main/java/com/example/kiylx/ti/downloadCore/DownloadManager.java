@@ -218,7 +218,7 @@ public class DownloadManager {
                 downloading.add(info);
                 /*int i = info.getThreadNum();
                 for (int j = 0; j < i; j++) {
-                    TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+                    TaskPool.newInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
                 }*/
                 execDownload(info);
             }

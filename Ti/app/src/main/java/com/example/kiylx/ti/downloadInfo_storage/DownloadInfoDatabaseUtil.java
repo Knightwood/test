@@ -10,7 +10,7 @@ import android.content.Context;
  * <p>
  * 而不必先获取database再获取dao，然后再操作：
  * DownloadInfoDatabase mDatabase;
- * mDatabase = DownloadInfoDatabase.getInstance(mContext);
+ * mDatabase = DownloadInfoDatabase.newInstance(mContext);
  * mDatabase.getDao().insertAll();//这个getDao是@Database注释下的database类里的获取数据库操作接口的方法
  */
 public class DownloadInfoDatabaseUtil {

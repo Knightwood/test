@@ -27,7 +27,7 @@
         <activity
             android:name=".activitys.HistoryActivity"
             android:theme="@style/AppTheme1" />
-        <activity android:name=".activitys.SettingActivity" />
+        <activity android:name=".activitys.SettingActivity2" />
         <activity
             android:name=".activitys.DoSearchActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />

@@ -11,13 +11,18 @@ import android.os.Bundle;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.settingFolders.MainSettingFragment;
 
-public class SettingActivity extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+public class SettingActivity2 extends AppCompatActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+private MainSettingFragment mainSettingFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        getSupportFragmentManager().beginTransaction().add(R.id.ffff, new MainSettingFragment()).commit();
+        setContentView(R.layout.activity_setting2);
+        if (mainSettingFragment==null){
+           mainSettingFragment= new MainSettingFragment();
+        }
+        getSupportFragmentManager().beginTransaction().add(R.id.ffff, mainSettingFragment).commit();
     }
 
 

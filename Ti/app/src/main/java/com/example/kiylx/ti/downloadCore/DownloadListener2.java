@@ -4,6 +4,7 @@ import android.webkit.DownloadListener;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadFragments.DownloadDialog;
@@ -28,8 +29,11 @@ public class DownloadListener2 implements DownloadListener {
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
         DownloadInfo info=new DownloadInfo(url,contentLength);
-        DownloadDialog dialog= DownloadDialog.getInstance(info);
+        DownloadDialog dialog= DownloadDialog.newInstance(info);
         FragmentManager manager=mContext.getSupportFragmentManager();
+        /*FragmentTransaction transaction=manager.beginTransaction();
+        transaction.commitAllowingStateLoss();
+        transaction.show(dialog);*/
         dialog.show(manager,"下载");
 
     }

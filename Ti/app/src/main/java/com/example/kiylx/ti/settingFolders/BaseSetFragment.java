@@ -38,7 +38,7 @@ public abstract class BaseSetFragment extends PreferenceFragmentCompat {
             }
         };
 
-        LiveData_DF_WebView.getInstance().observe(this, observer);*/
+        LiveData_DF_WebView.newInstance().observe(this, observer);*/
 
 
         /*

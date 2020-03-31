@@ -116,7 +116,7 @@ public class SavePNG_copyText {
         ClipboardManager manager = (ClipboardManager) weakReference.get().getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("网址", text);
         manager.setPrimaryClip(clip);
-
-
     }
+
+
 }

@@ -22,7 +22,7 @@ public class ProcessUrl {
 
     public ProcessUrl(Context context) {
 
-        engine= PreferenceTools.getString(context, WebviewConf.searchengine,"https://mijisou.com/search?q=");
+        engine = PreferenceTools.getString(context, WebviewConf.searchengine, "https://mijisou.com/search?q=");
         /*final SearchEngineDao mDao= SearchEngine_db_Util.getDao(context);
         new Thread(new Runnable() {
             @Override
@@ -123,5 +123,18 @@ public class ProcessUrl {
     public ArrayList<WebPage_Info> formatList(String s) {
 
         return new ArrayList<>();
+    }
+
+    /**
+     * @param s    待处理的字符串
+     * @param flag 分割标志
+     * @return 返回s最后出现的flag和它后面的字符
+     * <p>
+     * 比如：s: abcd.f
+     * flag: "."
+     * return: ".f"
+     */
+    public static String splitString(String s, String flag) {
+        return s.substring(s.lastIndexOf(flag));
     }
 }

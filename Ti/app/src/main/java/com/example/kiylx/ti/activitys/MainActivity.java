@@ -201,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 
     @Override

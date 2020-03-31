@@ -20,7 +20,6 @@ public class MainSettingFragment extends PreferenceFragmentCompat implements Pre
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
     }
 
     @Override

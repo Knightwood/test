@@ -18,7 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.example.kiylx.ti.Tool.ProcessUrl;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.myInterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.R;
@@ -30,19 +32,19 @@ import java.util.Objects;
  */
 public class DownloadDialog extends DialogFragment {
     private static DownloadInterfaceImpl minterface;
-    private DownloadInfo mDownloadInfo;
+    private static DownloadInfo mDownloadInfo;
+    private String suffix;
 
     View mView;
     private EditText fileNameView;
     private TextView fileUrlView;
 
-    private DownloadDialog(DownloadInfo info) {
-        this.mDownloadInfo = info;
+    public DownloadDialog() {
+        super();
     }
-
-    public static DownloadDialog getInstance(DownloadInfo info) {
-
-        return new DownloadDialog(info);
+    public static DownloadDialog newInstance(DownloadInfo info) {
+        mDownloadInfo=info;
+        return new DownloadDialog();
     }
 
     /**
@@ -109,16 +111,13 @@ public class DownloadDialog extends DialogFragment {
     }
 
     private void setInfo(View v) {
-
-        /*
-        if (mDownloadInfo == null) {
-            //处理错误
-        }*/
-        if (fileNameView == null && fileUrlView == null) {
-            fileNameView = v.findViewById(R.id.filename_d1);
-            fileUrlView = v.findViewById(R.id.fileurl_d2);
-        }
-
+        String fileName = mDownloadInfo.getFileName();
+        suffix = ProcessUrl.splitString(fileName,".");//后缀，重命名后把后缀加上去
+        fileNameView = v.findViewById(R.id.filename_d1);
+        fileUrlView = v.findViewById(R.id.fileurl_d2);
+        String url = mDownloadInfo.getUrl();
+        fileNameView.setText(fileName);
+        fileUrlView.setText(url);
         fileNameView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -134,14 +133,16 @@ public class DownloadDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 //fileNameView.removeTextChangedListener(this);
-                mDownloadInfo.setFileName(s.toString());
-                //fileNameView.addTextChangedListener(this);
+                mDownloadInfo.setFileName(s.toString()+suffix);
             }
         });
-        String filename = mDownloadInfo.getFileName();
-        String url = mDownloadInfo.getUrl();
-        fileNameView.setText(filename);
-        fileUrlView.setText(url);
+
+
+    }
+
+    @Override
+    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
+        super.show(manager, tag);
     }
 
     /**

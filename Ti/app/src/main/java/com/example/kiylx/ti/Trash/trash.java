@@ -15,7 +15,7 @@ public class trash {
             //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsoluteFile();
 
-            response = OkhttpManager.getInstance().getImgResponse(url);
+            response = OkhttpManager.newInstance().getImgResponse(url);
             is = Objects.requireNonNull(response.body()).byteStream();
 
             byte[] b = new byte[1024];
@@ -54,7 +54,7 @@ public class trash {
         Bitmap bm = null;
         Response response=null;
         try {
-            response = OkhttpManager.getInstance().getCall(extra).execute();
+            response = OkhttpManager.newInstance().getCall(extra).execute();
             inputStream = response.body().byteStream();
             bm = BitmapFactory.decodeStream(inputStream);
             saveImg(bm, TimeProcess.getTime2()+".jpg");//以时间命名

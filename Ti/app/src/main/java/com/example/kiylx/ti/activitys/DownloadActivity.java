@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Button;
 
 import com.example.kiylx.ti.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
@@ -132,15 +131,19 @@ public class DownloadActivity extends AppCompatActivity {
         super.onDestroy();
         unbindService(connection);
     }
-
+    private RecyclerViewBaseFragment fragment1;
+    private RecyclerViewBaseFragment fragment2;
+    private RecyclerViewBaseFragment fragment3;
     /**
      * 添加正在下载fragment到downloadavtivity的主界面.
      * 底部导航栏默认就是第一项.
      */
     private void addFragment() {
+        if (fragment1==null){
+            fragment1 = DownloadingFragment.newInstance(controlMethod);
+        }
         FragmentManager manager = getSupportFragmentManager();
-        RecyclerViewBaseFragment fragment = DownloadingFragment.getInstance(controlMethod);
-        manager.beginTransaction().add(R.id.downloadfragmentcontainer, fragment).commit();
+        manager.beginTransaction().add(R.id.downloadfragmentcontainer, fragment1).commit();
     }
 
     /**
@@ -151,19 +154,21 @@ public class DownloadActivity extends AppCompatActivity {
     private void switchFragment(int i) {
         selectPage = i;
         FragmentManager manager = getSupportFragmentManager();
-        RecyclerViewBaseFragment fragment;
         switch (i) {
             case 0:
-                fragment = DownloadingFragment.getInstance(controlMethod);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                if (fragment1==null)
+                fragment1 = DownloadingFragment.newInstance(controlMethod);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment1).commit();
                 break;
             case 1:
-                fragment = new DownloadFinishFragment(null);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                if (fragment2==null)
+                fragment2 = DownloadFinishFragment.newInstance(controlMethod);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment2).commit();
                 break;
             case 2:
-                fragment = new DownloadSettingFragment(null);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                if (fragment3==null)
+                fragment3 = new DownloadSettingFragment(null);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment3).commit();
                 break;
         }
 

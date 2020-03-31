@@ -19,30 +19,25 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 public class DownloadingFragment extends RecyclerViewBaseFragment {
-    private DownloadClickMethod controlInterface;
+    private static DownloadClickMethod controlInterface;
     private static final String TAG = "正在下载fragment";
-    private static List<DownloadInfo> downloadInfoList;
+    private List<DownloadInfo> downloadInfoList;
 
     /**
      * @param minterface 控制下载任务的接口
      * @return downloadingFragment
      */
-    public static DownloadingFragment getInstance(DownloadClickMethod minterface) {
-
-        downloadInfoList= minterface.getAllDownload();
-        return new DownloadingFragment(minterface, downloadInfoList);
+    public static DownloadingFragment newInstance(DownloadClickMethod minterface) {
+        controlInterface=minterface;
+        return new DownloadingFragment();
     }
-
-    public DownloadingFragment(DownloadClickMethod minterface, List<DownloadInfo> list) {
-        super(list);
-        controlInterface = minterface;
+    public DownloadingFragment(){
+        super();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        Toast.makeText(getContext(), "正在下载fragment", Toast.LENGTH_LONG).show();
-
         //注册eventbus，用于downloadManager中数据发生改变时，在这里重新获取数据更新界面
         EventBus.getDefault().register(this);
     }
@@ -61,6 +56,14 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
             downloadInfoList= controlInterface.getAllDownload();
             updateUI(downloadInfoList);
         }
+    }
+
+    @Override
+    public List<DownloadInfo> downloadInfoList() {
+        if (downloadInfoList==null){
+            downloadInfoList=controlInterface.getAllDownload();
+        }
+        return downloadInfoList;
     }
 
     //重写的viewholder中的bind方法

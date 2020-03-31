@@ -28,13 +28,22 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     private listAdapter mAdapter;
 
     /**
-     * @return 让子类重写此方法，提供不同的itemview视图。
+     * @return 让子类重写此方法，提供不同的fragment的视图。
      */
     @LayoutRes
     public int getresId() {
         return R.layout.downloadbasefragments;
     }
 
+    /**
+     * @return 返回item的视图
+     */
+    @LayoutRes
+    public int getItemResId() {
+        return R.layout.download_item;
+    }
+
+    public abstract List<DownloadInfo> downloadInfoList();
 
 
     /**
@@ -46,10 +55,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
 
     public RecyclerViewBaseFragment() {
         super();
-    }
-
-    public RecyclerViewBaseFragment(List<DownloadInfo> list) {
-        this.mDownloadInfoArrayList = list;
+        this.mDownloadInfoArrayList=downloadInfoList();
     }
 
     @Nullable
@@ -91,17 +97,17 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
      * @param list 存储下载信息的列表
      *             传入新的数据，更新界面
      */
-    public void updateUI(List<DownloadInfo> list){
+    public void updateUI(List<DownloadInfo> list) {
         this.mDownloadInfoArrayList.clear();
-        this.mDownloadInfoArrayList=list;
+        this.mDownloadInfoArrayList = list;
         updateUI();
     }
 
     private class listAdapter extends RecyclerView.Adapter<DownloadViewHolder> {
         private List<DownloadInfo> mLists;//recyclerview所用的数据
 
-        public listAdapter(List<DownloadInfo> list){
-            this.mLists=list;
+        public listAdapter(List<DownloadInfo> list) {
+            this.mLists = list;
         }
 
         public void setLists(List<DownloadInfo> list) {
@@ -111,8 +117,8 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         @NonNull
         @Override
         public DownloadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_item, parent, false);
-            DownloadItemBinding itemBinding= DataBindingUtil.inflate(getLayoutInflater(),R.layout.download_item,parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(getItemResId(), parent, false);
+            //DownloadItemBinding itemBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.download_item, parent, false);
             return new DownloadViewHolder(v);
         }
 
@@ -133,7 +139,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
 
         public DownloadViewHolder(@NonNull View itemView) {
             super(itemView);
-            downloadItemView=itemView;
+            downloadItemView = itemView;
         }
 
         public void bindView(DownloadInfo info) {
