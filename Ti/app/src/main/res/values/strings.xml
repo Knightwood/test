@@ -85,5 +85,9 @@
     <string name="downloadToolSelect">使用内置下载器</string>
     <string name="百度搜索">https://www.baidu.com/s?wd=</string>
     <string name="menuSet">设置</string>
+    <string name="general">通常</string>
+    <string name="privacy">隐私</string>
+    <string name="theme">主题</string>
+    <string name="about">关于</string>
 
 </resources>

@@ -24,7 +24,6 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -36,7 +35,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="MyTabLayoutstyle" parent="Base.Widget.Design.TabLayout">
+    <style name="MyTabLayoutstyle" parent="Widget.MaterialComponents.TabLayout">
         <item name="tabBackground">@color/white</item>
         <item name="tabIndicatorColor">@color/green</item>
         <item name="tabIndicatorHeight">2dp</item>

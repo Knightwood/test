@@ -763,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 public void addtobookmark(String url) {
                     FragmentManager fm = getSupportFragmentManager();
                     //把当前网页信息传给收藏dialog
-                    Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
+                    Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, mConverted_lists.getInfo(current));
                     dialog.show(fm, "收藏当前网页");
                 }
 

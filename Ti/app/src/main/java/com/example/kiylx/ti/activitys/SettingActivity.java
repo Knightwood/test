@@ -2,6 +2,7 @@ package com.example.kiylx.ti.activitys;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,38 +10,80 @@ import android.widget.FrameLayout;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.downloadFragments.DownloadFinishFragment;
+import com.example.kiylx.ti.downloadFragments.DownloadSettingFragment;
+import com.example.kiylx.ti.downloadFragments.DownloadingFragment;
+import com.example.kiylx.ti.downloadFragments.RecyclerViewBaseFragment;
+import com.example.kiylx.ti.settingFolders.AboutFragment;
+import com.example.kiylx.ti.settingFolders.GeneralFragment;
+import com.example.kiylx.ti.settingFolders.PrivacyFragment;
+import com.example.kiylx.ti.settingFolders.ThemeFragment;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SettingActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private FrameLayout fragmentContainer;
-    private String[] tabName;
-    private Fragment[] fragments;
+    //private List<Fragment> fragments;
+    private FragmentManager fragmentManager;
+    private static int lastSelect = 0;
+
+    //设置页面的tab标题
+    public static String[] tabName = new String[]{"常规", "隐私", "主题", "关于"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        tabName = SomeRes.tabName;
+
+        tabLayout = findViewById(R.id.setting_tab);
+        fragmentContainer = findViewById(R.id.setfragment_container);
+        fragmentManager = getSupportFragmentManager();
+
+        initFragment();
         initView();
+
+    }
+
+    private void initFragment() {
+        /*if (fragments == null || fragments.isEmpty()) ;
+        {
+            fragments = new ArrayList<>();
+            fragments.add(GeneralFragment.newInstance());
+            fragments.add(PrivacyFragment.newInstance());
+            fragments.add(ThemeFragment.newInstance());
+            fragments.add(AboutFragment.newInstance());
+        }*/
+        fragmentManager.beginTransaction().add(R.id.setfragment_container, GeneralFragment.newInstance()).commit();
+
     }
 
     private void initView() {
-        tabLayout = f(R.id.setting_tab);
-        fragmentContainer = f(R.id.setfragment_container);
-        for (int i = 0; i < tabName.length; i++) {
-            tabLayout.addTab(new TabLayout.Tab().setText(tabName[i]));
-        }
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                switch (tab.getPosition()) {
+                    case 0:
+                        if (lastSelect != 0)
+                            switchFragment(0);
+                        break;
+                    case 1:
+                        if (lastSelect != 1)
+                            switchFragment(1);
+                        break;
+                    case 2:
+                        if (lastSelect != 2)
+                            switchFragment(2);
+                    case 3:
+                        if (lastSelect != 3)
+                            switchFragment(3);
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
 
             @Override
@@ -51,8 +94,28 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
+    private void switchFragment(int i) {
+        lastSelect = i;
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment;
+        switch (i) {
+            case 0:
+                fragment = GeneralFragment.newInstance();
+                manager.beginTransaction().replace(R.id.setfragment_container, fragment).commit();
+                break;
+            case 1:
+                fragment = PrivacyFragment.newInstance();
+                manager.beginTransaction().replace(R.id.setfragment_container, fragment).commit();
+                break;
+            case 2:
+                fragment = ThemeFragment.newInstance();
+                manager.beginTransaction().replace(R.id.setfragment_container, fragment).commit();
+                break;
+            case 3:
+                fragment = AboutFragment.newInstance();
+                manager.beginTransaction().replace(R.id.setfragment_container, fragment).commit();
+                break;
+        }
 
-    private <T extends View> T f(int resId) {
-        return (T) super.findViewById(resId);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.settingFolders;
+package com.example.kiylx.ti.Trash;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -6,16 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".activitys.SettingActivity">
 
-    <TableLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/setting_tab"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        app:tabGravity="fill"
         style="@style/MyTabLayoutstyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </TableLayout>
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/general" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/privacy" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/theme" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about" />
+    </com.google.android.material.tabs.TabLayout>
 
     <FrameLayout
         android:id="@+id/setfragment_container"
@@ -27,4 +47,5 @@
         app:layout_constraintTop_toBottomOf="@+id/setting_tab">
 
     </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
