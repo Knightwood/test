@@ -21,7 +21,7 @@ import java.util.List;
 public class DownloadingFragment extends RecyclerViewBaseFragment {
     private static DownloadClickMethod controlInterface;
     private static final String TAG = "正在下载fragment";
-    private List<DownloadInfo> downloadInfoList;
+    private static List<DownloadInfo> downloadInfoList;
 
     /**
      * @param minterface 控制下载任务的接口

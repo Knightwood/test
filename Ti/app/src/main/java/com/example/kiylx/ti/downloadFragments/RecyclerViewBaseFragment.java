@@ -2,6 +2,7 @@ package com.example.kiylx.ti.downloadFragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.example.kiylx.ti.databinding.DownloadItemBinding;
 import java.util.List;
 
 public abstract class RecyclerViewBaseFragment extends Fragment {
-
+    private static final String TAG = "正在下载fragment";
     private View mRootView;
     private RecyclerView viewContainer;
     private List<DownloadInfo> mDownloadInfoArrayList;
@@ -56,6 +57,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     public RecyclerViewBaseFragment() {
         super();
         this.mDownloadInfoArrayList=downloadInfoList();
+        Log.d(TAG, "无参构造");
     }
 
     @Nullable
@@ -80,15 +82,19 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     }
 
     public void updateUI() {
+        Log.d(TAG, "updateUI: ");
         if (mDownloadInfoArrayList == null) {
+            Log.d(TAG, "下载信息列表不存在 ");
             return;
         }
         if (mAdapter == null) {
             mAdapter = new listAdapter(mDownloadInfoArrayList);
             viewContainer.setAdapter(mAdapter);
+            Log.d(TAG, "适配器创建");
         } else {
             mAdapter.setLists(mDownloadInfoArrayList);
             mAdapter.notifyDataSetChanged();
+            Log.d(TAG, "更新数据");
         }
 
     }

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     private static final String TAG="下载系列fragment";
-    private List<DownloadInfo> completeList;
+    private static List<DownloadInfo> completeList;
     private static DownloadClickMethod controlInterface;
 
     @Override
@@ -37,6 +37,7 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     public List<DownloadInfo> downloadInfoList() {
         if (completeList==null){
             completeList=controlInterface.getAllComplete();
+            Log.d(TAG, "下载完成列表: "+completeList.size());
         }
         return completeList;
     }

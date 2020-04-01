@@ -26,4 +26,6 @@ public class SomeRes {
     public static String sougou="https://www.sogou.com/web?query=";
     public static String google="https://www.google.com/search?q=";
     public static String miji="https://mijisou.com/search?q=";
+    //设置页面的tab标题
+    public static String[] tabName=new String[]{"常规","隐私","主题","关于"};
 }

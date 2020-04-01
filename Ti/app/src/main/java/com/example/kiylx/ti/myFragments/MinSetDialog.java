@@ -22,6 +22,7 @@ import android.view.WindowManager;
 
 import com.example.kiylx.ti.activitys.DownloadActivity;
 import com.example.kiylx.ti.activitys.HistoryActivity;
+import com.example.kiylx.ti.activitys.SettingActivity;
 import com.example.kiylx.ti.activitys.SettingActivity2;
 import com.example.kiylx.ti.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
@@ -142,8 +143,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      * 启动设置页面
      */
     private void startSetting() {
-        startActivity(new Intent(getActivity(), SettingActivity2.class));
-
+        //startActivity(new Intent(getActivity(), SettingActivity2.class));
+        startActivity(new Intent(getActivity(), SettingActivity.class));
     }
 
     /**

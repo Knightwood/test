@@ -3,6 +3,7 @@ package com.example.kiylx.ti.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -42,9 +43,15 @@ public class DownloadActivity extends AppCompatActivity {
 
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
-    private int selectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
+    private static int lastSelectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
     BottomNavigationView bottomView;//底部导航栏
+    private RecyclerViewBaseFragment fragment1;
+    private RecyclerViewBaseFragment fragment2;
+    private RecyclerViewBaseFragment fragment3;
+    //private RecyclerViewBaseFragment list[] = new RecyclerViewBaseFragment[4];
+    FragmentManager manager;
+
 
     public DownloadActivity() {
         super();
@@ -54,6 +61,7 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
+        manager = getSupportFragmentManager();
 
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
@@ -90,15 +98,15 @@ public class DownloadActivity extends AppCompatActivity {
         bottomView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.downloading:
-                    if (selectPage != 0)
+                    if (lastSelectPage != 0)
                         switchFragment(0);
                     break;
                 case R.id.downloadFinish:
-                    if (selectPage != 1)
+                    if (lastSelectPage != 1)
                         switchFragment(1);
                     break;
                 case R.id.cancel:
-                    if (selectPage != 2)
+                    if (lastSelectPage != 2)
                         switchFragment(2);
                     break;
             }
@@ -106,7 +114,20 @@ public class DownloadActivity extends AppCompatActivity {
         });
 
         bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
+        Log.d(TAG, "fragment数量：" + manager.getFragments().toString());
 
+        //ViewServer.get(this).addWindow(this);
+    }
+
+
+
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //ViewServer.get(this).setFocusedWindow(this);
     }
 
     //与service通信的中间件
@@ -116,7 +137,6 @@ public class DownloadActivity extends AppCompatActivity {
             downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
             //下载条目xml控制下载所调用的方法
             controlMethod = downloadBinder.getInferface();
-
             addFragment();//添加一个默认fragment
         }
 
@@ -130,45 +150,44 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
+        //ViewServer.get(this).removeWindow(this);
     }
-    private RecyclerViewBaseFragment fragment1;
-    private RecyclerViewBaseFragment fragment2;
-    private RecyclerViewBaseFragment fragment3;
+
     /**
      * 添加正在下载fragment到downloadavtivity的主界面.
      * 底部导航栏默认就是第一项.
      */
     private void addFragment() {
-        if (fragment1==null){
+        FragmentTransaction beginTransaction = manager.beginTransaction();
+        ;
+        if (fragment1 == null) {
             fragment1 = DownloadingFragment.newInstance(controlMethod);
         }
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().add(R.id.downloadfragmentcontainer, fragment1).commit();
+        beginTransaction.add(R.id.downloadfragmentcontainer, fragment1).commit();
+
     }
 
     /**
-     * @param i 选择的底栏位置
+     * @param i 要显示的fragment
      *          <p>
      *          selectPage是选中的item的位置，0是正在下载fragment，1是下载完成fragment，2是下载设置fragment
      */
     private void switchFragment(int i) {
-        selectPage = i;
+        lastSelectPage = i;
         FragmentManager manager = getSupportFragmentManager();
+        RecyclerViewBaseFragment fragment;
         switch (i) {
             case 0:
-                if (fragment1==null)
-                fragment1 = DownloadingFragment.newInstance(controlMethod);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment1).commit();
+                fragment = DownloadingFragment.newInstance(controlMethod);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
                 break;
             case 1:
-                if (fragment2==null)
-                fragment2 = DownloadFinishFragment.newInstance(controlMethod);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment2).commit();
+                fragment = DownloadFinishFragment.newInstance(controlMethod);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
                 break;
             case 2:
-                if (fragment3==null)
-                fragment3 = new DownloadSettingFragment(null);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment3).commit();
+                fragment = new DownloadSettingFragment(null);
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
                 break;
         }
 

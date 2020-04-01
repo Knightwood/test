@@ -82,7 +82,7 @@
     <string name="cleanData">清除数据</string>
     <string name="textZoom">字体缩放</string>
     <string name="resumeHistory">恢复上次打开的网页</string>
-    <string name="downloadToolSelect" >使用内置下载器</string>
+    <string name="downloadToolSelect">使用内置下载器</string>
     <string name="百度搜索">https://www.baidu.com/s?wd=</string>
     <string name="menuSet">设置</string>
 
