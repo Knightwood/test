@@ -22,7 +22,7 @@ public class AboutBookmark {
     private AboutBookmark(Context context) {
         mContext = context;
         bookMarklists = new ArrayList<>();//暂时没有用
-        mDatabase = new FavoritePageBaseHelper(mContext, FavoritepageDbSchema.FavoriteTable.NAME, null, 1).getWritableDatabase();
+        mDatabase = new FavoritePageBaseHelper(mContext).getWritableDatabase();
     }
 
     public static AboutBookmark get(Context context) {
@@ -37,6 +37,9 @@ public class AboutBookmark {
         if (info == null || info.getUrl() == null) {
             return;
         }
+       if (isMarked(info)){
+            return;
+        }
         ContentValues values = getContentValues(info);
         mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME, null, values);
 
@@ -45,27 +48,30 @@ public class AboutBookmark {
     /**
      * @param info webpageinfo
      *             更新条目
-     *             如果url未被改变，只需要更新数据，否则算作是新的收藏而被加入到数据库
+     *             更新title和url
      */
     public void updateItem(WebPage_Info info) {
-
-        String url = info.getUrl();
-        ContentValues values = getContentValues(info);
-        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.url + "=?", new String[]{url});
-
+        String id = info.getUuid();
+        if (id == null) {
+            return;
+        }
+        ContentValues values = new ContentValues();
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.url,info.getUrl());
+        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values,  FavoritepageDbSchema.FavoriteTable.childs.ID +"=?", new String[]{id});
     }
 
     /**
-     * @param str 标签
+     * @param folder 书签文件夹的名称
      * @return 返回该标签下的所有书签
      */
-    public List<WebPage_Info> getBookmarks(String str) {
+    public List<WebPage_Info> getBookmarks(String folder) {
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor;
-        if (str == null) {
+        if (folder == null) {
             cursor = queryFavority(null, null);
         } else
-            cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder + " =?", new String[]{str});
+            cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder + " =?", new String[]{folder});
         try {
             if (cursor.getCount() == 0) {
                 return mlists;
@@ -82,11 +88,11 @@ public class AboutBookmark {
     }
 
     /**
-     * @param url 网址
-     *            根据网址删除书签
+     * @param id  webpage_info的id
+     *            根据id删除书签
      */
-    public void delete(String url) {
-        mDatabase.delete(FavoritepageDbSchema.FavoriteTable.NAME, FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
+    public void delete(String id){
+        mDatabase.execSQL("DELETE from Favorite_tab where uuid =?",new String[]{id});
     }
 
 
@@ -113,30 +119,30 @@ public class AboutBookmark {
     public List<WebPage_Info> getChangeLists(String str) {
         //返回tag的书签list
         if (str.equals("所有书签")) {
-            return getWebPageinfos();
+            return getAllInfos();
         }
         return getBookmarks(str);
     }
 
     /**
-     * @param oldfolderName    旧的标签名称
+     * @param oldfolderName 旧的标签名称
      * @param newFolderName 新的标签名称
      *                      根据tag批量更改条目的信息,更新书签记录的tag名称
      */
     public void updateFolderforItems(String oldfolderName, String newFolderName) {
-        mDatabase.execSQL("UPDATE FavoriteTab SET folderName = ? where folderName = ?", new String[]{newFolderName, oldfolderName});
+        mDatabase.execSQL("UPDATE Favorite_tab SET folderName = ? where folderName = ?", new String[]{newFolderName, oldfolderName});
     }
 
     public void deleteBookMarkWithFolderName(String folderName) {
         //根据folderName这个文件夹删除相关的条目
-        mDatabase.execSQL("DELETE FROM FavoriteTab where folderName=?", new String[]{folderName});
+        mDatabase.execSQL("DELETE FROM Favorite_tab where folderName=?", new String[]{folderName});
     }
 
 
     /**
      * @return 返回所有的书签记录
      */
-    private List<WebPage_Info> getWebPageinfos() {
+    private List<WebPage_Info> getAllInfos() {
         //第一个参数来指示查询哪一列
 
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
@@ -160,6 +166,7 @@ public class AboutBookmark {
     private static ContentValues getContentValues(WebPage_Info info) {
         //存网页信息
         ContentValues values = new ContentValues();
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.ID, info.getUuid());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder, info.getBookmarkFolderName());
@@ -180,6 +187,10 @@ public class AboutBookmark {
         return new ItemCursorWrapper(cursor);
     }
 
+    /**
+     * @param query 书签名称
+     * @return 查询名称，返回相应的数据库信息
+     */
     public List<WebPage_Info> queryBookmark(String query) {
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE, new String[]{query});
@@ -198,63 +209,3 @@ public class AboutBookmark {
         return mlists;
     }
 }
-/*
-    public void WriteContent(Context context, String content, String filename){
-
-        //String filename = "TAG_0";
-        //content要保存的tag
-        FileOutputStream outputStream;
-        try {
-            //openFileOutput需要context才能调用，所以这里没有写在activity中就需要自己放一个context去调用openFileOutput
-            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(content.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String[] execString(StringBuilder sb) {
-        //分割从文件中读取到的字符串
-        String tmp= sb.toString();
-        String[] result = new String[0];
-        if(tmp.contains("/")){
-            result=tmp.split("/");
-        }
-        return result;
-    }
-
-    public boolean fileExist() {
-        return false;
-    }
-
-    public String[] getDataFromFile(Context context, String filename) {
-
-        try {
-            //用StringBuilder来接收数据，而不是用String+=的方法。
-            StringBuilder sb = new StringBuilder();
-            //每次读取1024个byte的数据
-            byte[] bytes = new byte[1024];
-            FileInputStream inputStream = context.openFileInput(filename);
-            int len;
-            while ((len = inputStream.read(bytes)) != -1) {
-                sb.append(new String(bytes, 0, len));
-            }
-            Log.e("读取到的数据", sb.toString());
-            //返回处理后的字符数组
-            return execString(sb);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public boolean FolderIsExist(Context context,String folder,String filename){
-        OutputStream outputStream;
-        try{
-            outputStream=context.openFileOutput(filename,Context.MODE_PRIVATE);
-
-        }
-    }*/

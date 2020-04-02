@@ -280,7 +280,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         TextView title;
         TextView url;
         ImageView imageView;
-        String title_1, url_1, bookmarkFolderName_1;
+        String title_1, url_1, bookmarkFolderName_1,id;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -306,10 +306,10 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.edit_Bookmark:
-                            showBookmarkDialog(title1, url1, bookmarkFolderName_1);
+                            showBookmarkDialog(id,title1, url1, bookmarkFolderName_1);
                             break;
                         case R.id.delete_Bookmark:
-                            mAboutBookmark.delete(url1);
+                            mAboutBookmark.delete(id);
                             getBookmarksWithFolderChanged(bookmarkFolderName_1);
                             updateUI();
                             break;
@@ -332,6 +332,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         public void bind(WebPage_Info info) {
             title_1 = info.getTitle();
             url_1 = info.getUrl();
+            id=info.getUuid();
             bookmarkFolderName_1 = info.getBookmarkFolderName();
 
             title.setText(title_1);
@@ -363,8 +364,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
          * @param bookmarkFolderName 标签
          *                           显示书签编辑对话框
          */
-        void showBookmarkDialog(String title, String url, String bookmarkFolderName) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(title, url, bookmarkFolderName, -1, null));
+        void showBookmarkDialog(String id, String title, String url, String bookmarkFolderName) {
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(id,title, url, bookmarkFolderName));
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }

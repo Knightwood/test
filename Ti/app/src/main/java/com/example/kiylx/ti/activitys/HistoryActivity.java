@@ -37,7 +37,7 @@ public class HistoryActivity extends AppCompatActivity {
     AboutHistory sAboutHistory;
     ChipGroup mChipGroup;
     String[] mDateli;
-    private static final String TAG = "历史记录";
+    private static final String TAG = "历史activity";
     private static OpenOneWebpage sOpenOneWebpage;//打开网页的接口
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
@@ -55,6 +55,7 @@ public class HistoryActivity extends AppCompatActivity {
         //初始化recyclerview为最近七天的数据
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
+        Log.d(TAG, "onCreate，初始化的时间周期: "+mDateli[0]+"---"+ mDateli[1]);
         updateUI(mDateli[0], mDateli[1]);
         CheckedChangeListener();
         //搜索记录
@@ -92,6 +93,7 @@ public class HistoryActivity extends AppCompatActivity {
                         break;
                 }
                 updateUI(mDateli[0], mDateli[1]);
+                Log.d(TAG, "选择时间范围: "+mDateli[0]+"---"+ mDateli[1]);
             }
         });
 
@@ -110,9 +112,16 @@ public class HistoryActivity extends AppCompatActivity {
      */
     private void updateUI(String startDate, String endDate) {
         //str1:开始日期。str2:结束日期
-        Log.d(TAG, "updateUI: " + startDate + "---" + endDate);
+        Log.d(TAG, "recyclerview更新视图: " + startDate + "---" + endDate);
         //获取数据
         historyList =sAboutHistory.getDataLists(startDate, endDate);
+        Log.d(TAG, "从数据库获得的记录是不是空的: "+historyList.isEmpty());
+        if (!historyList.isEmpty()){
+            for (int i = 0; i <historyList.size() ; i++) {
+                Log.d(TAG, "从数据库获取的信息: "+historyList.get(i).getDate());
+            }
+
+        }
 
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(historyList);

@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
     private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
+    private String WEBTITLE ="webTitle";//用来存放当前标签页的网址，在旋转屏幕时能恢复下方搜索栏上的文字
+    private String CURRENTINT="currentInt";//用来存放指示当前webview的位置
 
     private WebViewManager mWebViewManager;
     private WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
@@ -134,6 +136,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
+
+        if (savedInstanceState!=null){
+            mTextView.setText(savedInstanceState.getString(WEBTITLE));
+            current=savedInstanceState.getInt(CURRENTINT);
+        }
     }
 
     /**
@@ -201,6 +208,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putString(WEBTITLE,mTextView.getText().toString());
+        outState.putInt(CURRENTINT,current);
     }
 
     @Override

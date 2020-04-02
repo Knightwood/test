@@ -15,11 +15,12 @@ public class ItemCursorWrapper extends CursorWrapper {
         super(cursor);
     }
     public WebPage_Info getFavoriterinfo(){
+        String id=getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.ID));
         String title = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.TITLE));
         String url = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.url));
-        String web_tags = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder));
+        String folder = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder));
 
-        return new WebPage_Info(title,url,web_tags,-1,null);
+        return new WebPage_Info(id,title,url,folder);
     }
 
 }

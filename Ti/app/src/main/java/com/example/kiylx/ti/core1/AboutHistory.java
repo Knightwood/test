@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.dateProcess.TimeProcess;
 import com.example.kiylx.ti.historyDataBase.HistoryBaseHelper;
 import com.example.kiylx.ti.historyDataBase.HistoryDbSchema.HistoryTable;
 import com.example.kiylx.ti.historyDataBase.ItemCursorWrapper;
@@ -57,6 +58,7 @@ public class AboutHistory {
      *             加入数据库
      */
     public void addToDataBase(WebPage_Info info) {
+        info.setDate(TimeProcess.getTime());//添加上时间，避免时间信息缺失
         ContentValues values = getContentValues(info);
         mDatabase.insert(HistoryTable.NAME, null, values);
     }

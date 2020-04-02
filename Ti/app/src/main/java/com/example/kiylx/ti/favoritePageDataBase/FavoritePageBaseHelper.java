@@ -10,16 +10,16 @@ import com.example.kiylx.ti.favoritePageDataBase.FavoritepageDbSchema.FavoriteTa
 
 public class FavoritePageBaseHelper extends SQLiteOpenHelper {
 
-    private static final int VERSION=1;
-    private static final String DATABASE_NAME="favorite_tab";
+    private static final int VERSION = 1;
+    private static final String DATABASE_NAME = "favorite_tab";
 
-    public FavoritePageBaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public FavoritePageBaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table "+ FavoriteTable.NAME+"("+"_id integer primary key autoincrement, "+FavoriteTable.childs.TITLE+","+FavoriteTable.childs.url+","+FavoriteTable.childs.BookmarkFolder +")");
+        db.execSQL("create table " + FavoriteTable.NAME + "(" + "_id integer primary key autoincrement, " + FavoriteTable.childs.ID + "," + FavoriteTable.childs.TITLE + "," + FavoriteTable.childs.url + "," + FavoriteTable.childs.BookmarkFolder + ")");
     }
 
     @Override

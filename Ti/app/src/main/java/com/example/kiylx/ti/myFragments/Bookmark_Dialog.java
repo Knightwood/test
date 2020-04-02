@@ -36,9 +36,10 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class Bookmark_Dialog extends DialogFragment {
-    private static final String TAG = "Bookmark_Dialog";
+    private static final String TAG = "添加书签的弹窗";
     private AboutBookmark mAboutBookmark;
     private static WebPage_Info beBookmarked_info;
     private TextView newFolderButton;
@@ -51,6 +52,9 @@ public class Bookmark_Dialog extends DialogFragment {
     private static final String ARGME = "wholauncherI";
     private static int intentid;//谁启动了这个对话框
     private static RefreshBookMark refresh;
+
+    private EditText titleView;
+    private EditText urlView;
 
 
 /*打开tag的选择界面，也就是popmenu，如果选择新建tag，那就打开一个新的dialog，
@@ -68,7 +72,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
-        Bookmark_Dialog.beBookmarked_info = info;
+        Bookmark_Dialog.beBookmarked_info = new WebPage_Info(info.getUuid(),info.getTitle(),info.getUrl(),info.getBookmarkFolderName());
         return bookmark_dialog;
     }
 
@@ -132,26 +136,22 @@ public class Bookmark_Dialog extends DialogFragment {
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        /*如果是主页，那就不加入收藏夹，以后可能会有变动*/
-                        //WebPage_Info tmp =getMessage(view);
-                        //把网页加入收藏database;查询网页是否被收藏再决定是收藏还是更新
-                        if (mAboutBookmark.isMarked(beBookmarked_info)) {
-                            /*已经收藏了，更新数据库信息，这里的更新是更新标题和tag，如果还被用户瞎改了网址，也要更新。
-                             *网址未修改，那就更新标题和tag，
-                             *如果网址被修改，那就算是一个新的，之后插入数据库*/
-                            mAboutBookmark.updateItem(beBookmarked_info);
-                            /*判断tag文件里是否有当前写的tag，如果没有，那就添加进tag文件。
-                             *当点击spinner时要读取tag文件，转换成arraylist，放进spinner。*/
-                        } else {
-                            //否则往收藏数据库添加收藏条目信息
+                        beBookmarked_info.setTitle(titleView.getText().toString());
+                        beBookmarked_info.setUrl(urlView.getText().toString());
+                        if (beBookmarked_info.getUuid()==null){
+                            beBookmarked_info.setUuid(UUID.randomUUID());
                             mAboutBookmark.add(beBookmarked_info);
+                            Log.d(TAG, "onClick: uuid是null");
+                        }else {
+                            Log.d(TAG, "onClick: uuid不是null，所以更新数据库");
+                            mAboutBookmark.updateItem(beBookmarked_info);
                         }
-
                         //如果intentid是2(BookmarkPageActivity打开的，用来编辑已经存在的书签)，更新视图
                         if (intentid == 2) {
-                            Log.d("网页tag", "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
+                            Log.d(TAG, "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
                             refresh.refresh(null);
                         }
+
                     }
                 }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -194,7 +194,7 @@ public class Bookmark_Dialog extends DialogFragment {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("文件夹序号", "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
+                Log.d(TAG, "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
 
                 //选择某一个文件夹后更新webviewinfo信息
                 updateWebinfo(mBookMarkFolderManager.getFolderfromList(position));
@@ -242,10 +242,10 @@ public class Bookmark_Dialog extends DialogFragment {
      */
     private void setMassage(View v) {
 
-        EditText title = v.findViewById(R.id.edit_title);
-        title.setText(beBookmarked_info.getTitle());
-        EditText url = v.findViewById(R.id.editUrl);
-        url.setText(beBookmarked_info.getUrl());
+        titleView = v.findViewById(R.id.edit_title);
+        titleView.setText(beBookmarked_info.getTitle());
+        urlView= v.findViewById(R.id.editUrl);
+        urlView.setText(beBookmarked_info.getUrl());
 
     }
 
@@ -271,7 +271,7 @@ public class Bookmark_Dialog extends DialogFragment {
             return;
         }
         //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
-        Log.d("唉", "iggs");
+        Log.d(TAG, "onActivityResult");
         //用新的list更新界面
         String name = data.getStringExtra("newTagName");
         selectOneFolder(mBookMarkFolderManager.getPosfromLists(name));
@@ -286,7 +286,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d("Bookmark_Dialog", "onDetach: ");
+        Log.d(TAG, "onDetach: ");
         mContext = null;
 
     }
