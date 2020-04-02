@@ -89,5 +89,8 @@
     <string name="privacy">隐私</string>
     <string name="theme">主题</string>
     <string name="about">关于</string>
+    <string name="download_limit">同时下载数量限制</string>
+    <string name="downloadFolder">下载文件夹</string>
+    <string name="thread">下载线程数</string>
 
 </resources>

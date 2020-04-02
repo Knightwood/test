@@ -59,7 +59,6 @@ public class OkhttpManager {
      */
     public long getFileLength(String url) throws IOException{
 
-
             Request request = new Request.Builder()
                     .url(url)
                     .build();

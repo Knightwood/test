@@ -41,7 +41,6 @@ public class DownloadTaskRunnable implements Runnable {
     private void initFile() {
         try {
             response = OkhttpManager.getInstance().getResponse(mDownloadInfo, blockid);
-
             System.out.println("fileName=" + mDownloadInfo.getFileName() + " 每个线程负责下载文件大小contentLength=" + response.body().contentLength()
                     + " 开始位置start=" + mDownloadInfo.splitStart[blockid] + "结束位置end=" + mDownloadInfo.splitEnd[blockid] + " threadId=" + blockid);
 

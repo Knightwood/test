@@ -186,8 +186,8 @@ public class DownloadActivity extends AppCompatActivity {
                 manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
                 break;
             case 2:
-                fragment = new DownloadSettingFragment(null);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
+                DownloadSettingFragment fragment2 =DownloadSettingFragment.newInstance();
+                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment2).commit();
                 break;
         }
 
