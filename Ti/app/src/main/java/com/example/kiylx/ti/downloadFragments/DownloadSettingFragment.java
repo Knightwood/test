@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.myInterface.DownloadClickMethod;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class DownloadSettingFragment extends Fragment {
     private static final String TAG="下载系列fragment";
+    private View rootView;
 
     public static DownloadSettingFragment newInstance(){
         return new DownloadSettingFragment();
@@ -30,7 +32,9 @@ public class DownloadSettingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        rootView=inflater.inflate(R.layout.fragment_download_setting,container,false);
+        return rootView;
+        //return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
