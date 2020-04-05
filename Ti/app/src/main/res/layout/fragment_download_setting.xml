@@ -18,8 +18,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.crystal.customview.numberPicker
-        android:id="@+id/kjhf2"
+    <TextView
+        android:id="@+id/file_path_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/limit_value" />
+
+    <com.crystal.customview.customView.numberPicker
+        android:id="@+id/limit_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -30,11 +44,11 @@
         app:individer="@drawable/divider_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:maxValue="15"
+        app:maxValue="5"
         app:minValue="0"
         app:textColor="@android:color/black">
 
-    </com.crystal.customview.numberPicker>
+    </com.crystal.customview.customView.numberPicker>
 
     <TextView
         android:id="@+id/textView6"
@@ -56,8 +70,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <com.crystal.customview.numberPicker
-        android:id="@+id/kjhf3"
+    <com.crystal.customview.customView.numberPicker
+        android:id="@+id/thread_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="136dp"
@@ -68,10 +82,10 @@
         app:individer="@drawable/divider_horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:maxValue="15"
+        app:maxValue="32"
         app:minValue="0"
         app:textColor="@android:color/black">
 
-    </com.crystal.customview.numberPicker>
+    </com.crystal.customview.customView.numberPicker>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

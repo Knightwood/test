@@ -1,4 +1,4 @@
-package com.crystal.customview;
+package com.crystal.customview.customView;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import com.crystal.customview.R;
 
 /**
  * 创建者 kiylx
@@ -302,6 +304,7 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
         }
 
         numText.addTextChangedListener(this);
+        numText.setSelection(numText.getText().toString().length());//让光标在最后面
     }
 
 
