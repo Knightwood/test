@@ -12,8 +12,15 @@ import java.util.List;
  * 创建者 kiylx
  * 创建时间 2020/4/6 6:54
  */
-public class fileManager {
+public class FileIndexManager {
 
 
+    public static FileIndexManager newInstance() {
+        return null;
+    }
+
+    public List<FileInfo> getList(String s) {
+        return null;
+    }
 }
 

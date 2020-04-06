@@ -45,7 +45,6 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
 
     public numberPicker(Context context) {
         super(context);
-
          LayoutInflater.from(context).inflate(R.layout.number_picker, this);
     }
 
