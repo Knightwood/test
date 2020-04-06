@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.DownloadInfo;
-import com.example.kiylx.ti.databinding.DownloadItemBinding;
+
 
 import java.util.List;
 

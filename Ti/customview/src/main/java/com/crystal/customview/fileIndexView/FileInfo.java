@@ -4,14 +4,14 @@ package com.crystal.customview.fileIndexView;
  * 创建者 kiylx
  * 创建时间 2020/4/6 6:53
  */
-public class fileInfo {
+public class FileInfo {
     private int imgId;
     private String fileName;
     private String fileSize;
     private String filePath;
     private String fileCreateDate;
 
-    public fileInfo (int imageId,String fileName,String fileSize, String createDate) {
+    public FileInfo(int imageId, String fileName, String fileSize, String createDate) {
         super();
         this.fileName = fileName;
         this.imgId = imageId;
