@@ -1,11 +1,13 @@
 package com.crystal.customview.BaseAdapter1;
 
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,11 +16,12 @@ import java.util.List;
  */
 public class BaseHolder extends RecyclerView.ViewHolder {
     View itemView;
-    List<View> views;
+    SparseArray<View> views;
 
     public BaseHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
+        views=new SparseArray<>();//暂存itemView中的子view的id和view对象，
     }
 
     /**
@@ -32,7 +35,7 @@ public class BaseHolder extends RecyclerView.ViewHolder {
         View v=views.get(resId);
         if (v==null){
             v=itemView.findViewById(resId);
-            views.add(v);
+            views.put(resId,v);
         }
         return (T)v;
     }

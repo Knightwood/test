@@ -33,6 +33,7 @@ public class IndexView extends LinearLayout {
     public IndexView(Context context) {
         super(context);
         LayoutInflater.from(context).inflate(R.layout.base_recyclerview, this);
+        initView(context);
     }
 
     public IndexView(Context context, @Nullable AttributeSet attrs) {
@@ -61,11 +62,11 @@ public class IndexView extends LinearLayout {
         }
     }
 
-    private class FileInfoAdapter extends BaseAdapter<FileInfo> implements OnClickListener{
-        ImageView imageView;
+    private class FileInfoAdapter extends BaseAdapter<FileInfo> implements OnClickListener {
+        /*ImageView imageView;
         TextView fileNameView;
         TextView sizeView;
-        TextView dateView;
+        TextView dateView;*/
         String path;
 
 
@@ -75,26 +76,30 @@ public class IndexView extends LinearLayout {
 
         @Override
         public int itemResId() {
-            return R.id.item_1;
+            return R.layout.file_item;
         }
 
         @Override
         public void bind(BaseHolder holder, FileInfo data) {
-            path=data.getFilePath();
+            path = data.getFilePath();
 
-            imageView = holder.getView(R.id.myFileImage);
+            /*imageView = holder.getView(R.id.myFileImage);
             fileNameView=holder.getView(R.id.myFileName);
-            sizeView=holder.getView(R.id.fileDate);
-            dateView=holder.getView(R.id.fileDate);
+            sizeView=holder.getView(R.id.fileSize);
+            dateView=holder.getView(R.id.fileDate);*/
 
-            holder.setOnIntemClickListener(this);
+            holder.setImageResource(R.id.myFileImage, data.getImgId())
+                    .setText(R.id.myFileName, data.getFileName())
+                    .setOnIntemClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (clickAfter!=null){
+            if (clickAfter != null) {
                 clickAfter.after(path);
             }
+            lists=manager.getList(path);
+            updateUI();
 
         }
     }

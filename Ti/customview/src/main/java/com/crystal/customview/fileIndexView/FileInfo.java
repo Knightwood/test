@@ -11,12 +11,19 @@ public class FileInfo {
     private String filePath;
     private String fileCreateDate;
 
-    public FileInfo(int imageId, String fileName, String fileSize, String createDate) {
+
+    public FileInfo(int imgId,String fileName,String path) {
+        this(fileName,path);
+        this.imgId=imgId;
+    }
+    public FileInfo(String fileName,String path, String fileSize) {
+        this(fileName,path);
+        this.fileSize = fileSize;
+    }
+    public FileInfo(String fileName,String path){
         super();
         this.fileName = fileName;
-        this.imgId = imageId;
-        this.fileSize = fileSize;
-        this.fileCreateDate =createDate;
+        this.filePath=path;
     }
 
     public int getImgId() {
@@ -58,4 +65,5 @@ public class FileInfo {
     public void setFileCreateDate(String fileCreateDate) {
         this.fileCreateDate = fileCreateDate;
     }
+
 }
