@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crystal.customview.fileIndexView.FileInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,9 @@ import java.util.List;
  * 创建时间 2020/4/6 8:46
  */
 public class BaseHolder extends RecyclerView.ViewHolder {
-    View itemView;
-    SparseArray<View> views;
+    private View itemView;
+    private SparseArray<View> views;
+    private FileInfo fileInfo;
 
     public BaseHolder(View itemView) {
         super(itemView);
@@ -70,8 +73,9 @@ public class BaseHolder extends RecyclerView.ViewHolder {
     /**
      * 设置条目点击事件
      */
-    public void setOnIntemClickListener(View.OnClickListener listener) {
+    public void setOnIntemClickListener(View.OnClickListener listener, FileInfo info) {
         itemView.setOnClickListener(listener);
+        this.fileInfo=info;
     }
 
     /**
@@ -81,4 +85,7 @@ public class BaseHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(listener);
     }
 
+    public FileInfo getFileInfo() {
+        return fileInfo;
+    }
 }

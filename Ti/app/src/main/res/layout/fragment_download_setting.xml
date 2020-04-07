@@ -32,7 +32,7 @@
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/limit_value" />
 
-    <com.crystal.customview.customView.numberPicker
+    <com.crystal.customview.numberPickerView.numberPicker
         android:id="@+id/limit_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
         app:minValue="0"
         app:textColor="@android:color/black">
 
-    </com.crystal.customview.customView.numberPicker>
+    </com.crystal.customview.numberPickerView.numberPicker>
 
     <TextView
         android:id="@+id/textView6"
@@ -70,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
-    <com.crystal.customview.customView.numberPicker
+    <com.crystal.customview.numberPickerView.numberPicker
         android:id="@+id/thread_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,6 +86,6 @@
         app:minValue="0"
         app:textColor="@android:color/black">
 
-    </com.crystal.customview.customView.numberPicker>
+    </com.crystal.customview.numberPickerView.numberPicker>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

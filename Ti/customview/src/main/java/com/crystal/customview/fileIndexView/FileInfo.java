@@ -10,6 +10,7 @@ public class FileInfo {
     private String fileSize;
     private String filePath;
     private String fileCreateDate;
+    private String parentPath;
 
 
     public FileInfo(int imgId,String fileName,String path) {

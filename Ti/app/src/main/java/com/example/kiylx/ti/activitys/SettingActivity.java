@@ -76,9 +76,11 @@ public class SettingActivity extends AppCompatActivity {
                     case 2:
                         if (lastSelect != 2)
                             switchFragment(2);
+                        break;
                     case 3:
                         if (lastSelect != 3)
                             switchFragment(3);
+                        break;
                 }
             }
 

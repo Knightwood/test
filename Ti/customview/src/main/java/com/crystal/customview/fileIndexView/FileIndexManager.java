@@ -1,20 +1,23 @@
 package com.crystal.customview.fileIndexView;
 
 import android.os.Environment;
+import android.util.Log;
 
 import com.crystal.customview.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * 创建者 kiylx
  * 创建时间 2020/4/6 6:54
  */
 public class FileIndexManager {
-    List<FileInfo> infoList;
+    private static final String TAG = "文件目录管理";
     private static FileIndexManager manager;
+    private List<FileInfo>  infoList;
 
     public static FileIndexManager newInstance() {
         if (manager == null) {
@@ -23,7 +26,7 @@ public class FileIndexManager {
         return manager;
     }
     private FileIndexManager(){
-        infoList=new ArrayList<>();
+       infoList =new ArrayList<>();
     }
 
     public List<FileInfo> getList(String s) {
@@ -33,10 +36,12 @@ public class FileIndexManager {
             rootFile = Environment.getExternalStorageDirectory();
         } else {//获取特定目录下的文件
             rootFile = new File(s);
-            if (!rootFile.exists()) {
-                rootFile.mkdir();
+            if (!rootFile.exists()||rootFile.isFile()) {
+                Log.d(TAG, "getList: 路径不存在或这是文件");
+                return infoList;
             }
         }
+        infoList.clear();
         //遍历文件，返回FileInfo
         for (File file : rootFile.listFiles()) {
             String fileName = file.getName();
@@ -51,6 +56,7 @@ public class FileIndexManager {
                     imgId = R.drawable.unknow;
                 }
             }
+
             infoList.add(new FileInfo(imgId, file.getName(), file.getAbsolutePath()));
         }
         return infoList;
@@ -101,5 +107,9 @@ public class FileIndexManager {
         }
         return R.drawable.file;
     }
+
+    /*public List<FileInfo> getFatherList() {
+        return stack.pop();
+    }*/
 }
 

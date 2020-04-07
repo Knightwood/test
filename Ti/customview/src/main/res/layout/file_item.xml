@@ -13,55 +13,16 @@
         android:layout_margin="5dp"
         app:srcCompat="@mipmap/ic_launcher" />
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/myFileName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/myFileName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="5dp"
-            android:ellipsize="start"
-            android:singleLine="true"
-            android:text="TextView"
-            android:textSize="25sp" />
-        <!--ellipsize属性:如果设置，则导致长于视图宽的单词被椭圆化而不是在中间断开。
-        您通常还需要同时设置scrollHorizontally或singleLine，以便整个文本也被限制为单行，
-        而不是仍然允许分成多行。-->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/fileSize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="大小"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/filePower"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="权限"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/fileDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="创建日期"
-                tools:visibility="gone" />
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:ellipsize="start"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textSize="25sp" />
 
 
 </LinearLayout>
