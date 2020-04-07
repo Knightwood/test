@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="大小"
+        android:text="@string/size"
         android:textSize="16sp"
         android:visibility="visible" />
 
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="权限"
+        android:text="@string/permission"
         android:textSize="16sp"
         android:visibility="visible" />
 
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="创建日期"
+        android:text="@string/date"
         android:textSize="16sp" />
 
 </LinearLayout>
