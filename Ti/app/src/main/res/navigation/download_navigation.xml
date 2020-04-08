@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/download_navigation"
+    app:startDestination="@id/downloadingFragment">
+
+    <fragment
+        android:id="@+id/downloadingFragment"
+        android:name="com.example.kiylx.ti.downloadFragments.DownloadingFragment"
+        android:label="DownloadingFragment" />
+    <fragment
+        android:id="@+id/downloadFinishFragment"
+        android:name="com.example.kiylx.ti.downloadFragments.DownloadFinishFragment"
+        android:label="DownloadFinishFragment" />
+    <fragment
+        android:id="@+id/downloadSettingFragment"
+        android:name="com.example.kiylx.ti.downloadFragments.DownloadSettingFragment"
+        android:label="download_setting_fragment"
+        tools:layout="@layout/download_setting_fragment" />
+</navigation>

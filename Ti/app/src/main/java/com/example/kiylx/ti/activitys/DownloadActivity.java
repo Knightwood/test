@@ -4,6 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -12,6 +16,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 
 import com.example.kiylx.ti.downloadCore.DownloadServices;
@@ -43,7 +48,7 @@ public class DownloadActivity extends AppCompatActivity {
 
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
-    private static int lastSelectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
+    private int lastSelectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
     BottomNavigationView bottomView;//底部导航栏
     private RecyclerViewBaseFragment fragment1;
@@ -95,17 +100,22 @@ public class DownloadActivity extends AppCompatActivity {
         });
 //底栏
         bottomView = findViewById(R.id.downloadBottomNavigation);
+        /*NavController navController= Navigation.findNavController(this,R.id.fragment);
+        AppBarConfiguration configuration=new AppBarConfiguration.Builder(bottomView.getMenu()).build();
+        NavigationUI.setupActionBarWithNavController(this,navController,configuration);
+        NavigationUI.setupWithNavController(bottomView,navController);*/
+
         bottomView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
-                case R.id.downloading:
+                case R.id.downloadingFragment:
                     if (lastSelectPage != 0)
                         switchFragment(0);
                     break;
-                case R.id.downloadFinish:
+                case R.id.downloadFinishFragment:
                     if (lastSelectPage != 1)
                         switchFragment(1);
                     break;
-                case R.id.cancel:
+                case R.id.downloadSettingFragment:
                     if (lastSelectPage != 2)
                         switchFragment(2);
                     break;
@@ -113,21 +123,14 @@ public class DownloadActivity extends AppCompatActivity {
             return true;
         });
 
-        bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
-        Log.d(TAG, "fragment数量：" + manager.getFragments().toString());
+        //bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
+        //Log.d(TAG, "fragment数量：" + manager.getFragments().toString());
 
-        //ViewServer.get(this).addWindow(this);
     }
-
-
-
-
-
 
     @Override
     public void onResume() {
         super.onResume();
-        //ViewServer.get(this).setFocusedWindow(this);
     }
 
     //与service通信的中间件
@@ -150,7 +153,6 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
-        //ViewServer.get(this).removeWindow(this);
     }
 
     /**

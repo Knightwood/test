@@ -93,5 +93,6 @@
     <string name="downloadFolder">下载文件夹</string>
     <string name="thread">下载线程数</string>
     <string name="backFolder">上一级</string>
+    <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段。</string>
 
 </resources>

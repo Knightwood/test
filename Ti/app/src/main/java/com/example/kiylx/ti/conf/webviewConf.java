@@ -26,4 +26,7 @@ public class WebviewConf {
 
     public static String resumeData = "resume_data";//是否打开恢复上次网址key
 
+    public static String defaultDownloadPath="def_download_path";//下载路径
+    public static String defaultDownloadlimit="def_download_limit";//下载数量限制
+    public static String defaultDownloadthread="def_download_thread";//下载线程数
 }
