@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/select_folder_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.crystal.customview.fileIndexView.IndexView
+        android:id="@+id/folder_index"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.95">
+
+    </com.crystal.customview.fileIndexView.IndexView>
+
+    <TextView
+        android:id="@+id/folder_path"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/back_folder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/setting_item"
+            android:text="@string/backFolder"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/save_folder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/setting_item"
+            android:text="@string/enter"
+            android:textAlignment="textEnd"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

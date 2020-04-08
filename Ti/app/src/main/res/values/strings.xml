@@ -92,5 +92,6 @@
     <string name="download_limit">同时下载数量限制</string>
     <string name="downloadFolder">下载文件夹</string>
     <string name="thread">下载线程数</string>
+    <string name="backFolder">上一级</string>
 
 </resources>

@@ -64,14 +64,27 @@ public class IndexView extends LinearLayout {
 
     }
 
+    public String getLastPath(){
+        if (lastPath==null){
+            lastPath = Environment.getExternalStorageDirectory().getPath();//存储根目录的路径
+        }
+        return lastPath;
+    }
+
     /**
      * 回到上一级文件夹
      */
     public void goBack() {
-        lists.clear();
-        lastPath=backStack.pop();
-        lists = manager.getList(lastPath);
-        updateUI();
+        if (!backStack.empty()){
+            lists.clear();
+            lastPath=backStack.pop();
+            lists = manager.getList(lastPath);
+            updateUI();
+            if (clickAfter!=null){
+                clickAfter.after(lastPath);
+            }
+        }
+
     }
 
     private void updateUI() {
@@ -125,5 +138,8 @@ public class IndexView extends LinearLayout {
      */
     public interface ClickAfter {
         void after(String path);
+    }
+    public void setClickAfter(ClickAfter after){
+        this.clickAfter=after;
     }
 }
