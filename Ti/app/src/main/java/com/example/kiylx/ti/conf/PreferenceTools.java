@@ -245,6 +245,13 @@ public class PreferenceTools {
     }
     //=============================================================================================
 
+    /**
+     * 把hashmap转换成字符串，存入sharedPreference
+     * @param context
+     * @param key
+     * @param map
+     * @return
+     */
     public static boolean putHashMap2(Context context, String key, HashMap<String, String> map) {
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -258,6 +265,10 @@ public class PreferenceTools {
         return editor.commit();
     }
 
+    /**
+     *把hashmap通过byteArrayOutPutStream输出为字节数组，再解析成base64编码的字符串
+     *
+     */
     private static String prcessHashMap2(HashMap<String, String> map) throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ObjectOutputStream outputStream = new ObjectOutputStream(byteArray);

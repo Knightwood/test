@@ -4,6 +4,7 @@ import android.os.Environment;
 
 import androidx.annotation.NonNull;
 
+import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
 
 /**
@@ -146,7 +147,14 @@ public class DownloadInfo {
     public DownloadInfo(String url, long contentLength) {
         this(url, null, null, SomeRes.downloadThreadNum, contentLength);
     }
-
+    /**
+     * @param url           下载地址
+     * @param contentLength 下载文件的文件长度
+     * @param threadNum 下载线程数
+     */
+    public DownloadInfo(String url, long contentLength,int threadNum) {
+        this(url, null, null, threadNum, contentLength);
+    }
 
     public String getUrl() {
         return url;

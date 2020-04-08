@@ -19,7 +19,7 @@ private List<DownloadInfo> list;
     public void setUp() throws Exception {
         list=new ArrayList<>();
         long blocksize=300;
-        manager=DownloadManager.getInstance();
+        //manager=DownloadManager.getInstance();
         info1=new DownloadInfo("https://raw.githubusercontent.com/guolindev/eclipse/master/eclipse-inst-win64.exe");
         info1.setContentLength(2400);
         info1.setThreadNum(8);

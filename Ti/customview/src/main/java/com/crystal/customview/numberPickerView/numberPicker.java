@@ -243,13 +243,19 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
 
     //设置文本框数值,超出大小值限制则设置一个默认值
     public numberPicker setNum(int value) {
+        numText.removeTextChangedListener(this);
         if (value < minValue) {
             numText.setText(String.valueOf(minValue));
+            currentValue=minValue;
         } else if (value > maxValue) {
             numText.setText(String.valueOf(maxValue));
+            currentValue=maxValue;
         } else {
             numText.setText(String.valueOf(value));
+            currentValue=value;
         }
+
+        numText.addTextChangedListener(this);
         return this;
     }
 

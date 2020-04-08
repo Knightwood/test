@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadInfo_storage.DownloadEntity;
@@ -67,15 +69,15 @@ public class DownloadManager {
         this();
         this.mContext = context;
 
+        //获取配置文件里的下载数量限制，赋值给downloadNumLimit
+        //downloadNumLimit = SomeRes.downloadLimit;
+        downloadNumLimit= PreferenceTools.getInt(mContext, WebviewConf.defaultDownloadlimit,3);
         //从数据库拿数据
         resumeInfoFromDB();
         scheduleWrite();
     }
 
     private DownloadManager() {
-        //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        downloadNumLimit = SomeRes.downloadLimit;
-
         downloading = new ArrayList<>();//正在下载列表
         pausedownload = new ArrayList<>();//暂停下载列表
         readyDownload = new LinkedList<>();//准备下载列表
@@ -159,9 +161,17 @@ public class DownloadManager {
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
 
         //文件的分块大小
-        if (info.getContentLength()<10000){
+        if (info.getContentLength()<10000000){
+            //1kb=1024b,1m=1024kb,1m=
             threadNum= info.setThreadNum(1);
         }
+
+        //更改下载到的文件夹
+        String downloadFolder=PreferenceTools.getString(mContext,WebviewConf.defaultDownloadPath,null);
+        if (downloadFolder!=null){
+            info.setPath(downloadFolder);
+        }
+
         long blocksize = info.getContentLength() / threadNum;
         info.setBlockSize(blocksize);
 

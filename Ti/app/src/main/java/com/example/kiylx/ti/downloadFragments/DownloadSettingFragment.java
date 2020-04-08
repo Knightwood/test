@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.downloadFragments;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +14,21 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.crystal.customview.fileIndexView.SelectFolderFragment;
+import com.crystal.customview.numberPickerView.numberPicker;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 
 public class DownloadSettingFragment extends Fragment {
     private static final String TAG="下载系列fragment";
     private View rootView;
+    private TextView filePathView;//显示下载路径的view
+    private numberPicker threadView;
+    private numberPicker downloadLimitView;
 
     public static DownloadSettingFragment newInstance(){
         return new DownloadSettingFragment();
     }
-
     public DownloadSettingFragment(){
         super();
     }
@@ -31,6 +37,51 @@ public class DownloadSettingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView=inflater.inflate(R.layout.download_setting_fragment,container,false);
+        filePathView=rootView.findViewById(R.id.file_path_view);
+        threadView=rootView.findViewById(R.id.thread_value);
+        downloadLimitView=rootView.findViewById(R.id.limit_value);
+
+        threadView.setNum(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadthread,8));
+        downloadLimitView.setNum(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadlimit,3));
+        filePathView.setText(PreferenceTools.getString(getActivity(),WebviewConf.defaultDownloadPath,"....."));
+
+        threadView.setOnInputNumberListener(new numberPicker.OnInputNumberListener() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputText = s.toString().trim();
+                int num=Integer.parseInt(inputText);
+                PreferenceTools.putInt(getActivity(),WebviewConf.defaultDownloadthread,num);
+            }
+        });
+        downloadLimitView.setOnInputNumberListener(new numberPicker.OnInputNumberListener() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String inputText = s.toString().trim();
+                int num=Integer.parseInt(inputText);
+                PreferenceTools.putInt(getActivity(),WebviewConf.defaultDownloadlimit,num);
+            }
+        });
+
         return rootView;
     }
 
@@ -50,6 +101,8 @@ public class DownloadSettingFragment extends Fragment {
                         @Override
                         public void send(String path) {
                             Log.d(TAG, "send: "+path);
+                            filePathView.setText(path);
+                            PreferenceTools.putString(getActivity(), WebviewConf.defaultDownloadPath,path);
                         }
                     });
                 }

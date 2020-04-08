@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 
+import android.os.Environment;
 import android.view.View;
 import android.widget.Toast;
 
@@ -196,6 +197,12 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
         PreferenceTools.putBoolean(this, WebviewConf.customDownload, false);
         //是否打开就恢复上次网页，默认是false
         PreferenceTools.putBoolean(this, WebviewConf.resumeData, false);
+        //默认下载路径
+        PreferenceTools.putString(this,WebviewConf.defaultDownloadPath, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
+        //默认最大下载任务数
+        PreferenceTools.putInt(this,WebviewConf.defaultDownloadlimit,3);
+        //默认下载线程数
+        PreferenceTools.putInt(this,WebviewConf.defaultDownloadthread,8);
 
     }
 

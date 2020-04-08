@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.DownloadInfo;
 import com.example.kiylx.ti.downloadFragments.DownloadDialog;
 
@@ -28,7 +30,8 @@ public class DownloadListener2 implements DownloadListener {
      */
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-        DownloadInfo info=new DownloadInfo(url,contentLength);
+        int threadNum= PreferenceTools.getInt(mContext, WebviewConf.defaultDownloadthread,1);
+        DownloadInfo info=new DownloadInfo(url,contentLength,threadNum);
         DownloadDialog dialog= DownloadDialog.newInstance(info);
         FragmentManager manager=mContext.getSupportFragmentManager();
         /*FragmentTransaction transaction=manager.beginTransaction();
