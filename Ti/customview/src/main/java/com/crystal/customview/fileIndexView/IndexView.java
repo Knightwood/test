@@ -64,23 +64,24 @@ public class IndexView extends LinearLayout {
 
     }
 
-    public String getLastPath(){
-        if (lastPath==null){
+    public String getLastPath() {
+        if (lastPath == null) {
             lastPath = Environment.getExternalStorageDirectory().getPath();//存储根目录的路径
         }
         return lastPath;
     }
 
     /**
-     * 回到上一级文件夹
+     * 回到上一级文件夹，
+     * 取出栈中的字符串，这个字符串就是当前目录的父路径。
      */
     public void goBack() {
-        if (!backStack.empty()){
+        if (!backStack.empty()) {
             lists.clear();
-            lastPath=backStack.pop();
+            lastPath = backStack.pop();
             lists = manager.getList(lastPath);
             updateUI();
-            if (clickAfter!=null){
+            if (clickAfter != null) {
                 clickAfter.after(lastPath);
             }
         }
@@ -115,18 +116,20 @@ public class IndexView extends LinearLayout {
                     .setOnIntemClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (clickAfter != null) {
-                                clickAfter.after(data.getFilePath());
-                            }
-                            backStack.push(lastPath.trim());//把当前层级的路径字符串副本压入栈中
-                            Log.d(TAG, "onClick: " + data.getFilePath());
-                            lastPath=data.getFilePath();//把当前路径字符串改为点击的那个文件/文件夹的路径
-                            if ((new File(lastPath)).isFile()){
-                                //如果这是文件，就不更新视图了
+                            String currentPath=data.getFilePath();//点击的文件夹或文件的路径
+                            Log.d(TAG, "点击时lastpath: "+lastPath);
+                            if ((new File(currentPath)).isFile()) {
+                                //如果这是文件，就不更新视图，直接返回
                                 return;
                             }
-                            lists = manager.getList(lastPath);
-                            updateUI();
+                            if (clickAfter != null) {
+                                clickAfter.after(currentPath);
+                            }
+                            backStack.push(lastPath.trim());//把当前目录层级的路径字符串副本压入栈中，此时还没有进入点击的文件夹
+                            Log.d(TAG, "点击的文件夹或文件路径: " + currentPath);
+                            lastPath =currentPath;//把当前路径字符串改为点击的文件/文件夹的路径
+                            lists = manager.getList(lastPath);//获取点击的文件夹的子目录
+                            updateUI();//更新视图
                         }
                     }, data);
         }
@@ -139,7 +142,8 @@ public class IndexView extends LinearLayout {
     public interface ClickAfter {
         void after(String path);
     }
-    public void setClickAfter(ClickAfter after){
-        this.clickAfter=after;
+
+    public void setClickAfter(ClickAfter after) {
+        this.clickAfter = after;
     }
 }

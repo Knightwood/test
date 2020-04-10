@@ -242,8 +242,14 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
     }
 
     //设置文本框数值,超出大小值限制则设置一个默认值
-    public numberPicker setNum(int value) {
+    public numberPicker setCurrent(int value) {
         numText.removeTextChangedListener(this);
+        setNum(value);
+        numText.addTextChangedListener(this);
+        return this;
+    }
+    //设置文本框数值,超出大小值限制则设置一个默认值
+    private void setNum(int value) {
         if (value < minValue) {
             numText.setText(String.valueOf(minValue));
             currentValue=minValue;
@@ -254,9 +260,6 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
             numText.setText(String.valueOf(value));
             currentValue=value;
         }
-
-        numText.addTextChangedListener(this);
-        return this;
     }
 
     //onclick用于监听“加，减”视图的点击
@@ -296,17 +299,17 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
 
     @Override
     public void afterTextChanged(Editable s) {
-        if (onInputNumberListener != null) {
-            onInputNumberListener.afterTextChanged(s);
-        }
-        numText.removeTextChangedListener(this);
         String inputText = s.toString().trim();
+        numText.removeTextChangedListener(this);
         if (!inputText.isEmpty()) {
             int now=Integer.parseInt(inputText);
             setNum(now);
-        }else{
-            setNum(currentValue);
+
+            if (onInputNumberListener != null) {
+                onInputNumberListener.afterTextChanged(getNum());
+            }
         }
+
 
         numText.addTextChangedListener(this);
         numText.setSelection(numText.getText().toString().length());//让光标在最后面
@@ -342,7 +345,7 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
 
         void onTextChanged(CharSequence charSequence, int start, int before, int count);
 
-        void afterTextChanged(Editable editable);
+        void afterTextChanged(int num);
     }
 
     private <T extends View> T f(int resId) {

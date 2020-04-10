@@ -41,8 +41,8 @@ public class DownloadSettingFragment extends Fragment {
         threadView=rootView.findViewById(R.id.thread_value);
         downloadLimitView=rootView.findViewById(R.id.limit_value);
 
-        threadView.setNum(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadthread,8));
-        downloadLimitView.setNum(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadlimit,3));
+        threadView.setCurrent(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadthread,8));
+        downloadLimitView.setCurrent(PreferenceTools.getInt(getActivity(),WebviewConf.defaultDownloadlimit,3));
         filePathView.setText(PreferenceTools.getString(getActivity(),WebviewConf.defaultDownloadPath,"....."));
 
         threadView.setOnInputNumberListener(new numberPicker.OnInputNumberListener() {
@@ -57,9 +57,7 @@ public class DownloadSettingFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                String inputText = s.toString().trim();
-                int num=Integer.parseInt(inputText);
+            public void afterTextChanged(int num) {
                 PreferenceTools.putInt(getActivity(),WebviewConf.defaultDownloadthread,num);
             }
         });
@@ -75,9 +73,7 @@ public class DownloadSettingFragment extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                String inputText = s.toString().trim();
-                int num=Integer.parseInt(inputText);
+            public void afterTextChanged(int num) {
                 PreferenceTools.putInt(getActivity(),WebviewConf.defaultDownloadlimit,num);
             }
         });

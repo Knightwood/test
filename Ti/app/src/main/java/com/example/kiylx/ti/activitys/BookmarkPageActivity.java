@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -372,48 +375,28 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     private void search() {
-        SearchView searchView = findViewById(R.id.search_Bookmark);
-        //点击搜索按钮，展开搜索
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSpinner.setVisibility(View.GONE);
-                editBookmarkfolder_button.setVisibility(View.GONE);
-                /*mSpinner.animate().alpha(0f)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
+        EditText searchView = findViewById(R.id.search_Bookmark);
 
-                            }
-                        });*/
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
-        });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                mBookmarkArrayList = mAboutBookmark.queryBookmark(query);
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mBookmarkArrayList = mAboutBookmark.queryBookmark(s.toString());
                 if (mBookmarkArrayList.isEmpty()) {
                     Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
-                    return true;
+                    return;
                 }
                 updateUI();
-                return true;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        //搜索框展开时后面叉叉按钮的点击事件
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                mSpinner.setVisibility(View.VISIBLE);
-                editBookmarkfolder_button.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(), "Close", Toast.LENGTH_SHORT).show();
-                return false;
             }
         });
     }

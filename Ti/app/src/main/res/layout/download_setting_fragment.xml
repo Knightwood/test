@@ -49,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:maxValue="5"
-        app:minValue="0"
+        app:minValue="1"
         app:textColor="@android:color/black">
 
     </com.crystal.customview.numberPickerView.numberPicker>
@@ -87,7 +87,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:maxValue="32"
-        app:minValue="0"
+        app:minValue="1"
         app:textColor="@android:color/black">
 
     </com.crystal.customview.numberPickerView.numberPicker>
