@@ -155,6 +155,9 @@ public class numberPicker extends LinearLayout implements View.OnClickListener, 
 
     /**
      * 将dip或dp值转换为px值，保证尺寸大小不变
+     *density（密度）=dpi/160
+     *1px=(dpi/160)*1dp
+     *所以，
      *
      * @param dipValue DisplayMetrics类中属性density）
      * @return
