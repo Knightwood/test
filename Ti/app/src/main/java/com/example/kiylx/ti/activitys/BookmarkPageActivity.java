@@ -68,7 +68,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         //获取收藏item列表，并默认展示未书签文件夹的列表
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
-        mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
+        //mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
         mSpinner = findViewById(R.id.bookmarkSpinner);//标签选择spinner
         selectOneFolderUpdate();//展示spinner
@@ -77,10 +77,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         mRecyclerView = findViewById(R.id.show_BookmarkItem);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(BookmarkPageActivity.this));//展示具体收藏item的recyclerview
 
-        //更新lists，然后更新视图
-        bookmarkFolderName = mbookmarkFolderLists.get(0);//一开始就初始化书签文件夹名称防止出错
-        getBookmarksWithFolderChanged(bookmarkFolderName);
-        updateUI();
+        //获取指定文件夹下的书签
+        getlistWithfolderpos(0);
         //接口回调
 
         DeleteTag_Dialog.setInterface(this);
@@ -99,6 +97,18 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         //搜索书签
         search();
 
+    }
+
+    private void getlistWithfolderpos(int pos) {
+        //更新lists，然后更新视图
+        bookmarkFolderName = mbookmarkFolderLists.get(pos);//一开始就初始化书签文件夹名称防止出错
+        getBookmarksWithFolderChanged(bookmarkFolderName);
+        updateUI();
+    }
+
+    private void getlistWithFolderName(String name) {
+        getBookmarksWithFolderChanged(name);
+        updateUI();
     }
 
     private void updateUI() {
@@ -127,7 +137,6 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      *            获取含有此标签的书签记录
      */
     private void getBookmarksWithFolderChanged(String str) {
-
         mBookmarkArrayList = mAboutBookmark.getBookmarks(str);
     }
 
@@ -283,7 +292,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         TextView title;
         TextView url;
         ImageView imageView;
-        String title_1, url_1, bookmarkFolderName_1,id;
+        String title_1, url_1, bookmarkFolderName_1, id;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -309,7 +318,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.edit_Bookmark:
-                            showBookmarkDialog(id,title1, url1, bookmarkFolderName_1);
+                            showBookmarkDialog(id, title1, url1, bookmarkFolderName_1);
                             break;
                         case R.id.delete_Bookmark:
                             mAboutBookmark.delete(id);
@@ -335,7 +344,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         public void bind(WebPage_Info info) {
             title_1 = info.getTitle();
             url_1 = info.getUrl();
-            id=info.getUuid();
+            id = info.getUuid();
             bookmarkFolderName_1 = info.getBookmarkFolderName();
 
             title.setText(title_1);
@@ -368,35 +377,56 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
          *                           显示书签编辑对话框
          */
         void showBookmarkDialog(String id, String title, String url, String bookmarkFolderName) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(id,title, url, bookmarkFolderName));
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(id, title, url, bookmarkFolderName));
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }
     }
 
+    /**
+     * searchview，搜索书签。
+     */
     private void search() {
-        EditText searchView = findViewById(R.id.search_Bookmark);
-
-        searchView.addTextChangedListener(new TextWatcher() {
+        SearchView searchView = findViewById(R.id.search_Bookmark);
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void onClick(View v) {
+                mSpinner.setVisibility(View.GONE);
+                editBookmarkfolder_button.setVisibility(View.GONE);
+            }
+        });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d(TAG, "searchview查询文本1: " + query);
+                return false;
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            public boolean onQueryTextChange(String newText) {
 
-            }
+                if (newText.equals("")) {
+                    getlistWithFolderName(bookmarkFolderName);
+                } else {
+                    mBookmarkArrayList = mAboutBookmark.queryBookmark(newText);
+                    Log.d(TAG, "searchview查询文本2: " + newText);
+                    if (mBookmarkArrayList.isEmpty()) {
+                        Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
+                    } else {
+                        updateUI();
+                    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                mBookmarkArrayList = mAboutBookmark.queryBookmark(s.toString());
-                if (mBookmarkArrayList.isEmpty()) {
-                    Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
-                    return;
                 }
-                updateUI();
-
+                return true;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                mSpinner.setVisibility(View.VISIBLE);
+                editBookmarkfolder_button.setVisibility(View.VISIBLE);
+                return false;
             }
         });
     }

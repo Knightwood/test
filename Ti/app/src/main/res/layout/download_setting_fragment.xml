@@ -34,6 +34,7 @@
 
 
             <ImageView
+                android:id="@+id/imView100"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -41,6 +42,7 @@
                 android:tag="Camera" />
 
             <ImageView
+                android:id="@+id/imView101"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -48,6 +50,7 @@
                 android:tag="Sun" />
 
             <ImageView
+                android:id="@+id/imView102"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -55,6 +58,7 @@
                 android:tag="Place" />
 
             <ImageView
+                android:id="@+id/imView103"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"

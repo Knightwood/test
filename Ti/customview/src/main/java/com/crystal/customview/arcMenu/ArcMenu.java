@@ -4,12 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 
 import com.crystal.customview.R;
 
@@ -18,7 +21,7 @@ import com.crystal.customview.R;
  * 创建时间 2020/4/12 14:59
  */
 public class ArcMenu extends ViewGroup implements View.OnClickListener {
-
+    private static final String TAG = "arc菜单";
     //菜单按钮的默认位置
     private Position mPosition = Position.LEFT;
     //默认状态
@@ -27,6 +30,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener {
     private int mRadius = 150;
     //菜单按钮
     private View mButton;
+    private ClickInterface mClickInterface;
 
     @Override
     public void onClick(View v) {
@@ -57,11 +61,24 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener {
      * 当ArcMenu在屏幕左侧的时候，那么，按钮就该在viewGroup的左边中间位置，反之，在右边中间位置
      */
     public enum Position {
-        LEFT, RIGHT;
+        LEFT, RIGHT
     }
 
-    public interface OnMenuItemClickListener {
-        void onClick(View view, int pos);
+    /**
+     * 调整菜单按钮在viewgroup中的位置，
+     * 这样，在arcmenu放在左侧或是右侧的时候，避免arcmenu展开方向出错。
+     * @param position LEFT或RIGHT
+     */
+    public void setPosition(Position position){
+        this.mPosition=position;
+    }
+
+    /**
+     * 返回arcmenu（也就是这个viewGroup）在父view中的尺寸
+     * @return 返回一个Rect对象
+     */
+    public Rect getSize(){
+        return new Rect(getLeft(),getTop(),getRight(),getBottom());
     }
 
     //构造函数
@@ -177,6 +194,16 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener {
             for (int i = 1; i < count; i++) {
                 child = getChildAt(i);
                 child.setVisibility(INVISIBLE);
+                child.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mClickInterface!=null)
+                        mClickInterface.click(v);
+                        Log.d(TAG, "onClick:被点击的view的id： "+v.getId());
+                        //scaleBigAnim(v);
+                        closeAnim();
+                    }
+                });
                 child.layout(cl, ct, cr, cb);
             }
             openAnim();//展开菜单的动画
@@ -272,5 +299,30 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener {
         }
 
     }
+
+    /**
+     * 点击某一子view后的效果
+     */
+    private void scaleBigAnim(View v){
+        ObjectAnimator scaleX=new ObjectAnimator().ofFloat(v,"scaleX",0f,1f);
+        ObjectAnimator scaleY=new ObjectAnimator().ofFloat(v,"scaleY",0f,3f);
+        ObjectAnimator alpha=new ObjectAnimator().ofFloat(v,"alpha",1.0f,0f);
+        AnimatorSet set =new AnimatorSet();
+        set.setDuration(300);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.playTogether(scaleX,scaleY,alpha);
+        set.start();
+    }
+
+    /**
+     * 提供外界控制的接口
+     */
+    public interface ClickInterface{
+        void click(View v);
+    }
+    public void setInterface(ClickInterface clickInterface){
+        this.mClickInterface=clickInterface;
+    }
+
 
 }

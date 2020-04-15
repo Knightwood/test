@@ -8,7 +8,7 @@ import com.example.kiylx.ti.historyDataBase.HistoryDbSchema.HistoryTable;
 
 public class HistoryBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
-    private static final String DATABASE_NAME = "history.mdao";
+    private static final String DATABASE_NAME = "history.db";
 
     public HistoryBaseHelper(Context context) {
         super(context,DATABASE_NAME,null,VERSION);

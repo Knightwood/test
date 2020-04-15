@@ -15,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -39,6 +41,7 @@ public class HistoryActivity extends AppCompatActivity {
     String[] mDateli;
     private static final String TAG = "历史activity";
     private static OpenOneWebpage sOpenOneWebpage;//打开网页的接口
+    HorizontalScrollView scrollView;//展示日期的滑动view
 
     public static void setInterface(OpenOneWebpage openOneWebpage) {
         sOpenOneWebpage = openOneWebpage;
@@ -50,6 +53,8 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_history);
         listView = findViewById(R.id.showHistory_1);
         listView.setLayoutManager(new LinearLayoutManager(HistoryActivity.this));
+
+        scrollView=findViewById(R.id.horizontalScrollView);
 
         sAboutHistory = AboutHistory.get(this);
         //初始化recyclerview为最近七天的数据
@@ -139,9 +144,9 @@ public class HistoryActivity extends AppCompatActivity {
      */
     private void updateUI() {
         //没有历史记录的话什么也不做
-        if (historyList.isEmpty()) {
+        /*if (historyList.isEmpty()) {
             return;
-        }
+        }*/
         if (null == mAdapter) {
             mAdapter = new HistoryAdapter(historyList);
             listView.setAdapter(mAdapter);
@@ -166,17 +171,40 @@ public class HistoryActivity extends AppCompatActivity {
      */
     private void searchHistory() {
         SearchView searchView = findViewById(R.id.history_searchView);
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.setVisibility(View.GONE);
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                scrollView.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                historyList = sAboutHistory.query(query);
-                updateUI();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                    Log.d(TAG, "onQueryTextChange: "+newText);
+                    historyList.clear();
+                if(newText.equals("")){
+                    updateUI(mDateli[0], mDateli[1]);
+                }else
+                {
+                    historyList.addAll(sAboutHistory.querySomeOne(newText));
+                    updateUI();
+                }
+
+                return true;
             }
         });
     }

@@ -68,20 +68,23 @@ public class AboutHistory {
      * @return 返回匹配的历史记录
      * 这是历史记录查询功能
      */
-    public List<WebPage_Info> query(String queryText) {
-        List<WebPage_Info> mhistoryList= new ArrayList<>();
-
-        Cursor cursor = mDatabase.rawQuery("SELECT * from history_item where title like'%'+?+'%' ", new String[]{queryText});
+    public List<WebPage_Info> querySomeOne(String queryText) {
+        List<WebPage_Info> mhistoryList = new ArrayList<>();
+        String sqlstr = "SELECT * from history_item where title LIKE ? or url LIKE ?";
+        Cursor cursor = mDatabase.rawQuery(sqlstr, new String[]{"%" + queryText + "%", "%" + queryText + "%"});
         ItemCursorWrapper cursorWrapper = new ItemCursorWrapper(cursor);
-        try {
-            cursorWrapper.moveToFirst();
-            while (!cursorWrapper.isLast()) {
-                mhistoryList.add(cursorWrapper.getWebPageInfo());
-                cursorWrapper.moveToNext();
+            try {
+                if (cursorWrapper.getCount() == 0){
+                    return mhistoryList;
+                }
+                cursorWrapper.moveToFirst();
+                while (!cursorWrapper.isAfterLast()) {
+                    mhistoryList.add(cursorWrapper.getWebPageInfo());
+                    cursorWrapper.moveToNext();
+                }
+            } finally {
+                cursorWrapper.close();
             }
-        } finally {
-            cursorWrapper.close();
-        }
         return mhistoryList;
     }
 
@@ -126,7 +129,7 @@ public class AboutHistory {
      * @param url 要删除的历史记录的网址
      */
     public void delete(String url) {
-        mDatabase.execSQL("DELETE FROM history_item where url =?",new String[]{url});
+        mDatabase.execSQL("DELETE FROM history_item where url =?", new String[]{url});
 
     }
 
@@ -145,7 +148,7 @@ public class AboutHistory {
     }
 
     public void updateTitle(WebPage_Info info) {
-        mDatabase.execSQL("UPDATE history_item set title=? where url=?",new String[]{info.getTitle(),info.getUrl()});
+        mDatabase.execSQL("UPDATE history_item set title=? where url=?", new String[]{info.getTitle(), info.getUrl()});
     }
 }
 /*

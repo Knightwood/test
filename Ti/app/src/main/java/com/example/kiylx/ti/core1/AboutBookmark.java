@@ -37,7 +37,7 @@ public class AboutBookmark {
         if (info == null || info.getUrl() == null) {
             return;
         }
-       if (isMarked(info)){
+        if (isMarked(info)) {
             return;
         }
         ContentValues values = getContentValues(info);
@@ -57,8 +57,8 @@ public class AboutBookmark {
         }
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.url,info.getUrl());
-        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values,  FavoritepageDbSchema.FavoriteTable.childs.ID +"=?", new String[]{id});
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
+        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.ID + "=?", new String[]{id});
     }
 
     /**
@@ -88,11 +88,11 @@ public class AboutBookmark {
     }
 
     /**
-     * @param id  webpage_info的id
-     *            根据id删除书签
+     * @param id webpage_info的id
+     *           根据id删除书签
      */
-    public void delete(String id){
-        mDatabase.execSQL("DELETE from Favorite_tab where uuid =?",new String[]{id});
+    public void delete(String id) {
+        mDatabase.execSQL("DELETE from Favorite_tab where uuid =?", new String[]{id});
     }
 
 
@@ -193,7 +193,11 @@ public class AboutBookmark {
      */
     public List<WebPage_Info> queryBookmark(String query) {
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
-        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.TITLE, new String[]{query});
+
+        String sqlStr = "SELECT * from Favorite_tab where title LIKE ? or url LIKE ? ";
+        Cursor cursor1 = mDatabase.rawQuery(sqlStr, new String[]{"%" + query + "%", "%" + query + "%"});
+        ItemCursorWrapper cursor = new ItemCursorWrapper(cursor1);
+
         try {
             if (cursor.getCount() == 0) {
                 return mlists;
