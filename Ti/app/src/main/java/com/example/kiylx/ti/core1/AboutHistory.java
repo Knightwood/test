@@ -151,16 +151,3 @@ public class AboutHistory {
         mDatabase.execSQL("UPDATE history_item set title=? where url=?", new String[]{info.getTitle(), info.getUrl()});
     }
 }
-/*
-    private ItemCursorWrapper queryHistory(String whereClause, String[] whereArgs) {
-        Cursor cursor = mDatabase.queryBookmark(
-                HistoryTable.NAME,
-                null,
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null
-        );
-        return new ItemCursorWrapper(cursor);
-    }//通过queryHistory查询数据库，返回的是ItemCursorWrapper类型的cursor，遍历cursor，获取需要的数据。*/

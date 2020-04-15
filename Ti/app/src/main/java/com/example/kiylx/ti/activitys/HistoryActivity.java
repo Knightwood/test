@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -31,6 +31,13 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 
 import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class HistoryActivity extends AppCompatActivity {
     HistoryAdapter mAdapter;
@@ -61,7 +68,7 @@ public class HistoryActivity extends AppCompatActivity {
         mDateli = new String[2];
         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.THISWEEK, TimeProcess.getTime());
         Log.d(TAG, "onCreate，初始化的时间周期: "+mDateli[0]+"---"+ mDateli[1]);
-        updateUI(mDateli[0], mDateli[1]);
+        updateUIwithDate(mDateli[0], mDateli[1]);
         CheckedChangeListener();
         //搜索记录
         searchHistory();
@@ -97,7 +104,7 @@ public class HistoryActivity extends AppCompatActivity {
                         mDateli = TimeProcess.getWeekorMonth_start(KindsofDate.MONTH5, TimeProcess.getTime());
                         break;
                 }
-                updateUI(mDateli[0], mDateli[1]);
+                updateUIwithDate(mDateli[0], mDateli[1]);
                 Log.d(TAG, "选择时间范围: "+mDateli[0]+"---"+ mDateli[1]);
             }
         });
@@ -115,28 +122,23 @@ public class HistoryActivity extends AppCompatActivity {
      * @param endDate   结束时间
      *                  返回这段时间范围内的历史记录
      */
-    private void updateUI(String startDate, String endDate) {
-        //str1:开始日期。str2:结束日期
-        Log.d(TAG, "recyclerview更新视图: " + startDate + "---" + endDate);
-        //获取数据
-        historyList =sAboutHistory.getDataLists(startDate, endDate);
-        Log.d(TAG, "从数据库获得的记录是不是空的: "+historyList.isEmpty());
-        if (!historyList.isEmpty()){
-            for (int i = 0; i <historyList.size() ; i++) {
-                Log.d(TAG, "从数据库获取的信息: "+historyList.get(i).getDate());
+    @SuppressLint("CheckResult")
+    private void updateUIwithDate(String startDate, String endDate){
+        Observable.create(new ObservableOnSubscribe<List<WebPage_Info>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<WebPage_Info>> emitter) throws Exception {
+                emitter.onNext(sAboutHistory.getDataLists(startDate,endDate));
+                emitter.onComplete();
             }
-
-        }
-
-        if (null == mAdapter) {
-            mAdapter = new HistoryAdapter(historyList);
-            listView.setAdapter(mAdapter);
-            Log.d("历史activity", "onClick: 创建adapter函数被触发");
-        } else {
-            mAdapter.setLists(historyList);
-            mAdapter.notifyDataSetChanged();
-        }
-
+        }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<WebPage_Info>>() {
+                    @Override
+                    public void accept(List<WebPage_Info> webPage_infos) throws Exception {
+                        historyList=webPage_infos;
+                        updateUI();
+                    }
+                });
     }
 
     /**
@@ -192,16 +194,32 @@ public class HistoryActivity extends AppCompatActivity {
                 return false;
             }
 
+            @SuppressLint("CheckResult")
             @Override
             public boolean onQueryTextChange(String newText) {
                     Log.d(TAG, "onQueryTextChange: "+newText);
                     historyList.clear();
                 if(newText.equals("")){
-                    updateUI(mDateli[0], mDateli[1]);
+                    updateUIwithDate(mDateli[0], mDateli[1]);
                 }else
                 {
-                    historyList.addAll(sAboutHistory.querySomeOne(newText));
-                    updateUI();
+
+                    Observable.create(new ObservableOnSubscribe<List<WebPage_Info>>() {
+                        @Override
+                        public void subscribe(ObservableEmitter<List<WebPage_Info>> emitter) throws Exception {
+                            emitter.onNext(sAboutHistory.querySomeOne(newText));
+                            emitter.onComplete();
+                        }
+                    }).subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<List<WebPage_Info>>() {
+                                @Override
+                                public void accept(List<WebPage_Info> webPage_infos) throws Exception {
+                                    historyList.addAll(webPage_infos);
+                                    updateUI();
+                                }
+                            });
+
                 }
 
                 return true;
