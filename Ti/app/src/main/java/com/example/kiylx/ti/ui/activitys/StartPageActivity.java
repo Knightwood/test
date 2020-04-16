@@ -61,7 +61,7 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
     private void getAuthority(StartPageActivity startPageActivity) {
 
         if (EasyPermissions.hasPermissions(this, allperm)) {
-            //注释掉下面这句，为了测试权限申请
+            //测试权限申请时可以注释掉下面这句
             writeInstalled(true);
             Toast.makeText(this, "有权限了", Toast.LENGTH_LONG).show();
         } else {
@@ -108,7 +108,7 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
      */
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-        //注释掉下面这句，为了测试权限申请
+        //测试权限申请时可以注释掉下面这句
         writeInstalled(true);
         Toast.makeText(getApplicationContext(), "用户授权成功", Toast.LENGTH_LONG).show();
     }

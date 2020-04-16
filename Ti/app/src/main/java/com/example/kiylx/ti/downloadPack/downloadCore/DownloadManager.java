@@ -13,7 +13,7 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.InfoTransformToEntitiy;
-import com.example.kiylx.ti.model.EventMessage;
+import com.example.kiylx.ti.Tool.EventMessage;
 import com.example.kiylx.ti.downloadPack.downInterface.DOWNLOAD_TASK_FUN;
 
 import org.greenrobot.eventbus.EventBus;

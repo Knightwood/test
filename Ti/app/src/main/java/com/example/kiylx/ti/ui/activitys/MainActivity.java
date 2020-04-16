@@ -42,7 +42,7 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadPack.dFragments.DownloadDialog;
-import com.example.kiylx.ti.model.EventMessage;
+import com.example.kiylx.ti.Tool.EventMessage;
 import com.example.kiylx.ti.ui.mFragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.mFragments.MultPage_Dialog;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;

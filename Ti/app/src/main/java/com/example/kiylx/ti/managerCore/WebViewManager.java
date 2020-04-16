@@ -17,10 +17,10 @@ import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.Tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadListener1;
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadListener2;
-import com.example.kiylx.ti.model.EventMessage;
+import com.example.kiylx.ti.Tool.EventMessage;
 import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
-import com.example.kiylx.ti.model.Action;
+import com.example.kiylx.ti.Tool.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
 
 import org.greenrobot.eventbus.EventBus;

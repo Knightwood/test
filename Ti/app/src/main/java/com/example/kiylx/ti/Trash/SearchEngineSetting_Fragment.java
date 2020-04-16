@@ -27,7 +27,7 @@ import com.example.kiylx.ti.Tool.HashMapProcess;
 import com.example.kiylx.ti.Tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
-import com.example.kiylx.ti.model.Action;
+import com.example.kiylx.ti.Tool.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
 import com.example.kiylx.ti.ui.mFragments.EditText_Dialog;

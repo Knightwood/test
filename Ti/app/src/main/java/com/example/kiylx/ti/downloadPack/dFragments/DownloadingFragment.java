@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
-import com.example.kiylx.ti.model.EventMessage;
+import com.example.kiylx.ti.Tool.EventMessage;
 import com.example.kiylx.ti.downloadPack.downInterface.DownloadClickMethod;
 
 import org.greenrobot.eventbus.EventBus;
