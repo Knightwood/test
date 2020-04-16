@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.test.InstrumentationRegistry;
 
-import com.example.kiylx.ti.core1.AboutHistory;
+import com.example.kiylx.ti.managerCore.AboutHistory;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import org.junit.After;

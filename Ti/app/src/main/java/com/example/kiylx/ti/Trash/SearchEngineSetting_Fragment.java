@@ -24,18 +24,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Tool.HashMapProcess;
-import com.example.kiylx.ti.conf.PreferenceTools;
+import com.example.kiylx.ti.Tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.model.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
-import com.example.kiylx.ti.myFragments.EditText_Dialog;
+import com.example.kiylx.ti.ui.mFragments.EditText_Dialog;
 import com.example.kiylx.ti.myInterface.EditTextInterface;
 import com.example.kiylx.ti.myInterface.Setmessage;
-import com.example.kiylx.ti.search_engine_db.SearchEngineDao;
-import com.example.kiylx.ti.search_engine_db.SearchEngineDatabase;
-import com.example.kiylx.ti.search_engine_db.SearchEngineEntity;
+import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDao;
+import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDatabase;
+import com.example.kiylx.ti.DB.search_engine_db.SearchEngineEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

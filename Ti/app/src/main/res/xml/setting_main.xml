@@ -4,15 +4,15 @@
     <Preference
         android:key="conventional"
         android:title="常规"
-        android:fragment="com.example.kiylx.ti.settingFolders.GeneralFragment"/>
+        android:fragment="com.example.kiylx.ti.ui.settings.GeneralFragment"/>
     <Preference
         android:key="theme"
         android:title="主题"
-        android:fragment="com.example.kiylx.ti.settingFolders.ThemeFragment"/>
+        android:fragment="com.example.kiylx.ti.ui.settings.ThemeFragment"/>
     <Preference
         android:key="privacy"
         android:title="隐私"
-        android:fragment="com.example.kiylx.ti.settingFolders.PrivacyFragment"/>
+        android:fragment="com.example.kiylx.ti.ui.settings.PrivacyFragment"/>
     <Preference
         android:key="beta"
         android:title="实验室"/>

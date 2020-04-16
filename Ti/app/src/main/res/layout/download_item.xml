@@ -13,7 +13,7 @@ loc:49:31 - 49:87
 
         <variable
             name="downloaditeminfo"
-            type="com.example.kiylx.ti.downloadFragments.SimpleDownloadInfo" />
+            type="com.example.kiylx.ti.downloadPack.downloadFragments.SimpleDownloadInfo" />
 
     </data>-->
 

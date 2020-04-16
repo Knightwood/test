@@ -1,7 +1,7 @@
 package com.example.kiylx.ti.model;
 
-import com.example.kiylx.ti.dateProcess.KindsofDate;
-import com.example.kiylx.ti.dateProcess.TimeProcess;
+import com.example.kiylx.ti.Tool.dateProcess.KindsofDate;
+import com.example.kiylx.ti.Tool.dateProcess.TimeProcess;
 
 import org.junit.Test;
 

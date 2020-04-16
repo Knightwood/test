@@ -3,7 +3,6 @@ package com.example.kiylx.ti.Tool;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.example.kiylx.ti.conf.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 

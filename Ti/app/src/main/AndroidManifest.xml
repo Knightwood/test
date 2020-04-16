@@ -15,33 +15,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <service android:name=".downloadCore.DownloadServices" />
+        <service android:name=".downloadPack.downloadCore.DownloadServices" />
 
-        <activity android:name=".activitys.SettingActivity"
+        <activity android:name=".ui.activitys.SettingActivity"
             android:theme="@style/AppTheme1"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
-            android:name=".activitys.StartPageActivity"
+            android:name=".ui.activitys.StartPageActivity"
             android:label="@string/title_activity_start_page"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activitys.DownloadActivity"
+            android:name=".downloadPack.DownloadActivity"
             android:theme="@style/AppTheme1"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
-        <activity android:name=".activitys.BookmarkPageActivity"
-            android:theme="@style/AppTheme1"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
-        <activity
-            android:name=".activitys.HistoryActivity"
+        <activity android:name=".ui.activitys.BookmarkPageActivity"
             android:theme="@style/AppTheme1"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
-            android:name=".activitys.DoSearchActivity" />
-        <activity android:name=".activitys.MainActivity">
+            android:name=".ui.activitys.HistoryActivity"
+            android:theme="@style/AppTheme1"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".ui.activitys.DoSearchActivity" />
+        <activity android:name=".ui.activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

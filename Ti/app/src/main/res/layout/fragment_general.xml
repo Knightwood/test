@@ -5,7 +5,7 @@
     android:id="@+id/general_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settingFolders.GeneralFragment">
+    tools:context=".ui.settings.GeneralFragment">
 
     <Switch
         android:id="@+id/homepage"
