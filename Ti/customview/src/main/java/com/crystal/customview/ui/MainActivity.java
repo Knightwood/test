@@ -1,6 +1,5 @@
 package com.crystal.customview.ui;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,13 +7,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.crystal.customview.R;
-import com.crystal.customview.floatingWindow.floatTest;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "mainActivity";

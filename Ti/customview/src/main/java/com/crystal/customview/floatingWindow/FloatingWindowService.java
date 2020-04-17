@@ -7,9 +7,12 @@ import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.WeakReference;
 
@@ -37,7 +40,6 @@ public abstract class FloatingWindowService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -50,7 +52,6 @@ public abstract class FloatingWindowService extends Service {
         }
         mRoot = setLayout();
         mRoot.setOnTouchListener(new FloatingOnTouchListener());
-
         setLayoutParams();
         addView(mRoot, lp);
     }
@@ -89,26 +90,38 @@ public abstract class FloatingWindowService extends Service {
             this.lp = setLp();
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-/*在Android 8.0之前，悬浮窗口设置可以为TYPE_PHONE，这种类型是用于提供用户交互操作的非应用窗口。
-　　而Android 8.0对系统和API行为做了修改，包括使用SYSTEM_ALERT_WINDOW权限的应用无法再使用一下窗口类型来在其他应用和窗口上方显示提醒窗口：
-- TYPE_PHONE
-- TYPE_PRIORITY_PHONE
-- TYPE_SYSTEM_ALERT
-- TYPE_SYSTEM_OVERLAY
-- TYPE_SYSTEM_ERROR
-　　如果需要实现在其他应用和窗口上方显示提醒窗口，那么必须该为TYPE_APPLICATION_OVERLAY的新类型。 */
             lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         } else {
             lp.type = WindowManager.LayoutParams.TYPE_PHONE;
         }
-        //FLAG_NOT_TOUCH_MODAL，可以让此view被正常点击和触摸，同时也可以让此view之外的位置触摸
-        lp.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
-        /*WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-        * 窗口标志：此窗口永远不会获得按键输入焦点，因此用户无法向其发送按键或其他按钮事件。
-        * 这些将转至其背后的任何可聚焦窗口。 无论是否明确设置此标志，都将启用FLAG_NOT_TOUCH_MODAL。
-        *设置此标志还意味着该窗口将不需要与软输入法进行交互，
-        * 因此它将对Z进行排序和定位，而与任何活动的输入方法无关（通常这意味着它在输入法之上被Z排序， 因此它可以使用全屏显示内容，并在需要时覆盖输入法。
-        * */
+        //FLAG_NOT_TOUCH_MODAL，可以让此view被正常点击和触摸，同时也可以让此view之外的位置响应触摸
+        lp.flags=WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+
+    }
+    /*WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+     * 窗口标志：此窗口永远不会获得按键输入焦点，因此用户无法向其发送按键或其他按钮事件。
+     * 这些将转至其背后的任何可聚焦窗口。 无论是否明确设置此标志，都将启用FLAG_NOT_TOUCH_MODAL。
+     *设置此标志还意味着该窗口将不需要与软输入法进行交互，
+     * 因此它将对Z进行排序和定位，而与任何活动的输入方法无关（通常这意味着它在输入法之上被Z排序， 因此它可以使用全屏显示内容，并在需要时覆盖输入法。
+     * */
+    /**
+     * @param b 是否开启输入或是按键事件,true时能够响应输入法，不响应返回键，false时不能。
+     *          通过切换lp的flag，使得悬浮窗能够响应返回键或是输入法等
+     */
+
+    public void canEdit(Boolean b){
+        if (b){
+            lp.flags=WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+        }else{
+            lp.flags=WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL|WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        }
+       updateView(mRoot,lp);
+    }
+
+    public void showInput(View v){
+        v.requestFocus();
+        InputMethodManager methodManager=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        methodManager.showSoftInput(v,InputMethodManager.SHOW_IMPLICIT);
     }
 
     /**
@@ -185,6 +198,8 @@ public abstract class FloatingWindowService extends Service {
 
                     lp.x += movedX;
                     lp.y += movedY;
+
+                    //if (movedY<3* ViewConfiguration.get(mContext.get()).getScaledTouchSlop())
 
                     updateView(mRoot, lp);
                     break;

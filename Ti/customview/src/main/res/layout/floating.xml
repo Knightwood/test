@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.crystal.customview.floatingWindow.FloatingView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/avi" />
+
+    <EditText
+        android:id="@+id/edit12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" />
+</com.crystal.customview.floatingWindow.FloatingView>

@@ -104,4 +104,5 @@ public class DownloadSettingFragment extends Fragment {
             }
         });
     }
+
 }

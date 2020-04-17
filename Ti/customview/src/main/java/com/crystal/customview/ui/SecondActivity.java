@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.crystal.customview.R;
-import com.crystal.customview.floatingWindow.floatTest;
+import com.crystal.customview.floatingWindow.FloatingViewTest;
 
 public class SecondActivity extends AppCompatActivity {
     private static final String TAG="secondActivity";
@@ -33,7 +33,7 @@ public class SecondActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 0);
             } else {
                 Log.d(TAG, "startFloatingService: ");
-                startService(new Intent(SecondActivity.this, floatTest.class));
+                startService(new Intent(SecondActivity.this, FloatingViewTest.class));
             }
         }
     }
@@ -48,7 +48,7 @@ public class SecondActivity extends AppCompatActivity {
                     Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
-                    startService(new Intent(SecondActivity.this, floatTest.class));
+                    startService(new Intent(SecondActivity.this, FloatingViewTest.class));
                 }
             }
         }
