@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Window;
 
 import com.example.kiylx.ti.Tool.ProcessUrl;
 import com.example.kiylx.ti.ui.mFragments.Fragment_DoSearch;
@@ -20,6 +21,15 @@ public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_do_search);
         replaceFragment();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Window window=getWindow();
+        if (window!=null){
+            window.setWindowAnimations(R.style.animate_dialog);
+        }
     }
 
     private void replaceFragment() {

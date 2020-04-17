@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
     private long mExitTime;//拿来判断按返回键间隔
     private Boolean isOpenedSearchText = false;//用来指示在webview页面上文本搜索有没有展开，按下返回键时如果这个是true，就把文本搜索收起来
-    private String WEBTITLE ="webTitle";//用来存放当前标签页的网址，在旋转屏幕时能恢复下方搜索栏上的文字
-    private String CURRENTINT="currentInt";//用来存放指示当前webview的位置
+    private String WEBTITLE = "webTitle";//用来存放当前标签页的网址，在旋转屏幕时能恢复下方搜索栏上的文字
+    private String CURRENTINT = "currentInt";//用来存放指示当前webview的位置
 
     private WebViewManager mWebViewManager;
     private WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
+    private boolean isHide;//控制toolbar上菜单的显示与隐藏
 
 
     @Override
@@ -136,9 +137,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
 
-        if (savedInstanceState!=null){
+        if (savedInstanceState != null) {
             mTextView.setText(savedInstanceState.getString(WEBTITLE));
-            current=savedInstanceState.getInt(CURRENTINT);
+            current = savedInstanceState.getInt(CURRENTINT);
         }
     }
 
@@ -207,8 +208,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(WEBTITLE,mTextView.getText().toString());
-        outState.putInt(CURRENTINT,current);
+        outState.putString(WEBTITLE, mTextView.getText().toString());
+        outState.putInt(CURRENTINT, current);
     }
 
     @Override
@@ -217,10 +218,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (isOpenedSearchText){
+            if (isOpenedSearchText) {
                 //先处理webview的文本搜索
                 closeSearchText();
-            }else if (mWebViewManager.getTop(current).canGoBack()) {//处理在没有文本搜索的时候
+            } else if (mWebViewManager.getTop(current).canGoBack()) {//处理在没有文本搜索的时候
                 mWebViewManager.getTop(current).goBack();
             } else {
                 exit();
@@ -496,6 +497,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         return true;
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        //isHide默认是false，也就是不隐藏。而setVisible参数是true，菜单项才会显示，所以这里加了“!”
+        menu.findItem(R.id.action_mult).setVisible(!isHide);
+        menu.findItem(R.id.action_menu).setVisible(!isHide);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     /**
      * 展示多窗口
@@ -613,6 +621,16 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
+     * 搜索有两种样式，第一种是打开一个activity第二种是直接在界面上进行。
+     * 这个方法是第二种，直接在界面上进行搜索。
+     */
+    private void openSearchEdit(Boolean b) {
+        //mTextView 搜索框
+        Toolbar bar = findViewById(R.id.toolbar1);
+        isHide = b;
+    }
+
+    /**
      * 检查下载所需的权限，并实现下载接口，以及开启下载服务
      * 让开始下载任务的dialog调用这个方法来开启并绑定服务，开始下载。
      */
@@ -665,7 +683,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private void achieveHandlerClickInterface() {
         if (handleClickedLinks == null) {
             handleClickedLinks = new HandleClickedLinks() {
-                SavePNG_copyText png_copyText= new SavePNG_copyText(MainActivity.this);
+                SavePNG_copyText png_copyText = new SavePNG_copyText(MainActivity.this);
+
                 @Override
                 public void onImgSelected(int x, int y, int type, String extra) {
                     Log.d(TAG, "onImgSelected: " + extra);
