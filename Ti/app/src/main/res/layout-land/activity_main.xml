@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/toolbar1"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -30,7 +30,7 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_end="45dp" />
 
-        <androidx.appcompat.widget.Toolbar
+        <!--<androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -76,8 +76,16 @@
 
             </RelativeLayout>
 
-        </androidx.appcompat.widget.Toolbar>
-
+        </androidx.appcompat.widget.Toolbar>-->
+        <include
+            layout="@layout/buttom_menu"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="3dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Webview_group" />
         <ViewStub
             android:id="@+id/viewStub_search"
             android:layout_width="0dp"

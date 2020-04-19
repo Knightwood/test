@@ -45,4 +45,15 @@
         <enum name="left_bottom" value="3" />
     </attr>
     <attr name="radius" format="dimension" />
+    
+    <!--滑动条的属性-->
+    <declare-styleable name="Slider">
+        <attr name="sliderHeight" format="dimension"/>
+        <attr name="rectHeight" format="dimension"/>
+        <attr name="messageTime" format="integer"/>
+        <attr name="sliderButtonBackground" format="reference"/>
+        <attr name="sliderBackground" format="reference"/>
+        <attr name="sliderRadius" format="dimension"/>
+        <attr name="sliderButtonRadius" format="dimension"/>
+    </declare-styleable>
 </resources>

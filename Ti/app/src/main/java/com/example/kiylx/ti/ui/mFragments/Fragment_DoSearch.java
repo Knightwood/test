@@ -94,9 +94,9 @@ public class Fragment_DoSearch extends Fragment {
 
         searchbox =v.findViewById(R.id.search_column);
 
-        mRecyclerView =v.findViewById(R.id.show_history_for_search);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateList();//展示空的recyclerview
+        //mRecyclerView =v.findViewById(R.id.some_matches);
+        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //updateList();//展示空的recyclerview
         textWatcher();
         enter_key();
         Log.d(TAG, "onCreateView: ");
@@ -155,9 +155,9 @@ public class Fragment_DoSearch extends Fragment {
             public void afterTextChanged(Editable s) {
             //把文本与历史记录进行对比，筛选出符合的信息，刷新listview
                 searchbarTEXT =searchbox.getText().toString();
-                webPage_infoArrayList = mProcessUrl.formatList(searchbarTEXT);
+                //webPage_infoArrayList = mProcessUrl.formatList(searchbarTEXT);
                 //与历史记录以及收藏记录比对，拿到arraylist
-                updateList();//更新界面
+                //updateList();//更新界面
 
 
             }

@@ -19,8 +19,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -30,8 +28,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.Tool.SavePNG_copyText;
 import com.example.kiylx.ti.Tool.PreferenceTools;
@@ -59,8 +55,7 @@ import com.example.kiylx.ti.Tool.ProcessUrl;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Objects;
+import org.w3c.dom.Text;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -82,15 +77,17 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private FrameLayout f1;
     private TextView mTextView;//主界面的工具栏里的搜索框
     private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
-    private View inflated;//搜索webview文字的搜索框
+    private View matcheTextView;//搜索webview文字的搜索框
     private MultPage_Dialog md;//多窗口dialogFragment
     private HandleClickedLinks handleClickedLinks;
     private ControlWebView controlInterface;
     private static boolean seviceBund = false;//绑定服务时把它改为true；
+    private boolean isHide;//控制toolbar上菜单的显示与隐藏
+    private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
-    private boolean isHide;//控制toolbar上菜单的显示与隐藏
+
 
 
     @Override
@@ -129,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
 
         //工具栏
-        toolbaract();
+
+
         Log.d("lifecycle", "onCreate()");
 
         //接口回调
@@ -220,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (isOpenedSearchText) {
                 //先处理webview的文本搜索
-                closeSearchText();
+                closeMatchesText();
             } else if (mWebViewManager.getTop(current).canGoBack()) {//处理在没有文本搜索的时候
                 mWebViewManager.getTop(current).goBack();
             } else {
@@ -436,79 +434,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         mTextView.setText(mt);
     }
 
-    //工具栏设置
-    private void toolbaract() {
-        Toolbar bar = findViewById(R.id.toolbar1);
-        setSupportActionBar(bar);
-        //禁止显示标题
-        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
-
-        //toolbar上的导航键
-        /*bar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mWebViewManager.getTop(current).goBack();
-
-            }
-        });*/
-
-
-        //设置移除图片  如果不设置会默认使用系统灰色的图标
-        bar.setOverflowIcon(getResources().getDrawable(R.drawable.icon_action));
-//填充menu
-        bar.inflateMenu(R.menu.toolbar_menu);
-//设置点击事件
-        bar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.action_mult:
-                        Log.i(TAG, "onClick: 多窗口按钮被触发");
-                        mult_dialog();
-                        break;
-                    /*case R.id.action_Bookmark:
-                        Log.i(TAG, "onClick: 收藏按钮被触发");
-                        showBookmarkDialog();
-                        break;
-                    case R.id.action_flash:
-                        Log.i(TAG, "onClick: 刷新按钮被触发");
-                        mWebViewManager.getTop(current).reload();
-                        break;*/
-                    case R.id.action_menu:
-                        Log.i(TAG, "onClick: 菜单按钮被触发");
-                        minset();
-                    default:
-                        break;
-                }
-                return false;
-            }
-        });
-
-    }
-
-    /**
-     * @param menu
-     * @return <p>
-     * optionMenu
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        //isHide默认是false，也就是不隐藏。而setVisible参数是true，菜单项才会显示，所以这里加了“!”
-        menu.findItem(R.id.action_mult).setVisible(!isHide);
-        menu.findItem(R.id.action_menu).setVisible(!isHide);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
     /**
      * 展示多窗口
      */
-    private void mult_dialog() {
+    public void mult_dialog(View v) {
 
         FragmentManager fm = getSupportFragmentManager();
         md = new MultPage_Dialog();
@@ -518,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     /**
      * 底部设置界面
      */
-    private void minset() {
+    public void buttomMenu(View v) {
 
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(current));
@@ -531,6 +460,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     public void searchBar(View v) {
         search_dialog();
+        //openSearchEdit(true);
     }
 
     /**
@@ -543,12 +473,31 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //把当前网页网址传进去
         startActivityForResult(intent, 21);
     }
+    /**
+     * 搜索有两种样式，第一种是打开一个activity第二种是直接在界面上进行。
+     * 这个方法是第二种，直接在界面上进行搜索。
+     */
+    private void openSearchEdit(Boolean b) {
+        //mTextView 搜索框
+        ViewStub stub=findViewById(R.id.viewStub_search_tool);
+        if (stub!=null){
+            mSearchToolView=stub.inflate();
+        }
+        mSearchToolView.setVisibility(View.VISIBLE);
+
+        TextView http_view=mSearchToolView.findViewById(R.id.http_button);
+        TextView www_view=mSearchToolView.findViewById(R.id.www_button);
+        TextView com_view=mSearchToolView.findViewById(R.id.com_button);
+//SearchToolBar
+    }
+
+
 
     /**
      * 把webview的页内文本搜索收起来
      */
-    private void closeSearchText() {
-        inflated.setVisibility(View.INVISIBLE);
+    private void closeMatchesText() {
+        matcheTextView.setVisibility(View.INVISIBLE);
         isOpenedSearchText = false;
         mWebViewManager.clearMatches(current);
     }
@@ -556,18 +505,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     /**
      * 打开页内文本搜索功能
      */
-    public void openSearchText() {
+    public void openMatchesTextView() {
 
         ViewStub stub = findViewById(R.id.viewStub_search);
         if (stub != null) {
-            inflated = stub.inflate();
+            //stubView只inflate一次，所以，inflate之后会变成null，再次inflate会报错
+            matcheTextView = stub.inflate();
         }
-        inflated.setVisibility(View.VISIBLE);
+        matcheTextView.setVisibility(View.VISIBLE);
         isOpenedSearchText = true;
 
-        EditText editText = inflated.findViewById(R.id.textView_search);
-        ImageButton goaHead = inflated.findViewById(R.id.goahead);
-        ImageButton back = inflated.findViewById(R.id.back);
+        EditText editText = matcheTextView.findViewById(R.id.textView_search);
+        ImageButton goaHead = matcheTextView.findViewById(R.id.goahead);
+        ImageButton back = matcheTextView.findViewById(R.id.back);
 
         editText.setText("");//清空文本框内容
         goaHead.setOnClickListener(new View.OnClickListener() {
@@ -620,15 +570,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     }
 
-    /**
-     * 搜索有两种样式，第一种是打开一个activity第二种是直接在界面上进行。
-     * 这个方法是第二种，直接在界面上进行搜索。
-     */
-    private void openSearchEdit(Boolean b) {
-        //mTextView 搜索框
-        Toolbar bar = findViewById(R.id.toolbar1);
-        isHide = b;
-    }
+
 
     /**
      * 检查下载所需的权限，并实现下载接口，以及开启下载服务
@@ -802,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 @Override
                 public void searchText() {
                     //打开搜索webview内的文本
-                    openSearchText();
+                    openMatchesTextView();
                 }
 
                 @Override
