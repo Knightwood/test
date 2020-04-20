@@ -49,11 +49,9 @@
     <!--滑动条的属性-->
     <declare-styleable name="Slider">
         <attr name="sliderHeight" format="dimension"/>
-        <attr name="rectHeight" format="dimension"/>
-        <attr name="messageTime" format="integer"/>
+        <attr name="sliderWidth" format="dimension"/>
+        <attr name="sliderButtonHeight" format="dimension"/>
         <attr name="sliderButtonBackground" format="reference"/>
         <attr name="sliderBackground" format="reference"/>
-        <attr name="sliderRadius" format="dimension"/>
-        <attr name="sliderButtonRadius" format="dimension"/>
     </declare-styleable>
 </resources>
