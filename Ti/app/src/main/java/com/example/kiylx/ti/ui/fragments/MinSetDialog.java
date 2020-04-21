@@ -70,17 +70,16 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         if (dialog != null && dialog.getWindow() != null) {
             Window window = dialog.getWindow();
             WindowManager.LayoutParams lp = window.getAttributes();
-            if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            /*if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //如果是横屏
-
                 lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
             } else {
                 //竖屏
                 lp.gravity = Gravity.BOTTOM;
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
 
-            }
-
+            }*/
+			lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);

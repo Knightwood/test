@@ -21,8 +21,8 @@ public class SettingActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private static int lastSelect = 0;
 
-    //设置页面的tab标题
-    public static String[] tabName = new String[]{"常规", "隐私", "主题", "关于"};
+    //设置页面的tab标题："常规", "隐私", "样式", "关于"
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

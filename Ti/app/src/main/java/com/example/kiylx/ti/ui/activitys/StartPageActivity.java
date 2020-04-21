@@ -195,18 +195,27 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
             searchengineList.put("谷歌搜索", SomeRes.google);
             PreferenceTools.putHashMap2(this, WebviewConf.searchengineList, searchengineList);
         }
+        {
+            //默认不用内置下载器
+            PreferenceTools.putBoolean(this, WebviewConf.customDownload, false);
+            //是否打开就恢复上次网页，默认是false
+            PreferenceTools.putBoolean(this, WebviewConf.resumeData, false);
+            //默认下载路径
+            PreferenceTools.putString(this, WebviewConf.defaultDownloadPath, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
+            //默认最大下载任务数
+            PreferenceTools.putInt(this, WebviewConf.defaultDownloadlimit, 3);
+            //默认下载线程数
+            PreferenceTools.putInt(this, WebviewConf.defaultDownloadthread, 8);
+        }
 
-        //默认不用内置下载器
-        PreferenceTools.putBoolean(this, WebviewConf.customDownload, false);
-        //是否打开就恢复上次网页，默认是false
-        PreferenceTools.putBoolean(this, WebviewConf.resumeData, false);
-        //默认下载路径
-        PreferenceTools.putString(this,WebviewConf.defaultDownloadPath, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
-        //默认最大下载任务数
-        PreferenceTools.putInt(this,WebviewConf.defaultDownloadlimit,3);
-        //默认下载线程数
-        PreferenceTools.putInt(this,WebviewConf.defaultDownloadthread,8);
+        {
+            //使用哪种样式的搜索页面
+            PreferenceTools.putInt(this,SomeRes.searchViewStyle,0);
+            //是否使用搜索匹配
+            PreferenceTools.putInt(this,SomeRes.searchMatcher,0);
 
+
+        }
     }
 
 }
