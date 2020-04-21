@@ -20,7 +20,7 @@ public class FloatingViewTest extends FloatingWindowService {
 
     @Override
     public View setLayout() {
-       /* final EditText button = new EditText(getApplicationContext());
+        final EditText button = new EditText(getApplicationContext());
         button.setText("Floating Window");
         button.setBackgroundColor(Color.BLUE);
         button.setOnClickListener(new View.OnClickListener() {
@@ -35,9 +35,9 @@ public class FloatingViewTest extends FloatingWindowService {
                 a -= 1;
             }
         });
-        return button;*/
+        return button;
 
-        View v= LayoutInflater.from(getApplicationContext()).inflate(R.layout.floating,null,false);
+        /*View v= LayoutInflater.from(getApplicationContext()).inflate(R.layout.floating,null,false);
         final EditText editText=v.findViewById(R.id.edit12);
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +51,7 @@ public class FloatingViewTest extends FloatingWindowService {
                 a -= 1;
             }
         });
-        return v;
+        return v;*/
     }
 
     @Override

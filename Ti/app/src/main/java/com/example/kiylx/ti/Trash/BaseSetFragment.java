@@ -1,12 +1,9 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.preference.PreferenceFragmentCompat;
-
-import com.example.kiylx.ti.Trash.DefaultValue_1;
-import com.example.kiylx.ti.Trash.LiveData_DF_WebView;
 
 /**
  * @创建者 kiylx

@@ -16,15 +16,15 @@ import android.view.Menu;
 
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadServices;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadPack.dFragments.DownloadSettingFragment;
-import com.example.kiylx.ti.downloadPack.dFragments.DownloadFinishFragment;
-import com.example.kiylx.ti.downloadPack.dFragments.DownloadingFragment;
-import com.example.kiylx.ti.downloadPack.dFragments.SimpleDownloadInfo;
+import com.example.kiylx.ti.downloadPack.fragments.DownloadSettingFragment;
+import com.example.kiylx.ti.downloadPack.fragments.DownloadFinishFragment;
+import com.example.kiylx.ti.downloadPack.fragments.DownloadingFragment;
+import com.example.kiylx.ti.downloadPack.fragments.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoViewModel;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.InfoTransformToEntitiy;
-import com.example.kiylx.ti.downloadPack.dFragments.RecyclerViewBaseFragment;
+import com.example.kiylx.ti.downloadPack.fragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.downloadPack.downInterface.DownloadClickMethod;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

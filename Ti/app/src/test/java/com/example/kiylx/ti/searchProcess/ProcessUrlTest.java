@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.searchProcess;
 
-import com.example.kiylx.ti.Tool.ProcessUrl;
+import com.example.kiylx.ti.tool.ProcessUrl;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.corebase;
 
-import com.example.kiylx.ti.Tool.Action;
+import com.example.kiylx.ti.tool.Action;
 
 /**
  * WebViewManager发出更新时，有添加，删除，和更新内容三种行为。

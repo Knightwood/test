@@ -1,7 +1,7 @@
 package com.example.kiylx.ti.downloadPack.downloadInfo_storage;
 
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
-import com.example.kiylx.ti.downloadPack.dFragments.SimpleDownloadInfo;
+import com.example.kiylx.ti.downloadPack.fragments.SimpleDownloadInfo;
 
 /**
  * downloadinfo和downloadentity互相转换的类

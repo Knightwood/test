@@ -5,7 +5,7 @@ android {
     defaultConfig {
         applicationId "com.example.kiylx.ti"
         minSdkVersion 22
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -24,6 +24,7 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    buildToolsVersion = '29.0.3'
 }
 
 dependencies {

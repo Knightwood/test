@@ -22,8 +22,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Tool.HashMapProcess;
-import com.example.kiylx.ti.Tool.PreferenceTools;
+import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 

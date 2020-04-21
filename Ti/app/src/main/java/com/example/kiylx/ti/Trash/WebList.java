@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 //一个特殊的链表，只在开头不断的放入元素。
 
 import android.webkit.WebView;

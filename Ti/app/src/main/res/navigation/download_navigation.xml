@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/downloadingFragment"
-        android:name="com.example.kiylx.ti.downloadPack.dFragments.DownloadingFragment"
+        android:name="com.example.kiylx.ti.downloadPack.fragments.DownloadingFragment"
         android:label="DownloadingFragment" />
     <fragment
         android:id="@+id/downloadFinishFragment"
-        android:name="com.example.kiylx.ti.downloadPack.dFragments.DownloadFinishFragment"
+        android:name="com.example.kiylx.ti.downloadPack.fragments.DownloadFinishFragment"
         android:label="DownloadFinishFragment" />
     <fragment
         android:id="@+id/downloadSettingFragment"
-        android:name="com.example.kiylx.ti.downloadPack.dFragments.DownloadSettingFragment"
+        android:name="com.example.kiylx.ti.downloadPack.fragments.DownloadSettingFragment"
         android:label="download_setting_fragment"
         tools:layout="@layout/download_setting_fragment" />
 </navigation>

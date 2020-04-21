@@ -23,11 +23,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.managerCore.AboutBookmark;
-import com.example.kiylx.ti.managerCore.BookMarkFolderManager;
-import com.example.kiylx.ti.ui.mFragments.DeleteTag_Dialog;
-import com.example.kiylx.ti.ui.mFragments.Bookmark_Dialog;
-import com.example.kiylx.ti.ui.mFragments.EditBookmarkFolder_Dialog;
+import com.example.kiylx.ti.managercore.AboutBookmark;
+import com.example.kiylx.ti.managercore.BookMarkFolderManager;
+import com.example.kiylx.ti.ui.fragments.DeleteTag_Dialog;
+import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
+import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.myInterface.RefreshBookMark;
 import com.example.kiylx.ti.R;

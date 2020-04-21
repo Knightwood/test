@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 
 import android.content.Context;
 import android.os.Build;

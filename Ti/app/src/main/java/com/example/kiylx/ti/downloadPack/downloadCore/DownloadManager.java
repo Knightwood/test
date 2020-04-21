@@ -6,14 +6,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.kiylx.ti.Tool.PreferenceTools;
+import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.InfoTransformToEntitiy;
-import com.example.kiylx.ti.Tool.EventMessage;
+import com.example.kiylx.ti.tool.EventMessage;
 import com.example.kiylx.ti.downloadPack.downInterface.DOWNLOAD_TASK_FUN;
 
 import org.greenrobot.eventbus.EventBus;

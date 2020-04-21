@@ -21,12 +21,12 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.example.kiylx.ti.managerCore.AboutHistory;
-import com.example.kiylx.ti.ui.mFragments.Bookmark_Dialog;
+import com.example.kiylx.ti.managercore.AboutHistory;
+import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.myInterface.OpenOneWebpage;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Tool.dateProcess.KindsofDate;
-import com.example.kiylx.ti.Tool.dateProcess.TimeProcess;
+import com.example.kiylx.ti.tool.dateProcess.KindsofDate;
+import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.google.android.material.chip.ChipGroup;
 

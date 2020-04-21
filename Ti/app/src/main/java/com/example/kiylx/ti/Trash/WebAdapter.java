@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 
 import android.view.LayoutInflater;
 import android.view.View;

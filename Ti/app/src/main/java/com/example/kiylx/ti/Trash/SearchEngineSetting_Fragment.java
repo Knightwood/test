@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,14 +23,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Tool.HashMapProcess;
-import com.example.kiylx.ti.Tool.PreferenceTools;
+import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
-import com.example.kiylx.ti.Tool.Action;
+import com.example.kiylx.ti.tool.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
-import com.example.kiylx.ti.ui.mFragments.EditText_Dialog;
+import com.example.kiylx.ti.ui.fragments.EditText_Dialog;
 import com.example.kiylx.ti.myInterface.EditTextInterface;
 import com.example.kiylx.ti.myInterface.Setmessage;
 import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDao;

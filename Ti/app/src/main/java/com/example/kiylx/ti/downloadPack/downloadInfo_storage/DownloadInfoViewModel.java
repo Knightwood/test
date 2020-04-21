@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
-import com.example.kiylx.ti.downloadPack.dFragments.SimpleDownloadInfo;
+import com.example.kiylx.ti.downloadPack.fragments.SimpleDownloadInfo;
 
 import java.util.List;
 

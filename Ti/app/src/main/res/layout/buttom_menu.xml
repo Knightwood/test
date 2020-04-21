@@ -6,29 +6,29 @@
 
     <EditText
         android:id="@+id/search_edittext"
-        style="@android:style/Widget.Material.EditText"
+        style="@android:style/Widget.Material.AutoCompleteTextView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="5dp"
         android:layout_weight="0.8"
-        android:background="#F4DCDBDB"
+        android:background="#F4F6F2F2"
         android:focusableInTouchMode="false"
         android:inputType="text"
         android:onClick="searchBar"
-        android:padding="0dp"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textColor="@android:color/black"
-        android:textColorHighlight="#00E3C7C7"
+        android:textColorHighlight="#FFD54F"
         android:textColorHint="@android:color/black"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mult_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+    <!--android:focusableInTouchMode="false"-->
     <ImageView
         android:id="@+id/mult_button"
         android:layout_width="35dp"

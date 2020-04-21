@@ -7,7 +7,7 @@
     android:focusable="auto">
 
     <include
-        layout="@layout/search_details"
+        layout="@layout/search_tool"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/search_column"

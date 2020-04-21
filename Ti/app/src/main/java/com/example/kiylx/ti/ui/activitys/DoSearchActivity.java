@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Window;
 
-import com.example.kiylx.ti.Tool.ProcessUrl;
-import com.example.kiylx.ti.ui.mFragments.Fragment_DoSearch;
+import com.example.kiylx.ti.tool.ProcessUrl;
+import com.example.kiylx.ti.ui.fragments.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
 public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInterfaceListener {
@@ -47,7 +47,7 @@ public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSe
 
         Intent intent = new Intent();
 
-        intent.putExtra(TEXR_OR_URL, ProcessUrl.processString(s));
+        intent.putExtra(TEXR_OR_URL, ProcessUrl.processString(s,getApplicationContext()));
         setResult(RESULT_OK, intent);
         finish();
     }

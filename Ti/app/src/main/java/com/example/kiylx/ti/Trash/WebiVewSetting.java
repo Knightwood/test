@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.Trash;
+package com.example.kiylx.ti.trash;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

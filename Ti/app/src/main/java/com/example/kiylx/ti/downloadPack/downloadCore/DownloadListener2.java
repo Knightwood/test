@@ -5,10 +5,10 @@ import android.webkit.DownloadListener;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.kiylx.ti.Tool.PreferenceTools;
+import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
-import com.example.kiylx.ti.downloadPack.dFragments.DownloadDialog;
+import com.example.kiylx.ti.downloadPack.fragments.DownloadDialog;
 
 /**
  * 启动自己写的多线程下载其进行下载

@@ -25,8 +25,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Tool.HashMapProcess;
-import com.example.kiylx.ti.Tool.PreferenceTools;
+import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 
 import java.util.HashMap;
