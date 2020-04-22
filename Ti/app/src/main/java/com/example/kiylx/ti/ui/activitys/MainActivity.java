@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.ui.activitys;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.Editable;
@@ -25,6 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -33,13 +37,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.crystal.customview.Slider.Slider;
+import com.example.kiylx.ti.managercore.CustomWebchromeClient;
+import com.example.kiylx.ti.myInterface.FileUpload;
 import com.example.kiylx.ti.tool.SavePNG_copyText;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.databinding.ActivityMainBinding;
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadPack.fragments.DownloadDialog;
 import com.example.kiylx.ti.tool.EventMessage;
@@ -60,14 +65,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends AppCompatActivity implements MultiDialog_Functions {
@@ -86,24 +83,26 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
 
-    private FrameLayout f1;
+    private FrameLayout f1;//放置webview的容器
     private EditText mTextView;//主界面的工具栏里的搜索框
-    private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
+    //private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
     private View matcheTextView;//搜索webview文字的搜索框
     private MultPage_Dialog md;//多窗口dialogFragment
     private HandleClickedLinks handleClickedLinks;
     private ControlWebView controlInterface;
     private static boolean seviceBund = false;//绑定服务时把它改为true；
-    private boolean isHide;//控制toolbar上菜单的显示与隐藏
+    //private boolean isHide;//控制toolbar上菜单的显示与隐藏
     private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
     private boolean isOpenedEdit = false;//是否打开了搜索栏上的搜索框
     private ImageView menuButton;//底部菜单按钮
     private ImageView multButton;//多窗口按钮
     private ProcessUrl mProcessUrl;//处理字符串的类
     private static boolean isVertical;//当前屏幕是竖直状态还是横屏状态，竖直是true
+    private FileUpload iupload;//上传文件接口
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
+    private ValueCallback<Uri[]> fileUploadCallBack;
 
 
     @Override
@@ -141,22 +140,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             f1.addView(webView);
         }
 
-        //工具栏
-
-
-        Log.d("lifecycle", "onCreate()");
-
-        //接口回调
-        openwebpage_fromhistoryORbookmark();
-        useMultPage_DialogFragmentInterface();
-        downloadDialog_startDownload();
-
         if (savedInstanceState != null) {
             //取回保存的数据
             mTextView.setText(savedInstanceState.getString(WEBTITLE));
             current = savedInstanceState.getInt(CURRENTINT);
             //isOpenedEdit = savedInstanceState.getBoolean(OPENED_EDIT);
         }
+        Log.d("lifecycle", "onCreate()");
+
+//接口回调
+        openwebpage_fromhistoryORbookmark();
+        useMultPage_DialogFragmentInterface();
+        downloadDialog_startDownload();
+        implFileUpload();//实现文件上传
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
@@ -244,12 +240,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     /**
      * 旋转屏幕会重建，所以获取横竖屏状态，因为横屏时使用自己写的下载器时，dialogfragment会报错，所以横屏时使用系统内置下载器
+     *
      * @return true时是竖屏，false是横屏
      */
     public static boolean IsVertical() {
         return isVertical;
 
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -734,6 +732,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
+            Log.d(TAG, "onActivityResult: 结果失败");
+            if (requestCode==2020){
+                cancelUpLoad();//未选择任何文件，消费掉callback。
+            }
             return;
         }
         if (requestCode == 21) {
@@ -743,6 +745,21 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
             //mConverted_lists.setWEB_feature_1(current, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
+        }
+        if (requestCode == 2020) {
+            if (fileUploadCallBack == null) {
+                return;
+            }
+            Uri result = (data == null || resultCode != RESULT_OK) ? null : data.getData();
+            if (result != null) {
+                fileUploadCallBack.onReceiveValue(new Uri[]{result});
+            } else {
+                Log.d(TAG, "onActivityResult: 选择文件结果，result是null");
+                fileUploadCallBack.onReceiveValue(new Uri[]{});
+            }
+            fileUploadCallBack = null;
+            //fileUploadCallBack.onReceiveValue(CustomWebchromeClient.FileChooserParams.parseResult(2020,data));
+            Log.d(TAG, "onActivityResult: " + data.getData().toString());
         }
     }
 
@@ -935,6 +952,70 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
 
     }
+
+
+    /**
+     * 上传文件方法
+     */
+    private void implFileUpload() {
+        if (iupload == null) {
+            iupload = new FileUploads();
+        }
+        mWebViewManager.setFileupload(iupload);
+    }
+
+    /**
+     * 文件上传接口的实现
+     */
+    class FileUploads implements FileUpload {
+
+        @Override
+        public boolean upload(ValueCallback<Uri[]> filePathCallback, Intent intent) {
+            cancelUpLoad();//清理一次请求，防止上一次的没有消费掉而出错
+            fileUploadCallBack = filePathCallback;
+
+            new AlertDialog.Builder(MainActivity.this).
+                    setTitle("选择文件").
+                    setMessage("请选择需要的文件,如不需要，请取消。")
+                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                startActivityForResult(intent, 2020);
+                            } catch (ActivityNotFoundException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getBaseContext(), "Cannot Open File Chooser", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            return;
+                        }
+                    })
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            fileUploadCallBack.onReceiveValue(null);
+                            fileUploadCallBack=null;
+                        }
+                    }).show();
+            return true;
+
+
+        }
+
+    }
+
+    /**
+     * ValueCallback<Uri[]> filePathCallback这个东西，在没有清理的前提下再次执行会出错。
+     * 所以这里清理掉上次的残留
+     */
+    private void cancelUpLoad(){
+
+        if (fileUploadCallBack != null) {
+            fileUploadCallBack.onReceiveValue(null);
+            fileUploadCallBack = null;
+        }
+    }
+
 
 }
 /*

@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kiylx.ti.myInterface.FileUpload;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -62,8 +63,8 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         mHandleClickedLinks = handleClickedLinks;
 
-        implUpdateWebInfo();
-        //传入实现了接口的实例变量
+        implUpdateWebInfo();//实现接口
+        //传给它们实现了的接口
         CustomWebviewClient.setInterface(mUpdateInterface);
         CustomWebchromeClient.setInterface(mUpdateInterface);
     }
@@ -465,12 +466,13 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         settings.setDisplayZoomControls(false);
         //设置在WebView内部是否允许访问文件
         settings.setAllowFileAccess(true);
-        settings.setNeedInitialFocus(true);
-        settings.setBlockNetworkImage(false);
+        //settings.setNeedInitialFocus(true);
+        //settings.setBlockNetworkImage(false);
         //设置WebView的访问UserAgent
         settings.setUserAgentString(PreferenceTools.getString(context, WebviewConf.userAgent));
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
+        settings.setAllowContentAccess(false);//内容Url访问允许WebView从安装在系统中的内容提供者载入内容。
         // 开启Application H5 Caches 功能
         settings.setAppCacheEnabled(true);
         // 设置编码格式
@@ -527,5 +529,14 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         webViewArrayList.get(pos).findNext(false);
     }
 
-
+    /**
+     * 把实现的文件上传接口传递给webChromeClient
+     * @param iupload
+     */
+    public void setFileupload(FileUpload iupload) {
+        if (customWebchromeClient==null){
+            return;
+        }
+        customWebchromeClient.setFileUpload(iupload);
+    }
 }

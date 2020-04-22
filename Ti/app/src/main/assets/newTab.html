@@ -13,7 +13,39 @@
         function showUserAgent() {
             document.getElementById("userAgentDiv").innerHTML = navigator.userAgent;
         }
+</script>
+</body>
+<body>
+<meta name="viewport" content="width=device-width,maximun-scale=1,mininum-scale=1,user-scale=1">
+<tile>文件选择</tile>
+<style>
+        .filechooser {
+            width: 95%;
+            height: 50px;
+            -webkit-background-clip: border-box;
+        }
+
+</style>
+<script>
+        var display = function(){
+            var path = document.getElementById("file_chooser").textContent;
+            document.getElementById("filechooser_display").innerHTML("<b>"+path+"</b>");
+        }
 
 </script>
+
+<body>
+<ul class="listview">
+    <li class="listviewItem">
+        <fieldset class="itemset">
+            <input class="filechooser" id="file_chooser" type="file" placeholder="选择文件"
+                   onchange="display()" oninput="display()"><br>
+            <p id="filechooser_display"></p>
+            <div class="line_black"></div>
+        </fieldset>
+    </li>
+</ul>
+</body>
+
 </body>
 </html>

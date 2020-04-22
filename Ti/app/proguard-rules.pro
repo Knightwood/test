@@ -32,3 +32,7 @@
 #网络上还添加了两行
 -dontwarn com.bumptech.glide.**
 -keep class com.bumptech.glide.**{*;}
+#WebChromeClient中，openFileChooser()是系统API，混淆了openFileChooser()，会导致无法回调openFileChooser()
+-keepclassmembers class * extends android.webkit.WebChromeClient{
+    public void openFileChooser(...);
+}
