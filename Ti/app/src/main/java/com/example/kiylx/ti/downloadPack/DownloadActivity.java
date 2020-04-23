@@ -26,6 +26,7 @@ import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoViewMo
 import com.example.kiylx.ti.downloadPack.downloadInfo_storage.InfoTransformToEntitiy;
 import com.example.kiylx.ti.downloadPack.fragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.downloadPack.downInterface.DownloadClickMethod;
+import com.example.kiylx.ti.trash.BaseSetFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -46,11 +47,14 @@ public class DownloadActivity extends AppCompatActivity {
     private int lastSelectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
     BottomNavigationView bottomView;//底部导航栏
+    private RecyclerViewBaseFragment currentFragment;
+    FragmentManager manager;
+
+
     private RecyclerViewBaseFragment fragment1;
     private RecyclerViewBaseFragment fragment2;
     private RecyclerViewBaseFragment fragment3;
-    //private RecyclerViewBaseFragment list[] = new RecyclerViewBaseFragment[4];
-    FragmentManager manager;
+
 
 
     public DownloadActivity() {
@@ -150,17 +154,19 @@ public class DownloadActivity extends AppCompatActivity {
         unbindService(connection);
     }
 
+
     /**
      * 添加正在下载fragment到downloadavtivity的主界面.
      * 底部导航栏默认就是第一项.
      */
     private void addFragment() {
-        FragmentTransaction beginTransaction = manager.beginTransaction();
-        ;
+        currentFragment=DownloadingFragment.newInstance(controlMethod);
+        manager.beginTransaction().add(R.id.downloadfragmentcontainer,currentFragment,"downloading").commit();
+        /*FragmentTransaction beginTransaction = manager.beginTransaction();
         if (fragment1 == null) {
             fragment1 = DownloadingFragment.newInstance(controlMethod);
         }
-        beginTransaction.add(R.id.downloadfragmentcontainer, fragment1).commit();
+        beginTransaction.add(R.id.downloadfragmentcontainer, fragment1).commit();*/
 
     }
 
@@ -189,6 +195,31 @@ public class DownloadActivity extends AppCompatActivity {
         }
 
     }
+
+    private void switchFr(int i, String tag){
+        lastSelectPage = i;
+        if (i!=2){
+
+        }
+
+        if (currentFragment!=null){
+            manager.beginTransaction().hide(currentFragment).commit();
+        }
+        currentFragment= (RecyclerViewBaseFragment) manager.findFragmentByTag(tag);
+        if (currentFragment==null){
+            switch (tag){
+                case "downloading":
+                    currentFragment=DownloadingFragment.newInstance(controlMethod);
+                    break;
+                case "downloadFinish":
+                    currentFragment=DownloadFinishFragment.newInstance(controlMethod);
+                    break;
+                case "downloadSetting":
+                    //currentFragment=DownloadSettingFragment.newInstance();
+            }
+        }
+    }
+
 
     /**
      * 测试方法

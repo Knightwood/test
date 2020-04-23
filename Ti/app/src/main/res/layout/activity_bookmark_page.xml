@@ -33,62 +33,81 @@
     </HorizontalScrollView>
     -->
 
-    <SearchView
-        android:id="@+id/search_Bookmark"
-        android:layout_width="wrap_content"
+    <!--<androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@null"
-        app:layout_constraintBottom_toTopOf="@+id/show_BookmarkItem"
-        app:layout_constraintEnd_toStartOf="@+id/bookmarkSpinner"
+        app:layout_constraintBottom_toTopOf="@id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <SearchView
+            android:id="@+id/search_Bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </SearchView>
+
+        <Spinner
+            android:id="@+id/bookmarkSpinner"
+            style="@android:style/Widget.Material.Light.Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="698dp"
+            android:spinnerMode="dropdown"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_editor_absoluteX="161dp" />
+
+        <TextView
+            android:id="@+id/edit_Bookmarkfolder"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/edit1"
+            android:textAlignment="center"
+            android:textColor="#303230"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <include
+        layout="@layout/bookmark_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/bookmarkSpinner"
-        style="@android:style/Widget.Material.Light.Spinner"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:spinnerMode="dropdown"
-        android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@+id/show_BookmarkItem"
-        app:layout_constraintEnd_toStartOf="@+id/edit_Bookmarkfolder"
-        app:layout_constraintStart_toEndOf="@+id/search_Bookmark"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/edit_Bookmarkfolder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:text="@string/edit1"
-        android:textAlignment="center"
-        android:textColor="#303230"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/show_BookmarkItem"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bookmarkSpinner"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="50dp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/show_BookmarkItem"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="45dp"
         android:paddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/guideline5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

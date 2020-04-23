@@ -14,14 +14,18 @@ import com.example.kiylx.ti.ui.settings.PrivacyFragment;
 import com.example.kiylx.ti.ui.settings.ThemeFragment;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.List;
+
 public class SettingActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private FrameLayout fragmentContainer;
-    //private List<Fragment> fragments;
     private FragmentManager fragmentManager;
     private static int lastSelect = 0;
+    private Fragment currentFragment;
+    private String[] fragmentsTag = new String[]{"general", "privacy", "stylel", "about"};
 
-    //设置页面的tab标题："常规", "隐私", "样式", "关于"
+    //   设置页面的tab标题："常规",   "隐私",    "样式",  "关于"
+    // fragment 的tag ："general","privacy","stylel","about"
 
 
     @Override
@@ -39,15 +43,8 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        /*if (fragments == null || fragments.isEmpty()) ;
-        {
-            fragments = new ArrayList<>();
-            fragments.add(GeneralFragment.newInstance());
-            fragments.add(PrivacyFragment.newInstance());
-            fragments.add(ThemeFragment.newInstance());
-            fragments.add(AboutFragment.newInstance());
-        }*/
-        fragmentManager.beginTransaction().add(R.id.setfragment_container, GeneralFragment.newInstance()).commit();
+       currentFragment=GeneralFragment.newInstance();
+        fragmentManager.beginTransaction().add(R.id.setfragment_container,currentFragment ,"general").commit();
 
     }
 
@@ -58,19 +55,19 @@ public class SettingActivity extends AppCompatActivity {
                 switch (tab.getPosition()) {
                     case 0:
                         if (lastSelect != 0)
-                            switchFragment(0);
+                            switchFragment(0,fragmentsTag[0]);
                         break;
                     case 1:
                         if (lastSelect != 1)
-                            switchFragment(1);
+                            switchFragment(1,fragmentsTag[1]);
                         break;
                     case 2:
                         if (lastSelect != 2)
-                            switchFragment(2);
+                            switchFragment(2,fragmentsTag[2]);
                         break;
                     case 3:
                         if (lastSelect != 3)
-                            switchFragment(3);
+                            switchFragment(3,fragmentsTag[3]);
                         break;
                 }
             }
@@ -87,7 +84,37 @@ public class SettingActivity extends AppCompatActivity {
 
     }
 
-    private void switchFragment(int i) {
+    private void switchFragment(int i,String tag) {
+        lastSelect = i;
+        FragmentManager manager = getSupportFragmentManager();
+        if (currentFragment!=null){
+            manager.beginTransaction().hide(currentFragment).commit();
+        }
+        currentFragment=manager.findFragmentByTag(tag);
+        if (currentFragment==null){
+            switch (tag) {
+                case "general":
+                    currentFragment = GeneralFragment.newInstance();
+                    break;
+                case "privacy":
+                    currentFragment = PrivacyFragment.newInstance();
+                    break;
+                case "stylel":
+                    currentFragment = ThemeFragment.newInstance();
+                    break;
+                case "about":
+                    currentFragment = AboutFragment.newInstance();
+                    break;
+            }
+
+            manager.beginTransaction().add(R.id.setfragment_container,currentFragment,tag).commit();
+
+        }else{
+            manager.beginTransaction().show(currentFragment).commit();
+        }
+    }
+}
+/*private void switchFragment(int i) {
         lastSelect = i;
         FragmentManager manager = getSupportFragmentManager();
         Fragment fragment;
@@ -110,5 +137,4 @@ public class SettingActivity extends AppCompatActivity {
                 break;
         }
 
-    }
-}
+    }*/
