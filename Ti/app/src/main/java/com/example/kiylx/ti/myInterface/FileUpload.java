@@ -10,5 +10,5 @@ import android.webkit.WebChromeClient;
  * 创建时间 2020/4/22 16:29
  */
 public interface FileUpload {
-    boolean upload(ValueCallback<Uri[]> filePathCallback, Intent intent);
+    boolean upload(ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams);
 }

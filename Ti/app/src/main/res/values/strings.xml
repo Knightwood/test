@@ -95,5 +95,8 @@
     <string name="backFolder">上一级</string>
     <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段。</string>
     <string name="theStyle">样式</string>
+    <string name="use_old_search_tool">使用新的搜索界面样式</string>
+    <string name="use_search_matcher" >使用搜索匹配</string>
+    <string name="save_html_mode">使用系统的上传文件方式</string>
 
 </resources>

@@ -502,14 +502,21 @@ public class DownloadManager {
         }
     }
 
+    /**
+     * @param info 把下载数据写入数据库
+     */
     private void insertData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
-
+    /**
+     * @param info 更新下载数据库
+     */
     private void updateData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info));
     }
-
+    /**
+     * @param info 把数据从数据库删除
+     */
     private void deleteData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info));
     }
@@ -534,24 +541,36 @@ public class DownloadManager {
         return result;
     }
 
+    /**
+     * 在线程中执行
+     * @param info 把下载数据写入数据库
+     */
     private void insertInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, this::insertData);
         baseThread.start();
     }
 
+    /**
+     * 在线程中执行
+     * @param info 把数据从数据库删除
+     */
     private void deleteInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, this::deleteData);
         baseThread.start();
     }
 
+    /**
+     * 在线程中执行
+     * @param info 更新下载数据库
+     */
     private void updateInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, this::updateData);
+        Thread baseThread = new BaseThread(info, this::updateData);//方法引用
         baseThread.start();
 
     }
 
     /**
-     * 用于对info进行一些数据库操作
+     * 用于对info进行一些数据库操作的接口
      */
     public interface updateItem {
         void update(DownloadInfo info);

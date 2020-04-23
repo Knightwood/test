@@ -19,11 +19,11 @@ public class DownloadEntity {
      * @param pause            暂停标志
      * @param cancel           取消下载
      * @param waitDownload     等待下载
-     * @param threadNum        所用的线程数
+     * @param threadNum        所用的线程数，如果是离线网页，则值是-2
      * @param splitStart       分块下载的开始位置
      * @param splitEnd         分块下载的结束位置
      * @param contentLength    文件总大小
-     * @param currentLength     已下载的文件大小
+     * @param currentLength    已下载的文件大小
      * @param blockSize        分块大小
      * @param downloadSuccess  下载成功的标志
      */
@@ -51,6 +51,16 @@ public class DownloadEntity {
 
 
     }
+
+    public DownloadEntity(String name, String path, int threadNum) {
+        this.filename = name;
+        this.path = path;
+        this.threadNum = -2;
+        this.downloadSuccess="true";
+    }
+
+    /*@PrimaryKey(autoGenerate = true)
+    public int _id;*/
 
     @PrimaryKey
     @NonNull

@@ -105,6 +105,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 controlWebViewInterface.usePcMode();
                 break;
             case R.id.hideSelf:
+                controlWebViewInterface.saveWeb();
                 break;
             case R.id.addBookmark:
                 controlWebViewInterface.addtobookmark(info.getUrl());

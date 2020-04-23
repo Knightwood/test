@@ -14,14 +14,24 @@ import android.widget.Toast;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadPack.base.DownloadInfo;
 import com.example.kiylx.ti.downloadPack.downInterface.DownloadClickMethod;
+import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
+import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadFinishFragment extends RecyclerViewBaseFragment {
-    private static final String TAG="下载系列fragment";
+    private static final String TAG="下载完成fragment";
     private static List<DownloadInfo> completeList;
     private static DownloadClickMethod controlInterface;
+
+
+
+    public static DownloadFinishFragment newInstance(DownloadClickMethod method){
+        controlInterface=method;
+        return new DownloadFinishFragment();
+    }
 
     @Override
     public int getItemResId() {
@@ -37,12 +47,22 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
             completeList=controlInterface.getAllComplete();
             Log.d(TAG, "下载完成列表: "+completeList.size());
         }
-        return completeList;
-    }
 
-    public static DownloadFinishFragment newInstance(DownloadClickMethod method){
-        controlInterface=method;
-        return new DownloadFinishFragment();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<DownloadEntity> list=new ArrayList<>();
+                list=DownloadInfoDatabaseUtil.getDao(getActivity()).getAll();
+                for (DownloadEntity e:list
+                ) {
+                    Log.d(TAG, "downloadInfoList: 数量"+e.filename);
+                }
+            }
+        }).start();
+
+
+
+        return completeList;
     }
 
     public DownloadFinishFragment(){

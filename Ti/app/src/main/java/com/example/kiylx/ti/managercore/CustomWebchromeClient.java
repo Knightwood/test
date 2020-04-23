@@ -125,10 +125,7 @@ public class CustomWebchromeClient extends WebChromeClient {
      */
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-
-        Intent intent=fileChooserParams.createIntent();
-        Log.d(TAG, "onShowFileChooser: type:"+intent.getType()+"action:"+intent.getAction()+"category:"+intent.getCategories());
-        return iupload.upload(filePathCallback,intent);
+        return iupload.upload(filePathCallback,fileChooserParams);
 
     }
 

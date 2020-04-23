@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Switch
+        android:id="@+id/oldSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/setting_item"
+        android:text="@string/use_old_search_tool"
+        android:textSize="16sp" />
+
+    <Switch
+        android:id="@+id/searchMatcherVview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/setting_item"
+        android:text="@string/use_search_matcher"
+        android:textSize="16sp" />
+
+    <Switch
+        android:id="@+id/newUploadView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/setting_item"
+        android:checked="true"
+        android:text="@string/save_html_mode"
+        android:textSize="16sp" />
 </LinearLayout>

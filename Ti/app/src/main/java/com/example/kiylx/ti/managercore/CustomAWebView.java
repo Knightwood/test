@@ -3,6 +3,7 @@ package com.example.kiylx.ti.managercore;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,8 +11,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.URLUtil;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
+import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
+import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
 import com.example.kiylx.ti.myInterface.HandleClickedLinks;
 
@@ -97,9 +104,52 @@ public class CustomAWebView extends WebView {
         return super.onInterceptTouchEvent(event);
     }
 
+    /**
+     * 处理长按不同的url行为
+     * @param handleClickLinks
+     */
     public void setHandleClickLinks(HandleClickedLinks handleClickLinks) {
         this.handlerClick = handleClickLinks;
     }
+
+    @Override
+    public void saveWebArchive(String filename) {
+        super.saveWebArchive(filename);
+        /*BaseThread baseThread= new BaseThread(new DownloadEntity(filename.substring(filename.lastIndexOf("/"),filename.lastIndexOf(".")),filename,-2),this::insertDownloadInfo);
+        baseThread.start();*/
+        Toast.makeText(getContext(),"以保存至Download文件夹",Toast.LENGTH_LONG).show();
+        Log.d(TAG, "saveWebArchive1: "+filename);
+    }
+
+    @Override
+    public void saveWebArchive(String basename, boolean autoname, @Nullable ValueCallback<String> callback) {
+        super.saveWebArchive(basename, autoname, callback);
+        Log.d(TAG, "saveWebArchive:2 ");
+    }
+
+    //把离线保存的网页信息保存在下载记录数据库
+    /*public interface Method{
+        public void method(DownloadEntity entity);
+    }
+
+    class BaseThread extends Thread{
+        Method method;
+        DownloadEntity entity;
+
+        public BaseThread(DownloadEntity entity,Method method){
+            this.method=method;
+            this.entity=entity;
+        }
+        @Override
+        public void run() {
+            method.method(entity);
+        }
+    }
+
+    private void insertDownloadInfo(DownloadEntity entity){
+        DownloadInfoDatabaseUtil.getDao(getContext()).insertAll(entity);
+    }*/
+
 //===============================================================================
 
     @Override

@@ -44,7 +44,7 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                Intent intent=new Intent(StartPageActivity.this,MainActivity.class);
+                Intent intent = new Intent(StartPageActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -76,7 +76,6 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
      *          这时如果写入true，则意味着应用已安装，权限之类的也已经配置好了，可以打开mainactivity了。
      *          之后再打开应用，这个值是true，就不会再打开“启动页”配置权限，初始化配置信息之类的了。
      *          如果应用升级了，还可以使用它引导到启动页
-     *
      */
     private void writeInstalled(boolean b) {
         PreferenceTools.putBoolean(this, "Installed", b);
@@ -209,12 +208,12 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
         }
 
         {
-            //使用哪种样式的搜索页面
-            PreferenceTools.putInt(this,SomeRes.searchViewStyle,0);
+            //使用新的样式的搜索页面
+            PreferenceTools.putBoolean(this, SomeRes.SearchViewStyle, true);
             //是否使用搜索匹配
-            PreferenceTools.putInt(this,SomeRes.searchMatcher,0);
-
-
+            PreferenceTools.putBoolean(this, SomeRes.searchMatcher, false);
+            //是否使用默认模式（不使用fileChooserParams.createIntent();而是自己指定intent的type是“*/*”,以匹配所有类型文件）上传文件,默认不使用新模式
+            PreferenceTools.putBoolean(this, WebviewConf.uploadMode, true);
         }
     }
 

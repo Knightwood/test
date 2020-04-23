@@ -29,4 +29,5 @@ public class WebviewConf {
     public static String defaultDownloadPath="def_download_path";//下载路径
     public static String defaultDownloadlimit="def_download_limit";//下载数量限制
     public static String defaultDownloadthread="def_download_thread";//下载线程数
+    public static String uploadMode="def_upload_mode";//false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。
 }

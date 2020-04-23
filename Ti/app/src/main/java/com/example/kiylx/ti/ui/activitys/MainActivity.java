@@ -17,6 +17,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,7 +38,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.crystal.customview.Slider.Slider;
-import com.example.kiylx.ti.managercore.CustomWebchromeClient;
 import com.example.kiylx.ti.myInterface.FileUpload;
 import com.example.kiylx.ti.tool.SavePNG_copyText;
 import com.example.kiylx.ti.tool.PreferenceTools;
@@ -48,6 +48,7 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadPack.downloadCore.DownloadServices;
 import com.example.kiylx.ti.downloadPack.fragments.DownloadDialog;
 import com.example.kiylx.ti.tool.EventMessage;
+import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.MultPage_Dialog;
 import com.example.kiylx.ti.myInterface.ActionSelectListener;
@@ -64,6 +65,8 @@ import com.example.kiylx.ti.tool.ProcessUrl;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -99,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private ProcessUrl mProcessUrl;//处理字符串的类
     private static boolean isVertical;//当前屏幕是竖直状态还是横屏状态，竖直是true
     private FileUpload iupload;//上传文件接口
+    private boolean useNewSearchStyle=true;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
@@ -114,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //实现处理webview长按事件的接口
         achieveHandlerClickInterface();
         //实现控制webview的接口
-        implControlWebview();
+        implControlexplorer();
         //获取WebViewManager的实例
         mWebViewManager = WebViewManager.getInstance(MainActivity.this, handleClickedLinks);
 
@@ -153,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
         implFileUpload();//实现文件上传
+
+        useNewSearchStyle=PreferenceTools.getBoolean(this,SomeRes.SearchViewStyle,true);
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
@@ -499,10 +505,15 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     /**
      * 搜索框代码,由activity_main.xml中的搜索框调用
+     * false是旧样式
+     * true是新样式
      */
     public void searchBar(View v) {
-        //search_dialog();
-        openSearchEdit();
+        if (useNewSearchStyle){
+            openSearchEdit();
+        }else {
+            search_dialog();
+        }
 
     }
 
@@ -733,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
             Log.d(TAG, "onActivityResult: 结果失败");
-            if (requestCode==2020){
+            if (requestCode == 2020) {
                 cancelUpLoad();//未选择任何文件，消费掉callback。
             }
             return;
@@ -908,7 +919,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     /**
      * 实现一些控制网页的方法，用于minsetDialog或者长按菜单
      */
-    private void implControlWebview() {
+    private void implControlexplorer() {
         if (controlInterface == null) {
             controlInterface = new ControlWebView() {
                 @Override
@@ -948,6 +959,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 public void newPage(String url) {
                     newTab(url);
                 }
+
+                @Override
+                public void saveWeb() {
+                    WebView tmp=mWebViewManager.getTop(current);
+
+                    File file=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),tmp.getTitle()+ TimeProcess.getTime() +".mht");
+                    tmp.saveWebArchive(file.getAbsolutePath());
+                }
             };
         }
 
@@ -968,35 +987,28 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 文件上传接口的实现
      */
     class FileUploads implements FileUpload {
+        boolean defUploadMode = PreferenceTools.getBoolean(getApplicationContext(), WebviewConf.uploadMode, true);
 
         @Override
-        public boolean upload(ValueCallback<Uri[]> filePathCallback, Intent intent) {
+        public boolean upload(ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
             cancelUpLoad();//清理一次请求，防止上一次的没有消费掉而出错
             fileUploadCallBack = filePathCallback;
+            try {
+                if (!defUploadMode) {
+                    Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent2.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent2.setType("*/*");
+                    startActivityForResult(Intent.createChooser(intent2, "上传文件"), 2020);
+                } else {
+                    Intent intent=fileChooserParams.createIntent();
+                    Log.d(TAG, "onShowFileChooser: type:"+intent.getType()+" action:"+intent.getAction()+" category:"+intent.getCategories());
+                    startActivityForResult(Intent.createChooser(intent, "上传文件"), 2020);
+                }
 
-            new AlertDialog.Builder(MainActivity.this).
-                    setTitle("选择文件").
-                    setMessage("请选择需要的文件,如不需要，请取消。")
-                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            try {
-                                startActivityForResult(intent, 2020);
-                            } catch (ActivityNotFoundException e) {
-                                e.printStackTrace();
-                                Toast.makeText(getBaseContext(), "Cannot Open File Chooser", Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                            return;
-                        }
-                    })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            fileUploadCallBack.onReceiveValue(null);
-                            fileUploadCallBack=null;
-                        }
-                    }).show();
+            } catch (ActivityNotFoundException e) {
+                e.printStackTrace();
+                return true;
+            }
             return true;
 
 
@@ -1008,7 +1020,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * ValueCallback<Uri[]> filePathCallback这个东西，在没有清理的前提下再次执行会出错。
      * 所以这里清理掉上次的残留
      */
-    private void cancelUpLoad(){
+    private void cancelUpLoad() {
 
         if (fileUploadCallBack != null) {
             fileUploadCallBack.onReceiveValue(null);

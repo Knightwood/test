@@ -13,4 +13,6 @@ public interface ControlWebView {
     void searchText();//页内查找
     void usePcMode();//使用电脑模式
     void newPage(String url);//新窗口打开网页
+
+    void saveWeb();
 }

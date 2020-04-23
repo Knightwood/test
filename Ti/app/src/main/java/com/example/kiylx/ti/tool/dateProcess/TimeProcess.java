@@ -32,20 +32,20 @@ public class TimeProcess {
      */
     private static void init() {
         if (simpleDateFormat == null)
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+            simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
     }
 
     /**
      * @return 获取当前的日期，返回日期是String类型
      */
     public static String getTime() {
-        init();
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
         // 获取当前时间
-        return simpleDateFormat.format(new Date(System.currentTimeMillis()));
+        return format.format(new Date(System.currentTimeMillis()));
     }
 
     public static String getTime2() {
-        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.CHINA);
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
         return format.format(new Date(System.currentTimeMillis()));
     }
 
@@ -54,10 +54,10 @@ public class TimeProcess {
      * @return 把str格式化为Date对象
      */
     public static Date convertToDate(String str) {
-        init();
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
         Date date = null;
         try {
-            date = simpleDateFormat.parse(str);
+            date = format.parse(str);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class TimeProcess {
      * @return 直接返回一个字符串数组，第一个元素是开始时间，第二个是结束时间
      */
     public static String[] getWeekorMonth_start(KindsofDate kinds, String datenow) {
-        init();
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(convertToDate(datenow));
         String startDate = null;
@@ -100,18 +100,18 @@ public class TimeProcess {
         if (kinds == KindsofDate.THISWEEK) {
             calendar.set(Calendar.DAY_OF_MONTH, 1);
         }
-        startDate = simpleDateFormat.format(calendar.getTime());
+        startDate = format.format(calendar.getTime());
 
         return new String[]{startDate, getlastday(startDate)};
     }
 
     public static String getlastday(String startDate) {
-
+        DateFormat format = new SimpleDateFormat("yyyy-mm-dd hh-mm-ss", Locale.CHINA);
         Calendar calendar2 = Calendar.getInstance();
         calendar2.setTime(convertToDate(startDate));
         calendar2.set(Calendar.DAY_OF_MONTH, 0);
         calendar2.add(Calendar.MONTH, 1);
-        return simpleDateFormat.format(calendar2.getTime());
+        return format.format(calendar2.getTime());
 
     }
 
