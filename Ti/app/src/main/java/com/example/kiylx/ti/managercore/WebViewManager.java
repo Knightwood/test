@@ -109,9 +109,9 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     *
+     *此方法用于由web页面请求打开新窗口。
      * @param pos 添加到的位置
-     * @param newWindowContext chromeclient传来的context
+     * @param newWindowContext chromeclient传来的context，context中包含了要打开的网址信息
      * @param appCompatActivity
      * @return
      */
