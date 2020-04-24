@@ -98,5 +98,6 @@
     <string name="use_old_search_tool">使用新的搜索界面样式</string>
     <string name="use_search_matcher" >使用搜索匹配</string>
     <string name="save_html_mode">使用系统的上传文件方式</string>
-
+    <string name="saveToPdf">打印</string>
+    <string name="saveTomht">保存网页</string>
 </resources>

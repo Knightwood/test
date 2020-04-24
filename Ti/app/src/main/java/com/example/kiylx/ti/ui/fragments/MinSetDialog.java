@@ -1,9 +1,10 @@
 package com.example.kiylx.ti.ui.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -13,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
-import android.print.PrintManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,6 +40,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     private static final String TAG = "MinSetDialog";
     private static WebPage_Info info;
     private ControlWebView controlWebViewInterface;
+    private int currentMenu = 0;//第一层就是0，按下工具按钮展现的页面是1
 
 
     public static MinSetDialog newInstance(WebPage_Info info) {
@@ -81,7 +82,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
 
             }*/
-			lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+            lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);
@@ -97,6 +98,18 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
             case R.id.reload_webview:
                 controlWebViewInterface.reload();
                 break;
+            case R.id.back1:
+            case R.id.toolButton:
+                Log.d(TAG, "onClick: 切换菜单");
+                if (currentMenu == 0) {
+                    //当前页是0，要切换到1
+                    showView(homepageSettingBinding.toolSecond, homepageSettingBinding.toolFirst);
+                    currentMenu = 1;
+                } else {
+                    showView(homepageSettingBinding.toolFirst, homepageSettingBinding.toolSecond);
+                    currentMenu = 0;
+                }
+                break;
             case R.id.findtext:
                 controlWebViewInterface.searchText();
                 break;
@@ -107,8 +120,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 controlWebViewInterface.usePcMode();
                 break;
             case R.id.hideSelf:
-                //controlWebViewInterface.saveWeb();
-                controlWebViewInterface.printPdf();
                 break;
             case R.id.addBookmark:
                 controlWebViewInterface.addtobookmark(info.getUrl());
@@ -125,9 +136,16 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
             case R.id.button_history:
                 startHistory();
                 break;
+            case R.id.save_pdf:
+                controlWebViewInterface.printPdf();
+                break;
+            case R.id.save_mht:
+                controlWebViewInterface.saveWeb();
+                break;
 
         }
-        dismiss();
+        if (v.getId() != R.id.toolButton && v.getId() != R.id.back1)//既不是工具箱，也不是点击R.id.back1,就dismiss掉dialogFragment
+            dismiss();
         Log.d(TAG, "onClick: " + v.getId());
     }
 
@@ -145,7 +163,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      * 启动设置页面
      */
     private void startSetting() {
-        Intent settingIntent=new Intent(getActivity(), SettingActivity.class);
+        Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
         startActivity(settingIntent);
     }
 
@@ -161,5 +179,13 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         this.controlWebViewInterface = mInterface;
     }
 
+    /**
+     * @param willShowed 即将被显示的视图
+     * @param willHided 即将被隐藏的视图
+     */
+    private void showView(View willShowed, View willHided) {
+        willShowed.setVisibility(View.VISIBLE);
+        willHided.setVisibility(View.GONE);
+    }
 
 }
