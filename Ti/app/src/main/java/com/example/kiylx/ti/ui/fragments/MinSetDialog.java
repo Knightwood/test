@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.ui.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
+import android.print.PrintManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -105,7 +107,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 controlWebViewInterface.usePcMode();
                 break;
             case R.id.hideSelf:
-                controlWebViewInterface.saveWeb();
+                //controlWebViewInterface.saveWeb();
+                controlWebViewInterface.printPdf();
                 break;
             case R.id.addBookmark:
                 controlWebViewInterface.addtobookmark(info.getUrl());
@@ -157,5 +160,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     public void setInterafce(ControlWebView mInterface) {
         this.controlWebViewInterface = mInterface;
     }
+
 
 }

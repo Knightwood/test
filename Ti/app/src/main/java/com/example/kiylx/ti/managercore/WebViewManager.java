@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.myInterface.FileUpload;
+import com.example.kiylx.ti.myInterface.OpenWindowInterface;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -105,6 +106,30 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         addInWebManager(web, pos);
 
+    }
+
+    /**
+     *
+     * @param pos 添加到的位置
+     * @param newWindowContext chromeclient传来的context
+     * @param appCompatActivity
+     * @return
+     */
+    public CustomAWebView newWebview(int pos,Context newWindowContext, AppCompatActivity appCompatActivity){
+        CustomAWebView web=new CustomAWebView(newWindowContext);
+        web.setHandleClickLinks(mHandleClickedLinks);
+
+        web.setActionList();//点击浏览webview的菜单项
+
+        setWebview(web, appCompatActivity);
+        //给new出来的webview执行设置
+        web.setWebViewClient(customWebviewClient);
+        web.setWebChromeClient(customWebchromeClient);
+        //添加js，用来展开菜单的方法。
+        web.MenuJSInterface();
+
+        addInWebManager(web, pos);
+        return web;
     }
 
     /**
@@ -480,7 +505,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         // 开启数据库缓存
         settings.setDatabaseEnabled(true);
         //打开新的窗口，如果是true，在webchromeclient中处理，这里我已经用长按菜单实现了，没必要再用这个方法
-        settings.setSupportMultipleWindows(false);
+        settings.setSupportMultipleWindows(true);
 
     }
 
@@ -538,5 +563,19 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
             return;
         }
         customWebchromeClient.setFileUpload(iupload);
+    }
+
+    /**
+     * 网页请求打开新的窗口时，是由WebChromeClient调用接口，
+     * mainactivity实现此接口，
+     * mainactivity实现打开新的窗口方法，并把结果通过接口返回给webviewChromeClient
+     *
+     * @param openWindowInterface 实现了打开新窗口的实例
+     */
+    public void setOpenNewWindow(OpenWindowInterface openWindowInterface){
+        if (customWebchromeClient==null){
+            return;
+        }
+        customWebchromeClient.setOpenWindowInterface(openWindowInterface);
     }
 }

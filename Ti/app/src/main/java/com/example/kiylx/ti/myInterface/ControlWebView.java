@@ -7,12 +7,47 @@ package com.example.kiylx.ti.myInterface;
  * 以及可以把实现的方法交给HanderClickedLinked接口使用
  */
 public interface ControlWebView {
-    void sharing(String url);//分享网址
-    void addtobookmark(String url);//添加到书签
-    void reload();//重新载入网页
-    void searchText();//页内查找
-    void usePcMode();//使用电脑模式
-    void newPage(String url);//新窗口打开网页
+    /**
+     * @param url 要分享的网址
+     *            <p>
+     *            分享当前的页面网址
+     */
+    void sharing(String url);
 
+    /**
+     * @param url 网址
+     * 添加到书签
+     */
+    void addtobookmark(String url);
+
+    /**
+     * 重新载入当前网页
+     */
+    void reload();
+
+    /**
+     * 页内查找
+     */
+    void searchText();
+
+    /**
+     * 电脑模式
+     */
+    void usePcMode();
+
+    /**
+     * @param url 网址
+     * 新窗口打开网页
+     */
+    void newPage(String url);
+
+    /**
+     * 把网页存为mht文件
+     */
     void saveWeb();
+
+    /**
+     * 把网页打印成pdf
+     */
+    void printPdf();
 }

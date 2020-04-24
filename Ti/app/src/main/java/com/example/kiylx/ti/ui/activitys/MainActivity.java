@@ -19,6 +19,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,7 +41,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.crystal.customview.Slider.Slider;
+import com.example.kiylx.ti.managercore.CustomAWebView;
 import com.example.kiylx.ti.myInterface.FileUpload;
+import com.example.kiylx.ti.myInterface.OpenWindowInterface;
 import com.example.kiylx.ti.tool.SavePNG_copyText;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
@@ -102,11 +107,12 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private ProcessUrl mProcessUrl;//处理字符串的类
     private static boolean isVertical;//当前屏幕是竖直状态还是横屏状态，竖直是true
     private FileUpload iupload;//上传文件接口
-    private boolean useNewSearchStyle=true;
+    private boolean useNewSearchStyle = true;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private ValueCallback<Uri[]> fileUploadCallBack;
+    private OpenWindowInterface mOpenWindowInterface;//webchromeclient打开新窗口时用的接口
 
 
     @Override
@@ -157,8 +163,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
         implFileUpload();//实现文件上传
+        implOpenWendow();//实现网页调用打开新窗口的方法
 
-        useNewSearchStyle=PreferenceTools.getBoolean(this,SomeRes.SearchViewStyle,true);
+        useNewSearchStyle = PreferenceTools.getBoolean(this, SomeRes.SearchViewStyle, true);
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
@@ -509,9 +516,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * true是新样式
      */
     public void searchBar(View v) {
-        if (useNewSearchStyle){
+        if (useNewSearchStyle) {
             openSearchEdit();
-        }else {
+        } else {
             search_dialog();
         }
 
@@ -962,16 +969,57 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
                 @Override
                 public void saveWeb() {
-                    WebView tmp=mWebViewManager.getTop(current);
-
-                    File file=new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),tmp.getTitle()+ TimeProcess.getTime() +".mht");
+                    WebView tmp = mWebViewManager.getTop(current);
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), tmp.getTitle() + TimeProcess.getTime() + ".mht");
                     tmp.saveWebArchive(file.getAbsolutePath());
+                }
+
+                @Override
+                public void printPdf() {
+                    WebView tmp = mWebViewManager.getTop(current);
+                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+                    PrintDocumentAdapter adapter = tmp.createPrintDocumentAdapter(tmp.getTitle() + TimeProcess.getTime() + ".pdf");
+                    PrintAttributes attributes = new PrintAttributes.Builder()
+                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                            .setResolution(new PrintAttributes.Resolution("id", Context.PRINT_SERVICE, 200, 200))
+                            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+                            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+                            .build();
+                    printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
+
                 }
             };
         }
 
     }
 
+    /**
+     * webview对于
+     * <a href="http://www.google.com" target="_blank">new window</a>
+     * 这种形式的tag，会要求起一个新窗口打开，而要截获这个请求，则可以在webChromeClient的onCreateWindow()回调函数中进行处理，
+     */
+    private void implOpenWendow(){
+        if (mOpenWindowInterface ==null){
+            mOpenWindowInterface =new newWebviewWindowImpl();
+        }
+        mWebViewManager.setOpenNewWindow(mOpenWindowInterface);
+    }
+
+    /**
+     * webvie请求打开新窗口，
+     * 实现接口
+     */
+    class newWebviewWindowImpl implements OpenWindowInterface{
+
+        @Override
+        public WebView OpenWindow(Context url) {
+            mWebViewManager.stop(current);
+            f1.removeView(mWebViewManager.getTop(current));
+            CustomAWebView tmp=mWebViewManager.newWebview(++current,url,MainActivity.this);
+            f1.addView(mWebViewManager.getTop(current));
+            return tmp;
+        }
+    }
 
     /**
      * 上传文件方法
@@ -1000,8 +1048,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                     intent2.setType("*/*");
                     startActivityForResult(Intent.createChooser(intent2, "上传文件"), 2020);
                 } else {
-                    Intent intent=fileChooserParams.createIntent();
-                    Log.d(TAG, "onShowFileChooser: type:"+intent.getType()+" action:"+intent.getAction()+" category:"+intent.getCategories());
+                    Intent intent = fileChooserParams.createIntent();
+                    Log.d(TAG, "onShowFileChooser: type:" + intent.getType() + " action:" + intent.getAction() + " category:" + intent.getCategories());
                     startActivityForResult(Intent.createChooser(intent, "上传文件"), 2020);
                 }
 
@@ -1027,6 +1075,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             fileUploadCallBack = null;
         }
     }
+
+
 
 
 }

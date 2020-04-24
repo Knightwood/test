@@ -14,17 +14,18 @@ import android.webkit.WebView;
 
 import com.example.kiylx.ti.myInterface.FileUpload;
 import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
+import com.example.kiylx.ti.myInterface.OpenWindowInterface;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 
 public class CustomWebchromeClient extends WebChromeClient {
     private static NotifyWebViewUpdate mNotifyWebViewUpdate;
     private static final String TAG = "CustomWebchromeClient";
     private FileUpload iupload;
+    private OpenWindowInterface openWindow;//处理打开新窗口
 
 
     public static void setInterface(NotifyWebViewUpdate minterface) {
         CustomWebchromeClient.mNotifyWebViewUpdate = minterface;
-
     }
 
 
@@ -116,16 +117,15 @@ public class CustomWebchromeClient extends WebChromeClient {
     }
 
     /**
-     *
      * @param webView
-     * @param filePathCallback 执行onReceiveValue方法吧获取到的uri信息irgzwebview。
+     * @param filePathCallback  执行onReceiveValue方法吧获取到的uri信息irgzwebview。
      * @param fileChooserParams 可以使用它根据请求，创建合适的intent，然后利用这个intent启动“文件选择器”，
      *                          选择文件后，会在onactivityresulr中拿到uri结果，把结果给filePathCallback处理以上传文件。
      * @return
      */
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        return iupload.upload(filePathCallback,fileChooserParams);
+        return iupload.upload(filePathCallback, fileChooserParams);
 
     }
 
@@ -140,7 +140,7 @@ public class CustomWebchromeClient extends WebChromeClient {
      */
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
-        return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+
         /*
             下面是重写onCreateWindow的必要代码：
 
@@ -149,9 +149,29 @@ public class CustomWebchromeClient extends WebChromeClient {
             msg.sendToTarget();
 
         */
+
+        if (isUserGesture) {
+            if (openWindow == null) {
+                return false;
+            } else {
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                WebView tmp = openWindow.OpenWindow(view.getContext());
+                transport.setWebView(tmp);
+                resultMsg.sendToTarget();
+                return true;
+
+            }
+        }
+        return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
     }
-//mainactivity中实现，传入webviewmanager，再传到这里。
+
+    //mainactivity中实现，传入webviewmanager，再传到这里。
     public void setFileUpload(FileUpload iupload) {
         this.iupload = iupload;
+    }
+
+    //处理新窗口的打开
+    public void setOpenWindowInterface(OpenWindowInterface openWindow) {
+        this.openWindow = openWindow;
     }
 }
