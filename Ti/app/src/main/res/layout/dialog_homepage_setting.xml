@@ -29,36 +29,27 @@
 
             <TextView
                 android:id="@+id/back1"
+                style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/white_haspadding"
                 android:onClick="@{clicklister}"
-                android:text="@string/back"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:text="@string/back" />
 
             <TextView
                 android:id="@+id/save_pdf"
+                style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/white_haspadding"
                 android:onClick="@{clicklister}"
-                android:text="@string/saveToPdf"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:text="@string/saveToPdf" />
 
             <TextView
                 android:id="@+id/save_mht"
+                style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@drawable/white_haspadding"
                 android:onClick="@{clicklister}"
-                android:text="@string/saveTomht"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:text="@string/saveTomht" />
         </LinearLayout>
 
         <ScrollView
@@ -66,6 +57,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:scrollbarStyle="insideOverlay"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/tool_guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -85,91 +77,54 @@
 
                 <TextView
                     android:id="@+id/findtext"
-                    style="@style/Widget.AppCompat.TextView.SpinnerItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
+                    style="@style/MenuItem"
                     android:onClick="@{clicklister}"
                     android:text="@string/findText"
                     android:textAlignment="textStart"
-                    android:textIsSelectable="false"
-                    android:textSize="18sp" />
+                    android:textIsSelectable="false" />
 
                 <TextView
                     android:id="@+id/share"
-                    style="@style/Widget.AppCompat.TextView.SpinnerItem"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
                     android:onClick="@{clicklister}"
                     android:text="@string/fenxiang"
-                    android:textSize="18sp"
-                    tools:text="@string/fenxiang" />
+                    />
 
                 <TextView
                     android:id="@+id/pcMode"
-                    style="@style/Widget.AppCompat.TextView.SpinnerItem"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
                     android:onClick="@{clicklister}"
-                    android:text="@string/diannaomoshi"
-                    android:textSize="18sp" />
+                    android:text="@string/diannaomoshi" />
 
                 <TextView
                     android:id="@+id/hideSelf"
-                    style="@style/Widget.AppCompat.TextView.SpinnerItem"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
                     android:onClick="@{clicklister}"
-                    android:text="@string/yinshen"
-                    android:textSize="18sp"
-                    android:visibility="visible" />
+                    android:text="@string/yinshen" />
 
                 <TextView
                     android:id="@+id/addBookmark"
-                    style="@style/Widget.AppCompat.TextView.SpinnerItem"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
                     android:onClick="@{clicklister}"
-                    android:text="@string/add_to_Bookmark"
-                    android:textSize="18sp" />
+                    android:text="@string/add_to_Bookmark" />
 
                 <TextView
                     android:id="@+id/menu"
-                    style="@android:style/Widget.DeviceDefault.TextView.SpinnerItem"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="@drawable/white_haspadding"
                     android:onClick="@{clicklister}"
-                    android:text="@string/menu"
-                    android:textSize="18sp" />
+                    android:text="@string/menu" />
             </LinearLayout>
         </ScrollView>
 

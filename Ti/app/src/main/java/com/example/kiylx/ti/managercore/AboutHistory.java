@@ -143,7 +143,7 @@ public class AboutHistory {
             public void run() {
                 mDatabase.execSQL("DELETE FROM history_item");
             }
-        });
+        }).start();
 
     }
 

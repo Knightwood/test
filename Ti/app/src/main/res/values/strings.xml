@@ -100,4 +100,9 @@
     <string name="save_html_mode">使用系统的上传文件方式</string>
     <string name="saveToPdf">打印</string>
     <string name="saveTomht">保存网页</string>
+    <string name="deleteCookies">清除cookies</string>
+    <string name="deleteFormdata">清除表单数据</string>
+    <string name="deleteCache">清除缓存</string>
+    <string name="deleteHistory">清除历史记录</string>
+    <string name="deleteLocalStorage">清除网页存储</string>
 </resources>

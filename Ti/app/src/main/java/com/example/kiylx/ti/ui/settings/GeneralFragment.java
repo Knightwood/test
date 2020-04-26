@@ -28,6 +28,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.HashMapProcess;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
+import com.example.kiylx.ti.ui.fragments.CleanDataDialog;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -182,6 +183,9 @@ public class GeneralFragment extends Fragment {
                     someThingDialog.show(fm,"编辑默认搜索引擎");
                     break;
                 case R.id.cleanData:
+                    CleanDataDialog dialog=CleanDataDialog.newInstance();
+                    FragmentManager manager=getFragmentManager();
+                    dialog.show(manager,"清除数据");
                     break;
             }
         }

@@ -38,12 +38,12 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.managercore.CustomAWebView;
-import com.example.kiylx.ti.interfaces.FileUpload;
-import com.example.kiylx.ti.interfaces.OpenWindowInterface;
+import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.SavePNG_copyText;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
@@ -75,7 +75,7 @@ import java.io.File;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements MultiDialog_Functions {
+public class MainActivity extends AppCompatActivity implements MultiDialog_Functions, WebViewManager.UpdateProgress {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
     private static final String OPENED_EDIT = "opened_edit";
@@ -106,14 +106,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private ImageView multButton;//多窗口按钮
     private ProcessUrl mProcessUrl;//处理字符串的类
     private static boolean isVertical;//当前屏幕是竖直状态还是横屏状态，竖直是true
-    private FileUpload iupload;//上传文件接口
+    private WebViewChromeClientInterface chromeClientInterface;//上传文件接口
     private boolean useNewSearchStyle = true;
+    private ProgressBar bar;//网页加载进度条
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private ValueCallback<Uri[]> fileUploadCallBack;
-    private OpenWindowInterface mOpenWindowInterface;//webchromeclient打开新窗口时用的接口
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         openwebpage_fromhistoryORbookmark();
         useMultPage_DialogFragmentInterface();
         downloadDialog_startDownload();
-        implFileUpload();//实现文件上传
-        implOpenWendow();//实现网页调用打开新窗口的方法
+        implchromeClientInterface();//实现文件上传，实现网页调用打开新窗口的方法
+        //implOpenWendow();//实现网页调用打开新窗口的方法
 
         useNewSearchStyle = PreferenceTools.getBoolean(this, SomeRes.SearchViewStyle, true);
 
@@ -209,7 +208,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
         Log.d("lifecycle", "onStart'");
         EventBus.getDefault().register(this);
+        bar = findViewById(R.id.webviewProgressBar);
+        mWebViewManager.setOnUpdateProgress(this);
     }
+
 
     @Override
     protected void onResume() {
@@ -259,6 +261,22 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     public static boolean IsVertical() {
         return isVertical;
 
+    }
+
+    /**
+     * @param progress 网页加载进度
+     *                 更新进度条进度
+     */
+    @Override
+    public void update(int progress) {
+        if (bar.getVisibility() == View.GONE) {
+            bar.setProgress(0);
+            bar.setVisibility(View.VISIBLE);
+        }
+        if (progress == 100) {
+            bar.setVisibility(View.GONE);
+        } else
+            bar.setProgress(progress);
     }
 
     @Override
@@ -994,47 +1012,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * webview对于
-     * <a href="http://www.google.com" target="_blank">new window</a>
-     * 这种形式的tag，会要求起一个新窗口打开，而要截获这个请求，则可以在webChromeClient的onCreateWindow()回调函数中进行处理，
+     * 上传文件方法,打开新窗口方法，皆在此实现，并传入webviewmanager
      */
-    private void implOpenWendow(){
-        if (mOpenWindowInterface ==null){
-            mOpenWindowInterface =new newWebviewWindowImpl();
+    private void implchromeClientInterface() {
+        if (chromeClientInterface == null) {
+            chromeClientInterface = new ChromeClientInterfaceImpl();
         }
-        mWebViewManager.setOpenNewWindow(mOpenWindowInterface);
+        mWebViewManager.setOnClientInterface(chromeClientInterface);
     }
 
     /**
-     * webvie请求打开新窗口，
-     * 实现接口
+     * 文件上传，打开新窗口等的接口的实现
      */
-    class newWebviewWindowImpl implements OpenWindowInterface{
-
-        @Override
-        public WebView OpenWindow(Context url) {
-            mWebViewManager.stop(current);
-            f1.removeView(mWebViewManager.getTop(current));
-            CustomAWebView tmp=mWebViewManager.newWebview(++current,url,MainActivity.this);
-            f1.addView(mWebViewManager.getTop(current));
-            return tmp;
-        }
-    }
-
-    /**
-     * 上传文件方法
-     */
-    private void implFileUpload() {
-        if (iupload == null) {
-            iupload = new FileUploads();
-        }
-        mWebViewManager.setFileupload(iupload);
-    }
-
-    /**
-     * 文件上传接口的实现
-     */
-    class FileUploads implements FileUpload {
+    class ChromeClientInterfaceImpl implements WebViewChromeClientInterface {
         boolean defUploadMode = PreferenceTools.getBoolean(getApplicationContext(), WebviewConf.uploadMode, true);
 
         @Override
@@ -1043,6 +1033,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             fileUploadCallBack = filePathCallback;
             try {
                 if (!defUploadMode) {
+                    //选择文件
                     Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
                     intent2.addCategory(Intent.CATEGORY_OPENABLE);
                     intent2.setType("*/*");
@@ -1061,6 +1052,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
 
         }
+        /**
+         * webview对于
+         * <a href="http://www.google.com" target="_blank">new window</a>
+         * 这种形式的tag，会要求起一个新窗口打开，而要截获这个请求，则可以在webChromeClient的onCreateWindow()回调函数中进行处理，
+         */
+        @Override
+        public WebView OpenWindow(Context url) {
+            mWebViewManager.stop(current);
+            f1.removeView(mWebViewManager.getTop(current));
+            CustomAWebView tmp = mWebViewManager.newWebview(++current, url, MainActivity.this);
+            f1.addView(mWebViewManager.getTop(current));
+            return tmp;
+        }
 
     }
 
@@ -1075,9 +1079,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             fileUploadCallBack = null;
         }
     }
-
-
-
 
 }
 /*

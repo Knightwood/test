@@ -9,8 +9,7 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kiylx.ti.interfaces.FileUpload;
-import com.example.kiylx.ti.interfaces.OpenWindowInterface;
+import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -51,6 +50,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private AboutHistory aboutHistory;
     private HandleClickedLinks mHandleClickedLinks;
     private NotifyWebViewUpdate mUpdateInterface;
+    private UpdateProgress mUpdateProgress;//更新网页加载进度的接口
 
     private WebViewManager(Context context, HandleClickedLinks handleClickedLinks) {
         aboutHistory = AboutHistory.get(context);
@@ -109,14 +109,15 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     *此方法用于由web页面请求打开新窗口。
-     * @param pos 添加到的位置
-     * @param newWindowContext chromeclient传来的context，context中包含了要打开的网址信息
+     * 此方法用于由web页面请求打开新窗口。
+     *
+     * @param pos               添加到的位置
+     * @param newWindowContext  chromeclient传来的context，context中包含了要打开的网址信息
      * @param appCompatActivity
      * @return
      */
-    public CustomAWebView newWebview(int pos,Context newWindowContext, AppCompatActivity appCompatActivity){
-        CustomAWebView web=new CustomAWebView(newWindowContext);
+    public CustomAWebView newWebview(int pos, Context newWindowContext, AppCompatActivity appCompatActivity) {
+        CustomAWebView web = new CustomAWebView(newWindowContext);
         web.setHandleClickLinks(mHandleClickedLinks);
 
         web.setActionList();//点击浏览webview的菜单项
@@ -166,15 +167,15 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
     /**
      * @param pos webview在list中的位置
-     * @param b 让webview恢复加载(在删除webview时，有些webview是处于onStop的。)
+     * @param b   让webview恢复加载(在删除webview时，有些webview是处于onStop的。)
      *            <p>
      *            把要删除的webview放进trashList，在合适的时机调用throwTrash()把这些webview全部删除
      */
-    public void removeToTrash(int pos,boolean b) {
+    public void removeToTrash(int pos, boolean b) {
         if (this.trashList == null) {
             trashList = new ArrayList<>();
         }
-        WebView tmp=webViewArrayList.remove(pos);
+        WebView tmp = webViewArrayList.remove(pos);
         tmp.onResume();
         trashList.add(tmp);
         notifyupdate(null, pos, Action.DELETE, false);
@@ -184,14 +185,14 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 遍历trashList，把里面所有的webview摧毁
      */
     public void throwTrash() {
-        if (trashList==null||trashList.isEmpty()) {
+        if (trashList == null || trashList.isEmpty()) {
             return;
         }
         Iterator iterator = trashList.iterator();
         while (iterator.hasNext()) {
             destroy2((WebView) iterator.next());
         }
-        trashList=null;
+        trashList = null;
     }
 
     /**
@@ -366,6 +367,12 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                     notifyupdate(webViewArrayList.get(pos), pos, Action.UPDATEINFO, false);
                     notifyTitleUpdate();
                 }
+
+                @Override
+                public void updateProgress(int progress) {
+                    if (mUpdateProgress != null)
+                        mUpdateProgress.update(progress);
+                }
             };
     }
 
@@ -456,8 +463,8 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         webView.canGoBack();
         webView.canGoForward();
 
-        if (PreferenceTools.getBoolean(context, WebviewConf.customDownload)&&MainActivity.IsVertical()) {
-//横屏时不适用自己写的下载器
+        if (PreferenceTools.getBoolean(context, WebviewConf.customDownload) && MainActivity.IsVertical()) {
+//横屏时不使用自己写的下载器
             //内置下载器
             webView.setDownloadListener(new DownloadListener2(context));
         } else {
@@ -506,6 +513,8 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         settings.setDatabaseEnabled(true);
         //打开新的窗口，如果是true，在webchromeclient中处理，这里我已经用长按菜单实现了，没必要再用这个方法
         settings.setSupportMultipleWindows(true);
+        //允许http和https混用
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
     }
 
@@ -555,27 +564,29 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     * 把实现的文件上传接口传递给webChromeClient
-     * @param iupload
+     * webviewChromeClient调用WebViewChromeClientInterface接口中的方法，实现文件上传，新窗口打开等
+     * 这些方法的实现是在mainactivity中，通过webviewmanager中的这个方法，把接口的实现传递给webviewChromeclient
+     *
+     * @param onClientInterface
      */
-    public void setFileupload(FileUpload iupload) {
-        if (customWebchromeClient==null){
+    public void setOnClientInterface(WebViewChromeClientInterface onClientInterface) {
+        if (customWebchromeClient == null) {
             return;
         }
-        customWebchromeClient.setFileUpload(iupload);
+        customWebchromeClient.setClientInterface(onClientInterface);
     }
 
     /**
-     * 网页请求打开新的窗口时，是由WebChromeClient调用接口，
-     * mainactivity实现此接口，
-     * mainactivity实现打开新的窗口方法，并把结果通过接口返回给webviewChromeClient
-     *
-     * @param openWindowInterface 实现了打开新窗口的实例
+     * 让外界可以通过这个接口获得网页加载进度。
+     * webviewchromeclient调用NotifyWebViewUpdate接口中的方法，告诉webviewmanager进度
+     * ，webviewmanager调用mainactivity实现的UpdateProgress接口，使得mainactivity更新进度条
      */
-    public void setOpenNewWindow(OpenWindowInterface openWindowInterface){
-        if (customWebchromeClient==null){
-            return;
-        }
-        customWebchromeClient.setOpenWindowInterface(openWindowInterface);
+    public interface UpdateProgress {
+        void update(int progress);
     }
+
+    public void setOnUpdateProgress(UpdateProgress mInterface) {
+        this.mUpdateProgress = mInterface;
+    }
+
 }

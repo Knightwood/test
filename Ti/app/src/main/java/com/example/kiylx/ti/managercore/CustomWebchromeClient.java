@@ -11,15 +11,14 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.interfaces.FileUpload;
+import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
-import com.example.kiylx.ti.interfaces.OpenWindowInterface;
+
 
 public class CustomWebchromeClient extends WebChromeClient {
     private static NotifyWebViewUpdate mNotifyWebViewUpdate;
     private static final String TAG = "CustomWebchromeClient";
-    private FileUpload iupload;
-    private OpenWindowInterface openWindow;//处理打开新窗口
+    private WebViewChromeClientInterface clientInterface;
 
 
     public static void setInterface(NotifyWebViewUpdate minterface) {
@@ -41,7 +40,10 @@ public class CustomWebchromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
+        mNotifyWebViewUpdate.updateProgress(newProgress);
+
         if (newProgress == 100) {
+            //在webviewClient中更新了网址，在网页加载完成时再更新一次
             mNotifyWebViewUpdate.updateTitle(view);
             Log.d(TAG, "onProgressChanged: 网页加载完成,更新标题");
         }
@@ -116,14 +118,14 @@ public class CustomWebchromeClient extends WebChromeClient {
 
     /**
      * @param webView
-     * @param filePathCallback  执行onReceiveValue方法吧获取到的uri信息irgzwebview。
+     * @param filePathCallback  执行它的onReceiveValue方法把获取到的uri信息传给webview。
      * @param fileChooserParams 可以使用它根据请求，创建合适的intent，然后利用这个intent启动“文件选择器”，
      *                          选择文件后，会在onactivityresulr中拿到uri结果，把结果给filePathCallback处理以上传文件。
      * @return
      */
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        return iupload.upload(filePathCallback, fileChooserParams);
+        return clientInterface.upload(filePathCallback, fileChooserParams);
 
     }
 
@@ -139,21 +141,12 @@ public class CustomWebchromeClient extends WebChromeClient {
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
 
-        /*
-            下面是重写onCreateWindow的必要代码：
-
-            WebView.WebViewTransport transport = (WebView.WebViewTransport) msg.obj;
-            transport.setWebView(webview);    //此webview可以是一般新创建的
-            msg.sendToTarget();
-
-        */
-
         if (isUserGesture) {
-            if (openWindow == null) {
+            if (clientInterface == null) {
                 return false;
             } else {
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-                WebView tmp = openWindow.OpenWindow(view.getContext());
+                WebView tmp = clientInterface.OpenWindow(view.getContext());//这个context就包含了要打开的网页，这样new出来的webview就是要打开的新窗口的网页
                 transport.setWebView(tmp);
                 resultMsg.sendToTarget();
                 return true;
@@ -163,13 +156,8 @@ public class CustomWebchromeClient extends WebChromeClient {
         return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
     }
 
-    //mainactivity中实现，传入webviewmanager，再传到这里。
-    public void setFileUpload(FileUpload iupload) {
-        this.iupload = iupload;
-    }
-
-    //处理新窗口的打开
-    public void setOpenWindowInterface(OpenWindowInterface openWindow) {
-        this.openWindow = openWindow;
+    //mainactivity中实现，mainactivity把实现传入webviewmanager，再传到这里。
+    public void setClientInterface(WebViewChromeClientInterface iupload) {
+        this.clientInterface = iupload;
     }
 }

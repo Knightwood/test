@@ -184,9 +184,16 @@ public class CustomWebviewClient extends WebViewClient {
         super.onReceivedSslError(view, handler, error);
     }
 
+    /**
+     * @param view
+     * @param url
+     * @param isReload
+     * 这个方法会通知给host application更新网址
+     */
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
         super.doUpdateVisitedHistory(view, url, isReload);
+        //通知更新网址
         mNotifyWebViewUpdate.updateWebViewInfo(view);
     }
 }
