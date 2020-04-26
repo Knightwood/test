@@ -15,7 +15,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
+import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 
 import java.net.URISyntaxException;
 import java.util.List;

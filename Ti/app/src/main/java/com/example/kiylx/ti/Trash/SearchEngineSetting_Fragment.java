@@ -31,11 +31,11 @@ import com.example.kiylx.ti.tool.Action;
 import com.example.kiylx.ti.model.Checked_item;
 import com.example.kiylx.ti.model.Title_ViewModel;
 import com.example.kiylx.ti.ui.fragments.EditText_Dialog;
-import com.example.kiylx.ti.myInterface.EditTextInterface;
-import com.example.kiylx.ti.myInterface.Setmessage;
-import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDao;
-import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDatabase;
-import com.example.kiylx.ti.DB.search_engine_db.SearchEngineEntity;
+import com.example.kiylx.ti.interfaces.EditTextInterface;
+import com.example.kiylx.ti.interfaces.Setmessage;
+import com.example.kiylx.ti.db.searchenginedb.SearchEngineDao;
+import com.example.kiylx.ti.db.searchenginedb.SearchEngineDatabase;
+import com.example.kiylx.ti.db.searchenginedb.SearchEngineEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;

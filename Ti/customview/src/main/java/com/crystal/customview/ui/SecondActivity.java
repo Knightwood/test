@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.crystal.customview.R;
-import com.crystal.customview.floatingWindow.FloatingViewTest;
+import com.crystal.customview.floatingwindow.FloatingViewTest;
 
 public class SecondActivity extends AppCompatActivity {
     private static final String TAG="secondActivity";

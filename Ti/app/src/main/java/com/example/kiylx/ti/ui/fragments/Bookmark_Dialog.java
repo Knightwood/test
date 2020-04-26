@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.managercore.AboutBookmark;
 import com.example.kiylx.ti.managercore.BookMarkFolderManager;
-import com.example.kiylx.ti.myInterface.RefreshBookMark;
+import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 

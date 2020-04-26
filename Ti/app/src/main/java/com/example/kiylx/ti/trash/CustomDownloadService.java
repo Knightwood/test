@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.kiylx.ti.downloadPack.downloadCore.DownloadMethodListener;
+import com.example.kiylx.ti.downloadpack.downloadcore.DownloadMethodListener;
 import com.example.kiylx.ti.ui.notification.CustomNotificationChannel;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.ui.activitys.MainActivity;

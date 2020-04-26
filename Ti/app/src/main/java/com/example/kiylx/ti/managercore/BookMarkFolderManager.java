@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.DB.favoritePageDataBase.BookmarkFolderCursorWrapper;
-import com.example.kiylx.ti.DB.favoritePageDataBase.BookmarkFolderDbSchema;
-import com.example.kiylx.ti.DB.favoritePageDataBase.BookmarkFolderDBOpenHelper;
+import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderCursorWrapper;
+import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDbSchema;
+import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDBOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.example.kiylx.ti.managercore.AboutHistory;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
-import com.example.kiylx.ti.myInterface.OpenOneWebpage;
+import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.dateProcess.KindsofDate;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;

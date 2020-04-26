@@ -28,8 +28,8 @@ import com.example.kiylx.ti.managercore.BookMarkFolderManager;
 import com.example.kiylx.ti.ui.fragments.DeleteTag_Dialog;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
-import com.example.kiylx.ti.myInterface.OpenOneWebpage;
-import com.example.kiylx.ti.myInterface.RefreshBookMark;
+import com.example.kiylx.ti.interfaces.OpenOneWebpage;
+import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 

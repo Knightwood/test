@@ -17,10 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadEntity;
-import com.example.kiylx.ti.downloadPack.downloadInfo_storage.DownloadInfoDatabaseUtil;
-import com.example.kiylx.ti.myInterface.ActionSelectListener;
-import com.example.kiylx.ti.myInterface.HandleClickedLinks;
+import com.example.kiylx.ti.interfaces.ActionSelectListener;
+import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 
 import java.util.ArrayList;
 import java.util.List;

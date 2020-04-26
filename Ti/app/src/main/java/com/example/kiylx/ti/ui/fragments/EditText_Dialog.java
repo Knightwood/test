@@ -14,9 +14,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.myInterface.Setmessage;
-import com.example.kiylx.ti.DB.search_engine_db.SearchEngineDao;
-import com.example.kiylx.ti.DB.search_engine_db.SearchEngine_db_Util;
+import com.example.kiylx.ti.interfaces.Setmessage;
+import com.example.kiylx.ti.db.searchenginedb.SearchEngineDao;
+import com.example.kiylx.ti.db.searchenginedb.SearchEngine_db_Util;
 
 import java.util.Objects;
 

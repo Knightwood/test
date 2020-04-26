@@ -1,8 +1,5 @@
 package com.example.kiylx.ti.ui.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,14 +19,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.kiylx.ti.downloadPack.DownloadActivity;
+import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.ui.activitys.HistoryActivity;
 import com.example.kiylx.ti.ui.activitys.SettingActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.myInterface.ControlWebView;
+import com.example.kiylx.ti.interfaces.ControlWebView;
 
 /**
  * 主界面的功能界面

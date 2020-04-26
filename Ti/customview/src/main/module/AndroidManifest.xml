@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".floatingWindow.FloatingWindowService"
+            android:name=".floatingwindow.FloatingWindowService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

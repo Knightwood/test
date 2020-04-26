@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".floatingWindow.FloatingViewTest" />
+        <service android:name=".floatingwindow.FloatingViewTest" />
     </application>
 
 </manifest>

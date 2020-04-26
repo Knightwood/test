@@ -30,7 +30,7 @@ import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.tool.EventMessage;
 import com.example.kiylx.ti.model.MultiPage_Bean;
-import com.example.kiylx.ti.myInterface.MultiDialog_Functions;
+import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;

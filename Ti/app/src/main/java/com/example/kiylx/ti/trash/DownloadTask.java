@@ -3,7 +3,7 @@ package com.example.kiylx.ti.trash;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.example.kiylx.ti.downloadPack.downloadCore.DownloadMethodListener;
+import com.example.kiylx.ti.downloadpack.downloadcore.DownloadMethodListener;
 
 import java.io.File;
 import java.io.IOException;

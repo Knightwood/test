@@ -10,7 +10,7 @@ import android.webkit.WebView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
-import com.example.kiylx.ti.downloadPack.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
 
 /**
  * webview的设置

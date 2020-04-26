@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crystal.customview.Slider.Slider;
+import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.tool.ProcessUrl;

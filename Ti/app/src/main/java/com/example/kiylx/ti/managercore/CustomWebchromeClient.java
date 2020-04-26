@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.managercore;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
@@ -12,10 +11,9 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.myInterface.FileUpload;
-import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
-import com.example.kiylx.ti.myInterface.OpenWindowInterface;
-import com.example.kiylx.ti.ui.activitys.MainActivity;
+import com.example.kiylx.ti.interfaces.FileUpload;
+import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
+import com.example.kiylx.ti.interfaces.OpenWindowInterface;
 
 public class CustomWebchromeClient extends WebChromeClient {
     private static NotifyWebViewUpdate mNotifyWebViewUpdate;

@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.crystal.customview.fileIndexView.IndexView
+    <com.crystal.customview.fileindexview.IndexView
         android:id="@+id/folder_index"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.95">
 
-    </com.crystal.customview.fileIndexView.IndexView>
+    </com.crystal.customview.fileindexview.IndexView>
 
     <TextView
         android:id="@+id/folder_path"

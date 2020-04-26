@@ -9,19 +9,19 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kiylx.ti.myInterface.FileUpload;
-import com.example.kiylx.ti.myInterface.OpenWindowInterface;
+import com.example.kiylx.ti.interfaces.FileUpload;
+import com.example.kiylx.ti.interfaces.OpenWindowInterface;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
-import com.example.kiylx.ti.downloadPack.downloadCore.DownloadListener1;
-import com.example.kiylx.ti.downloadPack.downloadCore.DownloadListener2;
+import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
+import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
 import com.example.kiylx.ti.tool.EventMessage;
-import com.example.kiylx.ti.myInterface.HandleClickedLinks;
-import com.example.kiylx.ti.myInterface.NotifyWebViewUpdate;
+import com.example.kiylx.ti.interfaces.HandleClickedLinks;
+import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 import com.example.kiylx.ti.tool.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
 

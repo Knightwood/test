@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-import com.example.kiylx.ti.myInterface.EditTextInterface;
+import com.example.kiylx.ti.interfaces.EditTextInterface;
 
 /**
  * @创建者 kiylx

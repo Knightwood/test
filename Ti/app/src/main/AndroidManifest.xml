@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <service android:name=".downloadPack.downloadCore.DownloadServices" />
+        <service android:name=".downloadpack.downloadcore.DownloadServices" />
 
         <activity android:name=".ui.activitys.SettingActivity"
             android:theme="@style/AppTheme1"
@@ -26,7 +26,7 @@
             android:label="@string/title_activity_start_page"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".downloadPack.DownloadActivity"
+            android:name=".downloadpack.DownloadActivity"
             android:theme="@style/AppTheme1"
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize|keyboardHidden"/>

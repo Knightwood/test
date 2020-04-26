@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.crystal.customview.Slider.Slider;
+import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
 
 /**
