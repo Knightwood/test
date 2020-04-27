@@ -16,55 +16,49 @@
 
         <RadioButton
             android:id="@+id/baidu"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="百度"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/bing"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="必应"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/sougou"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="搜狗"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/miji"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="秘迹搜索"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/google1"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="谷歌搜索"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/customurlradio"
+            style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
             android:text="自定义"
             android:textSize="16sp" />
 
@@ -74,8 +68,8 @@
         android:id="@+id/customurl"
         android:layout_width="0dp"
         android:layout_height="45dp"
-        android:background="@null"
         android:textSize="16sp"
+        style="@style/MenuItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/url_radioGroup"

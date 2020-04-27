@@ -105,4 +105,6 @@
     <string name="deleteCache">清除缓存</string>
     <string name="deleteHistory">清除历史记录</string>
     <string name="deleteLocalStorage">清除网页存储</string>
+    <string name="big">大</string>
+    <string name="small">小</string>
 </resources>

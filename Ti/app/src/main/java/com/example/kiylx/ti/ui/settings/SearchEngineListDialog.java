@@ -142,7 +142,7 @@ public class SearchEngineListDialog extends DialogFragment {
             //设置背景，不然无法扩展到屏幕边缘
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             //显示消失动画
-            window.setWindowAnimations(R.style.animate_dialog);
+           // window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效
             window.setAttributes(layoutParams);
             //设置点击外部可以取消对话框
