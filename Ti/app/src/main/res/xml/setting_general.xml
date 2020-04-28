@@ -1,0 +1,60 @@
+<PreferenceScreen xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="false"
+        android:summary="使用自定义主页"
+        app:key="home_page"
+        app:title="启用自定义主页"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        android:layout_width="wrap_content"
+        android:key="homepage_url"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="主页网址"
+        app:dependency="home_page"
+        app:useSimpleSummaryProvider="true" />
+    <Preference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:fragment="com.example.kiylx.ti.settings.SearchEngineListDialog"
+        app:key="search_engine"
+        app:title="设置搜索引擎" />
+    <Preference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:key="explorer_flags"
+        app:title="浏览器标识"
+        app:useSimpleSummaryProvider="true" />
+
+    <Preference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:key="clearData"
+        app:fragment="com.example.kiylx.ti.fragments.CleanDataDialog"
+        app:title="清除数据" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:defaultValue="false"
+        app:key="resumeData"
+        app:title="启动时恢复标签页" />
+    <Preference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:key="textZoomlist"
+        app:title="字体缩放"
+        app:fragment="com.example.kiylx.ti.settings.WebTextSizeFragment"
+        app:useSimpleSummaryProvider="true" />
+    <SwitchPreference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:defaultValue="false"
+        android:key="downloadTools"
+        android:title="是否使用内置下载器" />
+
+</PreferenceScreen>

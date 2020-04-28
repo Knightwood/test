@@ -1,32 +1,32 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
+        android:fragment="com.example.kiylx.ti.ui.settings.GeneralFragment"
         android:key="conventional"
-        android:title="常规"
-        android:fragment="com.example.kiylx.ti.ui.settings.GeneralFragment"/>
+        android:title="常规" />
     <Preference
+        android:fragment="com.example.kiylx.ti.ui.settings.ThemeFragment"
         android:key="theme"
-        android:title="主题"
-        android:fragment="com.example.kiylx.ti.ui.settings.ThemeFragment"/>
+        android:title="样式" />
     <Preference
+        android:fragment="com.example.kiylx.ti.ui.settings.PrivacyFragment"
         android:key="privacy"
-        android:title="隐私"
-        android:fragment="com.example.kiylx.ti.ui.settings.PrivacyFragment"/>
+        android:title="隐私" />
     <Preference
         android:key="beta"
-        android:title="实验室"/>
+        android:title="实验室" />
 
     <PreferenceCategory
         app:key="about"
         app:title="关于">
+        <Preference app:title="关于应用" />
 
         <Preference
+            android:icon="@drawable/ic_report_problem_black_24dp"
             app:key="feedback"
             app:summary="发送反馈"
-            app:title="发送反馈"
-            android:icon="@drawable/ic_report_problem_black_24dp"
-      />
+            app:title="发送反馈" />
 
     </PreferenceCategory>
 
