@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/url_radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/baidu"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="百度"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/bing"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="必应"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/sougou"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="搜狗"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/miji"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="秘迹搜索"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/google1"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="谷歌搜索"
+            android:textSize="16sp" />
+
+        <RadioButton
+            android:id="@+id/customurlradio"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="自定义"
+            android:textSize="16sp" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/customurl"
+        style="@style/MenuItem"
+        android:layout_width="0dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/url_radioGroup"
+        tools:visibility="invisible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

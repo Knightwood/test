@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/uploadMode_key"
+        android:summary="若无法上传文件，请关闭此选项"
+        android:title="默认文件上传方式" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/searchSuggest_key"
+        android:title="搜索时提供搜索建议"
+        app:enabled="false" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="@string/SearchViewStyle_key"
+        android:title="使用新搜索样式" />
 </PreferenceScreen>

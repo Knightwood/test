@@ -15,32 +15,39 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.activitys.HistorysActivity"></activity>
+
         <service android:name=".downloadpack.downloadcore.DownloadServices" />
 
-        <activity android:name=".ui.activitys.SettingActivity"
-            android:theme="@style/AppTheme1"
+        <activity
+            android:name=".ui.activitys.SettingActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
+            android:theme="@style/AppTheme1" />
+        <activity
+            android:name=".ui.setting2.Setting2Activity"
+            android:label="设置"
+            android:theme="@style/settingFragment" />
         <activity
             android:name=".ui.activitys.StartPageActivity"
             android:label="@string/title_activity_start_page"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".downloadpack.DownloadActivity"
-            android:theme="@style/AppTheme1"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
-        <activity android:name=".ui.activitys.BookmarkPageActivity"
-            android:theme="@style/AppTheme1"
+            android:theme="@style/AppTheme1" />
+        <activity
+            android:name=".ui.activitys.BookmarkPageActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
+            android:theme="@style/AppTheme1" />
         <activity
             android:name=".ui.activitys.HistoryActivity"
-            android:theme="@style/AppTheme1"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|screenSize|keyboardHidden"/>
-        <activity
-            android:name=".ui.activitys.DoSearchActivity" />
+            android:theme="@style/AppTheme1" />
+        <activity android:name=".ui.activitys.DoSearchActivity" />
         <activity android:name=".ui.activitys.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

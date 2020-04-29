@@ -2,60 +2,60 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent">
     <RadioGroup
-        android:id="@+id/url_radioGroup"
+        android:id="@+id/agent_radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/baidu"
+            android:id="@+id/defaultAgent"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="百度"
-            android:textSize="16sp" />
+            android:text="默认" />
 
         <RadioButton
-            android:id="@+id/bing"
+            android:id="@+id/chrome"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="必应"
+            android:text="Chrome"
             android:textSize="16sp" />
 
         <RadioButton
-            android:id="@+id/sougou"
+            android:id="@+id/firefox"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="搜狗"
+            android:text="FireFox"
             android:textSize="16sp" />
 
         <RadioButton
-            android:id="@+id/miji"
+            android:id="@+id/IE"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="秘迹搜索"
+            android:text="IE 9.0"
             android:textSize="16sp" />
 
         <RadioButton
-            android:id="@+id/google1"
+            android:id="@+id/iPHONE"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="谷歌搜索"
+            android:text="IPhone"
             android:textSize="16sp" />
-
         <RadioButton
-            android:id="@+id/customurlradio"
+            android:id="@+id/customagentradio"
             style="@style/MenuItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,14 +65,15 @@
     </RadioGroup>
 
     <EditText
-        android:id="@+id/customurl"
+        android:id="@+id/customagentText"
+        style="@style/MenuItem"
         android:layout_width="0dp"
         android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:textSize="16sp"
-        style="@style/MenuItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/url_radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/agent_radioGroup"
         tools:visibility="invisible" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

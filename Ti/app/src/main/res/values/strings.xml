@@ -61,6 +61,32 @@
     <string name="month5">五个月前</string>
     <string name="uncategorized">未分类</string>
     <string name="whether_deleteTag">是否删除“标签”</string>
+    <!--preference-->
+    <string name="useCustomHomepage_key">home_page_default</string><!--是否使用自定义主页key-->
+    <string name="homepageurl_key"> home_page_url</string><!--自定义主页网址key-->
+    <string name="searchengine_key">search_engine</string><!--默认搜索引擎key-->
+    <string name="searchengineList_key">search_engine_list</string><!--内置搜索引擎列表 的key-->
+    <string name="customsearchengine_key">custom_search_engine</string><!--自定义搜索引擎的key，自定义的不一定会设置为默认，所以，这一项是为了在自定义的那项不是默认值时也能记住自定义的值-->
+    <string name="customDownload_key">custom_download_listener</string><!--是否使用软件内置下载器key-->
+    <string name="userAgent_key">user_agent</string><!--默认浏览器标识key-->
+    <string name="userAgentList_key">useragent_list</string><!--浏览器标识列表key-->
+    <string name="deleteData_key">clean_data</string><!--清除数据key-->
+    <string name="textZoomPercentage_key">text_zoom</string><!--字体缩放key-->
+    <string name="textZoomList_key">text_zoom_list</string><!--字体缩放列表key-->
+    <string name="resumeData_key">resume_data</string><!--是否打开恢复上次网址key-->
+    <string name="defaultDownloadPath_key">def_download_path</string><!--下载路径-->
+    <string name="defaultDownloadlimit_key">def_download_limit</string><!--下载数量限制-->
+    <string name="defaultDownloadthread_key">def_download_thread</string><!--下载线程数-->
+    <string name="uploadMode_key">def_upload_mode</string><!--false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。-->
+    <string name="SearchViewStyle_key">searchview_style</string><!--搜索页面样式，false是旧的样式，true是新样式-->
+    <string name="searchSuggest_key">search_suggest</string><!--是否使用搜索匹配，false是不启用，true是启用-->
+
+    <!--userAgent-->
+    <string name="Chrome_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36</string>
+    <string name="FireFox_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0</string>
+    <string name="IE9_agent">Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0</string>
+    <string name="iPhone_agent">Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5</string>
+    <string name="默认_agent">null</string>
 
     <!--tag管理选项-->
     <string name="editBookmarkFolderName">编辑文件夹</string>
@@ -96,7 +122,7 @@
     <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段。</string>
     <string name="theStyle">样式</string>
     <string name="use_old_search_tool">使用新的搜索界面样式</string>
-    <string name="use_search_matcher" >使用搜索匹配</string>
+    <string name="use_search_matcher">使用搜索匹配</string>
     <string name="save_html_mode">使用系统的上传文件方式</string>
     <string name="saveToPdf">打印</string>
     <string name="saveTomht">保存网页</string>

@@ -27,6 +27,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.interfaces.ControlWebView;
+import com.example.kiylx.ti.ui.setting2.Setting2Activity;
 
 /**
  * 主界面的功能界面
@@ -160,7 +161,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      * 启动设置页面
      */
     private void startSetting() {
-        Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
+        //Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
+        Intent settingIntent = new Intent(getActivity(), Setting2Activity.class);
         startActivity(settingIntent);
     }
 

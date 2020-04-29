@@ -27,6 +27,8 @@ public class SomeRes {
     public static String google="https://www.google.com/search?q=";
     public static String miji="https://mijisou.com/search?q=";
 
+   //默认显示
+
     public static String SearchViewStyle="searchview_style";//搜索页面样式，false是旧的样式，true是新样式
     public static String searchMatcher="search_matcher";//是否使用搜索匹配，false是不启用，true是启用
 }

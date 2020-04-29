@@ -9,7 +9,9 @@ import android.webkit.WebView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
+import com.example.kiylx.ti.tool.DefaultPreferenceTool;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -463,7 +465,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         webView.canGoBack();
         webView.canGoForward();
 
-        if (PreferenceTools.getBoolean(context, WebviewConf.customDownload) && MainActivity.IsVertical()) {
+        if (DefaultPreferenceTool.getBoolean(context, "custom_download_listener",false) && MainActivity.IsVertical()) {
 //横屏时不使用自己写的下载器
             //内置下载器
             webView.setDownloadListener(new DownloadListener2(context));
@@ -487,7 +489,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(Integer.parseInt(PreferenceTools.getString(context, WebviewConf.textZoom, "100")));
+        settings.setTextZoom(Integer.parseInt(DefaultPreferenceTool.getStrings(context,"text_zoom", "100")));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
@@ -501,7 +503,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //settings.setNeedInitialFocus(true);
         //settings.setBlockNetworkImage(false);
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(PreferenceTools.getString(context, WebviewConf.userAgent));
+        settings.setUserAgentString(DefaultPreferenceTool.getStrings(context, "user_agent",null));
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowContentAccess(false);//内容Url访问允许WebView从安装在系统中的内容提供者载入内容。

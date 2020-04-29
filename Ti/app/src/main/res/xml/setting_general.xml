@@ -5,24 +5,23 @@
     <SwitchPreference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:defaultValue="false"
         android:summary="使用自定义主页"
-        app:key="home_page"
+        app:key="@string/useCustomHomepage_key"
         app:title="启用自定义主页"
         app:useSimpleSummaryProvider="true" />
     <EditTextPreference
         android:layout_width="wrap_content"
-        android:key="homepage_url"
+        android:key="@string/homepageurl_key"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="主页网址"
-        app:dependency="home_page"
+        app:dependency="home_page_default"
         app:useSimpleSummaryProvider="true" />
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:fragment="com.example.kiylx.ti.settings.SearchEngineListDialog"
         app:key="search_engine"
+        android:fragment="com.example.kiylx.ti.ui.setting2.SearchEngineListFragment"
         app:title="设置搜索引擎" />
     <Preference
         android:layout_width="match_parent"
@@ -34,27 +33,28 @@
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:key="clearData"
-        app:fragment="com.example.kiylx.ti.fragments.CleanDataDialog"
-        app:title="清除数据" />
-    <SwitchPreference
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:defaultValue="false"
-        app:key="resumeData"
-        app:title="启动时恢复标签页" />
-    <Preference
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         app:key="textZoomlist"
         app:title="字体缩放"
-        app:fragment="com.example.kiylx.ti.settings.WebTextSizeFragment"
         app:useSimpleSummaryProvider="true" />
     <SwitchPreference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:defaultValue="false"
-        android:key="downloadTools"
-        android:title="是否使用内置下载器" />
+        app:defaultValue="false"
+        app:key="@string/resumeData_key"
+        app:title="启动时恢复标签页" />
+    <Preference
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:key="deleteData"
+        app:title="清除数据" />
+    <PreferenceCategory android:title="下载相关">
+
+        <SwitchPreference
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:key="@string/customDownload_key"
+            android:title="是否使用内置下载器" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

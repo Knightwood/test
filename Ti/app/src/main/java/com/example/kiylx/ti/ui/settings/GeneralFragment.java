@@ -177,10 +177,6 @@ public class GeneralFragment extends Fragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.searchengine_T:
-                    SearchEngineListDialog someThingDialog= SearchEngineListDialog.getInstance();
-                    FragmentManager fm=getFragmentManager();
-                    someThingDialog.setTargetFragment(GeneralFragment.this,0);
-                    someThingDialog.show(fm,"编辑默认搜索引擎");
                     break;
                 case R.id.cleanData:
                     CleanDataDialog dialog=CleanDataDialog.newInstance();

@@ -2,11 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        android:fragment="com.example.kiylx.ti.ui.settings.GeneralFragment"
+        android:fragment="com.example.kiylx.ti.ui.setting2.GeneralFragment"
         android:key="conventional"
         android:title="常规" />
     <Preference
-        android:fragment="com.example.kiylx.ti.ui.settings.ThemeFragment"
+        android:fragment="com.example.kiylx.ti.ui.setting2.StyleFragment"
         android:key="theme"
         android:title="样式" />
     <Preference

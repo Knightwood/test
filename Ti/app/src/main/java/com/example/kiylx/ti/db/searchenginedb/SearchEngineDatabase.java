@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
  * @创建者 kiylx
  * @创建时间 2020/2/22 15:40
  */
-@Database(entities = {SearchEngineEntity.class}, version = 1,exportSchema = false)
+@Database(entities = {SearchEngineEntity.class}, version = 1)
 public abstract class SearchEngineDatabase extends RoomDatabase {
     private static SearchEngineDatabase database;
 

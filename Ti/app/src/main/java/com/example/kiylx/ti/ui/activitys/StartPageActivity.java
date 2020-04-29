@@ -148,10 +148,7 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
      * 初始化设置文件
      */
     private void initConf() {
-        //默认不使用自定义主页
-        PreferenceTools.putBoolean(this, WebviewConf.useCustomHomepage, false);
-        //主页网址初始化为“”
-        PreferenceTools.putString(this, WebviewConf.homepageurl, SomeRes.default_homePage_url);
+
         {
             //默认useragent，设置时从useragent列表中选择一个写入到这个preference
             PreferenceTools.putString(this, WebviewConf.userAgent, null);
@@ -195,10 +192,6 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
             PreferenceTools.putHashMap2(this, WebviewConf.searchengineList, searchengineList);
         }
         {
-            //默认不用内置下载器
-            PreferenceTools.putBoolean(this, WebviewConf.customDownload, false);
-            //是否打开就恢复上次网页，默认是false
-            PreferenceTools.putBoolean(this, WebviewConf.resumeData, false);
             //默认下载路径
             PreferenceTools.putString(this, WebviewConf.defaultDownloadPath, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
             //默认最大下载任务数
@@ -209,12 +202,13 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
 
         {
             //使用新的样式的搜索页面
-            PreferenceTools.putBoolean(this, SomeRes.SearchViewStyle, true);
+           // PreferenceTools.putBoolean(this, SomeRes.SearchViewStyle, true);
             //是否使用搜索匹配
-            PreferenceTools.putBoolean(this, SomeRes.searchMatcher, false);
+            //PreferenceTools.putBoolean(this, SomeRes.searchMatcher, false);
             //是否使用默认模式（不使用fileChooserParams.createIntent();而是自己指定intent的type是“*/*”,以匹配所有类型文件）上传文件,默认不使用新模式
-            PreferenceTools.putBoolean(this, WebviewConf.uploadMode, true);
+          //  PreferenceTools.putBoolean(this, WebviewConf.uploadMode, true);
         }
+
     }
 
 }

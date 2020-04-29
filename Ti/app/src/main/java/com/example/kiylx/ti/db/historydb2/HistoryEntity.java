@@ -18,44 +18,11 @@ public class HistoryEntity {
     }
 
     @PrimaryKey(autoGenerate = true)
-    private int uid;
+    public int uid;
     @ColumnInfo
-    private String url;
+    public String url;
     @ColumnInfo
-    private String title;
+    public String title;
     @ColumnInfo
-    private String date;
-
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
+    public String date;
 }
