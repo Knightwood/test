@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:key="explorer_flags"
+        android:fragment="com.example.kiylx.ti.ui.setting2.UserAgentFragment"
         app:title="浏览器标识"
         app:useSimpleSummaryProvider="true" />
 
@@ -40,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:defaultValue="false"
+        app:enabled="false"
         app:key="@string/resumeData_key"
         app:title="启动时恢复标签页" />
     <Preference

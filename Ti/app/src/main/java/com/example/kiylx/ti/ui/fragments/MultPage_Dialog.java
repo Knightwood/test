@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
@@ -50,15 +51,32 @@ public class MultPage_Dialog extends DialogFragment {
     private static MultiDialog_Functions minterface;
     private List<WebPage_Info> lists;//webpageinfo 的list
     private int trashNum;//被删除的webview数量，大于0时在onStop中发消息让manager回收Webview
+    private View v;//根视图
+    private ImageView touchHieView;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setStyle(MinSetDialog.STYLE_NORMAL, R.style.DialogThemes);
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.dialog_multpage, null);
+        v = inflater.inflate(R.layout.dialog_multpage, null);
         mRecyclerView = v.findViewById(R.id.mult_item);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         updateUI();//每次打开多窗口都会触发更新视图
+
+        //imageview占据剩余的空间，点击时隐藏dialog
+        touchHieView=v.findViewById(R.id.hide_view3);
+        touchHieView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
         ImageButton newPageImageButton = v.findViewById(R.id.newPagebutton);
         newPageImageButton.setOnClickListener(new View.OnClickListener() {
@@ -93,21 +111,23 @@ public class MultPage_Dialog extends DialogFragment {
             if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //如果是横屏
                 lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-                Point point=new Point();
+                Point point = new Point();
                 d.getSize(point);
                 lp.width = (int) (0.5 * point.x);
 
             } else {
                 //竖屏
-                lp.gravity = Gravity.BOTTOM;
+                //lp.gravity = Gravity.BOTTOM;
                 //指定显示大小
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
             }
 
 
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
             //设置背景，不然无法扩展到屏幕边缘
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(91, 90, 92)));
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            //window.setDimAmount(0);//dialog周围全透明
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效
@@ -179,9 +199,9 @@ public class MultPage_Dialog extends DialogFragment {
             mRecyclerView.setAdapter(mWebSiteAdapter);
             Log.d(TAG, "onClick: setAdapter方法被触发");
         } else {
-            mCurrect = MainActivity.getCurrent();
-            //重新拿到current值，用于当删除某个标签页时能正确设置颜色
-            mWebSiteAdapter.setLists(lists);
+            mCurrect = MainActivity.getCurrent();//重新拿到current值，用于当删除某个标签页时能正确设置颜色
+
+            //mWebSiteAdapter.setLists(lists);
             //重新获取数据更新
             mWebSiteAdapter.notifyDataSetChanged();
         }
@@ -226,7 +246,6 @@ public class MultPage_Dialog extends DialogFragment {
     }
 
     private class WebsiteHolder extends ViewHolder implements View.OnClickListener {
-
         //变量
         private int pos;
         private WebPage_Info minfo;
@@ -255,10 +274,13 @@ public class MultPage_Dialog extends DialogFragment {
                 title = getString(R.string.new_tab);
             }
             mBinding.getInfos().setTitle(title);
-            if (pos == mCurrect)
-                mBinding.websiteItem.setTextColor(getResources().getColor(R.color.textColor));
+            mBinding.websiteItem.setTextColor(getResources().getColor(R.color.black));//设定字体颜色是黑色，防止复用item时字体颜色还是蓝色
+            if (pos == mCurrect){//如果是pos等于current，字体颜色改成蓝色
+                mBinding.websiteItem.setTextColor(getResources().getColor(R.color.blueColor));
+            }
+
             //通过拿到currect值，改变文字颜色。
-            Log.d(TAG, "onClick: bind方法被触发");
+            Log.d(TAG, "onClick: bind方法被触发,位置："+pos+"  current:"+mCurrect);
 
         }
 
@@ -267,11 +289,12 @@ public class MultPage_Dialog extends DialogFragment {
             switch ((v.getId())) {
                 case R.id.close_button:
                     Log.d("多窗口关闭点击", "onClick:" + pos);
-                    mWebSiteAdapter.notifyItemRemoved(pos);
-                    trashNum += 1;
                     minterface.delete_page(pos);//移除webview
-                    //mWebSiteAdapter.notifyItemRangeChanged(0,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
+                    trashNum += 1;
+                    //mWebSiteAdapter.notifyItemRemoved(pos);
+                    //mWebSiteAdapter.notifyItemRangeChanged(pos,lists.size());//上面移除webview就已经相当于删除了list中pos位置的元素
                     updateUI();
+
                     break;
                 case R.id.website_item:
                     Log.d(TAG, "onClick: 网页切换按钮被触发");

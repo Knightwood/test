@@ -503,7 +503,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //settings.setNeedInitialFocus(true);
         //settings.setBlockNetworkImage(false);
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(DefaultPreferenceTool.getStrings(context, "user_agent",null));
+        settings.setUserAgentString(PreferenceTools.getString(context, "user_agent",null));
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowContentAccess(false);//内容Url访问允许WebView从安装在系统中的内容提供者载入内容。

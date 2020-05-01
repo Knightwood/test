@@ -49,6 +49,9 @@ public class UserAgentFragment extends Fragment {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
+                    case R.id.defaultAgent:
+                        useragent=null;
+                        break;
                     case R.id.chrome:
                         useragent = getString(R.string.Chrome_agent);
                         break;
@@ -80,26 +83,12 @@ public class UserAgentFragment extends Fragment {
     }
 
 
-    /**
-     * @param url 设置好的网址
-     *            把设置好的网址结果传回目标fragment
-     */
-    private void setResult(String url) {
-        if (getTargetFragment() == null) {
-            return;
-        }
-        Intent intent = new Intent();
-        intent.putExtra(WebviewConf.searchengine, url);
-        getTargetFragment().onActivityResult(0, Activity.RESULT_OK, intent);
-    }
-
-
     @Override
     public void onStart() {
         super.onStart();
 
-        String defaultAgentStr = PreferenceTools.getString(getActivity(), WebviewConf.userAgent);
-        agentMap = PreferenceTools.getHashMap2(getActivity(), WebviewConf.userAgentList);
+        String defaultAgentStr = PreferenceTools.getString(getActivity(), WebviewConf.userAgent);//useragent默认值
+        agentMap = PreferenceTools.getHashMap2(getActivity(), WebviewConf.userAgentList);//存储所有useragent的hashmap
         RadioButton dario = null;
 
         if (agentMap.containsValue(defaultAgentStr)) {//如果默认useragent是内置的几个之一，把相应的radiobuttom打上勾
@@ -131,20 +120,21 @@ public class UserAgentFragment extends Fragment {
             textView1.setVisibility(View.VISIBLE);
         }
         //那个文本编辑框，即使上次写好的自定义值不是默认值，也要拿到并写进textview
-        textView1.setText(PreferenceTools.getString(getActivity(), WebviewConf.customsearchengine, ""));
+        textView1.setText(PreferenceTools.getString(getActivity(), WebviewConf.customAgent, ""));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //记录下自定义的搜索引擎，虽然它可能没有设置为默认值
-        PreferenceTools.putString(getActivity(), WebviewConf.customsearchengine, textView1.getText().toString());
+        //记录下自定义的浏览器标识，虽然它可能没有设置为默认值
+        PreferenceTools.putString(getActivity(), WebviewConf.customAgent, textView1.getText().toString());
         if (group.getCheckedRadioButtonId() == R.id.customurlradio) {
-                    /*如果选择了其他的选项，url在上面就被赋值了。
-                    如果选择了自定义的那一项，url还没有被赋值，应该在这里获取textview的值赋值给url*/
+                    /*如果选择了其他的选项，默认agent在上面那一句就被赋值了。
+                    如果选择了自定义的那一项，默认agent还没有被赋值，应该在这里获取textview的值赋值给agent*/
             useragent = textView1.getText().toString();
         }
-        PreferenceTools.putString(getActivity(), WebviewConf.searchengine, useragent);
+        //把默认值写入sharedPreference
+        PreferenceTools.putString(getActivity(), WebviewConf.userAgent, useragent);
 
     }
 

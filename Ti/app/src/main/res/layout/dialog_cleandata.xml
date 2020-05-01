@@ -7,7 +7,7 @@
 
         <CheckBox
             android:id="@+id/clean_cookies"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deleteCookies"
@@ -15,28 +15,28 @@
 
         <CheckBox
             android:id="@+id/clean_formdata"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deleteFormdata" />
 
         <CheckBox
             android:id="@+id/clean_cache"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deleteCache" />
 
         <CheckBox
             android:id="@+id/clean_history"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deleteHistory" />
 
         <CheckBox
             android:id="@+id/clean_localstorage"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/deleteLocalStorage" />

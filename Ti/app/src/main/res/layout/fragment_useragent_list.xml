@@ -18,14 +18,14 @@
 
         <RadioButton
             android:id="@+id/defaultAgent"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="默认" />
 
         <RadioButton
             android:id="@+id/chrome"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Chrome"
@@ -33,7 +33,7 @@
 
         <RadioButton
             android:id="@+id/firefox"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="FireFox"
@@ -41,7 +41,7 @@
 
         <RadioButton
             android:id="@+id/IE"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="IE 9.0"
@@ -49,14 +49,14 @@
 
         <RadioButton
             android:id="@+id/iPHONE"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="IPhone"
             android:textSize="16sp" />
         <RadioButton
             android:id="@+id/customagentradio"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="自定义"

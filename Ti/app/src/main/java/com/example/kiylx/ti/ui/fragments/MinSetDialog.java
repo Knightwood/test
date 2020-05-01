@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.ui.activitys.HistoryActivity;
@@ -31,6 +32,7 @@ import com.example.kiylx.ti.ui.setting2.Setting2Activity;
 
 /**
  * 主界面的功能界面
+ * 准备删除此dialog，把界面迁移到mainactivity。
  */
 public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
@@ -48,6 +50,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         return fragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Nullable
     @Override
@@ -81,9 +88,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
             }*/
             lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            //lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            window.setLayout(-2,-2);//第一个参数是宽度-1代表默认占满；第二个参数高度-2默认自适应高度（这两个参数也可以直接设置固定宽高）
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);
+            window.setDimAmount(0);//dialog周围全透明
             window.setAttributes(lp);
             //设置点击外部可以取消对话框
             setCancelable(true);
@@ -180,7 +189,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
     /**
      * @param willShowed 即将被显示的视图
-     * @param willHided 即将被隐藏的视图
+     * @param willHided  即将被隐藏的视图
      */
     private void showView(View willShowed, View willHided) {
         willShowed.setVisibility(View.VISIBLE);

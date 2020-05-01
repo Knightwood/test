@@ -19,7 +19,7 @@
 
         <RadioButton
             android:id="@+id/baidu"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="百度"
@@ -27,7 +27,7 @@
 
         <RadioButton
             android:id="@+id/bing"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="必应"
@@ -35,7 +35,7 @@
 
         <RadioButton
             android:id="@+id/sougou"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="搜狗"
@@ -43,7 +43,7 @@
 
         <RadioButton
             android:id="@+id/miji"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="秘迹搜索"
@@ -51,7 +51,7 @@
 
         <RadioButton
             android:id="@+id/google1"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="谷歌搜索"
@@ -59,7 +59,7 @@
 
         <RadioButton
             android:id="@+id/customurlradio"
-            style="@style/MenuItem"
+            style="@style/MenuItemHasRipple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="自定义"
@@ -69,7 +69,7 @@
 
     <EditText
         android:id="@+id/customurl"
-        style="@style/MenuItem"
+        style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"

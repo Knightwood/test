@@ -14,7 +14,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/homepage_setting"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <LinearLayout
             android:id="@+id/tool_second"
@@ -23,15 +24,16 @@
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/tool_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout">
 
             <TextView
                 android:id="@+id/back1"
                 style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:text="@string/back" />
 
@@ -40,6 +42,8 @@
                 style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:text="@string/saveToPdf" />
 
@@ -48,6 +52,8 @@
                 style="@style/MenuItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:text="@string/saveTomht" />
         </LinearLayout>
@@ -59,9 +65,8 @@
             android:scrollbarStyle="insideOverlay"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/tool_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout">
 
             <LinearLayout
                 android:id="@+id/tools_menu"
@@ -77,9 +82,11 @@
 
                 <TextView
                     android:id="@+id/findtext"
+                    style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/MenuItem"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
                     android:text="@string/findText"
                     android:textAlignment="textStart"
@@ -90,15 +97,18 @@
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
-                    android:text="@string/fenxiang"
-                    />
+                    android:text="@string/fenxiang" />
 
                 <TextView
                     android:id="@+id/pcMode"
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
                     android:text="@string/diannaomoshi" />
 
@@ -107,6 +117,8 @@
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
                     android:text="@string/yinshen" />
 
@@ -115,6 +127,8 @@
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
                     android:text="@string/add_to_Bookmark" />
 
@@ -123,6 +137,8 @@
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
                     android:onClick="@{clicklister}"
                     android:text="@string/menu" />
             </LinearLayout>
@@ -136,6 +152,7 @@
             app:layout_constraintGuide_end="68dp" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:gravity="bottom"
@@ -153,7 +170,10 @@
                 android:layout_margin="3dp"
                 android:layout_marginStart="10dp"
                 android:layout_weight="1"
+                android:background="@drawable/touch_color"
+                android:clickable="true"
                 android:drawableTop="@drawable/ic_cached_black_24dp"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
@@ -168,9 +188,11 @@
                 android:layout_margin="3dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
+                android:background="@drawable/touch_color"
+                android:clickable="true"
                 android:contentDescription="@string/xiazai"
                 android:drawableTop="@drawable/ic_get_app_black_24dp"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
@@ -184,9 +206,11 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
+                android:background="@drawable/touch_color"
+                android:clickable="true"
                 android:contentDescription="@string/lishijilu"
                 android:drawableTop="@drawable/ic_history_black_24dp"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
@@ -200,9 +224,11 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="3dp"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
+                android:background="@drawable/touch_color"
+                android:clickable="true"
                 android:contentDescription="@string/Bookmark"
                 android:drawableTop="@drawable/ic_bookmark_black_24dp"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
@@ -218,9 +244,11 @@
                 android:layout_margin="3dp"
                 android:layout_marginEnd="10dp"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
+                android:background="@drawable/touch_color"
+                android:clickable="true"
                 android:contentDescription="@string/gongjuxiang"
                 android:drawableTop="@drawable/ic_work_black_24dp"
+                android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
@@ -228,5 +256,6 @@
                 android:textAlignment="center"
                 android:textSize="14sp" />
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

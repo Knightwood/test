@@ -155,11 +155,11 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
 
             //内置的useragent列表
             HashMap<String, String> useragentMap = new LinkedHashMap<>();
-            useragentMap.put("Chrome", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36");
-            useragentMap.put("FireFox", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0");
-            useragentMap.put("IE 9.0", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0");
-            useragentMap.put("iPhone", "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5");
-            useragentMap.put("默认", null);//默认显示
+            useragentMap.put("Chrome_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36");
+            useragentMap.put("FireFox_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0");
+            useragentMap.put("IE 9.0_agent", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0");
+            useragentMap.put("iPhone_agent", "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_3 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5");
+            useragentMap.put("默认_agent", null);//默认显示
             PreferenceTools.putHashMap2(this, WebviewConf.userAgentList, useragentMap);
         }
 

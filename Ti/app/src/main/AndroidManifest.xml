@@ -23,7 +23,7 @@
             android:name=".ui.activitys.SettingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme1" />
+            android:theme="@style/MaterialThemes" />
         <activity
             android:name=".ui.setting2.Setting2Activity"
             android:label="设置"
@@ -36,22 +36,22 @@
             android:name=".downloadpack.DownloadActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme1" />
+            android:theme="@style/DownloadTheme" />
         <activity
             android:name=".ui.activitys.BookmarkPageActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme1" />
+            android:theme="@style/MaterialThemes" />
         <activity
             android:name=".ui.activitys.HistoryActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme1" />
+            android:theme="@style/MaterialThemes" />
         <activity android:name=".ui.activitys.DoSearchActivity" />
-        <activity android:name=".ui.activitys.MainActivity">
+        <activity android:name=".ui.activitys.MainActivity"
+            android:theme="@style/MaterialThemes">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

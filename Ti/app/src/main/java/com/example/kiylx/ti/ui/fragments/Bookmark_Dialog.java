@@ -153,14 +153,14 @@ public class Bookmark_Dialog extends DialogFragment {
                         }
 
                     }
-                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                });/*.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //关闭dialog
                 dismiss();
 
             }
-        });
+        });*/
 
         setMassage(view);//填充网页信息
         newFolderButton = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
@@ -185,7 +185,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private void selectOneFolder(int i) {
         //填充微调框
         if (adapter == null) {
-            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_item, bookmarkFolderlists);
+            adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, bookmarkFolderlists);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         } else {
             adapter.notifyDataSetChanged();

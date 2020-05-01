@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
@@ -48,7 +47,6 @@ import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.SavePNG_copyText;
 import com.example.kiylx.ti.tool.PreferenceTools;
-import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
 import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -354,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         String home_url = null;
         if (url == null) {
             //条件true时获取自定义网址，是false时则使用默认主页
-            if (DefaultPreferenceTool.getBoolean(MainActivity.this,getString(R.string.useCustomHomepage_key),false)) {
-                home_url =DefaultPreferenceTool.getStrings(MainActivity.this,getString(R.string.homepageurl_key),"");
+            if (DefaultPreferenceTool.getBoolean(MainActivity.this, getString(R.string.useCustomHomepage_key), false)) {
+                home_url = DefaultPreferenceTool.getStrings(MainActivity.this, getString(R.string.homepageurl_key), "");
                 //补全网址，以及如果开了自定义网址，但是没有填写任何字符，也使用默认主页
                 if (home_url.equals("")) {
                     home_url = SomeRes.default_homePage_url;
@@ -523,7 +521,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 底部设置界面
      */
     public void buttomMenu(View v) {
-
         FragmentManager fm = getSupportFragmentManager();
         MinSetDialog md = MinSetDialog.newInstance(mConverted_lists.getInfo(current));
         md.setInterafce(controlInterface);//控制网页的一些方法交给MinSetDialog
@@ -1028,7 +1025,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     class ChromeClientInterfaceImpl implements WebViewChromeClientInterface {
         //false则是自己写的方法，能上传所有文件，不去理会是什么type，默认值是true，以系统提供的createIntent方式获取文件。
-        boolean defUploadMode= DefaultPreferenceTool.getBoolean(getApplicationContext(),getString(R.string.uploadMode_key),true);
+        boolean defUploadMode = DefaultPreferenceTool.getBoolean(getApplicationContext(), getString(R.string.uploadMode_key), true);
+
         @Override
         public boolean upload(ValueCallback<Uri[]> filePathCallback, WebChromeClient.FileChooserParams fileChooserParams) {
             cancelUpLoad();//清理一次请求，防止上一次的没有消费掉而出错
@@ -1054,6 +1052,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
 
         }
+
         /**
          * webview对于
          * <a href="http://www.google.com" target="_blank">new window</a>
@@ -1081,6 +1080,19 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             fileUploadCallBack = null;
         }
     }
+
+/*    public void showMulti() {
+        ViewStub multiWindow = findViewById(R.id.multiViewStub);
+        if (multiWindow != null) {
+            multiWindow.inflate();
+        }
+        setContainer.setVisibility(View.VISIBLE);
+    }
+
+    public void hideMulti() {
+        setContainer.setVisibility(View.GONE);
+    }*/
+
 
 }
 /*
