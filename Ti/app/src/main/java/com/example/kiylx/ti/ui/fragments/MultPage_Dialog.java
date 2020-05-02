@@ -117,7 +117,7 @@ public class MultPage_Dialog extends DialogFragment {
 
             } else {
                 //竖屏
-                //lp.gravity = Gravity.BOTTOM;
+                lp.gravity = Gravity.BOTTOM;
                 //指定显示大小
                 lp.width = WindowManager.LayoutParams.MATCH_PARENT;
             }

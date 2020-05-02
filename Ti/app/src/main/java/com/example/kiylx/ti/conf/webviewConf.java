@@ -19,8 +19,8 @@ public class WebviewConf {
 
     public static String userAgent = "user_agent";//默认浏览器标识key
     public static String userAgentList="useragent_list";//浏览器标识列表key
+    public static String customAgent="custom_agent";//自定义的agent
 
-    public static String cleanData = "clean_data";//清除数据key
     public static String textZoom = "text_zoom";//字体缩放key
     public static String textZoomList = "text_zoom_list";//字体缩放列表key
 

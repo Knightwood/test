@@ -14,6 +14,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <WebView
+            android:id="@+id/textsize_webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -40,6 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/big"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
@@ -49,10 +54,22 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:max="200"
-        android:progress="100"
+        android:max="150"
+        android:progress="50"
         app:layout_constraintBottom_toBottomOf="@+id/size_max"
         app:layout_constraintEnd_toStartOf="@+id/size_max"
         app:layout_constraintStart_toEndOf="@+id/size_min"
         app:layout_constraintTop_toBottomOf="@id/guideline6" />
+
+    <Button
+        android:id="@+id/resetSize"
+        style="@android:style/Widget.Material.Light.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/reset"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/size_max" />
 </androidx.constraintlayout.widget.ConstraintLayout>

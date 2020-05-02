@@ -36,6 +36,7 @@
         android:layout_height="wrap_content"
         app:key="textZoomlist"
         app:title="字体缩放"
+        app:fragment="com.example.kiylx.ti.ui.setting2.WebTextSizeFragment"
         app:useSimpleSummaryProvider="true" />
     <SwitchPreference
         android:layout_width="match_parent"

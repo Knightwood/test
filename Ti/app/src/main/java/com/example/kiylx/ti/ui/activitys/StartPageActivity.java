@@ -164,22 +164,6 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
         }
 
         {
-            //字体缩放默认值，选择其他缩放值时把值写入这里，其他地方使用时直接获取这里
-            PreferenceTools.putString(this, WebviewConf.textZoom, "100");
-
-            HashMap<String, String> zoomMap = new LinkedHashMap<>();
-            zoomMap.put("50 %", "50");
-            zoomMap.put("70 %", "70");
-            zoomMap.put("90 %", "90");
-            zoomMap.put("100 %", "100");//默认显示
-            zoomMap.put("110 %", "110");
-            zoomMap.put("125 %", "125");
-            zoomMap.put("130 %", "130");
-            zoomMap.put("150 %", "150");
-            PreferenceTools.putHashMap2(this, WebviewConf.textZoomList, zoomMap);
-        }
-
-        {
             //默认搜索引擎列表和默认搜索引擎,添加搜索引擎会添加到searchengineList，选择searchengineList中一项时会写入到searchengine这个preference
             PreferenceTools.putString(this, WebviewConf.searchengine, SomeRes.bing);
 
@@ -198,15 +182,6 @@ public class StartPageActivity extends AppCompatActivity implements EasyPermissi
             PreferenceTools.putInt(this, WebviewConf.defaultDownloadlimit, 3);
             //默认下载线程数
             PreferenceTools.putInt(this, WebviewConf.defaultDownloadthread, 8);
-        }
-
-        {
-            //使用新的样式的搜索页面
-           // PreferenceTools.putBoolean(this, SomeRes.SearchViewStyle, true);
-            //是否使用搜索匹配
-            //PreferenceTools.putBoolean(this, SomeRes.searchMatcher, false);
-            //是否使用默认模式（不使用fileChooserParams.createIntent();而是自己指定intent的type是“*/*”,以匹配所有类型文件）上传文件,默认不使用新模式
-          //  PreferenceTools.putBoolean(this, WebviewConf.uploadMode, true);
         }
 
     }

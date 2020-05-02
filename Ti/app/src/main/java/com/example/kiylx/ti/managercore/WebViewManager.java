@@ -489,7 +489,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //让WebView支持DOM storage API
         settings.setDomStorageEnabled(true);
         //字体缩放
-        settings.setTextZoom(Integer.parseInt(DefaultPreferenceTool.getStrings(context,"text_zoom", "100")));
+        settings.setTextZoom(DefaultPreferenceTool.getInt(context,"text_zoom", 100));
         //让WebView支持缩放
         settings.setSupportZoom(true);
         //启用WebView内置缩放功能
