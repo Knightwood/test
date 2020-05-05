@@ -28,19 +28,24 @@ public class FileIndexManager {
        infoList =new ArrayList<>();
     }
 
-    public List<FileInfo> getList(String s) {
+    /**
+     * @param parentPath file的路径
+     * @return file的子file列表，如果路径不存在或这是文件将返回null
+     */
+    public List<FileInfo> getChildrenList(String parentPath) {
         int imgId;
         File rootFile;
-        if (s == null) {//获取根目录
+
+        if (parentPath == null) {//获取根目录
             rootFile = Environment.getExternalStorageDirectory();
         } else {//获取特定目录下的文件
-            rootFile = new File(s);
+            rootFile = new File(parentPath);
             if (!rootFile.exists()||rootFile.isFile()) {
-                Log.d(TAG, "getList: 路径不存在或这是文件");
+                Log.d(TAG, "getChildrenList: 路径不存在或这是文件");
                 return infoList;
             }
         }
-        infoList.clear();
+        infoList.clear();//清空infoList
         //遍历文件，返回FileInfo
         for (File file : rootFile.listFiles()) {
             String fileName = file.getName();

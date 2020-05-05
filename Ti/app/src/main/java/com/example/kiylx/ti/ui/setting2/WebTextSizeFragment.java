@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.DefaultPreferenceTool;
 
 /**
  * 创建者 kiylx
@@ -52,13 +53,17 @@ public class WebTextSizeFragment extends Fragment {
     }
 
     private void initView() {
+        int defTextSize= DefaultPreferenceTool.getInt(getContext(),"text_zoom",100);
+
         resetTextSize = v.findViewById(R.id.resetSize);
 
         webView = (WebView) v.findViewById(R.id.textsize_webview);
         webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setTextZoom(defTextSize);//初始化显示的文字大小
         webView.loadUrl("file:///android_asset/firstHtml.html");
 
         seekBar = v.findViewById(R.id.textSizeSeekBar);
+        seekBar.setProgress(defTextSize-50);//初始化滑动条
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

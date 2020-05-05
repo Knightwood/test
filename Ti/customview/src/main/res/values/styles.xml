@@ -13,4 +13,15 @@
         <item name="android:windowExitAnimation">@anim/dialog_out</item>
     </style>
 
+    <style name="DialogThemes" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/orange</item>
+        <!--状态栏颜色设为透明-->
+        <item name="colorPrimaryDark">@color/transparent</item>
+        <item name="colorAccent">@color/green</item>
+        <!--以下三行使dialogFragment扩展到屏幕边缘且全屏-->
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
 </resources>

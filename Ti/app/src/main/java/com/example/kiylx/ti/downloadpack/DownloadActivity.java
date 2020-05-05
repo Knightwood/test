@@ -71,7 +71,7 @@ public class DownloadActivity extends AppCompatActivity {
         //测试开始下载任务的按钮
         /*Button bui = findViewById(R.id.ceshianniu);
         bui.setOnClickListener(v -> {
-            getList();
+            getChildrenList();
 
         });*/
 
@@ -239,7 +239,7 @@ public class DownloadActivity extends AppCompatActivity {
             public void run() {
                 this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
                 if (list == null) {
-                    Log.d(TAG, "getList: 数据库出错");
+                    Log.d(TAG, "getChildrenList: 数据库出错");
                 } else if (list.isEmpty()) {
                     Log.d(TAG, "下载activity：数据库里是空的");
                 } else {

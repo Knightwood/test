@@ -28,10 +28,16 @@ public class SelectFolderFragment extends DialogFragment {
     private View dialogRoot;
     private TextView positiveButton;
     private TextView backButton;
-    private TextView pathView;
-    private IndexView indexView;
-    private static String path;
+    private TextView pathView;//指示当前路径的视图
+    private IndexView indexView;//文件夹路径视图
+    private static String path;//始终是当前路径
     private SendPath sendPath;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(SelectFolderFragment.STYLE_NORMAL,R.style.DialogThemes);
+    }
 
     @Nullable
     @Override
@@ -41,15 +47,22 @@ public class SelectFolderFragment extends DialogFragment {
         positiveButton = dialogRoot.findViewById(R.id.save_folder);
         backButton = dialogRoot.findViewById(R.id.back_folder);
         pathView = dialogRoot.findViewById(R.id.folder_path);
+
         indexView = dialogRoot.findViewById(R.id.folder_index);
         indexView.setClickAfter(new IndexView.ClickAfter() {
+            //这里是after接口的实现
             @Override
             public void after(String path) {
+                //指示当前的路径
                 SelectFolderFragment.path = path;
                 pathView.setText(path);
             }
         });
-        pathView.setText(indexView.getLastPath());
+
+        path=indexView.getCurrentPath();//刚打开这个dialogFragment时初始化为当前路径（也就是根路径）
+        pathView.setText(path);//显示当前的路径
+
+        //确认按钮
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +73,7 @@ public class SelectFolderFragment extends DialogFragment {
                 dismiss();
             }
         });
+        //上一层级按钮
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,8 +106,6 @@ public class SelectFolderFragment extends DialogFragment {
             //指定显示大小
             layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
             layoutParams.height =WindowManager.LayoutParams.MATCH_PARENT;
-            //设置背景，不然无法扩展到屏幕边缘
-            window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);
             //让属性设置生效

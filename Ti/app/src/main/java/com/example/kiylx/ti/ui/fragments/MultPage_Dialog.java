@@ -58,7 +58,7 @@ public class MultPage_Dialog extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setStyle(MinSetDialog.STYLE_NORMAL, R.style.DialogThemes);
+        setStyle(MultPage_Dialog.STYLE_NORMAL, R.style.DialogThemes);
     }
 
     @Nullable
@@ -125,8 +125,6 @@ public class MultPage_Dialog extends DialogFragment {
 
             lp.height = WindowManager.LayoutParams.MATCH_PARENT;
 
-            //设置背景，不然无法扩展到屏幕边缘
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             //window.setDimAmount(0);//dialog周围全透明
             //显示消失动画
             window.setWindowAnimations(R.style.animate_dialog);

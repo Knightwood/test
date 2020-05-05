@@ -27,7 +27,7 @@ import java.util.Stack;
 public class IndexView extends LinearLayout {
     private static final String TAG = "IndexView";
     private Stack<String> backStack;
-    private String lastPath;
+    private String currentPath;
 
     FileIndexManager manager;
     RecyclerView root;
@@ -53,19 +53,22 @@ public class IndexView extends LinearLayout {
         itemView = findViewById(R.id.item_1);
         manager = FileIndexManager.newInstance();
 
-        backStack = new Stack<>();
-        lists = manager.getList(null);//获得根目录
-        lastPath = Environment.getExternalStorageDirectory().getPath();//存储根目录的路径
+        backStack = new Stack<>();//此时回退栈是空的
+        lists = manager.getChildrenList(null);//获得根目录
+        currentPath = Environment.getExternalStorageDirectory().getPath();//把lastPath设置为根目录的路径
         root.setLayoutManager(new LinearLayoutManager(context));
         updateUI();
 
     }
 
-    public String getLastPath() {
-        if (lastPath == null) {
-            lastPath = Environment.getExternalStorageDirectory().getPath();//存储根目录的路径
+    /**
+     * @return 当前层级路径，初始化时是根目录的路径
+     */
+    public String getCurrentPath() {
+        if (currentPath == null) {
+            currentPath = Environment.getExternalStorageDirectory().getPath();//存储根目录的路径
         }
-        return lastPath;
+        return currentPath;
     }
 
     /**
@@ -75,11 +78,12 @@ public class IndexView extends LinearLayout {
     public void goBack() {
         if (!backStack.empty()) {
             lists.clear();
-            lastPath = backStack.pop();
-            lists = manager.getList(lastPath);
+            currentPath = backStack.pop();//取出上一层级路径
+            lists = manager.getChildrenList(currentPath);
             updateUI();
             if (clickAfter != null) {
-                clickAfter.after(lastPath);
+                //返回回到上一层级的路径
+                clickAfter.after(currentPath);
             }
         }
 
@@ -113,19 +117,19 @@ public class IndexView extends LinearLayout {
                     .setOnIntemClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String currentPath=data.getFilePath();//点击的文件夹或文件的路径
-                            Log.d(TAG, "点击时lastpath: "+lastPath);
-                            if ((new File(currentPath)).isFile()) {
+                            String dataFilePath=data.getFilePath();//被点击当前的item，获取被点击的item的路径，
+                            Log.d(TAG, "点击时lastpath: "+ currentPath);
+                            if ((new File(dataFilePath)).isFile()) {
                                 //如果这是文件，就不更新视图，直接返回
                                 return;
                             }
                             if (clickAfter != null) {
-                                clickAfter.after(currentPath);
+                                clickAfter.after(dataFilePath);
                             }
-                            backStack.push(lastPath.trim());//把当前目录层级的路径字符串副本压入栈中，此时还没有进入点击的文件夹
-                            Log.d(TAG, "点击的文件夹或文件路径: " + currentPath);
-                            lastPath =currentPath;//把当前路径字符串改为点击的文件/文件夹的路径
-                            lists = manager.getList(lastPath);//获取点击的文件夹的子目录
+                            backStack.push(currentPath.trim());//把当前目录层级的路径字符串副本压入栈中，此时还没有进入点击的文件夹
+                            Log.d(TAG, "点击的文件夹或文件路径: " + dataFilePath);
+                            currentPath =dataFilePath;//把当前路径字符串改为点击的文件/文件夹的路径
+                            lists = manager.getChildrenList(currentPath);//获取点击的文件夹的子目录
                             updateUI();//更新视图
                         }
                     }, data);
@@ -134,7 +138,7 @@ public class IndexView extends LinearLayout {
     }
 
     /**
-     * 传出点击某一项时的文件夹的路径
+     * 传出点击某一项或回退到某一层级时的文件夹的路径
      */
     public interface ClickAfter {
         void after(String path);
