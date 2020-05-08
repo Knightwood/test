@@ -5,9 +5,9 @@ import android.webkit.WebView;
 public interface NotifyWebViewUpdate {
     /**
      * @param webView webview
-     *                网页加载完成时调用它更新某些信息,并加入数据库
+     *                网页加载完成时调用,把网址加入数据库
      */
-    void updateWebViewInfo(WebView webView);
+    void SaveWebPageUrl(WebView webView);
 
     /**
      * 只更新webpageinfo，和标题，但是不加入数据库

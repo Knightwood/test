@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
-import com.example.kiylx.ti.tool.Action;
+import com.example.kiylx.ti.managercore.WebViewManager.Action;
 import com.example.kiylx.ti.corebase.SealedWebPageInfo;
 
 import java.util.ArrayList;
@@ -84,10 +84,6 @@ public class WebViewInfo_Manager implements Observer {
         mCurrectList.get(pos).setUrl(url);
     }
 
-    /*public void setWEB_feature_1(int pos, int i) {
-        mCurrectList.get(pos).setWEB_feature(i);
-    }*/
-
     public WebPage_Info getInfo(int i) {
         return mCurrectList.get(i);
     }
@@ -116,6 +112,7 @@ public class WebViewInfo_Manager implements Observer {
      */
     private void updateItem(WebPage_Info info, int pos, Action action) {
         switch (action) {
+            case NEWTAB:
             case ADD:
                 addToList(pos, info);
                 Log.d(TAG, "updateItem: 添加后数量" + mCurrectList.size());
@@ -142,6 +139,5 @@ public class WebViewInfo_Manager implements Observer {
         minfo.setTitle(info.getTitle());
         minfo.setUrl(info.getUrl());
         minfo.setDate(info.getDate());
-        //minfo.setWEB_feature(info.getWEB_feature());
     }
 }

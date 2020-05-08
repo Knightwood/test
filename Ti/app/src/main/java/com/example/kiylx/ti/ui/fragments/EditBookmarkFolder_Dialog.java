@@ -67,7 +67,7 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder mbuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()));
+        AlertDialog.Builder mbuilder = new AlertDialog.Builder(requireContext());
         final View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_editbookmarkfolder, null);
         view1 = view.findViewById(R.id.editTagBox);
         mbuilder.setView(view);

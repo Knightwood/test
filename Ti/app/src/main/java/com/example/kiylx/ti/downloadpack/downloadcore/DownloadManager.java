@@ -566,7 +566,12 @@ public class DownloadManager {
     private void updateInfo(DownloadInfo info) {
         Thread baseThread = new BaseThread(info, this::updateData);//方法引用
         baseThread.start();
-
+/*new BaseThread(info, new updateItem() {
+            @Override
+            public void update(DownloadInfo info) {
+                deleteInfo(info);
+            }
+        });*/
     }
 
     /**

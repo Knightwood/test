@@ -42,6 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.crystal.customview.slider.Slider;
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.managercore.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
@@ -169,7 +170,15 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
 
+        testContext();
+    }
 
+    /**
+     * 测试上下文
+     */
+    private void testContext() {
+        Log.d(TAG, "测试上下文，getApplication得到的是:  " + getApplicationContext());
+        Log.d(TAG, "测试上下文，Xapplication.getInstance()得到的是：   " + Xapplication.getInstance());
     }
 
     /**
@@ -349,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 传入的参数不是null时，新建标签页，并载入传入的网址
      */
     public void newTab(String url) {
-        String home_url = null;
+        String home_url;
         if (url == null) {
             //条件true时获取自定义网址，是false时则使用默认主页
             if (DefaultPreferenceTool.getBoolean(MainActivity.this, getString(R.string.useCustomHomepage_key), false)) {
@@ -360,6 +369,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 } else {
                     home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
                 }
+            }else{
+                home_url=SomeRes.default_homePage_url;
             }
         } else {
             //传入参数不是null
@@ -373,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             current = mWebViewManager.size();
         }
 
-        mWebViewManager.newWebView(current, getApplicationContext(), MainActivity.this);
+         mWebViewManager.newWebView(current, getApplicationContext(), MainActivity.this, home_url);
         mWebViewManager.getTop(current).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
@@ -383,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         f1.addView(mWebViewManager.getTop(current));
 
-        mWebViewManager.loadHomePage(current, home_url);//新建标签页载入主页，新建标签页默认插入最后的位置。
+        //mWebViewManager.loadHomePage(current, home_url);//新建标签页载入主页，新建标签页默认插入最后的位置。
     }
 
     /**
@@ -391,14 +402,14 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      *            后台打开网页使用此方法
      */
     public void newTabInBackground(String url) {
-        mWebViewManager.newWebView(current + 1, getApplicationContext(), MainActivity.this);
+        mWebViewManager.newWebView(current + 1, getApplicationContext(), MainActivity.this, url);
         mWebViewManager.getTop(current + 1).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
                 Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
             }
         });
-        mWebViewManager.loadHomePage(current + 1, url);
+        // mWebViewManager.loadHomePage(current + 1, url);
     }
 
     @Override
@@ -518,7 +529,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * 底部设置界面
+     * 底部菜单界面
      */
     public void buttomMenu(View v) {
         FragmentManager fm = getSupportFragmentManager();
@@ -851,92 +862,95 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void achieveHandlerClickInterface() {
         if (handleClickedLinks == null) {
-            handleClickedLinks = new HandleClickedLinks() {
-                SavePNG_copyText png_copyText = new SavePNG_copyText(MainActivity.this);
-
-                @Override
-                public void onImgSelected(int x, int y, int type, String extra) {
-                    Log.d(TAG, "onImgSelected: " + extra);
-                    String[] menu = new String[]{"复制图片链接地址", "新窗口打开图片", "分享图片", "保存图片"};
-                    new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    //复制链接地址
-                                    Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
-                                    //clipData(extra);
-                                    png_copyText.clipData(extra);
-                                    break;
-                                case 1:
-                                    //新窗口打开
-                                    newTab(extra);
-                                    break;
-                                case 2:
-                                    //分享图片
-                                    break;
-                                case 3:
-                                    //"保存图片"
-                                    //saveImage(extra);
-                                    png_copyText.savePic(extra);
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            Toast.makeText(getApplicationContext(), "保存成功", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                    break;
-
-                            }
-                            dialog.dismiss();
-                        }
-                    }).show();
-                }
-
-                @Override
-                public void onLinkSelected(int x, int y, int type, String extra) {
-                    Log.d(TAG, "onLinkSelected: " + extra);
-                    String[] menu = new String[]{"复制链接地址", "新窗口打开", "分享", "后台打开", "添加到书签"};
-                    new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which) {
-                                case 0:
-                                    //复制链接地址
-                                    Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
-                                    //clipData(extra);
-                                    png_copyText.clipData(extra);
-                                    break;
-                                case 1:
-                                    //新窗口打开
-                                    newTab(extra);
-                                    break;
-                                case 2:
-                                    //分享
-                                    controlInterface.sharing(extra);
-                                    break;
-                                case 3:
-                                    //后台打开
-                                    newTabInBackground(extra);
-                                    break;
-                                case 4:
-                                    //添加到书签
-                                    controlInterface.addtobookmark(extra);
-                                    break;
-
-                            }
-                            dialog.dismiss();
-                        }
-                    }).show();
-                }
-
-                @Override
-                public void onImgLink(int touchX, int touchY, int type, String extra) {
-
-                }
-
-            };
+            handleClickedLinks = new HandleClickLinksImpl();
         }
+    }
+
+    class HandleClickLinksImpl implements HandleClickedLinks {
+
+        SavePNG_copyText png_copyText = new SavePNG_copyText(MainActivity.this);
+
+        @Override
+        public void onImgSelected(int x, int y, int type, String extra) {
+            Log.d(TAG, "onImgSelected: " + extra);
+            String[] menu = new String[]{"复制图片链接地址", "新窗口打开图片", "分享图片", "保存图片"};
+            new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            //复制链接地址
+                            Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
+                            //clipData(extra);
+                            png_copyText.clipData(extra);
+                            break;
+                        case 1:
+                            //新窗口打开
+                            newTab(extra);
+                            break;
+                        case 2:
+                            //分享图片
+                            break;
+                        case 3:
+                            //"保存图片"
+                            //saveImage(extra);
+                            png_copyText.savePic(extra);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "保存成功", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            break;
+
+                    }
+                    dialog.dismiss();
+                }
+            }).show();
+        }
+
+        @Override
+        public void onLinkSelected(int x, int y, int type, String extra) {
+            Log.d(TAG, "onLinkSelected: " + extra);
+            String[] menu = new String[]{"复制链接地址", "新窗口打开", "分享", "后台打开", "添加到书签"};
+            new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case 0:
+                            //复制链接地址
+                            Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
+                            //clipData(extra);
+                            png_copyText.clipData(extra);
+                            break;
+                        case 1:
+                            //新窗口打开
+                            newTab(extra);
+                            break;
+                        case 2:
+                            //分享
+                            controlInterface.sharing(extra);
+                            break;
+                        case 3:
+                            //后台打开
+                            newTabInBackground(extra);
+                            break;
+                        case 4:
+                            //添加到书签
+                            controlInterface.addtobookmark(extra);
+                            break;
+
+                    }
+                    dialog.dismiss();
+                }
+            }).show();
+        }
+
+        @Override
+        public void onImgLink(int touchX, int touchY, int type, String extra) {
+
+        }
+
     }
 
 
@@ -945,69 +959,71 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      */
     private void implControlexplorer() {
         if (controlInterface == null) {
-            controlInterface = new ControlWebView() {
-                @Override
-                public void sharing(String url) {
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("text/plain");
-                    i.putExtra(Intent.EXTRA_TEXT, url);
-                    i.putExtra(Intent.EXTRA_SUBJECT, "网址");
-                    startActivity(i);
-                }
-
-                @Override
-                public void addtobookmark(String url) {
-                    FragmentManager fm = getSupportFragmentManager();
-                    //把当前网页信息传给收藏dialog
-                    Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, mConverted_lists.getInfo(current));
-                    dialog.show(fm, "收藏当前网页");
-                }
-
-                @Override
-                public void reload() {
-                    mWebViewManager.reLoad((MainActivity.this));
-                }
-
-                @Override
-                public void searchText() {
-                    //打开搜索webview内的文本
-                    openMatchesTextView();
-                }
-
-                @Override
-                public void usePcMode() {
-                    mWebViewManager.reLoad_pcmode();
-                }
-
-                @Override
-                public void newPage(String url) {
-                    newTab(url);
-                }
-
-                @Override
-                public void saveWeb() {
-                    WebView tmp = mWebViewManager.getTop(current);
-                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), tmp.getTitle() + TimeProcess.getTime() + ".mht");
-                    tmp.saveWebArchive(file.getAbsolutePath());
-                }
-
-                @Override
-                public void printPdf() {
-                    WebView tmp = mWebViewManager.getTop(current);
-                    PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-                    PrintDocumentAdapter adapter = tmp.createPrintDocumentAdapter(tmp.getTitle() + TimeProcess.getTime() + ".pdf");
-                    PrintAttributes attributes = new PrintAttributes.Builder()
-                            .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                            .setResolution(new PrintAttributes.Resolution("id", Context.PRINT_SERVICE, 200, 200))
-                            .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-                            .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
-                            .build();
-                    printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
-
-                }
-            };
+            controlInterface = new ControlWebViewImpl();
         }
 
+    }
+
+    class ControlWebViewImpl implements com.example.kiylx.ti.interfaces.ControlWebView {
+        @Override
+        public void sharing(String url) {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_TEXT, url);
+            i.putExtra(Intent.EXTRA_SUBJECT, "网址");
+            startActivity(i);
+        }
+
+        @Override
+        public void addtobookmark(String url) {
+            FragmentManager fm = getSupportFragmentManager();
+            //把当前网页信息传给收藏dialog
+            Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, mConverted_lists.getInfo(current));
+            dialog.show(fm, "收藏当前网页");
+        }
+
+        @Override
+        public void reload() {
+            mWebViewManager.reLoad((MainActivity.this));
+        }
+
+        @Override
+        public void searchText() {
+            //打开搜索webview内的文本
+            openMatchesTextView();
+        }
+
+        @Override
+        public void usePcMode() {
+            mWebViewManager.reLoad_pcmode();
+        }
+
+        @Override
+        public void newPage(String url) {
+            newTab(url);
+        }
+
+        @Override
+        public void saveWeb() {
+            WebView tmp = mWebViewManager.getTop(current);
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(), tmp.getTitle() + TimeProcess.getTime() + ".mht");
+            tmp.saveWebArchive(file.getAbsolutePath());
+        }
+
+        @Override
+        public void printPdf() {
+            WebView tmp = mWebViewManager.getTop(current);
+            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
+            PrintDocumentAdapter adapter = tmp.createPrintDocumentAdapter(tmp.getTitle() + TimeProcess.getTime() + ".pdf");
+            PrintAttributes attributes = new PrintAttributes.Builder()
+                    .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                    .setResolution(new PrintAttributes.Resolution("id", Context.PRINT_SERVICE, 200, 200))
+                    .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+                    .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+                    .build();
+            printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
+
+        }
     }
 
     /**
@@ -1018,6 +1034,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             chromeClientInterface = new ChromeClientInterfaceImpl();
         }
         mWebViewManager.setOnClientInterface(chromeClientInterface);
+
     }
 
     /**

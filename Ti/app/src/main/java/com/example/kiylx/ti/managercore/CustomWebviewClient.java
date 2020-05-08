@@ -188,12 +188,14 @@ public class CustomWebviewClient extends WebViewClient {
      * @param view
      * @param url
      * @param isReload
-     * 这个方法会通知给host application更新网址
+     * 这个方法会通知给host application存储网址
+     * 通知应用可以将当前的url存储在数据库中，意味着当前的访问url已经生效并被记录在内核当中。
+     * 此方法在网页加载过程中只会被调用一次，网页前进后退并不会回调这个函数。
      */
     @Override
     public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
         super.doUpdateVisitedHistory(view, url, isReload);
         //通知更新网址
-        mNotifyWebViewUpdate.updateWebViewInfo(view);
+        mNotifyWebViewUpdate.SaveWebPageUrl(view);
     }
 }

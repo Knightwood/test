@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.db.historydb2;
 
+import androidx.paging.DataSource;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,17 +15,20 @@ import java.util.List;
  */
 @Dao
 public interface HistoryDao {
-    @Query("SELECT * FROM historys_tab")
-    List<HistoryEntity> getAll();
+    @Query("SELECT * FROM historys_tab ORDER BY uid")
+    DataSource.Factory<Integer, HistoryEntity> getAll();
 
-    @Query("SELECT * FROM historys_tab WHERE url LIKE :URL OR title LIKE :URL")
-    List<HistoryEntity> getMatchersList(String URL);
+    @Query("SELECT * FROM historys_tab WHERE url LIKE :URL OR title LIKE :URL ORDER BY uid")
+    DataSource.Factory<Integer, HistoryEntity> getMatchersList(String URL);
 
     @Insert
     void insert(HistoryEntity entity);
 
     @Update
     void update(HistoryEntity... entity);
+
+    @Query("UPDATE historys_tab set title=:Title WHERE url=:Url ")
+    void updateTitle(String Title, String Url);
 
     @Delete
     void delete(HistoryEntity entity);
@@ -34,4 +38,7 @@ public interface HistoryDao {
 
     @Query("Delete FROM historys_tab WHERE date=:date")
     void deleteFromDate(String date);
+
+    @Query("DELETE FROM historys_tab WHERE url=:Url")
+    void deleteWithUrl(String Url);
 }
