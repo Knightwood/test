@@ -68,7 +68,6 @@ public class HistorysActivity extends AppCompatActivity {
         if (method == null) {
             method = new ClickMethod();
         }
-        //searchView = findViewById(R.id.histories_searchview);
 
         recyclerView = findViewById(R.id.histories_recyclerView);
         adapter = new HistoryListAdapter(method, this);
@@ -93,7 +92,6 @@ public class HistorysActivity extends AppCompatActivity {
         Toolbar toolbar=findViewById(R.id.historytoolbar);
         setSupportActionBar(toolbar);
 
-        //searchHistory();
     }
 
     @Override

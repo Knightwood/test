@@ -1,0 +1,130 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "208ed1f42c19850ed622ef78c702f5fe",
+    "entities": [
+      {
+        "tableName": "downloadInfo_tab",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `file_name` TEXT, `file_path` TEXT, `blockComplete_num` INTEGER NOT NULL, `blockPause_num` INTEGER NOT NULL, `pause_flag` TEXT DEFAULT false, `cancel_download` TEXT DEFAULT false, `wait_download` TEXT DEFAULT false, `thread_num` INTEGER NOT NULL, `split_start` TEXT, `split_end` TEXT, `content_len` INTEGER NOT NULL, `current_Length` INTEGER NOT NULL, `block_size` INTEGER NOT NULL, `download_success` TEXT, PRIMARY KEY(`url`))",
+        "fields": [
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "filename",
+            "columnName": "file_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "file_path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "blockCompleteNum",
+            "columnName": "blockComplete_num",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockPauseNum",
+            "columnName": "blockPause_num",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pause",
+            "columnName": "pause_flag",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "cancel",
+            "columnName": "cancel_download",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "waitDownload",
+            "columnName": "wait_download",
+            "affinity": "TEXT",
+            "notNull": false,
+            "defaultValue": "false"
+          },
+          {
+            "fieldPath": "threadNum",
+            "columnName": "thread_num",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "splitStart",
+            "columnName": "split_start",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "splitEnd",
+            "columnName": "split_end",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contentLength",
+            "columnName": "content_len",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentLength",
+            "columnName": "current_Length",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "blockSize",
+            "columnName": "block_size",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadSuccess",
+            "columnName": "download_success",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "url"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_downloadInfo_tab_url",
+            "unique": false,
+            "columnNames": [
+              "url"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_downloadInfo_tab_url` ON `${TABLE_NAME}` (`url`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '208ed1f42c19850ed622ef78c702f5fe')"
+    ]
+  }
+}

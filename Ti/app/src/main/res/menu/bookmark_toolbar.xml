@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/editBookmarkFolderName"
         android:title="@string/editBookmarkFolderName" />
@@ -9,4 +10,10 @@
     <item
         android:id="@+id/newBookmarkFolder"
         android:title="@string/addBookmarkFolder" />
+    <item
+        android:id="@+id/bookmark_Searchview"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="搜索书签"
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="always" />
 </menu>

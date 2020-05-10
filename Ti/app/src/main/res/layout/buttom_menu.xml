@@ -6,7 +6,7 @@
 
     <EditText
         android:id="@+id/search_edittext"
-        style="@android:style/Widget.Material.AutoCompleteTextView"
+        style="@android:style/Widget.Material.EditText"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -38,6 +38,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_weight="0.1"
+        android:background="@drawable/touch_color"
         android:onClick="mult_dialog"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -57,6 +58,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="5dp"
         android:layout_weight="0.1"
+        android:background="@drawable/touch_color"
         android:onClick="buttomMenu"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"

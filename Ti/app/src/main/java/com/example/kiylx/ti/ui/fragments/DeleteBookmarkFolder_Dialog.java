@@ -20,8 +20,8 @@ import com.example.kiylx.ti.R;
 
 import java.util.Objects;
 
-public class DeleteTag_Dialog extends DialogFragment {
-    private static final String TAG = "DeleteTag_Dialog";
+public class DeleteBookmarkFolder_Dialog extends DialogFragment {
+    private static final String TAG = "DeleteBookmarkFolder_Dialog";
     private String folderName;
     private BookMarkFolderManager bookMarkFolderManager;
     private AboutBookmark aboutBookmark;
@@ -29,12 +29,12 @@ public class DeleteTag_Dialog extends DialogFragment {
     private static RefreshBookMark refresh;
 
 
-    public static DeleteTag_Dialog getInstance(String tagname){
+    public static DeleteBookmarkFolder_Dialog getInstance(String tagname){
 
         Bundle arg=new Bundle();
         arg.putSerializable(ARG_PARAM,tagname);//把要删除的tag拿到
 
-        DeleteTag_Dialog mdialog=new DeleteTag_Dialog();
+        DeleteBookmarkFolder_Dialog mdialog=new DeleteBookmarkFolder_Dialog();
         mdialog.setArguments(arg);
         return mdialog;
     }
@@ -89,7 +89,7 @@ public class DeleteTag_Dialog extends DialogFragment {
         aboutBookmark.updateFolderforItems(folderName,newFoldername);
     }
     public static void setInterface(RefreshBookMark minterface){
-        DeleteTag_Dialog.refresh =minterface;
+        DeleteBookmarkFolder_Dialog.refresh =minterface;
     }
 
 }

@@ -138,6 +138,7 @@ public class Bookmark_Dialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         beBookmarked_info.setTitle(titleView.getText().toString());
                         beBookmarked_info.setUrl(urlView.getText().toString());
+
                         if (beBookmarked_info.getUuid()==null){
                             beBookmarked_info.setUuid(UUID.randomUUID());
                             mAboutBookmark.add(beBookmarked_info);
@@ -153,14 +154,7 @@ public class Bookmark_Dialog extends DialogFragment {
                         }
 
                     }
-                });/*.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //关闭dialog
-                dismiss();
-
-            }
-        });*/
+                });
 
         setMassage(view);//填充网页信息
         newFolderButton = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
@@ -197,8 +191,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 Log.d(TAG, "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
 
                 //选择某一个文件夹后更新webviewinfo信息
-                updateWebinfo(mBookMarkFolderManager.getFolderfromList(position));
-
+                beBookmarked_info.setBookmarkFolderName(bookmarkFolderlists.get(position));
             }
 
             @Override
@@ -206,7 +199,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
             }
         });
-        //根据点击的位置，显示spinner中的选项
+        //显示spinner中的第i项
         mSpinner.setSelection(i);
 
     }
@@ -217,7 +210,7 @@ public class Bookmark_Dialog extends DialogFragment {
      * EditBox的目标fragment是Bookmark_Dialog
      */
     private void newEditBox() {
-        //启动编辑tag的fragment
+        //启动编辑书签文件夹名称的fragment
         mEditBoxDialog = EditBookmarkFolder_Dialog.getInstance(null);
         FragmentManager fm = getFragmentManager();
 
@@ -226,14 +219,6 @@ public class Bookmark_Dialog extends DialogFragment {
 
         mEditBoxDialog.show(fm, "编辑框");
         //开启EditBox后关闭当前的Bookmark_Dialog界面，之后会在编辑完tag时按下确定按钮后通过onActivity传回数据，之后调用宿主activity实现的回调方法刷新界面
-    }
-
-    /**
-     * @param str “收藏文件夹”名称
-     *            更新beBookmarked_info的“收藏文件夹”信息
-     */
-    private void updateWebinfo(String str) {
-        beBookmarked_info.setBookmarkFolderName(str);
     }
 
     /**
@@ -274,7 +259,8 @@ public class Bookmark_Dialog extends DialogFragment {
         Log.d(TAG, "onActivityResult");
         //用新的list更新界面
         String name = data.getStringExtra("newTagName");
-        selectOneFolder(mBookMarkFolderManager.getPosfromLists(name));
+        bookmarkFolderlists=mBookMarkFolderManager.getBookmarkFolderlists();
+        selectOneFolder(bookmarkFolderlists.indexOf(name));
 
     }
 

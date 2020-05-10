@@ -97,8 +97,16 @@ public class BookMarkFolderManager {
         if (bookmarkFolderlists == null) {
             bookmarkFolderlists = new ArrayList<>();
         }
-        if (bookmarkFolderlists.size() == 1)//只有一个“未分类”
-            bookmarkFolderlists = getfolderListfromDB();
+        //列表中只有一个“未分类”,那就获取数据库中的数据，否则就先清空列表再获取数据
+        if (bookmarkFolderlists.size() != 1){
+            bookmarkFolderlists.clear();
+        }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    bookmarkFolderlists = getfolderListfromDB();
+                }
+            }).start();
         return bookmarkFolderlists;
     }
     /**

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.db.historydb;
+package com.example.kiylx.ti.trash.historydb;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;

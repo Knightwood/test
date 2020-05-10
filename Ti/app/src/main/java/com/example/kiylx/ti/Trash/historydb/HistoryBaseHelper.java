@@ -1,10 +1,10 @@
-package com.example.kiylx.ti.db.historydb;
+package com.example.kiylx.ti.trash.historydb;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.kiylx.ti.db.historydb.HistoryDbSchema.HistoryTable;
+import com.example.kiylx.ti.trash.historydb.HistoryDbSchema.HistoryTable;
 
 public class HistoryBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;

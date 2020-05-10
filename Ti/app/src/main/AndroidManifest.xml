@@ -46,11 +46,6 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />
-        <activity
-            android:name=".ui.activitys.HistoryActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/MaterialThemes" />
         <activity android:name=".ui.activitys.DoSearchActivity" />
 
         <activity android:name=".ui.activitys.MainActivity"

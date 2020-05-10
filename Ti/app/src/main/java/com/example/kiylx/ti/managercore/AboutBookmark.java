@@ -58,6 +58,7 @@ public class AboutBookmark {
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder,info.getBookmarkFolderName());
         mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.ID + "=?", new String[]{id});
     }
 
@@ -135,7 +136,13 @@ public class AboutBookmark {
 
     public void deleteBookMarkWithFolderName(String folderName) {
         //根据folderName这个文件夹删除相关的条目
-        mDatabase.execSQL("DELETE FROM Favorite_tab where folderName=?", new String[]{folderName});
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mDatabase.execSQL("DELETE FROM Favorite_tab where folderName=?", new String[]{folderName});
+            }
+        });
+
     }
 
 
@@ -144,7 +151,6 @@ public class AboutBookmark {
      */
     private List<WebPage_Info> getAllInfos() {
         //第一个参数来指示查询哪一列
-
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(null, null);
         try {

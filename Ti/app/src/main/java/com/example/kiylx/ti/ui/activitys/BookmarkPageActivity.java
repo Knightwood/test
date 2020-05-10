@@ -3,6 +3,7 @@ package com.example.kiylx.ti.ui.activitys;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +27,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.managercore.AboutBookmark;
 import com.example.kiylx.ti.managercore.BookMarkFolderManager;
-import com.example.kiylx.ti.ui.fragments.DeleteTag_Dialog;
+import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
@@ -46,8 +48,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     private List<String> mbookmarkFolderLists;
     private String bookmarkFolderName;//指示当前是哪个书签文件夹,以及在书签文件夹lists中的pos
     private static OpenOneWebpage mopenWeb;
-    private TextView editBookmarkfolder_button;
     private static final String TAG = "BookmarkActivity";
+    SearchView searchView;
 
 
     @Override
@@ -67,7 +69,8 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
         //mBookmarkArrayList = mAboutBookmark.getBookmarks("未分类");
 
-        mSpinner = findViewById(R.id.bookmarkSpinner);//标签选择spinner
+
+        mSpinner = findViewById(R.id.spinner3);
         selectOneFolderUpdate();//展示spinner
 
         //展示recyclerview
@@ -77,24 +80,44 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         //获取指定文件夹下的书签
         getlistWithfolderpos(0);
         //接口回调
-
-        DeleteTag_Dialog.setInterface(this);
+        DeleteBookmarkFolder_Dialog.setInterface(this);
         Bookmark_Dialog.setRefresh(this);
 
-        //操作书签文件夹的按钮
-        editBookmarkfolder_button = findViewById(R.id.edit_Bookmarkfolder);
-        //添加菜单
-        editBookmarkfolder_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addMenuForEditBookmarkFolder(v);
 
-            }
-        });
-        //搜索书签
-        search();
+        Toolbar toolbar = findViewById(R.id.bookmark_toolbar);
+        setSupportActionBar(toolbar);
 
     }
+
+    //工具栏toolBar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.bookmark_toolbar, menu);
+        searchView = (SearchView) menu.findItem(R.id.bookmark_Searchview).getActionView();
+        //搜索书签
+        search();
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.editBookmarkFolderName:
+                editOrNewBookmarkFolder(bookmarkFolderName);
+                //更新书签文件夹列表和书签记录列表
+                break;
+            case R.id.newBookmarkFolder:
+                editOrNewBookmarkFolder(null);
+                //更新书签文件夹列表
+                break;
+            case R.id.deleteBookmarkFolder:
+                deletebookmarkFolder(bookmarkFolderName);
+                //更新书签文件夹列表和书签记录列表
+                break;
+        }
+        return false;
+    }
+
 
     private void getlistWithfolderpos(int pos) {
         //更新lists，然后更新视图
@@ -109,16 +132,6 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     private void updateUI() {
-        /*一开始打开收藏页的activity，是会拿到存着所有的书签list，或是一个null，
-        这时候，如果是拿到了null，那就表明没有书签，则什么也不显示
-        如果没有拿到null，那根据这个时候适配器是null，那就显示所有书签，
-        如果不是null，根据书签文件夹来更新视图*/
-        /*if(mBookmarkArrayList.isEmpty()){
-            //如果收藏夹没有任何内容，那什么也不做，且隐藏recyclerview
-           mRecyclerView.setVisibility(View.GONE);
-            return;
-        }
-        mRecyclerView.setVisibility(View.VISIBLE);*/
         if (null == adapter) {
             adapter = new RecyclerAdapter(mBookmarkArrayList);//这里的lists是包含未分类
             mRecyclerView.setAdapter(adapter);
@@ -205,37 +218,6 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     }
 
     /**
-     * @param v 要添加上popmenu的视图
-     */
-    private void addMenuForEditBookmarkFolder(View v) {
-        //用来控制bookmarkFolderName编辑的几个菜单选项
-        PopupMenu menu = new PopupMenu(BookmarkPageActivity.this, v);
-        MenuInflater inflater = menu.getMenuInflater();
-        inflater.inflate(R.menu.tagmanager_menu, menu.getMenu());
-        menu.show();
-        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.editBookmarkFolderName:
-                        editOrNewBookmarkFolder(bookmarkFolderName);
-                        //更新书签文件夹列表和书签记录列表
-                        break;
-                    case R.id.newBookmarkFolder:
-                        editOrNewBookmarkFolder(null);
-                        //更新书签文件夹列表
-                        break;
-                    case R.id.deleteBookmarkFolder:
-                        deletebookmarkFolder(bookmarkFolderName);
-                        //更新书签文件夹列表和书签记录列表
-                        break;
-                }
-                return false;
-            }
-        });
-    }
-
-    /**
      * @param arg 文件夹名称,填入null则是新建文件夹
      *            填入文件夹名称，启动文件夹编辑对话框，修改文件夹名称
      */
@@ -249,7 +231,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
 
     private void deletebookmarkFolder(String arg) {
-        DeleteTag_Dialog fr = DeleteTag_Dialog.getInstance(arg);
+        DeleteBookmarkFolder_Dialog fr = DeleteBookmarkFolder_Dialog.getInstance(arg);
         FragmentManager fm = getSupportFragmentManager();
         fr.show(fm, "删除标签dialog");
     }
@@ -384,12 +366,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
      * searchview，搜索书签。
      */
     private void search() {
-        SearchView searchView = findViewById(R.id.search_Bookmark);
+
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSpinner.setVisibility(View.GONE);
-                editBookmarkfolder_button.setVisibility(View.GONE);
             }
         });
 
@@ -422,7 +403,6 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             @Override
             public boolean onClose() {
                 mSpinner.setVisibility(View.VISIBLE);
-                editBookmarkfolder_button.setVisibility(View.VISIBLE);
                 return false;
             }
         });
@@ -464,4 +444,36 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             public void onCheckedChanged(ChipGroup chipGroup, int i) {
 
             }
-        });*/
+        });
+
+
+        /*
+private void addMenuForEditBookmarkFolder(View v) {
+    //用来控制bookmarkFolderName编辑的几个菜单选项
+    PopupMenu menu = new PopupMenu(BookmarkPageActivity.this, v);
+    MenuInflater inflater = menu.getMenuInflater();
+    inflater.inflate(R.menu.tagmanager_menu, menu.getMenu());
+    menu.show();
+    menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.editBookmarkFolderName:
+                    editOrNewBookmarkFolder(bookmarkFolderName);
+                    //更新书签文件夹列表和书签记录列表
+                    break;
+                case R.id.newBookmarkFolder:
+                    editOrNewBookmarkFolder(null);
+                    //更新书签文件夹列表
+                    break;
+                case R.id.deleteBookmarkFolder:
+                    deletebookmarkFolder(bookmarkFolderName);
+                    //更新书签文件夹列表和书签记录列表
+                    break;
+            }
+            return false;
+        }
+    });
+}
+
+        */

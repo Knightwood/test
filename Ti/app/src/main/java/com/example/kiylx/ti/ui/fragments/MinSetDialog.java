@@ -1,8 +1,6 @@
 package com.example.kiylx.ti.ui.fragments;
 
-import android.app.Application;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -20,13 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
-import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
-import com.example.kiylx.ti.ui.activitys.HistoryActivity;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
-import com.example.kiylx.ti.ui.activitys.SettingActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
@@ -167,7 +161,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     }
 
     private void startHistory() {
-        //Intent history_intent = new Intent(getActivity(), HistoryActivity.class);
+
         Intent history_intent = new Intent(getActivity(), HistorysActivity.class);
         startActivity(history_intent);
     }
