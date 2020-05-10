@@ -7,8 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
+import android.webkit.WebView;
 
 import com.bumptech.glide.Glide;
+import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,20 +32,13 @@ import io.reactivex.schedulers.Schedulers;
  * 创建者 kiylx
  * 创建时间 2020/3/29 17:54
  */
-public class SavePNG_copyText {
-    private SavePNG_copyText copyText;
+public enum SomeTools {
+    INSTANCES;
+
     private WeakReference<Context> weakReference;
 
-
-    public SavePNG_copyText(Context context) {
+    public void SetContext(Context context){
         this.weakReference = new WeakReference<>(context);
-    }
-
-    public SavePNG_copyText getInstance(Context context) {
-        if (copyText == null) {
-            copyText = new SavePNG_copyText(context);
-        }
-        return copyText;
     }
 
     @SuppressLint("CheckResult")
@@ -117,5 +116,21 @@ public class SavePNG_copyText {
         manager.setPrimaryClip(clip);
     }
 
+    /**
+     * @param tmp 要打印的webview视图
+     *            此方法使用的context只能是activity的context
+     */
+    public void printPdf(WebView tmp){
+        PrintManager printManager = (PrintManager) weakReference.get().getSystemService(Context.PRINT_SERVICE);
+        PrintDocumentAdapter adapter = tmp.createPrintDocumentAdapter(tmp.getTitle() + TimeProcess.getTime() + ".pdf");
+        PrintAttributes attributes = new PrintAttributes.Builder()
+                .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                .setResolution(new PrintAttributes.Resolution("id", Context.PRINT_SERVICE, 200, 200))
+                .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
+                .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
+                .build();
+        printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
+
+    }
 
 }

@@ -43,8 +43,8 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             }
         });
 
-        this.afterClick=afterClick;
-        weakReference=new WeakReference<>(context);
+        this.afterClick = afterClick;
+        weakReference = new WeakReference<>(context);
         Log.d("历史记录", "HistoryListAdapter:构造函数 ");
 
     }
@@ -61,12 +61,12 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
     @Override
     public void onBindViewHolder(@NonNull HViewHolder holder, int position) {
         holder.bind(getItem(position));
-        Log.d("历史记录", "绑定布局时item数量: "+getItemCount());
+        Log.d("历史记录", "绑定布局时item数量: " + getItemCount());
         Log.d("历史activity", " onBindViewHolder函数被触发");
     }
 
 
-    class HViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    class HViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
         TextView url;
         ImageView itemMenu;
@@ -85,9 +85,9 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
         }
 
         public void bind(HistoryEntity info) {
-            if (info==null){
+            if (info == null) {
                 title.setText("loading");//使用分页后，容器的数量可能会大于数据的数量，所以如果容器数量多，传入的info会是null，所以在此装饰成正在加载的样子
-            }else{
+            } else {
                 this.info = info;
                 URL = info.url;
                 title.setText(info.title);
@@ -96,6 +96,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             }
 
         }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
@@ -103,10 +104,8 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
                     itemPopmenu(v, info);
                     break;
                 case R.id.itemTitle:
-                    /*sOpenOneWebpage.loadUrl(URL, true);
-                    finish();*/
                     if (afterClick != null) {
-                        afterClick.After(URL,true,Action.OPENINNEWWINDOW);
+                        afterClick.After(URL, true, Action.OPENINNEWWINDOW);
                     }
                     break;
 
@@ -115,7 +114,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
 
     }
 
-    public void itemPopmenu(View v, HistoryEntity info) {
+    public void itemPopmenu(View v, HistoryEntity entity) {
         PopupMenu itemMenu = new PopupMenu(weakReference.get(), v);//使用applicationContext会报错，原因是属性问题
         MenuInflater inflater = itemMenu.getMenuInflater();
         inflater.inflate(R.menu.history_item_option, itemMenu.getMenu());
@@ -124,31 +123,22 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.open:
-                        /*finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(), false);*/
                         if (afterClick != null) {
-                            afterClick.After(info.url,true,Action.JUSTOPEN);
+                            afterClick.After(entity.url, true, Action.JUSTOPEN);
                         }
                         break;
                     case R.id.open1:
-                        /*finish();
-                        sOpenOneWebpage.loadUrl(info.getUrl(), true);*/
                         if (afterClick != null) {
-                            afterClick.After(info.url,true,Action.OPENINNEWWINDOW);
+                            afterClick.After(entity.url, true, Action.OPENINNEWWINDOW);
                         }
                         break;
                     case R.id.delete_hiatory:
-                        /*sAboutHistory.delete(info.getUrl());
-                        mAdapter.notifyItemRemoved(pos);
-                        historyList.remove(info);
-                        mAdapter.notifyItemRangeChanged(0, historyList.size());*/
-                        HistoryDbUtil.getDao(Xapplication.getInstance()).deleteWithUrl(info.url);
+                        new Thread(new DeleteThread(entity)).start();
                         //notifyItemRemoved(pos);
                         break;
                     case R.id.addToBookmark:
-                        /*addToBookMark(info.getUrl());*/
                         if (afterClick != null) {
-                            afterClick.After(info.url,false,Action.ADDTOBOOKMARK);
+                            afterClick.After(entity.url, false, Action.ADDTOBOOKMARK);
                         }
                         break;
                 }
@@ -162,11 +152,25 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
     /**
      * 点击item或是点击item的popmenu中的选项后，触发对于该webpageinfo的操作
      */
-    public interface AfterClick{
-        void After(String url,boolean closeActivity,Action action);
+    public interface AfterClick {
+        void After(String url, boolean closeActivity, Action action);
     }
-    public enum Action{
-        OPENINNEWWINDOW,JUSTOPEN,ADDTOBOOKMARK;
+
+    public enum Action {
+        OPENINNEWWINDOW, JUSTOPEN, ADDTOBOOKMARK;
+    }
+
+    private static class DeleteThread implements Runnable {
+        HistoryEntity entity;
+
+        public DeleteThread(HistoryEntity entity) {
+            this.entity = entity;
+        }
+
+        @Override
+        public void run() {
+            HistoryDbUtil.getDao(Xapplication.getInstance()).delete(entity);
+        }
     }
 }
 

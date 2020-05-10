@@ -19,7 +19,10 @@
 
         <service android:name=".downloadpack.downloadcore.DownloadServices" />
 
-        <activity android:name=".ui.activitys.HistorysActivity"/>
+        <activity android:name=".ui.activitys.HistorysActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/HistorysThemes"/>
         <activity
             android:name=".ui.activitys.SettingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -37,7 +40,7 @@
             android:name=".downloadpack.DownloadActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/DownloadTheme" />
+            android:theme="@style/MaterialThemes" />
         <activity
             android:name=".ui.activitys.BookmarkPageActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"

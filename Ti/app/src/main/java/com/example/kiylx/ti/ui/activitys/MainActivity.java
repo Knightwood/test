@@ -46,7 +46,7 @@ import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.managercore.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.SavePNG_copyText;
+import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
 import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private WebViewInfo_Manager mConverted_lists;//存储webpage_info的list
     public DownloadServices.DownloadBinder mDownloadBinder;
     public DownloadInfo downloadInfo;//下载信息
+    private SomeTools someTools;
 
     private FrameLayout f1;//放置webview的容器
     private EditText mTextView;//主界面的工具栏里的搜索框
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     private ValueCallback<Uri[]> fileUploadCallBack;
+    private OpenWebview mOpenWebview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
+
+        //初始化Sometools
+        someTools = SomeTools.INSTANCES;
+        someTools.SetContext(this);
 
         //实例化某些view
         f1 = findViewById(R.id.Webview_group);
@@ -205,6 +211,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         //f1.addView(mWebViewManager.getTop(current));
         Log.d("lifecycle", "onReStart()");
     }
+
+
 
     @Override
     protected void onStart() {
@@ -369,8 +377,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 } else {
                     home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
                 }
-            }else{
-                home_url=SomeRes.default_homePage_url;
+            } else {
+                home_url = SomeRes.default_homePage_url;
             }
         } else {
             //传入参数不是null
@@ -384,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             current = mWebViewManager.size();
         }
 
-         mWebViewManager.newWebView(current, getApplicationContext(), MainActivity.this, home_url);
+        mWebViewManager.newWebView(current, getApplicationContext(), MainActivity.this, home_url);
         mWebViewManager.getTop(current).setActionSelectListener(new ActionSelectListener() {
             @Override
             public void onClick(String title, String selectText) {
@@ -393,13 +401,12 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         });
 
         f1.addView(mWebViewManager.getTop(current));
-
-        //mWebViewManager.loadHomePage(current, home_url);//新建标签页载入主页，新建标签页默认插入最后的位置。
+        //新建标签页默认插入最后的位置。
     }
 
     /**
      * @param url 网址
-     *            后台打开网页使用此方法
+     *            使用菜单，后台打开网页使用此方法
      */
     public void newTabInBackground(String url) {
         mWebViewManager.newWebView(current + 1, getApplicationContext(), MainActivity.this, url);
@@ -409,7 +416,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                 Toast.makeText(MainActivity.this, title + selectText, Toast.LENGTH_LONG).show();
             }
         });
-        // mWebViewManager.loadHomePage(current + 1, url);
     }
 
     @Override
@@ -419,11 +425,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     public void deleteWebview(int position) {
         if (mWebViewManager.size() == 1) {
-            //String url = PreferenceTools.getString(MainActivity.this, WebviewConf.homepageurl);
-            //mWebViewManager.wash(position, url);
-            f1.removeView(mWebViewManager.getTop1(position));
+            newTab(null);//newTab，先建一个标签页，然后删除旧有的，newtab将会使得current+=1，所以这里要减1
             mWebViewManager.removeToTrash(position, false);
-            click_newPagebutton();
+            current-=1;
             return;
         }
         if (position < current) {
@@ -475,29 +479,29 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 在点击某个收藏记录或是历史记录后，让当前webview或新的webview加载网址
      */
     public void openwebpage_fromhistoryORbookmark() {
-        BookmarkPageActivity.setInterface(new OpenOneWebpage() {
-            @Override
-            public void loadUrl(String url, boolean flags) {
-                if (flags) {
-                    newTab(url);
-                    // mWebViewManager.getTop(current).loadUrl(url);
-                } else
-                    mWebViewManager.getTop(current).loadUrl(url);
+        if (mOpenWebview == null) {
+            mOpenWebview = new OpenWebview();
+        }
+        BookmarkPageActivity.setInterface(mOpenWebview);
+        HistorysActivity.setInterface(mOpenWebview);
 
+    }
+
+    /**
+     * flags为真，新建标签页打开；
+     * flags为假，在当前页面打开；
+     * 为在历史记录或是收藏记录中，点击打开时被调用
+     */
+    class OpenWebview implements OpenOneWebpage {
+
+        @Override
+        public void loadUrl(String url, boolean flags) {
+            if (flags) {
+                newTab(url);
+            } else {
+                mWebViewManager.getTop(current).loadUrl(url);
             }
-        });
-        HistoryActivity.setInterface(new OpenOneWebpage() {
-            @Override
-            public void loadUrl(String url, boolean flags) {
-                if (flags) {
-                    newTab(url);
-                    //mWebViewManager.getTop(current).loadUrl(url);
-                } else
-                    mWebViewManager.getTop(current).loadUrl(url);
-
-            }
-        });
-
+        }
     }
 
     public void useMultPage_DialogFragmentInterface() {
@@ -866,10 +870,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     }
 
+
     class HandleClickLinksImpl implements HandleClickedLinks {
-
-        SavePNG_copyText png_copyText = new SavePNG_copyText(MainActivity.this);
-
         @Override
         public void onImgSelected(int x, int y, int type, String extra) {
             Log.d(TAG, "onImgSelected: " + extra);
@@ -882,7 +884,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                             //复制链接地址
                             Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
                             //clipData(extra);
-                            png_copyText.clipData(extra);
+                            someTools.clipData(extra);
                             break;
                         case 1:
                             //新窗口打开
@@ -894,7 +896,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                         case 3:
                             //"保存图片"
                             //saveImage(extra);
-                            png_copyText.savePic(extra);
+                            someTools.savePic(extra);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -919,9 +921,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
                     switch (which) {
                         case 0:
                             //复制链接地址
-                            Toast.makeText(MainActivity.this, "点了链接：" + extra, Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "复制了链接：" + extra, Toast.LENGTH_LONG).show();
                             //clipData(extra);
-                            png_copyText.clipData(extra);
+                            someTools.clipData(extra);
                             break;
                         case 1:
                             //新窗口打开
@@ -1013,15 +1015,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         @Override
         public void printPdf() {
             WebView tmp = mWebViewManager.getTop(current);
-            PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
-            PrintDocumentAdapter adapter = tmp.createPrintDocumentAdapter(tmp.getTitle() + TimeProcess.getTime() + ".pdf");
-            PrintAttributes attributes = new PrintAttributes.Builder()
-                    .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
-                    .setResolution(new PrintAttributes.Resolution("id", Context.PRINT_SERVICE, 200, 200))
-                    .setColorMode(PrintAttributes.COLOR_MODE_COLOR)
-                    .setMinMargins(PrintAttributes.Margins.NO_MARGINS)
-                    .build();
-            printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
+            someTools.printPdf(tmp);
 
         }
     }

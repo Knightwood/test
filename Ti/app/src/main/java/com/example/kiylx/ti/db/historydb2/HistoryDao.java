@@ -21,6 +21,12 @@ public interface HistoryDao {
     @Query("SELECT * FROM historys_tab WHERE url LIKE :URL OR title LIKE :URL ORDER BY uid")
     DataSource.Factory<Integer, HistoryEntity> getMatchersList(String URL);
 
+    @Query("SELECT * FROM historys_tab ORDER BY uid")
+    List<HistoryEntity> getList();
+
+    @Query("SELECT * FROM historys_tab WHERE url LIKE :URL OR title LIKE :URL ORDER BY uid")
+    List<HistoryEntity> getMatchersList2(String URL);
+
     @Insert
     void insert(HistoryEntity entity);
 

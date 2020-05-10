@@ -362,12 +362,19 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * @param webView    发生变化的Webview
      * @param pos        webview在arraylist中的位置。
      * @param action     对多窗口界面的list执行的动作：添加，删除，或是更新条目信息
-     * @param datebaseAction 是否要把这个url加入数据库
+     * @param datebaseAction 对数据库中这个网址的操作
      *                   <p>
      *                   观察者模式的更新操作！！！
      *                   网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
-     *                   并且，根据“insertToDB”参数决定是否把“被更新的网页信息”加入历史记录数据库
+     *                   并且，根据“insertToDB”参数决定是否加入历史记录数据库
      *                   并且，在更新网页信息的时候，还会更新数据库里这条记录的网页标题
+     *                       流程：
+     *                       1，首先由newWebview中的addinManager调用，此时使用的action是NEWTAB，databaseaction是DONOTHING。
+     *                       也就是初始化标题和网址为默认值，然后加入多窗口列表，并且不对数据库做任何操作。
+     *                       2当网页加载了某一个网址之后，会在webviewclient中调用doUpdateVisitedHistory()，并调用接口，这时将网页加入数据库,并且更新多窗口列表
+     *                       3，当网页加载完成（进度==100），会在webchromeclient中调用onProgressChanged()，并调用接口，此时更新在多窗口列表和数据库中网页的标题
+     *
+     *                       注：每一次的点击链接都会调用doUpdateVisitedHistory()，也就是说可以每次点击链接，都可以做到把数据加数据库。
      */
     private void notifyupdate(WebView webView, int pos, Action action, DatebaseAction datebaseAction) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
