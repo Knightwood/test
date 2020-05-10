@@ -33,7 +33,7 @@ public class AboutBookmark {
     }
 
     //==========================以下数据库操作=========================//
-    public void add(WebPage_Info info) {
+    public void InsertItem(WebPage_Info info) {
         if (info == null || info.getUrl() == null) {
             return;
         }
@@ -45,21 +45,62 @@ public class AboutBookmark {
 
     }
 
+    private void Insert(ContentValues values) {
+
+    }
+
     /**
      * @param info webpageinfo
-     *             更新条目
-     *             更新title和url
+     *             更新数据库中的条目信息
+     *             利用uuid，查询到记录，然后更新title和url，bookmarkFolder
      */
     public void updateItem(WebPage_Info info) {
-        String id = info.getUuid();
-        if (id == null) {
+        String uuid = info.getUuid();
+        if (uuid == null) {
             return;
         }
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder,info.getBookmarkFolderName());
-        mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.ID + "=?", new String[]{id});
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder, info.getBookmarkFolderName());
+        try {
+            mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.ID + "=?", new String[]{uuid});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param id webpage_info的id
+     *           根据uuid删除书签
+     */
+    public void deleteItem(String id) {
+        try {
+            mDatabase.execSQL("DELETE from Favorite_tab where uuid =?", new String[]{id});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void delete(String id) {
+
+    }
+
+    /**
+     * @param info webpageinfo
+     * @return 这个网址被收藏了返回true
+     */
+    public boolean isMarked(WebPage_Info info) {
+        //判断标准是网址，与数据库里网址一致即为收藏了
+        String url = info.getUrl();
+        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
+        try {
+            //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
+            return cursor.getCount() != 0;
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -89,31 +130,6 @@ public class AboutBookmark {
     }
 
     /**
-     * @param id webpage_info的id
-     *           根据id删除书签
-     */
-    public void delete(String id) {
-        mDatabase.execSQL("DELETE from Favorite_tab where uuid =?", new String[]{id});
-    }
-
-
-    /**
-     * @param info webpageinfo
-     * @return 这个网址被收藏了返回true
-     */
-    public boolean isMarked(WebPage_Info info) {
-        //判断标准是网址，与数据库里网址一致即为收藏了
-        String url = info.getUrl();
-        ItemCursorWrapper cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.url + " =?", new String[]{url});
-        try {
-            //如果查询得到的结果是0个，那就返回flase，表示这个网页还没有被收藏
-            return cursor.getCount() != 0;
-        } finally {
-            cursor.close();
-        }
-    }
-
-    /**
      * @param str 书签文件夹名称
      * @return 返回该文件夹下的书签列表或返回所有书签
      */
@@ -136,13 +152,7 @@ public class AboutBookmark {
 
     public void deleteBookMarkWithFolderName(String folderName) {
         //根据folderName这个文件夹删除相关的条目
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mDatabase.execSQL("DELETE FROM Favorite_tab where folderName=?", new String[]{folderName});
-            }
-        });
-
+        mDatabase.execSQL("DELETE FROM Favorite_tab where folderName=?", new String[]{folderName});
     }
 
 
@@ -153,6 +163,32 @@ public class AboutBookmark {
         //第一个参数来指示查询哪一列
         List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
         ItemCursorWrapper cursor = queryFavority(null, null);
+        try {
+            if (cursor.getCount() == 0) {
+                return mlists;
+            }
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                mlists.add(cursor.getFavoriterinfo());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+        return mlists;
+    }
+
+    /**
+     * @param query 书签名称
+     * @return 查询名称，返回相应的数据库信息
+     */
+    public List<WebPage_Info> queryBookmark(String query) {
+        List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
+
+        String sqlStr = "SELECT * from Favorite_tab where title LIKE ? or url LIKE ? ";
+        Cursor cursor1 = mDatabase.rawQuery(sqlStr, new String[]{"%" + query + "%", "%" + query + "%"});
+        ItemCursorWrapper cursor = new ItemCursorWrapper(cursor1);
+
         try {
             if (cursor.getCount() == 0) {
                 return mlists;
@@ -193,29 +229,4 @@ public class AboutBookmark {
         return new ItemCursorWrapper(cursor);
     }
 
-    /**
-     * @param query 书签名称
-     * @return 查询名称，返回相应的数据库信息
-     */
-    public List<WebPage_Info> queryBookmark(String query) {
-        List<WebPage_Info> mlists = new ArrayList<>();//用来放查找结果
-
-        String sqlStr = "SELECT * from Favorite_tab where title LIKE ? or url LIKE ? ";
-        Cursor cursor1 = mDatabase.rawQuery(sqlStr, new String[]{"%" + query + "%", "%" + query + "%"});
-        ItemCursorWrapper cursor = new ItemCursorWrapper(cursor1);
-
-        try {
-            if (cursor.getCount() == 0) {
-                return mlists;
-            }
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-                mlists.add(cursor.getFavoriterinfo());
-                cursor.moveToNext();
-            }
-        } finally {
-            cursor.close();
-        }
-        return mlists;
-    }
 }

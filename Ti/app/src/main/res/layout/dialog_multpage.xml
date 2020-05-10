@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:alpha="0"
+        android:minHeight="70dp"
         app:srcCompat="@null" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

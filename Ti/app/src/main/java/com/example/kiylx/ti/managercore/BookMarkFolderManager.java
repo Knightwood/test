@@ -98,27 +98,14 @@ public class BookMarkFolderManager {
             bookmarkFolderlists = new ArrayList<>();
         }
         //列表中只有一个“未分类”,那就获取数据库中的数据，否则就先清空列表再获取数据
-        if (bookmarkFolderlists.size() != 1){
+        if (!bookmarkFolderlists.isEmpty()) {
             bookmarkFolderlists.clear();
         }
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    bookmarkFolderlists = getfolderListfromDB();
-                }
-            }).start();
-        return bookmarkFolderlists;
-    }
-    /**
-     * @return 重新获取所有的记录
-     * 清空书签文件夹列表，然后重新获取
-     */
-    public List<String> reGetList() {
-        bookmarkFolderlists.clear();
         bookmarkFolderlists.add(SomeRes.defaultBookmarkFolder);
-        bookmarkFolderlists=getfolderListfromDB();
+        bookmarkFolderlists = getfolderListfromDB();
         return bookmarkFolderlists;
     }
+
     //=============================以下数据库操作===================//
     public void add(String folder) {
         if (isExist(folder)) {
@@ -145,9 +132,8 @@ public class BookMarkFolderManager {
         mDatabase.execSQL("UPDATE BookmarkFolderTab SET folderName=? where folderName=?", new String[]{newName, oldName});
         //updateFolderName(oldName, newName);//实时刷新taglist中的值
         //刷新列表
-        bookmarkFolderlists=reGetList();
+        bookmarkFolderlists = getBookmarkFolderlists();
     }
-
 
 
     private static ContentValues getContentValues(String folderName) {
@@ -161,11 +147,10 @@ public class BookMarkFolderManager {
      * @return 返回书签文件夹列表
      * 默认的“未分类”文件夹并不添加进数据库
      */
-    public List<String> getfolderListfromDB() {
-        //BookmarkFolderCursorWrapper cursor = queryFolder(null, null);
+    private List<String> getfolderListfromDB() {
         BookmarkFolderCursorWrapper cursor = getAllFolder(null);
         //如果文件夹list仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是文件夹list仅被初始化还没有从数据库里拿数据
-        if (bookmarkFolderlists.get(0).equals(SomeRes.defaultBookmarkFolder))
+        if (!bookmarkFolderlists.isEmpty() )
             try {
                 Log.d("书签文件夹数量", String.valueOf(cursor.getCount()));
                 if (cursor.getCount() == 0) {

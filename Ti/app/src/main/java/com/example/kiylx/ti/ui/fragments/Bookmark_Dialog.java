@@ -35,7 +35,6 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class Bookmark_Dialog extends DialogFragment {
@@ -141,7 +140,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
                         if (beBookmarked_info.getUuid()==null){
                             beBookmarked_info.setUuid(UUID.randomUUID());
-                            mAboutBookmark.add(beBookmarked_info);
+                            mAboutBookmark.InsertItem(beBookmarked_info);
                             Log.d(TAG, "onClick: uuid是null");
                         }else {
                             Log.d(TAG, "onClick: uuid不是null，所以更新数据库");
@@ -292,7 +291,7 @@ public class Bookmark_Dialog extends DialogFragment {
        //MenuInflater menuInflater = mPopupMenu.getMenuInflater();
         //menuInflater.inflate(R.menu.menu_new_tag,mPopupMenu.getMenu());
         MenuBuilder menuBuilder= (MenuBuilder) mPopupMenu.getMenu();
-        menuBuilder.add(0,-1,0,"添加标签");
+        menuBuilder.InsertItem(0,-1,0,"添加标签");
         //存着tag的lists
         /*List<String> mItems=mBookMarkFolderManager.getfolderListfromDB();
         if(mItems==null||mItems.isEmpty()){
@@ -306,7 +305,7 @@ public class Bookmark_Dialog extends DialogFragment {
             //第二个参数是自己赋予item的id
             //第三个选项通常为0
             //第四个选项是item的名称
-            menuBuilder.add(0,i,0,"bug"+i);
+            menuBuilder.InsertItem(0,i,0,"bug"+i);
 
         }
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

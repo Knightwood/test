@@ -19,11 +19,10 @@ import android.widget.CompoundButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.managercore.AboutHistory;
+import com.example.kiylx.ti.trash.AboutHistory;
 import com.example.kiylx.ti.managercore.CustomAWebView;
 
 import java.io.File;

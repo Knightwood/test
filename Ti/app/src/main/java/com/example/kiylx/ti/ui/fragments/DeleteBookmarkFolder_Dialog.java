@@ -21,7 +21,7 @@ import com.example.kiylx.ti.R;
 import java.util.Objects;
 
 public class DeleteBookmarkFolder_Dialog extends DialogFragment {
-    private static final String TAG = "DeleteBookmarkFolder_Dialog";
+    private static final String TAG = "删除书签文件夹";
     private String folderName;
     private BookMarkFolderManager bookMarkFolderManager;
     private AboutBookmark aboutBookmark;
@@ -46,7 +46,7 @@ public class DeleteBookmarkFolder_Dialog extends DialogFragment {
         aboutBookmark=AboutBookmark.get(getActivity());
         if(getArguments() !=null){
             folderName =getArguments().getString(ARG_PARAM);
-            Log.d(TAG,"要删除的标签"+ folderName);
+            Log.d(TAG, String.format("要删除的标签%s", folderName));
         }
 
     }
@@ -54,7 +54,7 @@ public class DeleteBookmarkFolder_Dialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        AlertDialog.Builder builder=new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+        AlertDialog.Builder builder=new AlertDialog.Builder(requireActivity());
         final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_deletetag,null);
         builder.setView(view);
         builder.setPositiveButton("仅删除标签", new DialogInterface.OnClickListener() {

@@ -54,7 +54,7 @@ private List<DownloadInfo> list;
     @Test
     public void fuck(){
         List<String> list_tmp=new ArrayList<>();
-        //list_tmp.add("a");
+        //list_tmp.InsertItem("a");
         list_tmp.addAll(Arrays.asList("a","b","c","d"));
         Iterator<String> iterator=list_tmp.iterator();
 

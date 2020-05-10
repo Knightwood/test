@@ -63,7 +63,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         setContentView(R.layout.activity_bookmark_page);
         //获取书签文件夹列表
         mBookmarkFolderManager = BookMarkFolderManager.get(BookmarkPageActivity.this);
-        mbookmarkFolderLists = mBookmarkFolderManager.getBookmarkFolderlists();
+        getAllFolder();
 
         //获取收藏item列表，并默认展示未书签文件夹的列表
         mAboutBookmark = AboutBookmark.get(BookmarkPageActivity.this);
@@ -86,6 +86,14 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         Toolbar toolbar = findViewById(R.id.bookmark_toolbar);
         setSupportActionBar(toolbar);
+
+    }
+
+    /**
+     * 使用多线程获取所有的文件夹对象
+     */
+    private void getAllFolder() {
+        mbookmarkFolderLists = mBookmarkFolderManager.getBookmarkFolderlists();
 
     }
 
@@ -205,7 +213,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
     @Override
     public void refresh() {
         //重新获取文件夹列表
-        mbookmarkFolderLists = mBookmarkFolderManager.reGetList();
+        getAllFolder();
         bookmarkFolderName = mbookmarkFolderLists.get(0);//置为“未分类”
         mSpinnerAdapter.notifyDataSetChanged();//通知适配器数据改变
         mSpinner.setSelection(0);
@@ -300,7 +308,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                             showBookmarkDialog(id, title1, url1, bookmarkFolderName_1);
                             break;
                         case R.id.delete_Bookmark:
-                            mAboutBookmark.delete(id);
+                            mAboutBookmark.deleteItem(id);
                             getBookmarksWithFolderChanged(bookmarkFolderName_1);
                             updateUI();
                             break;
@@ -423,7 +431,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             //第二个参数是自己赋予item的id
             //第三个选项通常为0
             //第四个选项是item的名称
-            menuBuilder.add(0,i,0,mItems.get(i));
+            menuBuilder.InsertItem(0,i,0,mItems.get(i));
         }
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

@@ -5,7 +5,6 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
-import androidx.paging.DataSource;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
@@ -43,6 +42,10 @@ public class HistorysViewModel extends ViewModel {
 
     }
 
+    /**
+     * @param s 要查询的字符串
+     *          修改queryText这个liveData的值，让switchmap获取新的数据，达到更新的目的
+     */
     public void query(String s) {
         queryText.setValue(s);
 

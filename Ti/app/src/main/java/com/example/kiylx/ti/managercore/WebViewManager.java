@@ -14,6 +14,7 @@ import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.db.historydb2.HistoryEntity;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.trash.AboutHistory;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;

@@ -6,78 +6,83 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <RadioGroup
-        android:id="@+id/url_radioGroup"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <RadioButton
-            android:id="@+id/baidu"
-            style="@style/MenuItemHasRipple"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="百度"
-            android:textSize="16sp" />
+            android:orientation="vertical" >
 
-        <RadioButton
-            android:id="@+id/bing"
-            style="@style/MenuItemHasRipple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="必应"
-            android:textSize="16sp" />
+            <RadioGroup
+                android:id="@+id/url_radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp">
 
-        <RadioButton
-            android:id="@+id/sougou"
-            style="@style/MenuItemHasRipple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="搜狗"
-            android:textSize="16sp" />
+                <RadioButton
+                    android:id="@+id/baidu"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="百度"
+                    android:textSize="16sp" />
 
-        <RadioButton
-            android:id="@+id/miji"
-            style="@style/MenuItemHasRipple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="秘迹搜索"
-            android:textSize="16sp" />
+                <RadioButton
+                    android:id="@+id/bing"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="必应"
+                    android:textSize="16sp" />
 
-        <RadioButton
-            android:id="@+id/google1"
-            style="@style/MenuItemHasRipple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="谷歌搜索"
-            android:textSize="16sp" />
+                <RadioButton
+                    android:id="@+id/sougou"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="搜狗"
+                    android:textSize="16sp" />
 
-        <RadioButton
-            android:id="@+id/customurlradio"
-            style="@style/MenuItemHasRipple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="自定义"
-            android:textSize="16sp" />
+                <RadioButton
+                    android:id="@+id/miji"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="秘迹搜索"
+                    android:textSize="16sp" />
 
-    </RadioGroup>
+                <RadioButton
+                    android:id="@+id/google1"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="谷歌搜索"
+                    android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/customurl"
-        style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/url_radioGroup"
-        tools:visibility="invisible" />
+                <RadioButton
+                    android:id="@+id/customurlradio"
+                    style="@style/MenuItemHasRipple"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="自定义"
+                    android:textSize="16sp" />
+
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/customurl"
+                style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textSize="16sp"
+                tools:visibility="invisible" />
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

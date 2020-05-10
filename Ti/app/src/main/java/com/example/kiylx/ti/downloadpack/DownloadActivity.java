@@ -164,7 +164,7 @@ public class DownloadActivity extends AppCompatActivity {
         if (fragment1 == null) {
             fragment1 = DownloadingFragment.newInstance(controlMethod);
         }
-        beginTransaction.add(R.id.downloadfragmentcontainer, fragment1).commit();*/
+        beginTransaction.InsertItem(R.id.downloadfragmentcontainer, fragment1).commit();*/
 
     }
 

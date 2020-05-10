@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.managercore;
+package com.example.kiylx.ti.trash;
 
 import android.content.ContentValues;
 import android.content.Context;
