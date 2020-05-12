@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.settings;
+package com.example.kiylx.ti.trash;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

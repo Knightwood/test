@@ -2,19 +2,12 @@ package com.example.kiylx.ti.ui.setting2;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.preference.EditTextPreference;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.SwitchPreference;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.ui.fragments.CleanDataDialog;
 
 /**
  * 创建者 kiylx

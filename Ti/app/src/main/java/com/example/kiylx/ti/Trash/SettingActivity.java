@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.activitys;
+package com.example.kiylx.ti.trash;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,12 +9,8 @@ import android.widget.FrameLayout;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.ui.settings.AboutFragment;
-import com.example.kiylx.ti.ui.settings.GeneralFragment;
 import com.example.kiylx.ti.ui.settings.PrivacyFragment;
-import com.example.kiylx.ti.ui.settings.ThemeFragment;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.List;
 
 public class SettingActivity extends AppCompatActivity {
     private TabLayout tabLayout;

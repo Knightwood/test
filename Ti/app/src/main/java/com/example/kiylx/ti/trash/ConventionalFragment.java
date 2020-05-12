@@ -23,7 +23,7 @@ public class ConventionalFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.setting_conventional, rootKey);
+        setPreferencesFromResource(R.xml.setting_general, rootKey);
         //设置默认值
         userAgent=findPreference("explorer_flags");
         customDownloadTool=findPreference("downloadTools");

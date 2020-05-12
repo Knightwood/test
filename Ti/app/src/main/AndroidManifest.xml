@@ -24,12 +24,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/HistorysThemes"/>
         <activity
-            android:name=".ui.activitys.SettingActivity"
+            android:name=".trash.SettingActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />
         <activity
-            android:name=".ui.setting2.Setting2Activity"
+            android:name=".ui.activitys.Setting2Activity"
             android:label="设置"
             android:theme="@style/settingFragment" />
         <activity

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.setting2;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -22,6 +22,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.trash.AboutHistory;
 import com.example.kiylx.ti.managercore.CustomAWebView;
 
@@ -128,8 +130,13 @@ public class CleanDataDialog extends DialogFragment implements CompoundButton.On
             new CustomAWebView(getContext()).clearCache(true);
         }
         if (cleanHistory) {
-            AboutHistory aboutHistory = AboutHistory.get(getActivity());
-            aboutHistory.deleteAll();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    HistoryDbUtil.getDao(Xapplication.getInstance()).deleteAll();
+                }
+            }).start();
+
         }
         if (cleanLocalStorage) {
             WebStorage.getInstance().deleteAllData();
@@ -142,7 +149,7 @@ public class CleanDataDialog extends DialogFragment implements CompoundButton.On
      */
     public static void clearCache(Context context) {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 清除cookie
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { // 清除cookie,这里的判断没必要
                 CookieManager.getInstance().removeAllCookies(null);
             } else {
                 CookieSyncManager.createInstance(context);

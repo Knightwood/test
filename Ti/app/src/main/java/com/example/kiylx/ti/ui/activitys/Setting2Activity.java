@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.setting2;
+package com.example.kiylx.ti.ui.activitys;
 
 import android.os.Bundle;
 
@@ -10,6 +10,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.ui.setting2.MainSettingFragment;
 
 /**
  * 创建者 kiylx

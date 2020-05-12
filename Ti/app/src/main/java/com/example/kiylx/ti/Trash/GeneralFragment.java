@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.settings;
+package com.example.kiylx.ti.trash;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,7 +28,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.HashMapProcess;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.ui.fragments.CleanDataDialog;
+import com.example.kiylx.ti.ui.setting2.CleanDataDialog;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;

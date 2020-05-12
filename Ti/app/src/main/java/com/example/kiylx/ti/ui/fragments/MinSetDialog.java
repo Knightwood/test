@@ -26,7 +26,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.corebase.WebPage_Info;
 import com.example.kiylx.ti.interfaces.ControlWebView;
-import com.example.kiylx.ti.ui.setting2.Setting2Activity;
+import com.example.kiylx.ti.ui.activitys.Setting2Activity;
 
 /**
  * 主界面的功能界面
