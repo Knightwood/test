@@ -19,5 +19,5 @@ public interface NotifyWebViewUpdate {
      * @param progress 网页加载进度
      *                 webchromeclient中调用此方法，通知主界面更新网页加载进度条的进度
      */
-    void updateProgress(int progress);
+    void updateProgress(WebView v,int progress);
 }

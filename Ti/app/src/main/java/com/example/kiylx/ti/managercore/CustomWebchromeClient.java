@@ -40,7 +40,7 @@ public class CustomWebchromeClient extends WebChromeClient {
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
-        mNotifyWebViewUpdate.updateProgress(newProgress);
+        mNotifyWebViewUpdate.updateProgress(view,newProgress);
 
         if (newProgress == 100) {
             //在webviewClient中更新了网址，在网页加载完成时再更新一次

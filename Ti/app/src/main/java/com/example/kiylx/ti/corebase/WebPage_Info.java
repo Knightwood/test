@@ -10,6 +10,7 @@ public class WebPage_Info {
     private int WEB_feature;
     private String date;
     private String bookmarkFolderName;
+    private int progress;//网页加载进度
     /*WEB_feature：0，主页,不计入历史记录;，url指定为about:newTab
      *所以除了0以外的flags都是可以计入历史记录的
      *1，将载入网址，可以计入历史记录;
@@ -106,5 +107,13 @@ public class WebPage_Info {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid.toString();
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
     }
 }

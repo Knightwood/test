@@ -92,7 +92,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * @param pos pos，webview要添加进的位置
      *            新建一个webview并放进WebViewManager（webview2类型）
      */
-    public void newWebView(int pos, Context applicationContext, AppCompatActivity appCompatActivity,@NonNull String url) {
+    public void newWebView(int pos, Context applicationContext, AppCompatActivity appCompatActivity, @NonNull String url) {
 
 //注：new一个webview
         CustomAWebView web = new CustomAWebView(applicationContext);
@@ -284,14 +284,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         return webViewArrayList.get(i);
     }
 
-    /**
-     * @param title 网页标题
-     * @param url   网址
-     *              new出一个webpageinfo并返回，以备观察者推送更新，更新多窗口列表或数据库里的信息
-     */
-    private WebPage_Info GetInfoFromWebview(@NonNull String title,String url) {
-        return new WebPage_Info(title,url, null, 0, TimeProcess.getTime());
-    }
 
     /**
      * @param pos    tmpDate指向的WebView在lists中的位置,也就是即将加入到Converted_WebPage_Lists中的位置
@@ -343,9 +335,16 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                 }
 
                 @Override
-                public void updateProgress(int progress) {
-                    if (mUpdateProgress != null)
-                        mUpdateProgress.update(progress);
+                public void updateProgress(WebView v, int progress) {
+                    //如果发生进度条更新的不是当前正在浏览的webview，传入-1
+                    if (mUpdateProgress != null){
+                        if (v == webViewArrayList.get(MainActivity.getCurrent())){
+                            mUpdateProgress.update(progress);
+                        }else{
+                            mUpdateProgress.update(-1);
+                        }
+                    }
+
                 }
             };
     }
@@ -360,21 +359,21 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     }
 
     /**
-     * @param webView    发生变化的Webview
-     * @param pos        webview在arraylist中的位置。
-     * @param action     对多窗口界面的list执行的动作：添加，删除，或是更新条目信息
+     * @param webView        发生变化的Webview
+     * @param pos            webview在arraylist中的位置。
+     * @param action         对多窗口界面的list执行的动作：添加，删除，或是更新条目信息
      * @param datebaseAction 对数据库中这个网址的操作
-     *                   <p>
-     *                   观察者模式的更新操作！！！
-     *                   网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
-     *                   并且，根据“insertToDB”参数决定是否加入历史记录数据库
-     *                   并且，在更新网页信息的时候，还会更新数据库里这条记录的网页标题
+     *                       <p>
+     *                       观察者模式的更新操作！！！
+     *                       网页载入了网址，触发观察者模式，这个方法，更新Convented_WebviewPage_List网页信息.
+     *                       并且，根据“insertToDB”参数决定是否加入历史记录数据库
+     *                       并且，在更新网页信息的时候，还会更新数据库里这条记录的网页标题
      *                       流程：
      *                       1，首先由newWebview中的addinManager调用，此时使用的action是NEWTAB，databaseaction是DONOTHING。
      *                       也就是初始化标题和网址为默认值，然后加入多窗口列表，并且不对数据库做任何操作。
      *                       2当网页加载了某一个网址之后，会在webviewclient中调用doUpdateVisitedHistory()，并调用接口，这时将网页加入数据库,并且更新多窗口列表
      *                       3，当网页加载完成（进度==100），会在webchromeclient中调用onProgressChanged()，并调用接口，此时更新在多窗口列表和数据库中网页的标题
-     *
+     *                       <p>
      *                       注：每一次的点击链接都会调用doUpdateVisitedHistory()，也就是说可以每次点击链接，都可以做到把数据加数据库。
      */
     private void notifyupdate(WebView webView, int pos, Action action, DatebaseAction datebaseAction) {
@@ -384,12 +383,11 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         switch (action) {
             case NEWTAB:
-                info=new WebPage_Info(SomeRes.homePage,SomeRes.default_homePage_url,null,0,TimeProcess.getTime2());
+                info = new WebPage_Info(SomeRes.homePage, SomeRes.default_homePage_url, null, 0, TimeProcess.getTime2());
                 break;
             case ADD:
             case UPDATEINFO:
-                //info = GetInfoFromWebview(webView.getTitle(),webView.getUrl());
-               info= new WebPage_Info(webView.getTitle(),webView.getUrl(), null, 0, TimeProcess.getTime2());
+                info = new WebPage_Info(webView.getTitle(), webView.getUrl(), null, 0, TimeProcess.getTime2());
                 break;
             case DELETE:
                 info = null;
@@ -405,7 +403,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                 }
                 break;
             case UPDATETITLE:
-                UpdateTitleToDB(info.getTitle(),info.getUrl());
+                UpdateTitleToDB(info.getTitle(), info.getUrl());
                 break;
         }
         setChanged();
@@ -459,14 +457,14 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 枚举值的含义分别是：添加，删除，更新标题，更新url，查询，什么也不做
      */
     private enum DatebaseAction {
-        INSERT, DELETE, UPDATETITLE, UPDATEURL, QUERY,DONOTHING
+        INSERT, DELETE, UPDATETITLE, UPDATEURL, QUERY, DONOTHING
     }
 
     /**
      * 这是对于多窗口的行为，分别是：添加加载给定网址的条目，更新条目信息，删除条目，什么也不做，添加加载SomeRes中指定url的条目
      */
-    public enum Action{
-        ADD,UPDATEINFO,DELETE,DONOTHING,NEWTAB
+    public enum Action {
+        ADD, UPDATEINFO, DELETE, DONOTHING, NEWTAB
     }
 
     /**

@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -286,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     /**
      * @param progress 网页加载进度
      *                 更新进度条进度
+     *                 如果进度是-1或是100时，隐藏进度条
      */
     @Override
     public void update(int progress) {
@@ -293,7 +293,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             bar.setProgress(0);
             bar.setVisibility(View.VISIBLE);
         }
-        if (progress == 100) {
+
+        if (progress == -1 || progress == 100) {
             bar.setVisibility(View.GONE);
         } else
             bar.setProgress(progress);
@@ -430,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (mWebViewManager.size() == 1) {
             newTab(null);//newTab，先建一个标签页，然后删除旧有的，newtab将会使得current+=1，所以这里要减1
             mWebViewManager.removeToTrash(position, false);
-            current-=1;
+            current -= 1;
             return;
         }
         if (position < current) {
@@ -460,15 +461,23 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         setTextForbar(current);//更新标题栏
     }
 
+    /**
+     * @param pos 是指要切换到的页面
+     */
     @Override
     public void switchPage(int pos) {
-        //pos是指要切换到的页面
-        mWebViewManager.stop(current);
-        f1.removeView(mWebViewManager.getTop(current));
-        f1.addView(mWebViewManager.getTop(pos));
+        WebView old = mWebViewManager.getTop1(current);
+        WebView willSwitch = mWebViewManager.getTop1(pos);
+
+        old.onPause();
+        f1.removeView(old);
+        f1.addView(willSwitch);
         current = pos;
-        mWebViewManager.reStart(current);
+        willSwitch.onResume();
+
+        Log.d(TAG, "switchPage: "+willSwitch.getProgress());
         setTextForbar(current);//更新工具栏上的文字
+        update(willSwitch.getProgress());
     }
 
     /**
@@ -512,12 +521,13 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     }
 
     /**
-     * @param i 当前webview在列表中的位置
+     * @param pos 当前webview在列表中的位置
      *          <p>
      *          工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
      */
-    void setTextForbar(int i) {
-        String mt = mConverted_lists.getUrl(i);
+    void setTextForbar(int pos) {
+        //String mt = mConverted_lists.getUrl(pos);
+        String mt = mWebViewManager.getTop1(pos).getUrl();
         if (mt.equals(SomeRes.default_homePage_url)) {
             //不显示默认主页的url
             mt = "";
@@ -529,7 +539,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * 展示多窗口
      */
     public void mult_dialog(View v) {
-
         FragmentManager fm = getSupportFragmentManager();
         md = new MultPage_Dialog();
         md.show(fm, "fragment_multPage_dialog");
@@ -795,8 +804,6 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             //把DoSearchActivity的requestCode定义为21
             assert data != null;
             mWebViewManager.getTop(current).loadUrl(data.getStringExtra("text_or_url"));
-            //网页载入内容后把Webpage_InFo里元素的flags改为1，以此标志不是新标签页了
-            //mConverted_lists.setWEB_feature_1(current, 1);
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
         if (requestCode == 2020) {

@@ -140,4 +140,12 @@ public class WebViewInfo_Manager implements Observer {
         minfo.setUrl(info.getUrl());
         minfo.setDate(info.getDate());
     }
+
+    /**
+     * @param current 位置
+     * @return 返回该位置的info的progress
+     */
+    public int getProgress(int current) {
+        return mCurrectList.get(current).getProgress();
+    }
 }
