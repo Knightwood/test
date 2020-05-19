@@ -20,13 +20,12 @@
     <PreferenceCategory
         app:key="about"
         app:title="关于">
-        <Preference app:title="关于应用" />
 
         <Preference
+            android:id="@+id/about_app"
+            app:title="关于应用"
             android:icon="@drawable/ic_report_problem_black_24dp"
-            app:key="feedback"
-            app:summary="发送反馈"
-            app:title="发送反馈" />
+            app:fragment="com.example.kiylx.ti.ui.setting2.AboutFragment" />
 
     </PreferenceCategory>
 

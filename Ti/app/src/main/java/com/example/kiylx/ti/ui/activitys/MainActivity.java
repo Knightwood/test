@@ -16,13 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
-import android.print.PrintManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,9 +27,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.GeolocationPermissions;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -117,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
+    String[] locatePerm={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
     private ValueCallback<Uri[]> fileUploadCallBack;
     private OpenWebview mOpenWebview;
 
@@ -475,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         current = pos;
         willSwitch.onResume();
 
-        Log.d(TAG, "switchPage: "+willSwitch.getProgress());
+        Log.d(TAG, "switchPage: " + willSwitch.getProgress());
         setTextForbar(current);//更新工具栏上的文字
         update(willSwitch.getProgress());
     }
@@ -522,8 +518,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
 
     /**
      * @param pos 当前webview在列表中的位置
-     *          <p>
-     *          工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
+     *            <p>
+     *            工具栏的的文字更新，获取当前浏览网页的标题，设置到底栏
      */
     void setTextForbar(int pos) {
         //String mt = mConverted_lists.getUrl(pos);
@@ -560,11 +556,12 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
      * true是新样式
      */
     public void searchBar(View v) {
-        if (useNewSearchStyle) {
+        openSearchEdit();
+        /*if (useNewSearchStyle) {
             openSearchEdit();
         } else {
             search_dialog();
-        }
+        }*/
 
     }
 
@@ -1086,6 +1083,31 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
             CustomAWebView tmp = mWebViewManager.newWebview(++current, url, MainActivity.this);
             f1.addView(mWebViewManager.getTop(current));
             return tmp;
+        }
+
+        /**
+         * @param origin 请求地理位置的网址
+         * @param callback 处理请求的回调接口，调用invoke方法处理是否给于origin地理位置
+         */
+        @Override
+        public void requestLocate(String origin, GeolocationPermissions.Callback callback) {
+            //如果有存储权限，则可以开始下载，否则告诉用户申请权限
+            if (!EasyPermissions.hasPermissions(MainActivity.this, locatePerm)) {
+                EasyPermissions.requestPermissions(MainActivity.this, "没有地理位置权限，请去设置给予权限后再试", 20033, locatePerm);
+                callback.invoke(origin, false, false);
+                return;
+            }
+            new AlertDialog.Builder(MainActivity.this).setMessage("当前网址想要使用你的地理位置")
+                    .setPositiveButton("允许", (dialog, which) -> {
+                        Log.d(TAG, "requestLocate: 位置请求成功");
+                        callback.invoke(origin, true, false);
+                    })
+                    .setNegativeButton("拒绝", (dialog, which) -> {
+                        Log.d(TAG, "requestLocate: 位置请求失败");
+                        callback.invoke(origin, false, false);
+                    })
+                    .setCancelable(false)
+                    .show();
         }
 
     }

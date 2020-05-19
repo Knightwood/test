@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <CheckBoxPreference
+        android:layout_width="match_parent"
+        android:defaultValue="false"
+        android:key="@string/useThirdCookies"
+        android:title="允许第三方cookie" />
+    <CheckBoxPreference
+        android:layout_width="match_parent"
+        android:defaultValue="false"
+        android:key="@string/donotTrack"
+        android:title="发送不跟踪请求" />
+    <CheckBoxPreference
+        android:layout_width="match_parent"
+        android:defaultValue="false"
+        android:key="@string/exitCleanData"
+        android:summary="历史记录，cookies等"
+        android:title="退出时清除浏览数据" />
 </PreferenceScreen>

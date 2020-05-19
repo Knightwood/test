@@ -8,14 +8,16 @@
 <h1>我的第一个标题</h1>
 <p>我的第一个段落。</p>
 <input type="button" value="显示UserAgent" onclick="showUserAgent()"/><br/>
-<div id="userAgentDiv"/>
+
+<p id="userAgentDiv"/><br>
 <script type="text/javascript">
         function showUserAgent() {
             document.getElementById("userAgentDiv").innerHTML = navigator.userAgent;
         }
+
 </script>
-</body>
-<body>
+<!--</body>
+<body>-->
 <meta name="viewport" content="width=device-width,maximun-scale=1,mininum-scale=1,user-scale=1">
 <tile>文件选择</tile>
 <style>
@@ -25,12 +27,14 @@
             -webkit-background-clip: border-box;
         }
 
+
 </style>
 <script>
         var display = function(){
             var path = document.getElementById("file_chooser").textContent;
             document.getElementById("filechooser_display").innerHTML("<b>"+path+"</b>");
         }
+
 
 </script>
 
@@ -45,8 +49,50 @@
         </fieldset>
     </li>
 </ul>
+
+<p id="demo">点击这个按钮，获得您的坐标：</p>
+<button onclick="getLocation()">试一下</button>
+<script>
+var x=document.getElementById("demo");
+function getLocation()
+  {
+  if (navigator.geolocation)
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {
+  x.innerHTML="Latitude: " + position.coords.latitude +
+  "<br />Longitude: " + position.coords.longitude;
+  }
+function showError(error)
+  {
+  switch(error.code)
+    {
+    case error.PERMISSION_DENIED:
+      x.innerHTML="User denied the request for Geolocation."
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Location information is unavailable."
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="The request to get user location timed out."
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="An unknown error occurred."
+      break;
+    }
+  }
+</script>
+
 </body>
-<a href="https://www.taobao.com/" title="淘宝" target="_blank">新窗口打开链接</a>
+<br>
+<a href="http://192.168.1.10/D%3A" title="计算机" target="_blank">新窗口打开链接</a>
+
+
+<!--cookies-->
 
 </body>
 </html>

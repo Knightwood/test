@@ -8,26 +8,16 @@ package com.example.kiylx.ti.conf;
 public class WebviewConf {
     //=================================preference的key值=========================================//
 
-    public static String useCustomHomepage = "home_page_default";//是否使用自定义主页key
-    public static String homepageurl = "home_page_url";//自定义主页网址key
-
     public static String searchengine = "search_engine";//默认搜索引擎key
     public static String searchengineList="search_engine_list";//内置搜索引擎列表 的key
     public static String customsearchengine = "custom_search_engine";//自定义搜索引擎的key，自定义的不一定会设置为默认，所以，这一项是为了在自定义的那项不是默认值时也能记住自定义的值
-
-    public static String customDownload = "custom_download_listener";//是否使用软件内置下载器key
 
     public static String userAgent = "user_agent";//默认浏览器标识key
     public static String userAgentList="useragent_list";//浏览器标识列表key
     public static String customAgent="custom_agent";//自定义的agent
 
-    public static String textZoom = "text_zoom";//字体缩放key
-    public static String textZoomList = "text_zoom_list";//字体缩放列表key
-
-    public static String resumeData = "resume_data";//是否打开恢复上次网址key
-
     public static String defaultDownloadPath="def_download_path";//下载路径
     public static String defaultDownloadlimit="def_download_limit";//下载数量限制
     public static String defaultDownloadthread="def_download_thread";//下载线程数
-    public static String uploadMode="def_upload_mode";//false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。
+
 }

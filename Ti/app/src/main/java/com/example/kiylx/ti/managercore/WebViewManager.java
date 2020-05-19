@@ -3,6 +3,7 @@ package com.example.kiylx.ti.managercore;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
+import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -49,6 +50,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private CustomWebviewClient customWebviewClient;
     private CustomWebchromeClient customWebchromeClient;
     private List<WebView> trashList;//要删除的webview先转移到这里，之后整体删除，避免在原list中操作耗时
+    private CookieManager cookieManager;
 
     private AboutHistory aboutHistory;
     private HandleClickedLinks mHandleClickedLinks;
@@ -71,6 +73,8 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //传给它们实现了的接口
         CustomWebviewClient.setInterface(mUpdateInterface);
         CustomWebchromeClient.setInterface(mUpdateInterface);
+        //cookies设置
+        cookieManager = CookieManager.getInstance();
     }
 
     public static WebViewManager getInstance(@NonNull Context context, @NonNull HandleClickedLinks handleClickedLinks) {
@@ -83,10 +87,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         }
         return sWebViewManager;
     }
-
-   /* public void setInterface(@NonNull Setmessage interface_1) {
-        this.setmessage = interface_1;
-    }*/
 
     /**
      * @param pos pos，webview要添加进的位置
@@ -337,10 +337,10 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                 @Override
                 public void updateProgress(WebView v, int progress) {
                     //如果发生进度条更新的不是当前正在浏览的webview，传入-1
-                    if (mUpdateProgress != null){
-                        if (v == webViewArrayList.get(MainActivity.getCurrent())){
+                    if (mUpdateProgress != null) {
+                        if (v == webViewArrayList.get(MainActivity.getCurrent())) {
                             mUpdateProgress.update(progress);
-                        }else{
+                        } else {
                             mUpdateProgress.update(-1);
                         }
                     }
@@ -549,7 +549,10 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         settings.setSupportMultipleWindows(true);
         //允许http和https混用
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-
+        //启用地理位置
+        settings.setGeolocationEnabled(true);
+        //cookies设置
+        cookieManager.setAcceptThirdPartyCookies(webView,PreferenceTools.getBoolean(context, "use_third_cookies", false) );
     }
 
     /**

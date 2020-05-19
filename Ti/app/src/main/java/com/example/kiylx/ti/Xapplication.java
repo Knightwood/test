@@ -16,13 +16,13 @@ public class Xapplication extends Application {
 
     private ShowPicMode showPicture;//是否显示网页图片，1：禁止显示图片；2：始终显示图片；3：在wifi下显示图片
     private boolean isPrivacy;//是否使用了隐私模式
-
+    private boolean DNT;//是否发送不要跟踪的请求
 
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mContext=this;
+        mContext = this;
 
         initPreference();
         initData();
@@ -39,11 +39,11 @@ public class Xapplication extends Application {
      * 初始化全局preference数据
      */
     private void initPreference() {
-
+        DNT = DefaultPreferenceTool.getBoolean(this, getResources().getString(R.string.donotTrack), false);
     }
 
 
-    public static Context getInstance(){
+    public static Context getInstance() {
         return mContext;
     }
 
@@ -53,7 +53,7 @@ public class Xapplication extends Application {
 
     public void setShowPicture(ShowPicMode showPicture) {
         this.showPicture = showPicture;
-        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("showPicatureMode",showPicture.toString()).apply();
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putString("showPicatureMode", showPicture.toString()).apply();
     }
 
     public boolean isPrivacy() {
@@ -62,8 +62,15 @@ public class Xapplication extends Application {
 
     public void setPrivacy(boolean privacy) {
         isPrivacy = privacy;
-        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("privacyMode",privacy).apply();
+        PreferenceManager.getDefaultSharedPreferences(mContext).edit().putBoolean("privacyMode", privacy).apply();
     }
 
 
+    public boolean isDNT() {
+        return DNT;
+    }
+
+    public void setDNT(boolean DNT) {
+        this.DNT = DNT;
+    }
 }

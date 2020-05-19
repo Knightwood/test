@@ -10,10 +10,11 @@
 
     <TextView
         android:id="@+id/textView2"
+        style="@android:style/Widget.Material.Light.TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:text="@string/welcome_sentence"
-        android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

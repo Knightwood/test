@@ -74,7 +74,7 @@ private List<DownloadInfo> list;
 
     @Test
     public void testRxjava(){
-        manager.writeData(list);
+        manager.writeDataTodb(list);
     }
 
 }

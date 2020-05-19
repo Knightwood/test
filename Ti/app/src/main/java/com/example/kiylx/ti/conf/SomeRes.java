@@ -12,6 +12,7 @@ public class SomeRes {
     //=================================资源名称，多个地方会使用这些名称=========================================//
     public static final String homePage = "主页";//默认主页名称
     public static final String default_homePage_value = "about:newTab";
+    //public static final String default_homePage_url = "file:///android_asset/tabNew.html";
     public static final String default_homePage_url = "file:///android_asset/newTab.html";
     public static final String PCuserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36";
     public static final String defaultBookmarkFolder = "未分类";//默认的书签文件夹名称
@@ -27,8 +28,4 @@ public class SomeRes {
     public static String google="https://www.google.com/search?q=";
     public static String miji="https://mijisou.com/search?q=";
 
-   //默认显示
-
-    public static String SearchViewStyle="searchview_style";//搜索页面样式，false是旧的样式，true是新样式
-    public static String searchMatcher="search_matcher";//是否使用搜索匹配，false是不启用，true是启用
 }

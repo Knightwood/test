@@ -15,9 +15,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.List;
 
 public class CustomWebviewClient extends WebViewClient {
@@ -99,6 +101,14 @@ public class CustomWebviewClient extends WebViewClient {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        Xapplication xapplication= (Xapplication) Xapplication.getInstance();
+        if (xapplication.isDNT()){
+            HashMap<String, String> extraHeaders = new HashMap<String, String>();
+            extraHeaders.put("DNT", "1");
+            view.loadUrl(url, extraHeaders);
+            return true;
         }
         return false;
 

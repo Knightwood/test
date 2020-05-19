@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Ti</string>
+    <string name="app_name">Web Explorer</string>
     <string name="back">返回</string>
     <string name="searchbar"> 开始搜索</string>
     <string name="duochuangkou">0</string>
@@ -80,6 +80,13 @@
     <string name="uploadMode_key">def_upload_mode</string><!--false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。-->
     <string name="SearchViewStyle_key">searchview_style</string><!--搜索页面样式，false是旧的样式，true是新样式-->
     <string name="searchSuggest_key">search_suggest</string><!--是否使用搜索匹配，false是不启用，true是启用-->
+    <string name="useCookies">use_cookies</string><!--是否使用cookies的key-->
+    <string name="useThirdCookies">use_third_cookies</string><!--是否使用第三方cookie的key-->
+    <string name="PictureMode">picture mode</string><!--图片模式的key，仅wifi下加载图片，一直加载图片-->
+    <string name="useJavascript">use_javascript</string><!--是否使用js的key-->
+    <string name="donotTrack">dont_track</string><!--发送不跟踪请求的key-->
+    <string name="webRequestLocate">web_request_locate</string><!--是否允许站点访问地理位置key-->
+    <string name="exitCleanData">exit_clean_data</string><!--退出时清除浏览数据-->
 
     <!--userAgent-->
     <string name="Chrome_agent">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.106 Safari/537.36</string>
@@ -119,7 +126,7 @@
     <string name="downloadFolder">下载文件夹</string>
     <string name="thread">下载线程数</string>
     <string name="backFolder">上一级</string>
-    <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段。</string>
+    <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段,有些功能还不可用。</string>
     <string name="theStyle">样式</string>
     <string name="use_old_search_tool">使用新的搜索界面样式</string>
     <string name="use_search_matcher">使用搜索匹配</string>

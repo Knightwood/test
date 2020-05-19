@@ -6,6 +6,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
@@ -26,6 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import kotlin.jvm.Synchronized;
 
 /*
  * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
@@ -48,12 +51,11 @@ public class DownloadManager {
     private int downloadNumLimit;
     private Context mContext;
 
-    public static DownloadManager getInstance(Context context) {
+    public static DownloadManager getInstance() {
         if (mDownloadManager == null) {
             synchronized (DownloadManager.class) {
                 if (mDownloadManager == null) {
-                    mDownloadManager = new DownloadManager(context);
-
+                    mDownloadManager = new DownloadManager();
                 }
             }
         }
@@ -62,22 +64,20 @@ public class DownloadManager {
 
 
     /**
-     * @param context applicationContext
-     *                有了context,才能做一些数据库之类的操作
+     * pplicationContext
+     * 有了context,才能做一些数据库之类的操作
      */
-    private DownloadManager(Context context) {
-        this();
-        this.mContext = context;
-
+    private DownloadManager() {
+        initDownloadManager();
+        this.mContext = Xapplication.getInstance();
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        //downloadNumLimit = SomeRes.downloadLimit;
-        downloadNumLimit= PreferenceTools.getInt(mContext, WebviewConf.defaultDownloadlimit,3);
+        downloadNumLimit = PreferenceTools.getInt(mContext, WebviewConf.defaultDownloadlimit, 3);
         //从数据库拿数据
         resumeInfoFromDB();
         scheduleWrite();
     }
 
-    private DownloadManager() {
+    private void initDownloadManager() {
         downloading = new ArrayList<>();//正在下载列表
         pausedownload = new ArrayList<>();//暂停下载列表
         readyDownload = new LinkedList<>();//准备下载列表
@@ -107,8 +107,7 @@ public class DownloadManager {
             //所有下载文件的线程已经暂停
             if (info.getblockPause()) {
                 //暂停,一种情况是正在下载时暂停，另一种是准备下载时暂停
-                downloading.remove(info);
-                pausedownload.add(info);
+
                 updateInfo(info);
             }
             Log.d(TAG, "下载暂停成功");
@@ -132,7 +131,7 @@ public class DownloadManager {
                 //调入新的下载任务开始下载
                 if (!readyDownload.isEmpty()) {
                     try {
-                        startDownload(readyDownload.remove(0));
+                        startDownload(readyDownload.remove(0),true);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -161,14 +160,14 @@ public class DownloadManager {
         info.setContentLength(info.getContentLength() == 0 ? mOkhttpManager.getFileLength(info.getUrl()) : info.getContentLength());
 
         //文件的分块大小
-        if (info.getContentLength()<10000000){
+        if (info.getContentLength() < 10000000) {
             //1kb=1024b,1m=1024kb,1m=
-            threadNum= info.setThreadNum(1);
+            threadNum = info.setThreadNum(1);
         }
 
         //更改下载到的文件夹
-        String downloadFolder=PreferenceTools.getString(mContext,WebviewConf.defaultDownloadPath,null);
-        if (downloadFolder!=null){
+        String downloadFolder = PreferenceTools.getString(mContext, WebviewConf.defaultDownloadPath, null);
+        if (downloadFolder != null) {
             info.setPath(downloadFolder);
         }
 
@@ -203,10 +202,10 @@ public class DownloadManager {
      * 发送列表更新的通知
      */
     private void sendMes() {
-        EventMessage msg=new EventMessage(1,"更新下载列表");
+        EventMessage msg = new EventMessage(1, "更新下载列表");
         EventBus.getDefault().post(msg);
 
-        Log.d(TAG,"下载数："+downloading.size()+"暂停数："+pausedownload.size());
+        Log.d(TAG, "下载数：" + downloading.size() + "暂停数：" + pausedownload.size());
 
     }
 
@@ -214,24 +213,52 @@ public class DownloadManager {
      * @param info 文件下载信息
      * @throws IOException 抛出异常
      */
-    public void startDownload(@NonNull DownloadInfo info) throws IOException {
+    public void startDownload(@NonNull DownloadInfo info, boolean isResume) throws IOException {
         /*
          * “暂停”为假,“准备下载”为真(刚构建的下载任务中“暂停”是假，“等待下载”是假),
          * 说明这是暂停之后要恢复下载
          * 若恢复下载时下载列表满了，加入准备下载列表
          * */
-        if (!info.isPause() && info.isWaitDownload()) {
+        if (isResume){
             //注：恢复下载
-            if (downloading.size() == SomeRes.downloadLimit)
-                readyDownload.add(info);
-            else {
-                downloading.add(info);
-                /*int i = info.getThreadNum();
-                for (int j = 0; j < i; j++) {
-                    TaskPool.newInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
-                }*/
+            if (downloading.size() != SomeRes.downloadLimit) {
                 execDownload(info);
             }
+        }else{
+            //处理下载信息
+            processInfo(info);
+
+            //注：全新开始的下载
+            //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
+            if (downloading.size() == downloadNumLimit) {
+                //加入准备下载
+                readyDownload.add(info);
+                info.setWaitDownload(true);
+            } else {
+                //注：还没到下载数量限制，这是第一次开始下载
+                //执行下载
+                execDownload(info);
+
+                //加入下载队列
+                downloading.add(info);
+            }
+            //全新开始的下载任务,不论是加入准备下载列表还是加入正在下载列表,都要把info要加入数据库
+            insertInfo(info);
+        }
+
+        /*if (!info.isPause() && info.isWaitDownload()) {
+            //注：恢复下载
+            if (downloading.size() != SomeRes.downloadLimit) {
+                //downloading.add(info);
+                *//*int i = info.getThreadNum();
+                for (int j = 0; j < i; j++) {
+                    TaskPool.newInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+                }*//*
+                execDownload(info);
+            }
+            //readyDownload.add(info);
+
+
         } else {
             //注：全新开始的下载
             //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
@@ -251,7 +278,7 @@ public class DownloadManager {
             }
             //全新开始的下载任务,不论是加入准备下载列表还是加入正在下载列表,都要把info要加入数据库
             insertInfo(info);
-        }
+        }*/
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
         updateInfo(info);//不论是新添加的任务还是旧的任务,在这里更新一次
@@ -285,6 +312,13 @@ public class DownloadManager {
         }
         //正在下载或是等待下载，都要设置"暂停"为真
         info.setPause(true);
+        downloading.remove(info);
+        pausedownload.add(info);
+
+        Log.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
+                + "正在下载：" + downloading.size() + "\n"
+                + "准备下载：" + readyDownload.size() + "\n"
+                + "完成下载：" + completeDownload.size());
 
     }
 
@@ -313,9 +347,7 @@ public class DownloadManager {
      *             在resumeDownload(@NonNull DownloadInfo info)中移除暂停下载列表中的任务
      */
     public void resumeDownload(@NonNull DownloadInfo info) {
-
         resume(info);
-        pausedownload.remove(info);//移除暂停列表中的这个条目
     }
 
     /**
@@ -338,6 +370,8 @@ public class DownloadManager {
     private void resume(DownloadInfo info) {
         //如果正在下载列表满了，把这个条目加入准备列表。否则加入正在下载列表开始下载
         info.setPause(false);
+        pausedownload.remove(info);//移除暂停列表中的这个条目
+
         if (downloading.size() == downloadNumLimit) {
             info.setWaitDownload(true);
             readyDownload.add(info);
@@ -346,13 +380,19 @@ public class DownloadManager {
             info.setWaitDownload(false);
             downloading.add(info);
             try {
-                startDownload(info);
+                startDownload(info,true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
+
         updateInfo(info);
+
+        Log.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
+                + "正在下载：" + downloading.size() + "\n"
+                + "准备下载：" + readyDownload.size() + "\n"
+                + "完成下载：" + completeDownload.size());
     }
 
     /**
@@ -375,7 +415,6 @@ public class DownloadManager {
         info.setCancel(true);
         pausedownload.remove(info);
         deleteFile(info);
-
         sendMes();//通知别的类，这里的列表发生了改变
     }
 
@@ -508,12 +547,14 @@ public class DownloadManager {
     private void insertData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
+
     /**
      * @param info 更新下载数据库
      */
     private void updateData(DownloadInfo info) {
         DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info));
     }
+
     /**
      * @param info 把数据从数据库删除
      */
@@ -543,6 +584,7 @@ public class DownloadManager {
 
     /**
      * 在线程中执行
+     *
      * @param info 把下载数据写入数据库
      */
     private void insertInfo(DownloadInfo info) {
@@ -552,6 +594,7 @@ public class DownloadManager {
 
     /**
      * 在线程中执行
+     *
      * @param info 把数据从数据库删除
      */
     private void deleteInfo(DownloadInfo info) {
@@ -561,6 +604,7 @@ public class DownloadManager {
 
     /**
      * 在线程中执行
+     *
      * @param info 更新下载数据库
      */
     private void updateInfo(DownloadInfo info) {
@@ -606,7 +650,7 @@ public class DownloadManager {
      * 遍历list列表,把下载任务写入数据库以更新数据
      * 这个方法要在非主线程里使用
      */
-    public void writeData(List<DownloadInfo> list) {
+    public void writeDataTodb(List<DownloadInfo> list) {
         for (DownloadInfo info : list) {
             updateData(info);
         }
@@ -617,7 +661,7 @@ public class DownloadManager {
      * 这个方法要在非主线程里使用
      */
     private void writeData() {
-        this.writeData(downloading);
+        this.writeDataTodb(downloading);
     }
 
     /**
@@ -634,8 +678,7 @@ public class DownloadManager {
 
         @Override
         public void run() {
-            if (downloading.isEmpty()) {
-            } else {
+            if (!downloading.isEmpty()) {
                 writeData();
             }
 

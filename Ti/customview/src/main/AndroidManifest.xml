@@ -15,7 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.SecondActivity"></activity>
+        <activity android:name=".bottomview.UseAppbarLayout"></activity>
+        <activity
+            android:name=".bottomview.MyBottomSheet"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ui.SecondActivity" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,18 +1,24 @@
 package com.example.kiylx.ti.managercore;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
+import com.google.android.material.snackbar.Snackbar;
 
 
 public class CustomWebchromeClient extends WebChromeClient {
@@ -159,5 +165,17 @@ public class CustomWebchromeClient extends WebChromeClient {
     //mainactivity中实现，mainactivity把实现传入webviewmanager，再传到这里。
     public void setClientInterface(WebViewChromeClientInterface iupload) {
         this.clientInterface = iupload;
+    }
+
+    /**
+     * @param origin
+     * @param callback
+     * 处理请求地理位置
+     */
+    @Override
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+        if (clientInterface!=null){
+           clientInterface.requestLocate(origin,callback);
+        }
     }
 }

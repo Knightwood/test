@@ -4,8 +4,10 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
@@ -28,7 +30,7 @@ public class DownloadServices extends Service {
     public void onCreate() {
         super.onCreate();
         this.mDownloadBinder = new DownloadBinder();
-        mDownloadManager = DownloadManager.getInstance(getApplicationContext());
+        mDownloadManager = DownloadManager.getInstance();
 
     }
 
@@ -81,10 +83,10 @@ public class DownloadServices extends Service {
 
         public void startDownload(DownloadInfo info) {
             if (mDownloadManager == null) {
-                mDownloadManager = DownloadManager.getInstance(getApplicationContext());
+                mDownloadManager = DownloadManager.getInstance();
             }
             try {
-                mDownloadManager.startDownload(info);
+                mDownloadManager.startDownload(info,false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -133,6 +135,12 @@ public class DownloadServices extends Service {
                         downloadInfoList.addAll(mDownloadManager.getDownloading());
                         downloadInfoList.addAll(mDownloadManager.getPausedownload());
                         downloadInfoList.addAll(mDownloadManager.getReadyDownload());
+
+                        Log.d("下载服务：", "暂停下载："+mDownloadManager.getPausedownload().size()+"\n"
+                                +"正在下载："+mDownloadManager.getDownloading().size()+"\n"
+                                +"准备下载："+mDownloadManager.getReadyDownload().size()+"\n"
+                                );
+
                         return downloadInfoList;
 
                     }
