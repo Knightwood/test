@@ -29,7 +29,8 @@ public class LiteViewPager extends ViewGroup {
     private boolean isReordered = false;//是否交换过层级顺序
     private boolean isFirstLayout = true;//第一次layout时指定基准线用于正确布局
     private ValueAnimator mAnimator;
-    private long mFlingDuration=200L;//指定动画时长
+    private long mFlingDuration = 200L;//指定动画时长
+    private float mDownX, mDownY;//按下时的触摸坐标
 
 
     public LiteViewPager(Context context) {
@@ -354,8 +355,8 @@ public class LiteViewPager extends ViewGroup {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 //更新上一次的触摸坐标
-                mLastX = x;
-                mLastY = y;
+                mDownX = mLastX = x;
+                mDownY = mLastY = y;
                 //开始滑动前先打断动画
                 abortAnimation();
                 break;
@@ -376,8 +377,7 @@ public class LiteViewPager extends ViewGroup {
             case MotionEvent.ACTION_UP:
                 //标记没有在拖拽
                 isBeingDragged = false;
-                handleActionUp(x, y);
-                break;
+                return handleActionUp(x, y);
         }
 
         return isBeingDragged;
@@ -410,8 +410,76 @@ public class LiteViewPager extends ViewGroup {
         return true;
     }
 
-    private void handleActionUp(float x, float y) {
+    /**
+     * 1点击两边的子View会切换位置，而不是触发它们的点击事件
+     * 2在手指按下时当手指松开后，用当前手指的坐标点和按下时的坐标点作比较，
+     * 如果没有超出最小滑动距离(mTouchSlop)，就认为是一次点击事件；记录按下的坐标(mDownX, mDownY)；
+     * 3再判断当前手指坐标有没有在某个子View范围内，如果有的话，就选中这个子View，没有的话，
+     * 就当作一次普通的ACTION_UP，即播放选中动画；
+     *
+     * @param x
+     * @param y
+     */
+    private boolean handleActionUp(float x, float y) {
+        //位置：最左边：0；中间：2；最右边：1
+        float offsetX = x - mDownX;
+        float offSetY = y - mDownY;
+        if (Math.abs(offsetX) < mTouchSlop && Math.abs(offSetY) < mTouchSlop) {
+            //小于滑动的阈值，算作点击事件
+            View beHitView = findHitView(x, y);
+            if (beHitView != null) {
+                if (indexOfChild(beHitView) == 2) {
+                    //点击中间的子view不用播放动画，直接不拦截
+                    return false;
+                } else {
+                    LayoutParams lp = (LayoutParams) beHitView.getLayoutParams();
+                    setSelection(lp.from);
+                    //拦截ACTION_UP事件，内部消费
+                    return true;
+                }
+            }
+        }
+        //手指在空白地方松开
         playFixingAnimation();
+        return false;
+    }
+
+    private View findHitView(float x, float y) {
+        View child;
+        for (int i = getChildCount()-1; i >= 0; i--) {
+            child = getChildAt(i);
+            //判断触摸点是否在这个子View内
+            if (pointInView(child, new float[]{x, y})) {
+                //如果在就直接返回它
+                return child;
+            }
+
+        }
+        //没有找到，返回null
+        return null;
+    }
+
+    private void setSelection(int index) {
+//目标index已被选中、无子View、正在播放动画，这几种情况下，都直接忽略，即不播放本次动画
+        if (indexOfChild(getChildAt(getChildCount() - 1)) == index || getChildCount() == 0 ||(mAnimator!=null && mAnimator.isRunning())) {
+            return;
+        }
+        //起始点就是当前滑动距离
+        float start = mOffsetX;
+        //结束点
+        float end;
+        switch (index) {
+            case 0:
+                end = getWidth();
+                break;
+            case 1:
+                end = -getWidth();
+                break;
+            default:
+                return;
+        }
+        startValueAnimator(start, end);
+
     }
 
     private void playFixingAnimation() {
