@@ -12,11 +12,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.crystal.customview.R;
-import com.crystal.customview.bottomview.MyBottomSheet;
+import com.crystal.customview.bottomview.MyBottomSheetActivity;
 import com.crystal.customview.bottomview.UseAppbarLayout;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
     Button button_bottom_sheet;
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         button_bottom_sheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StartActivity(MyBottomSheet.class);
+                StartActivity(MyBottomSheetActivity.class);
             }
         });
     }
