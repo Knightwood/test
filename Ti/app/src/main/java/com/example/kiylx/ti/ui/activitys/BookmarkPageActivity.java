@@ -25,15 +25,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.managercore.AboutBookmark;
-import com.example.kiylx.ti.managercore.BookMarkFolderManager;
+import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
+import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 
 import java.util.List;
 

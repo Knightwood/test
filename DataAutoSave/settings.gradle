@@ -1,0 +1,5 @@
+rootProject.name='DataAutoSave'
+include ':app'
+include ':DASAnnotationLib'
+include ':DASAnnotationComplierlib'
+include ':dastools'

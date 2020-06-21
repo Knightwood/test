@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -41,12 +41,14 @@ import android.widget.Toast;
 
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.Xapplication;
-import com.example.kiylx.ti.managercore.CustomAWebView;
+import com.example.kiylx.ti.ui.base.BaseActivity;
+import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.NetBroadcastReceiver;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.PreferenceTools;
-import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
+import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
 import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
@@ -61,7 +63,7 @@ import com.example.kiylx.ti.downloadpack.dinterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
-import com.example.kiylx.ti.managercore.WebViewManager;
+import com.example.kiylx.ti.mvp.presenter.WebViewManager;
 import com.example.kiylx.ti.ui.fragments.MinSetDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.ProcessUrl;
@@ -74,7 +76,7 @@ import java.io.File;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
-public class MainActivity extends AppCompatActivity implements MultiDialog_Functions, WebViewManager.UpdateProgress {
+public class MainActivity extends BaseActivity implements MultiDialog_Functions, WebViewManager.UpdateProgress {
     private static final String TAG = "MainActivity";
     private static final String CURRENT_URL = "current url";
     private static final String OPENED_EDIT = "opened_edit";
@@ -109,10 +111,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
     private WebViewChromeClientInterface chromeClientInterface;//上传文件接口
     private boolean useNewSearchStyle = true;
     private ProgressBar bar;//网页加载进度条
+    private NetBroadcastReceiver receiver;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
-    String[] locatePerm={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+    String[] locatePerm = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private ValueCallback<Uri[]> fileUploadCallBack;
     private OpenWebview mOpenWebview;
 
@@ -178,6 +181,11 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         testContext();
     }
 
+    @Override
+    protected void initActivity() {
+
+    }
+
     /**
      * 测试上下文
      */
@@ -225,6 +233,8 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         EventBus.getDefault().register(this);
         bar = findViewById(R.id.webviewProgressBar);
         mWebViewManager.setOnUpdateProgress(this);
+
+        registerBroadCast();//注册广播，监听网络变化
     }
 
 
@@ -258,6 +268,9 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         if (seviceBund)
             unbindService(connection);
         Log.d("lifecycle", "onDestroy()");
+        if (receiver!=null){
+            unregisterReceiver(receiver);
+        }
     }
 
     @Override
@@ -1086,7 +1099,7 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
 
         /**
-         * @param origin 请求地理位置的网址
+         * @param origin   请求地理位置的网址
          * @param callback 处理请求的回调接口，调用invoke方法处理是否给于origin地理位置
          */
         @Override
@@ -1124,18 +1137,16 @@ public class MainActivity extends AppCompatActivity implements MultiDialog_Funct
         }
     }
 
-/*    public void showMulti() {
-        ViewStub multiWindow = findViewById(R.id.multiViewStub);
-        if (multiWindow != null) {
-            multiWindow.inflate();
-        }
-        setContainer.setVisibility(View.VISIBLE);
+
+    /**
+     * 注册广播，监听网络变化
+     */
+    private void registerBroadCast() {
+        receiver = new NetBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(receiver, intentFilter);//注册广播
     }
-
-    public void hideMulti() {
-        setContainer.setVisibility(View.GONE);
-    }*/
-
 
 }
 /*

@@ -12,13 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.kiylx.ti.managercore.AboutBookmark;
-import com.example.kiylx.ti.managercore.BookMarkFolderManager;
+import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
+import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
-
-import java.util.Objects;
 
 public class DeleteBookmarkFolder_Dialog extends DialogFragment {
     private static final String TAG = "删除书签文件夹";

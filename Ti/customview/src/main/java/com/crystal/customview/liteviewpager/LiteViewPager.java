@@ -425,8 +425,9 @@ public class LiteViewPager extends ViewGroup {
         float offsetX = x - mDownX;
         float offSetY = y - mDownY;
         if (Math.abs(offsetX) < mTouchSlop && Math.abs(offSetY) < mTouchSlop) {
-            //小于滑动的阈值，算作点击事件
+            //小于滑动的阈值，算作点击事件，找到被点击的view的index
             View beHitView = findHitView(x, y);
+
             if (beHitView != null) {
                 if (indexOfChild(beHitView) == 2) {
                     //点击中间的子view不用播放动画，直接不拦截
@@ -453,22 +454,25 @@ public class LiteViewPager extends ViewGroup {
                 //如果在就直接返回它
                 return child;
             }
-
         }
         //没有找到，返回null
         return null;
     }
 
-    private void setSelection(int index) {
+    /**
+     * @param from 被点击子view的index
+     *              点击某一个view后，播放动画及移动它到中间位置
+     */
+    private void setSelection(int from) {
 //目标index已被选中、无子View、正在播放动画，这几种情况下，都直接忽略，即不播放本次动画
-        if (indexOfChild(getChildAt(getChildCount() - 1)) == index || getChildCount() == 0 ||(mAnimator!=null && mAnimator.isRunning())) {
+        if (indexOfChild(getChildAt(getChildCount() - 1)) == from || getChildCount() == 0 ||(mAnimator!=null && mAnimator.isRunning())) {
             return;
         }
         //起始点就是当前滑动距离
         float start = mOffsetX;
         //结束点
         float end;
-        switch (index) {
+        switch (from) {
             case 0:
                 end = getWidth();
                 break;

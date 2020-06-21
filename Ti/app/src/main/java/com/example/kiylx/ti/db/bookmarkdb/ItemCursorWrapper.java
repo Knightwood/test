@@ -3,7 +3,7 @@ package com.example.kiylx.ti.db.bookmarkdb;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 
 public class ItemCursorWrapper extends CursorWrapper {
     /**

@@ -18,12 +18,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.example.kiylx.ti.managercore.AboutBookmark;
-import com.example.kiylx.ti.managercore.BookMarkFolderManager;
+import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
+import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
-
-import java.util.Objects;
 
 /**
  * 编辑书签文件夹时，打开这个对话框。

@@ -24,7 +24,7 @@ import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 import com.example.kiylx.ti.interfaces.ControlWebView;
 import com.example.kiylx.ti.ui.activitys.Setting2Activity;
 

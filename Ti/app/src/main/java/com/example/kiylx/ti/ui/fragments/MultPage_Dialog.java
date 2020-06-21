@@ -2,9 +2,7 @@ package com.example.kiylx.ti.ui.fragments;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,14 +25,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.kiylx.ti.ui.activitys.MainActivity;
-import com.example.kiylx.ti.managercore.WebViewInfo_Manager;
+import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.tool.EventMessage;
 import com.example.kiylx.ti.model.MultiPage_Bean;
 import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.MultiPageItemBinding;
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

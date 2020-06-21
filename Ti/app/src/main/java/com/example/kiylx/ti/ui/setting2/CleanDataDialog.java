@@ -24,8 +24,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
-import com.example.kiylx.ti.trash.AboutHistory;
-import com.example.kiylx.ti.managercore.CustomAWebView;
+import com.example.kiylx.ti.webview32.CustomAWebView;
 
 import java.io.File;
 

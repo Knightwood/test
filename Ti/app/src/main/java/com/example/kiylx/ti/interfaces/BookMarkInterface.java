@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.interfaces;
 
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 
 import java.util.ArrayList;
 

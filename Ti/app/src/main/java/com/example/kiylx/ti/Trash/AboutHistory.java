@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.kiylx.ti.corebase.WebPage_Info;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.trash.historydb.HistoryBaseHelper;
 import com.example.kiylx.ti.trash.historydb.HistoryDbSchema.HistoryTable;

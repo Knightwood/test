@@ -3,47 +3,23 @@ package com.example.kiylx.ti.ui.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.paging.LivePagedListBuilder;
-import androidx.paging.PagedList;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Xapplication;
-import com.example.kiylx.ti.corebase.WebPage_Info;
-import com.example.kiylx.ti.db.historydb2.HistoryDao;
-import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
-import com.example.kiylx.ti.db.historydb2.HistoryEntity;
+import com.example.kiylx.ti.mvp.model.WebPage_Info;
 import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class HistorysActivity extends AppCompatActivity {
     private SearchView searchView;

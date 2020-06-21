@@ -40,6 +40,8 @@ public class Xapplication extends Application {
      */
     private void initPreference() {
         DNT = DefaultPreferenceTool.getBoolean(this, getResources().getString(R.string.donotTrack), false);
+        showPicture = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(this, "showPicatureMode", "ALWAYS"));
+        isPrivacy=DefaultPreferenceTool.getBoolean(this,"privacyMode",false);
     }
 
 
