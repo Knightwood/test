@@ -14,11 +14,13 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
-import static com.crystal.annotationcomplierlib.SomeUtils.SUFFIX;
 /*
  * <p>
  * Element:
@@ -60,6 +62,15 @@ import static com.crystal.annotationcomplierlib.SomeUtils.SUFFIX;
  * 如果这是类型参数，则返回该类型参数的通用元素。
  * 如果这是方法或构造函数参数，则返回声明该参数的可执行元素。
  * </p>
+ *
+ * <p>
+ * TypeMirror：
+ * 表示Java编程语言中的类型。 类型包括基本类型，声明的类型（类和接口类型），数组类型，类型变量和null类型。
+ * 还表示了通配符类型参数，可执行文件的签名和返回类型，以及与程序包和关键字void对应的伪类型。
+ * 应该使用“类型”中的实用程序方法来比较类型。 不能保证任何特定类型始终由同一对象表示。
+ * 要基于TypeMirror对象的类实现操作，请使用访问者或使用getKind方法的结果。
+ * 在这种建模层次结构中，使用instanceof不一定是确定对象有效类的可靠习惯，因为实现可以选择让单个对象实现多个TypeMirror子接口。
+ * </p>
  * */
 
 /**
@@ -67,15 +78,20 @@ import static com.crystal.annotationcomplierlib.SomeUtils.SUFFIX;
  */
 @AutoService(AutoSave.class)
 public class DASAnnotationComplier extends AbstractProcessor {
-    private Elements elementUtils;
-    private Types typeUtils;
+    /**
+     * 前缀
+     */
+    public static final String SUFFIX = "$$DataAutoSave";
+
+    private Elements elements;
+    private Types types;
     private Filer filer;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        elementUtils = processingEnv.getElementUtils();
-        typeUtils = processingEnv.getTypeUtils();
+        elements = processingEnv.getElementUtils();
+        types = processingEnv.getTypeUtils();
         filer = processingEnv.getFiler();
     }
 
@@ -104,7 +120,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
         Map<TypeElement, BeCreateClassInfo> infoMap = getInfoMap(annotations, roundEnv);
         if (infoMap != null) {
             for (Map.Entry<TypeElement, BeCreateClassInfo> entry : infoMap.entrySet()) {
-                GenerateUtils.INSTANCE.generate(entry.getKey(), entry.getValue());
+                GenerateUtils.INSTANCE.generate(entry.getKey(), entry.getValue(),filer);
             }
         }
         return true;
@@ -120,7 +136,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
         Map<TypeElement, BeCreateClassInfo> infoMap = new LinkedHashMap<>();
 
         for (Element element : roundEnv.getElementsAnnotatedWith(AutoSave.class)) {//获取被注解的元素
-            if (isAccessibleField(element)) {
+            if (isCanSaveField(element)) {
                 TypeElement typeElement = (TypeElement) element.getEnclosingElement();//类元素，也就是被注解字段所属的类的信息
 
                 BeCreateClassInfo beCreateClassInfo = getBeCreateClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
@@ -145,7 +161,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      */
     private BeCreateClassInfo getBeCreateClassInfo(TypeElement typeElement, Map<TypeElement, BeCreateClassInfo> infoMap) {
 
-        //多个element可能有同一个父元素，因此，根据typeElement查询map，保证只有一个BeCreateClassInfo的value
+        //多个element可能有同一个父元素，因此，根据typeElement查询map，保证多个具有相同父元素的元素对应同一个BeCreateClassInfo
         BeCreateClassInfo info = infoMap.get(typeElement);
         if (null == info) {
             String classPackage = getPackageName(typeElement);
@@ -159,21 +175,81 @@ public class DASAnnotationComplier extends AbstractProcessor {
         return info;
     }
 
+    /**
+     * @param typeElement 获取包名
+     * @return
+     */
     private String getPackageName(TypeElement typeElement) {
-        return elementUtils.getPackageOf(typeElement).getQualifiedName().toString();
+        return elements.getPackageOf(typeElement).getQualifiedName().toString();
     }
 
+    /**
+     * @param typeElement
+     * @param packageName
+     * @return 获取类名
+     */
     private String getClassName(TypeElement typeElement, String packageName) {
         int packageLen = packageName.length() + 1;
         return typeElement.getQualifiedName().toString().substring(packageLen).replace('.', '$') + SUFFIX;
     }
 
-    private boolean isAccessibleField(Element element) {
+    /**
+     * @param element 被注解的元素
+     * @return 如果符合条件，返回true，表示可以继续处理
+     */
+    private boolean isCanSaveField(Element element) {
+        boolean result = true;
+        TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取父元素，转为类元素
 
-        return true;
+        //如果被注解的元素不是变量，抛出错误
+        if (!element.getKind().isField()) {
+            result = false;
+        }
+        //验证字段修饰符,private或static修饰的话，抛出错误
+        Set<Modifier> modifiers = element.getModifiers();
+        if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.STATIC)) {
+            result = false;
+        }
+        //如果被注解的变量类型不在被支持的列表中，抛出错误
+        String filedType = getProcessedFiledType(element);
+        if (!SomeUtils.SUPPORTED_FIELD_TYPE.contains(filedType)) {
+            result = false;
+        }
+
+        return result;
     }
 
+    /**
+     * @param element 被注解的元素
+     * @return 返回被注解元素的类型
+     */
     private String getProcessedFiledType(Element element) {
-        return "ksjbdckdsbf";
+        String fieldType = getFieldType(element);
+        TypeMirror typeMirror = element.asType();
+        if (! SomeUtils.SUPPORTED_FIELD_TYPE.contains(fieldType)){
+            for (String interfaceType :SomeUtils.SUPPORTED_INTERFACE_TYPE){
+                //如果字段是数组类型，则使用组件类型进行比较
+                if (typeMirror instanceof ArrayType){
+
+                }
+            }
+
+        }
+        return fieldType;
+    }
+
+    /**
+     * @param element 被注解的元素
+     * @return 返回被注解元素的类型
+     */
+    private String getFieldType(Element element) {
+        TypeMirror typeMirror = element.asType();
+        String kindname= types.erasure(typeMirror).toString();
+        //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
+        int typeParamStart = kindname.indexOf('<');
+        if (typeParamStart != -1) {
+            kindname = kindname.substring(0, typeParamStart);
+        }
+        return kindname;
     }
 }

@@ -1,5 +1,6 @@
 package com.crystal.annotationcomplierlib;
 
+import javax.annotation.processing.Filer;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -8,7 +9,14 @@ import javax.lang.model.element.TypeElement;
  */
 public enum  GenerateUtils {
     INSTANCE;
-    void generate(TypeElement key, BeCreateClassInfo value) {
+    void generate(TypeElement key, BeCreateClassInfo value, Filer filer) {
+
+
+    }
+    void generateFun(){
+
+    }
+    void generateClass(){
 
     }
 }

@@ -13,14 +13,9 @@ public enum SomeUtils {
     INSTANCE;
 
     /**
-     * 前缀
+     * interface类型
      */
-    public static final String SUFFIX = "$$DataAutoSave";
-
-    /**
-     * 支持的类型
-     */
-    private static final List<String> SUPPORTED_INTERFACE_TYPE = Arrays.asList(
+    static final List<String> SUPPORTED_INTERFACE_TYPE = Arrays.asList(
             "android.os.Parcelable", "java.io.Serializable", "java.lang.CharSequence"
     );
 

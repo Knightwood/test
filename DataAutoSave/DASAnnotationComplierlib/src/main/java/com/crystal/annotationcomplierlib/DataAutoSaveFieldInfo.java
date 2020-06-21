@@ -3,10 +3,10 @@ package com.crystal.annotationcomplierlib;
 /**
  * 创建者 kiylx
  * 创建时间 2020/6/20 17:32
- * 被注解的元素的信息
+ * 被注解的变量的信息
  */
 public class DataAutoSaveFieldInfo {
-    private String fieldName;//被注解的元素名称
+    private String fieldName;//被注解的变量的名称
     private String dataName;//注解中的dataName字段
     private String filedType;//类型
 

@@ -11,15 +11,14 @@ public class BeCreateClassInfo {
     private String classPackage;
     private String className;
     private String qualifiedName;
+    //这个被生成的类的信息包含有不止一个“在类中被注解的变量”的元素
+    private ArrayList<DataAutoSaveFieldInfo> fieldInfos=new ArrayList<>();
 
     public BeCreateClassInfo(String classPackage, String className, String qualifiedName) {
         this.classPackage = classPackage;
         this.className = className;
         this.qualifiedName = qualifiedName;
     }
-
-    //这个被生成的类的信息包含有不止一个“在类中被注解的变量”的元素
-    private ArrayList<DataAutoSaveFieldInfo> fieldInfos=new ArrayList<>();
 
     public void addField(DataAutoSaveFieldInfo field){
         fieldInfos.add(field);
