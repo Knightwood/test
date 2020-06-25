@@ -2,11 +2,13 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.auto.service:auto-service:1.0-rc3'
     implementation project(path: ':DASAnnotationLib')
     implementation 'com.squareup:javapoet:1.13.0'
+    implementation 'com.google.auto.service:auto-service:1.0-rc5'
+    annotationProcessor'com.google.auto.service:auto-service:1.0-rc5'
+
 
 }
 
-sourceCompatibility = "7"
-targetCompatibility = "7"
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

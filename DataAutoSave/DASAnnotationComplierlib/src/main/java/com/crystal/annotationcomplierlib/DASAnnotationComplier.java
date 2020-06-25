@@ -3,8 +3,10 @@ package com.crystal.annotationcomplierlib;
 import com.crystal.annotationlib.AutoSave;
 import com.google.auto.service.AutoService;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,9 +19,15 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
+
+import static com.crystal.annotationcomplierlib.SomeUtils.SUPPORTED_FIELD_TYPE;
+import static com.crystal.annotationcomplierlib.SomeUtils.SUPPORTED_INTERFACE_TYPE;
 
 /*
  * <p>
@@ -93,6 +101,12 @@ public class DASAnnotationComplier extends AbstractProcessor {
         elements = processingEnv.getElementUtils();
         types = processingEnv.getTypeUtils();
         filer = processingEnv.getFiler();
+        SomeUtils.INSTANCE.init();
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return super.getSupportedSourceVersion();
     }
 
     /**
@@ -105,11 +119,6 @@ public class DASAnnotationComplier extends AbstractProcessor {
         return types;
     }
 
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return super.getSupportedSourceVersion();
-    }
-
     /**
      * @param annotations 请求处理的注解的类型
      * @param roundEnv    包含有注解信息的
@@ -118,12 +127,36 @@ public class DASAnnotationComplier extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Map<TypeElement, BeCreateClassInfo> infoMap = getInfoMap(annotations, roundEnv);
-        if (infoMap != null) {
+        if (!infoMap.isEmpty()) {
             for (Map.Entry<TypeElement, BeCreateClassInfo> entry : infoMap.entrySet()) {
-                GenerateUtils.INSTANCE.generate(entry.getKey(), entry.getValue(),filer);
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, mes(entry.getKey(), entry.getValue()));
+
+                try {
+                    GenerateUtils.INSTANCE.generate(entry.getValue(), filer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+        } else {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "没东西");
         }
         return true;
+    }
+
+    String mes(TypeElement key, BeCreateClassInfo info) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("注解字段所属类包名： " + info.getTargetClassPackageName() + "\n")
+                .append("被生成类的类名： " + info.getWillGenerateClassName() + "\n")
+                .append("注解字段所属类全名： " + info.getTargetClassQualifiedName() + "\n")
+                .append("变量名称： " + info.getFields().get(0).getFiledName() + "\n")
+                .append("变量类型： " + info.getFields().get(0).getFieldType() + "\n");
+        StringBuilder builder1 = new StringBuilder();
+        builder1.append("TypeElement\n")
+                .append(key.getQualifiedName() + "\n")
+                .append(key.getSimpleName() + "\n");
+        builder.append(builder1);
+
+        return builder.toString();
     }
 
     /**
@@ -136,8 +169,8 @@ public class DASAnnotationComplier extends AbstractProcessor {
         Map<TypeElement, BeCreateClassInfo> infoMap = new LinkedHashMap<>();
 
         for (Element element : roundEnv.getElementsAnnotatedWith(AutoSave.class)) {//获取被注解的元素
-            if (isCanSaveField(element)) {
-                TypeElement typeElement = (TypeElement) element.getEnclosingElement();//类元素，也就是被注解字段所属的类的信息
+            if (isCanSaveField(element)) {//如果是可以存储的元素
+                TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取被注解元素所属的类元素，也就是被注解字段所属的类的信息
 
                 BeCreateClassInfo beCreateClassInfo = getBeCreateClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
                 beCreateClassInfo.addField(new DataAutoSaveFieldInfo(
@@ -146,12 +179,12 @@ public class DASAnnotationComplier extends AbstractProcessor {
                         getProcessedFiledType(element)
                 ));//添加这个被创建类中包含的所有注解字段的信息
 
+            } else {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "没有注解的元素");
             }
-
-
         }
 
-        return null;
+        return infoMap;
     }
 
     /**
@@ -164,13 +197,16 @@ public class DASAnnotationComplier extends AbstractProcessor {
         //多个element可能有同一个父元素，因此，根据typeElement查询map，保证多个具有相同父元素的元素对应同一个BeCreateClassInfo
         BeCreateClassInfo info = infoMap.get(typeElement);
         if (null == info) {
-            String classPackage = getPackageName(typeElement);
+            String classPackageName = getPackageName(typeElement);//被注解字段所属的类的包名
+            String genclassName=getClassName(typeElement, classPackageName);//要生成的类的名称类名
+            String qualifiedName=typeElement.getQualifiedName().toString();//被注解字段所属的类的全名
 
             info = new BeCreateClassInfo(
-                    classPackage,
-                    getClassName(typeElement, classPackage),
-                    typeElement.getQualifiedName().toString()
+                    classPackageName,
+                    qualifiedName,
+                    genclassName
             );
+            infoMap.put(typeElement, info);
         }
         return info;
     }
@@ -189,7 +225,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @return 获取类名
      */
     private String getClassName(TypeElement typeElement, String packageName) {
-        int packageLen = packageName.length() + 1;
+        int packageLen = packageName.length() + 1;//获取的全名是包括包名加类名的，这里进行处理
         return typeElement.getQualifiedName().toString().substring(packageLen).replace('.', '$') + SUFFIX;
     }
 
@@ -212,10 +248,9 @@ public class DASAnnotationComplier extends AbstractProcessor {
         }
         //如果被注解的变量类型不在被支持的列表中，抛出错误
         String filedType = getProcessedFiledType(element);
-        if (!SomeUtils.SUPPORTED_FIELD_TYPE.contains(filedType)) {
+        if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {
             result = false;
         }
-
         return result;
     }
 
@@ -224,18 +259,42 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @return 返回被注解元素的类型
      */
     private String getProcessedFiledType(Element element) {
-        String fieldType = getFieldType(element);
-        TypeMirror typeMirror = element.asType();
-        if (! SomeUtils.SUPPORTED_FIELD_TYPE.contains(fieldType)){
-            for (String interfaceType :SomeUtils.SUPPORTED_INTERFACE_TYPE){
+        String filedType = getFieldType(element);//获取泛型擦除后的类型
+        /*
+         *element.asType()
+         * 返回此元素定义的类型
+         * 例如，对于一般类元素 C<N extends Number>，返回参数化类型 C<N>
+         */
+        /*TypeMirror typeMirror = element.asType();
+        if (!SomeUtils.SUPPORTED_FIELD_TYPE.contains(fieldType)) {
+            for (String interfaceType : SomeUtils.SUPPORTED_INTERFACE_TYPE) {
                 //如果字段是数组类型，则使用组件类型进行比较
-                if (typeMirror instanceof ArrayType){
-
+                //非数组类型不能通过**getComponentType()**方法获得元素的Class对象类型
+                if (typeMirror instanceof ArrayType) {
+                    TypeMirror componentTypeMirror = ((ArrayType) typeMirror).getComponentType();
                 }
             }
 
         }
-        return fieldType;
+        return fieldType;*/
+
+        TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
+        if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {//如果支持的类型没有它，比如这是个继承自某一个接口的类型这样
+            for (String interfaceType : SUPPORTED_INTERFACE_TYPE) {
+                // if filed is array type, use component type to compare
+                if (typeMirror instanceof ArrayType) {// 如果，这个子类型是数组类型
+                    TypeMirror componentTypeMirror = ((ArrayType) typeMirror).getComponentType();
+                    if (isSubtypeOfType(componentTypeMirror, interfaceType)) {//判断这个元素是不是这个interface的子类型
+                        filedType = interfaceType + "[]";//是个数组类型，得加上中括号
+                        break;
+                    }
+                } else if (isSubtypeOfType(typeMirror, interfaceType)) {//如果不是数组类型，这个元素的类型是这几个的子类型
+                    filedType = interfaceType;//返回的就是他的父类型
+                    break;
+                }
+            }
+        }
+        return filedType;
     }
 
     /**
@@ -243,13 +302,57 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @return 返回被注解元素的类型
      */
     private String getFieldType(Element element) {
-        TypeMirror typeMirror = element.asType();
-        String kindname= types.erasure(typeMirror).toString();
+        /*TypeMirror typeMirror = element.asType();
+        //erasure方法：返回指定类型擦除后的TypeMirror.
+        String kindname = types.erasure(typeMirror).toString();
         //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
-        int typeParamStart = kindname.indexOf('<');
+        return kindname;*/
+        String name = types.erasure(element.asType()).toString();
+        int typeParamStart = name.indexOf('<');
         if (typeParamStart != -1) {
-            kindname = kindname.substring(0, typeParamStart);
+            name = name.substring(0, typeParamStart);
         }
-        return kindname;
+        return name;
+    }
+
+    private boolean isSubtypeOfType(TypeMirror typeMirror, String otherType) {
+        if (otherType.equals(typeMirror.toString())) {
+            return true;
+        }
+        if (typeMirror.getKind() != TypeKind.DECLARED) {//不是个类或者接口
+            return false;
+        }
+        //DeclaredType表示声明的类型，可以是类类型或接口类型。 这包括参数化类型，例如java.util.Set <String>以及原始类型。
+        DeclaredType declaredType = (DeclaredType) typeMirror;
+        List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();//返回此类型的实际类型参数。 对于嵌套在参数化类型中的类型（例如Outer <String> .Inner <Number>），仅包括最里面类型的类型参数。
+        if (typeArguments.size() > 0) {
+            StringBuilder typeString = new StringBuilder(declaredType.asElement().toString());
+            typeString.append('<');
+            for (int i = 0; i < typeArguments.size(); i++) {
+                if (i > 0) {
+                    typeString.append(',');
+                }
+                typeString.append('?');
+            }
+            typeString.append('>');
+            if (typeString.toString().equals(otherType)) {
+                return true;
+            }
+        }
+        Element element = declaredType.asElement();
+        if (!(element instanceof TypeElement)) {
+            return false;
+        }
+        TypeElement typeElement = (TypeElement) element;
+        TypeMirror superType = typeElement.getSuperclass();
+        if (isSubtypeOfType(superType, otherType)) {
+            return true;
+        }
+        for (TypeMirror interfaceType : typeElement.getInterfaces()) {
+            if (isSubtypeOfType(interfaceType, otherType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

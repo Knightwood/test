@@ -7,40 +7,27 @@ package com.crystal.annotationcomplierlib;
  */
 public class DataAutoSaveFieldInfo {
     private String fieldName;//被注解的变量的名称
-    private String dataName;//注解中的dataName字段
-    private String filedType;//类型
+    private String dataName;//注解中的dataName字段。可以自己赋予以替代变量的名称
+    private String fieldType;//变量的类型
 
     public DataAutoSaveFieldInfo(String fieldName, String dataName, String filedType) {
         this.fieldName = fieldName;
         this.dataName = dataName;
-        this.filedType = filedType;
+        this.fieldType = filedType;
     }
 
-    public String getFieldName() {
-        return fieldName;
+    /**
+     * @return 返回变量的类型
+     */
+    public String getFieldType() {
+        return fieldType;
     }
 
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getDataName() {
-        return dataName;
-    }
-
-    public void setDataName(String dataName) {
-        this.dataName = dataName;
-    }
-
-    public String getFiledType() {
-        return filedType;
-    }
-
-    public void setFiledType(String filedType) {
-        this.filedType = filedType;
-    }
-
-    public String getFiledKey(){
+    /**
+     * 获取变量的名称
+     * @return 若dataName没有赋予，直接返回默认的变量的名称
+     */
+    public String getFiledName(){
         return dataName==null||dataName.equals("") ? fieldName: dataName;
     }
 }
