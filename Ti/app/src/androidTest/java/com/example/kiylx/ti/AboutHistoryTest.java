@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 
 import com.example.kiylx.ti.trash.AboutHistory;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import org.junit.After;
 import org.junit.Before;

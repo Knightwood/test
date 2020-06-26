@@ -32,7 +32,7 @@ import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
 import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.List;
 import java.util.UUID;

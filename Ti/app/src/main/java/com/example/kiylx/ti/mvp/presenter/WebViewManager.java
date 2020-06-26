@@ -22,14 +22,14 @@ import com.example.kiylx.ti.trash.AboutHistory;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
 import com.example.kiylx.ti.tool.EventMessage;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
-import com.example.kiylx.ti.mvp.model.SealedWebPageInfo;
+import com.example.kiylx.ti.model.SealedWebPageInfo;
 
 import org.greenrobot.eventbus.EventBus;
 

@@ -15,7 +15,7 @@ import android.view.Menu;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;

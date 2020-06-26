@@ -144,27 +144,6 @@ public class DASAnnotationComplier extends AbstractProcessor {
     }
 
     /**
-     * @param key
-     * @param info
-     * @return 打印一些信息
-     */
-    String mes(TypeElement key, BeCreateClassInfo info) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("注解字段所属类包名： " + info.getTargetClassPackageName() + "\n")
-                .append("被生成类的类名： " + info.getWillGenerateClassName() + "\n")
-                .append("注解字段所属类全名： " + info.getTargetClassQualifiedName() + "\n")
-                .append("变量名称： " + info.getFields().get(0).getFiledName() + "\n")
-                .append("变量类型： " + info.getFields().get(0).getFieldType() + "\n");
-        StringBuilder builder1 = new StringBuilder();
-        builder1.append("TypeElement\n")
-                .append(key.getQualifiedName() + "\n")
-                .append(key.getSimpleName() + "\n");
-        builder.append(builder1);
-
-        return builder.toString();
-    }
-
-    /**
      * @param annotations
      * @param roundEnv
      * @return 一个类中含有多个被注解的字段，那么，生成类的时候就该遍历被注解的元素。
@@ -242,7 +221,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      */
     private boolean isCanSaveField(Element element) {
         boolean result = true;
-        TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取父元素，转为类元素
+        //TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取父元素，转为类元素
 
         //如果被注解的元素不是变量，抛出错误
         if (!element.getKind().isField()) {
@@ -270,6 +249,32 @@ public class DASAnnotationComplier extends AbstractProcessor {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message, element);
 
     }
+    private void log(Element element,String message,Object ...args){
+        if (args.length > 0)
+            message = String.format(message, args);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message, element);
+    }
+
+    /**
+     * @param key
+     * @param info
+     * @return 打印一些信息
+     */
+    String mes(TypeElement key, BeCreateClassInfo info) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("注解字段所属类包名： " + info.getTargetClassPackageName() + "\n")
+                .append("被生成类的类名： " + info.getWillGenerateClassName() + "\n")
+                .append("注解字段所属类全名： " + info.getTargetClassQualifiedName() + "\n")
+                .append("变量名称： " + info.getFields().get(0).getFiledName() + "\n")
+                .append("变量类型： " + info.getFields().get(0).getFieldType() + "\n");
+        StringBuilder builder1 = new StringBuilder();
+        builder1.append("TypeElement\n")
+                .append(key.getQualifiedName() + "\n")
+                .append(key.getSimpleName() + "\n");
+        builder.append(builder1);
+
+        return builder.toString();
+    }
 
     /**
      * @param element 被注解的元素
@@ -282,20 +287,8 @@ public class DASAnnotationComplier extends AbstractProcessor {
          * 返回此元素定义的类型
          * 例如，对于一般类元素 C<N extends Number>，返回参数化类型 C<N>
          */
-        /*TypeMirror typeMirror = element.asType();
-        if (!SomeUtils.SUPPORTED_FIELD_TYPE.contains(fieldType)) {
-            for (String interfaceType : SomeUtils.SUPPORTED_INTERFACE_TYPE) {
-                //如果字段是数组类型，则使用组件类型进行比较
-                //非数组类型不能通过**getComponentType()**方法获得元素的Class对象类型
-                if (typeMirror instanceof ArrayType) {
-                    TypeMirror componentTypeMirror = ((ArrayType) typeMirror).getComponentType();
-                }
-            }
 
-        }
-        return fieldType;*/
-
-       /* TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
+        TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
         if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {//如果支持的类型没有它，比如这是个继承自某一个接口的类型这样
             for (String interfaceType : SUPPORTED_INTERFACE_TYPE) {
                 // if filed is array type, use component type to compare
@@ -310,7 +303,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
                     break;
                 }
             }
-        }*/
+        }
         return filedType;
     }
 
@@ -319,28 +312,29 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @return 返回被注解元素的类型
      */
     private String getFieldType(Element element) {
-        /*TypeMirror typeMirror = element.asType();
         //erasure方法：返回指定类型擦除后的TypeMirror.
-        String kindname = types.erasure(typeMirror).toString();
         //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
-        return kindname;*/
         String name = types.erasure(element.asType()).toString();
-        /*int typeParamStart = name.indexOf('<');
-        if (typeParamStart != -1) {
-            name = name.substring(0, typeParamStart);
-        }*/
+        log(element,"获取到的去除泛型的类型：  "+name);
         return name;
     }
 
-    private boolean isSubtypeOfType(TypeMirror typeMirror, String otherType) {
-        if (otherType.equals(typeMirror.toString())) {
+    /**
+     * @param subType
+     * @param otherType
+     * @return
+     *
+     * 验证subType是不是otherType的子类型
+     */
+    private boolean isSubtypeOfType(TypeMirror subType, String otherType) {
+        if (otherType.equals(subType.toString())) {
             return true;
         }
-        if (typeMirror.getKind() != TypeKind.DECLARED) {//不是个类或者接口
+        if (subType.getKind() != TypeKind.DECLARED) {//不是个类或者接口
             return false;
         }
         //DeclaredType表示声明的类型，可以是类类型或接口类型。 这包括参数化类型，例如java.util.Set <String>以及原始类型。
-        DeclaredType declaredType = (DeclaredType) typeMirror;
+        DeclaredType declaredType = (DeclaredType) subType;
         List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();//返回此类型的实际类型参数。 对于嵌套在参数化类型中的类型（例如Outer <String> .Inner <Number>），仅包括最里面类型的类型参数。
         if (typeArguments.size() > 0) {
             StringBuilder typeString = new StringBuilder(declaredType.asElement().toString());

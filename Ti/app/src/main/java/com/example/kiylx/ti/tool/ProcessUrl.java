@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

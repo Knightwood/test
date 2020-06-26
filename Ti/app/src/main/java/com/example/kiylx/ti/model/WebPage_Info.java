@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.mvp.model;
+package com.example.kiylx.ti.model;
 
 import java.util.UUID;
 

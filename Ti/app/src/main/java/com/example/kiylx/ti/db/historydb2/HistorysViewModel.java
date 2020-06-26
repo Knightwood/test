@@ -17,7 +17,7 @@ import com.example.kiylx.ti.Xapplication;
 public class HistorysViewModel extends ViewModel {
     public LiveData<PagedList<HistoryEntity>> historiesLivePagedList;
     private HistoryDao historyDao;
-    private MutableLiveData<String> queryText = new MutableLiveData<>();
+    private MutableLiveData<String> queryText = new MutableLiveData<>();//存储查询字符串
 
     public HistorysViewModel() {
         super();
@@ -25,6 +25,10 @@ public class HistorysViewModel extends ViewModel {
         initPagedList();
     }
 
+    /**
+     * 初始化数据
+     * 根据queryText的变化生成不同的数据
+     */
     private void initPagedList() {
 
         PagedList.Config config = (new PagedList.Config.Builder())

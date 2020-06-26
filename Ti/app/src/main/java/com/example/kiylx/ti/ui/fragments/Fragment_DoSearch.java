@@ -21,7 +21,7 @@ import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.tool.ProcessUrl;
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;
 import java.util.List;

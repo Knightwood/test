@@ -3,10 +3,10 @@ package com.example.kiylx.ti.mvp.presenter;
 
 import android.util.Log;
 
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.mvp.presenter.WebViewManager.Action;
-import com.example.kiylx.ti.mvp.model.SealedWebPageInfo;
+import com.example.kiylx.ti.model.SealedWebPageInfo;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,7 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.db.bookmarkdb.FavoritePageBaseHelper;
 import com.example.kiylx.ti.db.bookmarkdb.FavoritepageDbSchema;
 import com.example.kiylx.ti.db.bookmarkdb.ItemCursorWrapper;

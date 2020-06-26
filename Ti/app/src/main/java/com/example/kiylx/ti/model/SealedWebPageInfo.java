@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.mvp.model;
+package com.example.kiylx.ti.model;
 
 
 import com.example.kiylx.ti.mvp.presenter.WebViewManager.Action;

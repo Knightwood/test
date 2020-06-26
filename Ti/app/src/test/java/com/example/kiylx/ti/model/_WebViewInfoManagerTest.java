@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.model;
 
-import com.example.kiylx.ti.mvp.model.WebPage_Info;
-
 import org.junit.Before;
 
 public class _WebViewInfoManagerTest {
