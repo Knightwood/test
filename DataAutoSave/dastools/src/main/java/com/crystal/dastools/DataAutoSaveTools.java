@@ -2,6 +2,7 @@ package com.crystal.dastools;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,6 +34,7 @@ public class DataAutoSaveTools {
     private static final String SUFFIX = "$$DataAutoSave";
     //存储反射得到的类，以减少使用反射获取类的次数
     private static LinkedHashMap<String, DASinterface<Object>> classMap = new LinkedHashMap<>();
+    private static final String TAG="tools";
 
     /**
      * @param context
@@ -40,10 +42,16 @@ public class DataAutoSaveTools {
      * @param isRestoreSuperClassData
      */
     public static void restoreData(Object context, Bundle bundle, boolean isRestoreSuperClassData) {
+        Log.d(TAG, "restoreData: 恢复数据传入参数：  "+context.getClass().getCanonicalName());
+        if (context == null) {
+            Log.d(TAG, "restoreData: 恢复数据失败，context是null");
+            return;
+        }
         if (context instanceof Activity && null == bundle) {//savedInstanceState 或 intent中的数据
             bundle = ((Activity) context).getIntent().getExtras();
         }
-        if (null == context || null == bundle) {
+        if (null == bundle) {
+            Log.d(TAG, "restoreData: 恢复数据失败，bundle是null");
             return;
         }
 
@@ -57,6 +65,8 @@ public class DataAutoSaveTools {
             }
         }
 
+        Log.d(TAG, "restoreData: 恢复数据成功");
+
     }
 
     /**
@@ -65,7 +75,9 @@ public class DataAutoSaveTools {
      * @param isSaveSuperClassData
      */
     public static void saveData(Object context, Bundle bundle, boolean isSaveSuperClassData) {
-        if (context == null || bundle == null) {
+        Log.d(TAG, "saveData: 保存数据传入参数：  "+context.getClass().getCanonicalName());
+        if (context == null ||bundle == null ) {
+            Log.d(TAG, "saveData: 保存数据失败");
             return;
         }
 
@@ -77,6 +89,7 @@ public class DataAutoSaveTools {
                 targetGenClass.SaveData(context, bundle);
             }
         }
+        Log.d(TAG, "saveData: 保存数据成功");
     }
 
     /**
@@ -90,6 +103,8 @@ public class DataAutoSaveTools {
             return;
         }
         String genClassName = context.getName().concat(SUFFIX);//类名加上前缀就是生成类的名称
+        Log.d(TAG, "getBeGeneratedTargetClass: "+genClassName);
+
         if (!classMap.containsKey(genClassName)) {
             DASinterface<Object> genClass = getGenClass(genClassName);
             if (genClass == null) {
@@ -110,6 +125,7 @@ public class DataAutoSaveTools {
      * @return 通过反射获取生成的类
      */
     private static DASinterface<Object> getGenClass(String className) {
+        Log.d(TAG, "getGenClass: "+className);
         if (!classMap.containsKey(className)) {
             try {
                 Class<?> beGenClass = Class.forName(className);

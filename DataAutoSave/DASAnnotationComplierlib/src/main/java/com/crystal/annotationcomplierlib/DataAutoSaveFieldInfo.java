@@ -7,13 +7,16 @@ package com.crystal.annotationcomplierlib;
  */
 public class DataAutoSaveFieldInfo {
     private String fieldName;//被注解的变量的名称
-    private String dataName;//注解中的dataName字段。可以自己赋予以替代变量的名称
     private String fieldType;//变量的类型
 
-    public DataAutoSaveFieldInfo(String fieldName, String dataName, String filedType) {
+    private String dataName;//注解中的dataName字段。可以自己赋予以替代变量的名称
+    private boolean persistence;//是否把它持久化存储
+
+    public DataAutoSaveFieldInfo(String fieldName, String filedType,String dataName,boolean persistence ) {
         this.fieldName = fieldName;
-        this.dataName = dataName;
         this.fieldType = filedType;
+        this.dataName = dataName;
+        this.persistence=persistence;
     }
 
     /**
@@ -29,5 +32,9 @@ public class DataAutoSaveFieldInfo {
      */
     public String getFiledName(){
         return dataName==null||dataName.equals("") ? fieldName: dataName;
+    }
+
+    public boolean isPersistence() {
+        return persistence;
     }
 }

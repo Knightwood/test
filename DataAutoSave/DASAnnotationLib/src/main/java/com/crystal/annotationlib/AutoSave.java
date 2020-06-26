@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface AutoSave {
     String dataName() default "";
+
+    boolean Persistence() default false;
 }

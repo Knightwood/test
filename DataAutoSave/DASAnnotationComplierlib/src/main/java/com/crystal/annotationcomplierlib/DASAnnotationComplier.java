@@ -134,7 +134,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
                 try {
                     GenerateUtils.INSTANCE.generate(entry.getValue(), filer);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    error(entry.getKey(), "无法生成类，typeElement： %s： %s", entry.getValue(), e.getMessage());
                 }
             }
         } else {
@@ -146,8 +146,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
     /**
      * @param key
      * @param info
-     * @return
-     * 打印一些信息
+     * @return 打印一些信息
      */
     String mes(TypeElement key, BeCreateClassInfo info) {
         StringBuilder builder = new StringBuilder();
@@ -181,8 +180,10 @@ public class DASAnnotationComplier extends AbstractProcessor {
                 BeCreateClassInfo beCreateClassInfo = getBeCreateClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
                 beCreateClassInfo.addField(new DataAutoSaveFieldInfo(
                         element.getSimpleName().toString(),
+                        getProcessedFiledType(element),
                         element.getAnnotation(AutoSave.class).dataName(),
-                        getProcessedFiledType(element)
+                        element.getAnnotation(AutoSave.class).Persistence()
+
                 ));//添加这个被创建类中包含的所有注解字段的信息
 
             } else {
@@ -204,8 +205,8 @@ public class DASAnnotationComplier extends AbstractProcessor {
         BeCreateClassInfo info = infoMap.get(typeElement);
         if (null == info) {
             String classPackageName = getPackageName(typeElement);//被注解字段所属的类的包名
-            String genclassName=getClassName(typeElement, classPackageName);//要生成的类的名称类名
-            String qualifiedName=typeElement.getQualifiedName().toString();//被注解字段所属的类的全名
+            String genclassName = getClassName(typeElement, classPackageName);//要生成的类的名称类名
+            String qualifiedName = typeElement.getQualifiedName().toString();//被注解字段所属的类的全名
 
             info = new BeCreateClassInfo(
                     classPackageName,
@@ -245,19 +246,29 @@ public class DASAnnotationComplier extends AbstractProcessor {
 
         //如果被注解的元素不是变量，抛出错误
         if (!element.getKind().isField()) {
+            error(element, "被注解元素不受支持");
             result = false;
         }
         //验证字段修饰符,private或static修饰的话，抛出错误
         Set<Modifier> modifiers = element.getModifiers();
         if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.STATIC)) {
+            error(element, "字段不能被private或static修饰");
             result = false;
         }
         //如果被注解的变量类型不在被支持的列表中，抛出错误
         String filedType = getProcessedFiledType(element);
         if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {
+            error(element, "被注解的变量类型不在被支持的列表中");
             result = false;
         }
         return result;
+    }
+
+    private void error(Element element, String message, Object... args) {
+        if (args.length > 0)
+            message = String.format(message, args);
+        processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message, element);
+
     }
 
     /**
@@ -284,7 +295,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
         }
         return fieldType;*/
 
-        TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
+       /* TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
         if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {//如果支持的类型没有它，比如这是个继承自某一个接口的类型这样
             for (String interfaceType : SUPPORTED_INTERFACE_TYPE) {
                 // if filed is array type, use component type to compare
@@ -299,7 +310,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
                     break;
                 }
             }
-        }
+        }*/
         return filedType;
     }
 
@@ -314,10 +325,10 @@ public class DASAnnotationComplier extends AbstractProcessor {
         //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
         return kindname;*/
         String name = types.erasure(element.asType()).toString();
-        int typeParamStart = name.indexOf('<');
+        /*int typeParamStart = name.indexOf('<');
         if (typeParamStart != -1) {
             name = name.substring(0, typeParamStart);
-        }
+        }*/
         return name;
     }
 

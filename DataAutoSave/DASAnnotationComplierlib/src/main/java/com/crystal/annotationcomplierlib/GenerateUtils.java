@@ -52,6 +52,10 @@ public enum GenerateUtils {
         for (DataAutoSaveFieldInfo info1 : createClassInfo.getFields()) {
             VarName = info1.getFiledName().toString();
 
+            if (info1.isPersistence()){//如果需要持久化存储，生成持久化存储代码
+
+            }
+
             stringBuilder.append("if (bundle.containsKey(\"")
                     .append(VarName)
                     .append("\"))\n")
@@ -84,6 +88,9 @@ public enum GenerateUtils {
         for (DataAutoSaveFieldInfo info1 : createClassInfo.getFields()) {
             VarName = info1.getFiledName().toString();
 
+            if (info1.isPersistence()){//如果需要持久化存储，生成持久化存储代码
+
+            }
             builder.append("bundle."+SomeUtils.PUT_DATA_PRE_CODE_MAP.get(info1.getFieldType()))
                     .append("(\""+VarName+"\",")
                     .append("context."+VarName+");");
