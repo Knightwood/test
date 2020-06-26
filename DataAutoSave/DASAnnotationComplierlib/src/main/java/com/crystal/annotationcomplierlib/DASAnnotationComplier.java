@@ -143,6 +143,12 @@ public class DASAnnotationComplier extends AbstractProcessor {
         return true;
     }
 
+    /**
+     * @param key
+     * @param info
+     * @return
+     * 打印一些信息
+     */
     String mes(TypeElement key, BeCreateClassInfo info) {
         StringBuilder builder = new StringBuilder();
         builder.append("注解字段所属类包名： " + info.getTargetClassPackageName() + "\n")
