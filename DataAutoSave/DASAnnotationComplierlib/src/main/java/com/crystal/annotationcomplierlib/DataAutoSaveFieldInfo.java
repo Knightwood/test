@@ -8,13 +8,15 @@ package com.crystal.annotationcomplierlib;
 public class DataAutoSaveFieldInfo {
     private String fieldName;//被注解的变量的名称
     private String fieldType;//变量的类型
+    private String topLevelClassName;//这个变量的类可能继承于其他的类，所以找到它继承自最开始的类
 
     private String dataName;//注解中的dataName字段。可以自己赋予以替代变量的名称
     private boolean persistence;//是否把它持久化存储
 
-    public DataAutoSaveFieldInfo(String fieldName, String filedType,String dataName,boolean persistence ) {
+    public DataAutoSaveFieldInfo(String fieldName, String filedType,String topLevelClassName,String dataName,boolean persistence ) {
         this.fieldName = fieldName;
         this.fieldType = filedType;
+        this.topLevelClassName=topLevelClassName;
         this.dataName = dataName;
         this.persistence=persistence;
     }
@@ -36,5 +38,13 @@ public class DataAutoSaveFieldInfo {
 
     public boolean isPersistence() {
         return persistence;
+    }
+
+    public String getTopLevelClassName() {
+        return topLevelClassName;
+    }
+
+    public void setTopLevelClassName(String topLevelClassName) {
+        this.topLevelClassName = topLevelClassName;
     }
 }

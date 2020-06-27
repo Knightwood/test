@@ -18,6 +18,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
@@ -153,13 +154,14 @@ public class DASAnnotationComplier extends AbstractProcessor {
         Map<TypeElement, BeCreateClassInfo> infoMap = new LinkedHashMap<>();
 
         for (Element element : roundEnv.getElementsAnnotatedWith(AutoSave.class)) {//获取被注解的元素
-            if (isCanSaveField(element)) {//如果是可以存储的元素
+            if (isCanSaveField( element)) {//如果是可以存储的元素
                 TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取被注解元素所属的类元素，也就是被注解字段所属的类的信息
 
-                BeCreateClassInfo beCreateClassInfo = getBeCreateClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
+                BeCreateClassInfo beCreateClassInfo = getWillGeneratedClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
                 beCreateClassInfo.addField(new DataAutoSaveFieldInfo(
                         element.getSimpleName().toString(),
-                        getProcessedFiledType(element),
+                        getFieldType(element),
+                        getProcessedFiledType((VariableElement)element),
                         element.getAnnotation(AutoSave.class).dataName(),
                         element.getAnnotation(AutoSave.class).Persistence()
 
@@ -178,7 +180,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @param infoMap
      * @return
      */
-    private BeCreateClassInfo getBeCreateClassInfo(TypeElement typeElement, Map<TypeElement, BeCreateClassInfo> infoMap) {
+    private BeCreateClassInfo getWillGeneratedClassInfo(TypeElement typeElement, Map<TypeElement, BeCreateClassInfo> infoMap) {
 
         //多个element可能有同一个父元素，因此，根据typeElement查询map，保证多个具有相同父元素的元素对应同一个BeCreateClassInfo
         BeCreateClassInfo info = infoMap.get(typeElement);
@@ -193,6 +195,11 @@ public class DASAnnotationComplier extends AbstractProcessor {
                     genclassName
             );
             infoMap.put(typeElement, info);
+
+            log(typeElement, "被注解字段所属的类的包名： %s,\n" +
+                            " 要生成的类的名称类名: %s, \n " +
+                            "被注解字段所属的类的全名: %s \n",
+                    classPackageName, genclassName, qualifiedName);
         }
         return info;
     }
@@ -235,8 +242,8 @@ public class DASAnnotationComplier extends AbstractProcessor {
             result = false;
         }
         //如果被注解的变量类型不在被支持的列表中，抛出错误
-        String filedType = getProcessedFiledType(element);
-        if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {
+        String processedFiledType = getProcessedFiledType((VariableElement) element);
+        if (null == processedFiledType) {
             error(element, "被注解的变量类型不在被支持的列表中");
             result = false;
         }
@@ -249,7 +256,14 @@ public class DASAnnotationComplier extends AbstractProcessor {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, message, element);
 
     }
-    private void log(Element element,String message,Object ...args){
+
+    /**
+     * @param element
+     * @param message 带或者不带格式化的字符串
+     * @param args 格式化字符串的对象
+     *             打印消息
+     */
+    private void log(Element element, String message, Object... args) {
         if (args.length > 0)
             message = String.format(message, args);
         processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, message, element);
@@ -278,92 +292,87 @@ public class DASAnnotationComplier extends AbstractProcessor {
 
     /**
      * @param element 被注解的元素
-     * @return 返回被注解元素的类型
+     * @return 返回被注解元素的继承自的类型
+     *
+     * 处理被注解元素，获取到它继承自哪个类。
+     * 例如：
+     *     public Ch[] testCh;  testCh就是一个com.crystal.dataautosave.Ch[]类型的变量，
+     *     而Ch类继承自android.os.Parcelable
+     *     因此，对于数组类型Ch[]，得获取它的组件类型（COM.CRYSTAL.DATAAUTOSAVE.CH ）然后进行判断
+     *     处理后，返回android.os.Parcelable[]类型
+     *
+     *     测试结果：
+     *     调用getFieldType得到的结果：  android.os.Parcelable[]
+     *     public Ch[] testCh;
+     *                 ^
+     *    直接获取typeMirror结果：  com.crystal.dataautosave.Ch[]
+     *   获取组件类型： COM.CRYSTAL.DATAAUTOSAVE.CH
+     *   对应支持的interfaceType的tpeMirror:  android.os.Parcelable
+     *
+     *
      */
-    private String getProcessedFiledType(Element element) {
-        String filedType = getFieldType(element);//获取泛型擦除后的类型
+    private String getProcessedFiledType(VariableElement element) {
+        String fieldType = getFieldType(element);//获取泛型擦除后的类型
         /*
          *element.asType()
          * 返回此元素定义的类型
          * 例如，对于一般类元素 C<N extends Number>，返回参数化类型 C<N>
          */
 
-        TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型
-        if (!SUPPORTED_FIELD_TYPE.contains(filedType)) {//如果支持的类型没有它，比如这是个继承自某一个接口的类型这样
-            for (String interfaceType : SUPPORTED_INTERFACE_TYPE) {
-                // if filed is array type, use component type to compare
+        StringBuilder stringBuilder = new StringBuilder();//接口类型，测试用
+        StringBuilder componentStr = new StringBuilder();//获取组件类型，测试用
+
+
+        TypeMirror typeMirror = element.asType();// 被注解的元素获取的类型,还没有去除泛型
+        if (!SUPPORTED_FIELD_TYPE.contains(fieldType)) {//如果支持的类型没有它，比如这是个继承自某一个接口的类型这样
+            for (String supportInterfaceType : SUPPORTED_INTERFACE_TYPE) {
+
+                TypeMirror interfaceTypeMirror = elements.getTypeElement(supportInterfaceType).asType();
+
+                stringBuilder.append(interfaceTypeMirror.toString() + "/分割线/");//测试用
+
                 if (typeMirror instanceof ArrayType) {// 如果，这个子类型是数组类型
-                    TypeMirror componentTypeMirror = ((ArrayType) typeMirror).getComponentType();
-                    if (isSubtypeOfType(componentTypeMirror, interfaceType)) {//判断这个元素是不是这个interface的子类型
-                        filedType = interfaceType + "[]";//是个数组类型，得加上中括号
+                    TypeMirror componentTypeMirror = ((ArrayType) typeMirror).getComponentType();//获取组件类型
+
+                    componentStr.append(componentTypeMirror.toString());//测试用
+
+                    if (types.isSubtype(componentTypeMirror, interfaceTypeMirror)) {//判断这个它是不是这个interface类型的子类型
+                        fieldType = supportInterfaceType + "[]";//是个数组类型，得加上中括号
                         break;
                     }
-                } else if (isSubtypeOfType(typeMirror, interfaceType)) {//如果不是数组类型，这个元素的类型是这几个的子类型
-                    filedType = interfaceType;//返回的就是他的父类型
+                } else if (types.isSubtype(typeMirror, interfaceTypeMirror)) {//如果不是数组类型，这个元素的类型是这几个的子类型
+                    fieldType = supportInterfaceType;//返回的就是他的父类型
+                    break;
+                } else {//无法识别的类型，返回null
+                    fieldType = null;
                     break;
                 }
             }
         }
-        return filedType;
+
+        log(element, "调用getFieldType得到的结果：  " +
+                "%s \n " +
+                "直接获取typeMirror结果：  " +
+                "%s \n" +
+                "获取组件类型： " +
+                "%S \n" +
+                "interfaceType的tpeMirror:  " +
+                "%s \n", fieldType, typeMirror.toString(), componentStr, stringBuilder.toString());//测试用
+
+        return fieldType;
     }
 
     /**
      * @param element 被注解的元素
      * @return 返回被注解元素的类型
+     * 例如： public Ch[] testCh;  testCh就是一个com.crystal.dataautosave.Ch[]类型的变量，而Ch类继承自android.os.Parcelable
+     * 结果返回com.crystal.dataautosave.Ch[]
      */
     private String getFieldType(Element element) {
         //erasure方法：返回指定类型擦除后的TypeMirror.
         //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
         String name = types.erasure(element.asType()).toString();
-        log(element,"获取到的去除泛型的类型：  "+name);
+        log(element, "获取到的去除泛型的类型：  " + name);
         return name;
-    }
-
-    /**
-     * @param subType
-     * @param otherType
-     * @return
-     *
-     * 验证subType是不是otherType的子类型
-     */
-    private boolean isSubtypeOfType(TypeMirror subType, String otherType) {
-        if (otherType.equals(subType.toString())) {
-            return true;
-        }
-        if (subType.getKind() != TypeKind.DECLARED) {//不是个类或者接口
-            return false;
-        }
-        //DeclaredType表示声明的类型，可以是类类型或接口类型。 这包括参数化类型，例如java.util.Set <String>以及原始类型。
-        DeclaredType declaredType = (DeclaredType) subType;
-        List<? extends TypeMirror> typeArguments = declaredType.getTypeArguments();//返回此类型的实际类型参数。 对于嵌套在参数化类型中的类型（例如Outer <String> .Inner <Number>），仅包括最里面类型的类型参数。
-        if (typeArguments.size() > 0) {
-            StringBuilder typeString = new StringBuilder(declaredType.asElement().toString());
-            typeString.append('<');
-            for (int i = 0; i < typeArguments.size(); i++) {
-                if (i > 0) {
-                    typeString.append(',');
-                }
-                typeString.append('?');
-            }
-            typeString.append('>');
-            if (typeString.toString().equals(otherType)) {
-                return true;
-            }
-        }
-        Element element = declaredType.asElement();
-        if (!(element instanceof TypeElement)) {
-            return false;
-        }
-        TypeElement typeElement = (TypeElement) element;
-        TypeMirror superType = typeElement.getSuperclass();
-        if (isSubtypeOfType(superType, otherType)) {
-            return true;
-        }
-        for (TypeMirror interfaceType : typeElement.getInterfaces()) {
-            if (isSubtypeOfType(interfaceType, otherType)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

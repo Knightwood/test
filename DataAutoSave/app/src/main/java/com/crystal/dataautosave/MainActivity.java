@@ -1,8 +1,11 @@
 package com.crystal.dataautosave;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     @AutoSave
     public String testField="";
+    @AutoSave
+    public Ch[] testCh;
 
     TextView textView;
     Button button;

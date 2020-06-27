@@ -91,9 +91,9 @@ public enum GenerateUtils {
             if (info1.isPersistence()){//如果需要持久化存储，生成持久化存储代码
 
             }
-            builder.append("bundle."+SomeUtils.PUT_DATA_PRE_CODE_MAP.get(info1.getFieldType()))
+            builder.append("bundle."+SomeUtils.PUT_DATA_PRE_CODE_MAP.get(info1.getTopLevelClassName()))
                     .append("(\""+VarName+"\",")
-                    .append("context."+VarName+");");
+                    .append("context."+VarName+");\n");
         }
 
 
