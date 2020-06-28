@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,15 +24,108 @@ import java.util.List;
  */
 public class PreferenceTools {
     private static String PREFERENCE_NAME = "preference_conf_vesion1";
+    Object object = new Object();
+
+    public static final List<String> SUPPORTED_VARABLE = Arrays.asList(
+            "int", "long", "float", "double", "byte", "short",
+            "java.lang.String[]", "boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+            "boolean",
+            "java.lang.String",
+
+            "char",
+            "java.util.HashMap",
+            "java.util.List",
+            "java.lang.Object"
+    );
+
+    public static final List<String> SUPPORTED_METHOD = Arrays.asList(
+            "putString", "getString",
+            "putInt", "getInt",
+            "putLong", "getLong",
+            "putFloat", "getFloat",
+            "putBoolean", "getBoolean",
+            "putHashMap", "getHashMap",
+
+            "putStringList", "getStringList",
+            "putIntList", "getIntList",
+            "putLongList", "getLongList",
+            "putListBean", "getListBean",
+
+            "putArrays", "getArrays",
+
+            "saveBean", "getBean");
+
+    public static final HashMap<String, String> SUPPORT_CODE_SUFFIX = new HashMap<>();
+
 
     /**
      * @param context 上下文
-     * 清空SharedPreferences
+     *                清空SharedPreferences
      */
-    public static void clearAll(Context context){
-        SharedPreferences sp=context.getSharedPreferences(PREFERENCE_NAME,Context.MODE_PRIVATE);
+    public static void clearAll(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         sp.edit().clear().apply();
     }
+
+    /**
+     * @param context context
+     *                <p> "java.lang.String[]", "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+     *                </p>
+     */
+    public static <T> void putArrays(Context context, String key, T[] arrsys) {
+        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(key, arrsys.length);
+        for (int i = 0; i < arrsys.length; i++) {
+            editor.putString(key + i, String.valueOf(arrsys[i]));
+        }
+        editor.apply();
+    }
+
+    /**
+     * @param context context
+     *               <p> "java.lang.String[]", "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+     */
+    public static void getArrays(Context context, String key, String[] arrsys) {
+        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        int length = settings.getInt(key, 0);
+        if (length > 0) {
+            for (int i = 0; i < length; i++) {
+                arrsys[i] = settings.getString(key + i, "");
+            }
+        }
+    }
+
+    /**
+     * @param context
+     * @param key
+     * @param value
+     */
+    public static <T> void putNum(Context context, String key, T value) {
+        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+
+        String res = String.valueOf(value);
+        editor.putString(key, res);
+        editor.apply();
+    }
+
+    /**
+     * @param context
+     * @param key
+     * @return 支持的类型
+     * "double", "byte", "char", "short",
+     * 存储时使用了string，取出来时也返回string类型
+     */
+    public static String getNum(Context context, String key) {
+        return getString(context, key);
+    }
+    //"java.lang.String[]","char[]","boolean[]",
+
+    public static <T> void putStringArray(Context context, String key, T[] arrsys) {
+
+    }
+
 
     /**
      * put string preferences
@@ -60,6 +154,7 @@ public class PreferenceTools {
     public static String getString(Context context, String key) {
         return getString(context, key, null);
     }
+
     /**
      * get string preferences
      *
@@ -245,6 +340,7 @@ public class PreferenceTools {
 
     /**
      * 把hashmap转换成字符串，存入sharedPreference
+     *
      * @param context
      * @param key
      * @param map
@@ -264,8 +360,7 @@ public class PreferenceTools {
     }
 
     /**
-     *把hashmap通过byteArrayOutPutStream输出为字节数组，再解析成base64编码的字符串
-     *
+     * 把hashmap通过byteArrayOutPutStream输出为字节数组，再解析成base64编码的字符串
      */
     private static String prcessHashMap(HashMap<String, String> map) throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
@@ -292,7 +387,6 @@ public class PreferenceTools {
     }
 
     /**
-     *
      * @param orign
      * @return
      * @throws StreamCorruptedException 从对象流中读取的控制信息违反内部一致性检查时抛出。
@@ -456,7 +550,7 @@ public class PreferenceTools {
         SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String objString = gson.toJson(obj);
-        editor.putString(key, objString).commit();
+        editor.putString(key, objString).apply();
     }
 
     /**

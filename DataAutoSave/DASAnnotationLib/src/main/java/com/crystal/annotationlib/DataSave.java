@@ -6,13 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 数据自动存储注解的定义,用于生命周期结束时保存恢复数据
- * 2020.6.20 by kiylx
+ * 创建者 kiylx
+ * 创建时间 2020/6/27 18:15
+ * 手动控制何时保存和恢复数据
  */
 @Retention(RetentionPolicy.CLASS)
-@Target(ElementType.FIELD)
-public @interface AutoSave {
-    String dataName() default "";
-
-    boolean Persistence() default false;
+@Target( ElementType.FIELD)
+public @interface DataSave {
 }

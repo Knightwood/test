@@ -1,6 +1,7 @@
 package com.crystal.annotationcomplierlib;
 
 import com.crystal.annotationlib.AutoSave;
+import com.crystal.annotationlib.DataSave;
 import com.google.auto.service.AutoService;
 
 import java.io.IOException;
@@ -117,6 +118,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
         types.add(AutoSave.class.getCanonicalName());
+        types.add(DataSave.class.getCanonicalName());
         return types;
     }
 

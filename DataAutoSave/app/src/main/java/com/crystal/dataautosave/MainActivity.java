@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.crystal.annotationlib.AutoSave;
 import com.crystal.dastools.DataAutoSaveTools;
+import com.crystal.dastools.PreferenceTools;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 //点击恢复数据
                 DataAutoSaveTools.restoreData(MainActivity.this,savedInstanceState,false);
                 textView.setText(testField);
+                test();
             }
         });
     }
@@ -79,5 +81,14 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         //保存数据，若不是在这里最先保存数据，那么必须保证传入的bundle不为null
         DataAutoSaveTools.saveData(MainActivity.this,outState,false);
+    }
+
+    public void test(){
+        double pi=3.14;
+        PreferenceTools.putNum(this,"jhjl",pi);
+
+        double ip=Double.parseDouble( PreferenceTools.getNum(this,"jhjl"));
+
+        Toast.makeText(this,"数字是:  "+ip,Toast.LENGTH_LONG).show();
     }
 }
