@@ -12,6 +12,18 @@ import java.util.List;
 public enum SomeUtils {
     INSTANCE;
 
+
+    public static final List<String> SUPPORTED_PERSISTENCE_FIELD_TYPE = Arrays.asList(
+            "int", "long", "float", "double", "byte", "short",
+            "java.lang.String[]", "boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+            "boolean",
+            "java.lang.String",
+            "char",
+            "java.util.HashMap",
+            "java.util.List",
+            "java.lang.Object"
+    );
+
     /**
      * interface类型
      */

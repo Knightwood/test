@@ -15,4 +15,6 @@ public @interface AutoSave {
     String dataName() default "";
 
     boolean Persistence() default false;
+
+    boolean useBundle() default true;
 }

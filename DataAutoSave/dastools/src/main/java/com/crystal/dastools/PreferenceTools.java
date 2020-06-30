@@ -13,50 +13,54 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 创建者 kiylx
  * 创建时间 2020/6/26 16:11
  */
-public class PreferenceTools {
-    private static String PREFERENCE_NAME = "preference_conf_vesion1";
-    Object object = new Object();
+public enum PreferenceTools {
+    INSTANCE;
+    private static String PREFERENCE_NAME = "conf_DATASAVEAUTO_veR1";
 
-    public static final List<String> SUPPORTED_VARABLE = Arrays.asList(
+    public static final List<String> SUPPORTED_FIELD_TYPE = Arrays.asList(
             "int", "long", "float", "double", "byte", "short",
             "java.lang.String[]", "boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
             "boolean",
             "java.lang.String",
-
             "char",
             "java.util.HashMap",
             "java.util.List",
             "java.lang.Object"
     );
+    private static final List<String> SUPPORTED_ARRAY = Arrays.asList("boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]");
+    private static final List<String> SUPPORTED_Num = Arrays.asList("int", "long", "float", "double", "byte", "short");
+    public static HashMap<String, String> Method_SUFFIX = new HashMap<>();
 
-    public static final List<String> SUPPORTED_METHOD = Arrays.asList(
-            "putString", "getString",
-            "putInt", "getInt",
-            "putLong", "getLong",
-            "putFloat", "getFloat",
-            "putBoolean", "getBoolean",
-            "putHashMap", "getHashMap",
+    public static void init() {
+        if (!Method_SUFFIX.isEmpty())
+            return;
+        for (String m : SUPPORTED_ARRAY) {
+            Method_SUFFIX.put(m, "Arrays");
+        }
+        for (String num : SUPPORTED_Num) {
+            Method_SUFFIX.put(num, "Num");
+        }
+        Method_SUFFIX.put("java.lang.String[]", "StringArray");
+        Method_SUFFIX.put("boolean", "Boolean");
+        Method_SUFFIX.put("char", "String");
+        Method_SUFFIX.put("java.lang.String", "String");
+        Method_SUFFIX.put("java.util.Set", "StringSet");
+        Method_SUFFIX.put("java.util.HashMap", "HashMap");
+        Method_SUFFIX.put("java.util.List", "List");
+        Method_SUFFIX.put("java.lang.Object", "Bean");
 
-            "putStringList", "getStringList",
-            "putIntList", "getIntList",
-            "putLongList", "getLongList",
-            "putListBean", "getListBean",
-
-            "putArrays", "getArrays",
-
-            "saveBean", "getBean");
-
-    public static final HashMap<String, String> SUPPORT_CODE_SUFFIX = new HashMap<>();
-
+    }
 
     /**
      * @param context 上下文
@@ -69,7 +73,7 @@ public class PreferenceTools {
 
     /**
      * @param context context
-     *                <p> "java.lang.String[]", "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+     *                <p>  "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
      *                </p>
      */
     public static <T> void putArrays(Context context, String key, T[] arrsys) {
@@ -84,7 +88,7 @@ public class PreferenceTools {
 
     /**
      * @param context context
-     *               <p> "java.lang.String[]", "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+     *                <p>  "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
      */
     public static void getArrays(Context context, String key, String[] arrsys) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -99,7 +103,8 @@ public class PreferenceTools {
     /**
      * @param context
      * @param key
-     * @param value
+     * @param value   T类型的数据
+     *                "int", "long", "float", "double", "byte", "short",
      */
     public static <T> void putNum(Context context, String key, T value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -114,16 +119,68 @@ public class PreferenceTools {
      * @param context
      * @param key
      * @return 支持的类型
-     * "double", "byte", "char", "short",
+     * "double", "byte",  "short",
      * 存储时使用了string，取出来时也返回string类型
      */
     public static String getNum(Context context, String key) {
         return getString(context, key);
     }
-    //"java.lang.String[]","char[]","boolean[]",
 
-    public static <T> void putStringArray(Context context, String key, T[] arrsys) {
+    public static void putStringSet(Context context, String key, Set<String> value) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putStringSet(key, value);
+        editor.apply();
+    }
 
+    public static Set<String> getStringSet(Context context, String key) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+
+        return sharedPreferences.getStringSet(key, null);
+    }
+
+
+    /**
+     * @param context
+     * @param key
+     * @param arrsys  要保存的数组
+     *                "java.lang.String[]"
+     */
+    public static void putStringArray(Context context, String key, String[] arrsys) {
+        putStringList(context, key, Arrays.asList(arrsys));
+    }
+
+    public static String[] getStringArray(Context context, String key) {
+        return (String[]) getStringList(context, key).toArray();
+    }
+
+    enum StrCastBoolean {
+        TRUE(true, "true"), FALSE(false, "false");
+        boolean b;
+        String s;
+
+        StrCastBoolean(boolean b, String s) {
+            this.b = b;
+            this.s = s;
+        }
+
+        String getString(boolean b) {
+            for (StrCastBoolean s : StrCastBoolean.values()) {
+                if (s.b == b) {
+                    return s.s;
+                }
+            }
+            return null;
+        }
+
+        boolean getBoolean(String s) {
+            for (StrCastBoolean strCastBoolean : StrCastBoolean.values()) {
+                if (strCastBoolean.s.equals(s)) {
+                    return strCastBoolean.b;
+                }
+            }
+            return false;
+        }
     }
 
 
@@ -133,13 +190,12 @@ public class PreferenceTools {
      * @param context
      * @param key     The name of the preference to modify
      * @param value   The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putString(Context context, String key, String value) {
+    public static void putString(Context context, String key, String value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -175,13 +231,12 @@ public class PreferenceTools {
      * @param context
      * @param key     The name of the preference to modify
      * @param value   The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putInt(Context context, String key, int value) {
+    public static void putInt(Context context, String key, int value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(key, value);
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -217,13 +272,12 @@ public class PreferenceTools {
      * @param context
      * @param key     The name of the preference to modify
      * @param value   The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putLong(Context context, String key, long value) {
+    public static void putLong(Context context, String key, long value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong(key, value);
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -261,11 +315,11 @@ public class PreferenceTools {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putFloat(Context context, String key, float value) {
+    public static void putFloat(Context context, String key, float value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putFloat(key, value);
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -303,11 +357,11 @@ public class PreferenceTools {
      * @param value   The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
-    public static boolean putBoolean(Context context, String key, boolean value) {
+    public static void putBoolean(Context context, String key, boolean value) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(key, value);
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -346,7 +400,7 @@ public class PreferenceTools {
      * @param map
      * @return
      */
-    public static boolean putHashMap(Context context, String key, HashMap<String, String> map) {
+    public static void putHashMap(Context context, String key, HashMap<String, String> map) {
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         try {
@@ -356,7 +410,7 @@ public class PreferenceTools {
             e.printStackTrace();
         }
 
-        return editor.commit();
+        editor.apply();
     }
 
     /**
@@ -408,14 +462,14 @@ public class PreferenceTools {
      * @param key
      * @param values
      */
-    public static boolean putStringList(Context context, String key, List<String> values) {
+    public static void putStringList(Context context, String key, List<String> values) {
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());
         for (int i = 0; i < values.size(); i++) {
             edit.putString(key + i, values.get(i));
         }
-        return edit.commit();
+        edit.apply();
     }
 
     /**
@@ -440,14 +494,14 @@ public class PreferenceTools {
      * @param key
      * @param values
      */
-    public static boolean putIntList(Context context, String key, List<Integer> values) {
+    public static void putIntList(Context context, String key, List<Integer> values) {
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());
         for (int i = 0; i < values.size(); i++) {
             edit.putInt(key + i, values.get(i));
         }
-        return edit.commit();
+        edit.apply();
     }
 
     /**
@@ -472,14 +526,14 @@ public class PreferenceTools {
      * @param key
      * @param values
      */
-    public static boolean putLongList(Context context, String key, List<Long> values) {
+    public static void putLongList(Context context, String key, List<Long> values) {
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());
         for (int i = 0; i < values.size(); i++) {
             edit.putLong(key + i, values.get(i));
         }
-        return edit.commit();
+        edit.apply();
     }
 
     /**
@@ -515,7 +569,7 @@ public class PreferenceTools {
         //转换成json数据，再保存
         String strJson = gson.toJson(datalist);
         edit.putString(key, strJson);
-        edit.commit();
+        edit.apply();
     }
 
     /**
@@ -545,8 +599,8 @@ public class PreferenceTools {
      * @param key
      * @param obj
      */
-    public static void saveBean(Context context, String key,
-                                Object obj) {
+    public static void putBean(Context context, String key,
+                               Object obj) {
         SharedPreferences.Editor editor = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         Gson gson = new Gson();
         String objString = gson.toJson(obj);

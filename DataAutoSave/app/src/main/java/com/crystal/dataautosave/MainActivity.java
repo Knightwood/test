@@ -15,13 +15,20 @@ import com.crystal.annotationlib.AutoSave;
 import com.crystal.dastools.DataAutoSaveTools;
 import com.crystal.dastools.PreferenceTools;
 
+import java.util.HashMap;
+
 
 public class MainActivity extends AppCompatActivity {
 
     @AutoSave
-    public String testField="";
+    public String testField = "";
     @AutoSave
     public Ch[] testCh;
+
+    @AutoSave
+    public String[] sry;
+
+    public HashMap<String, String> hsa;
 
     TextView textView;
     Button button;
@@ -32,27 +39,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        textView=findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
         textView.setText(testField);
-        button=findViewById(R.id.button);
+        button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int max=1000;
-                int min=1;
-                testField=String.valueOf (Math.random()*(max-min)+min);
+                int max = 1000;
+                int min = 1;
+                testField = String.valueOf(Math.random() * (max - min) + min);
                 textView.setText(testField);
                 //若是不经onSaveInstanceState(),比如旋转屏幕之类的，先点击这里改变数据，是不会保存数据的，因为这里的bundle是null
-                DataAutoSaveTools.saveData(MainActivity.this,savedInstanceState,false);
+                DataAutoSaveTools.saveData(MainActivity.this, savedInstanceState, false);
             }
         });
 
-        button2=findViewById(R.id.button2);
+        button2 = findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //点击恢复数据
-                DataAutoSaveTools.restoreData(MainActivity.this,savedInstanceState,false);
+                DataAutoSaveTools.restoreData(MainActivity.this, savedInstanceState, false);
                 textView.setText(testField);
                 test();
             }
@@ -68,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this,"原始数据是:  "+testField,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "原始数据是:  " + testField, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -80,15 +87,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         //保存数据，若不是在这里最先保存数据，那么必须保证传入的bundle不为null
-        DataAutoSaveTools.saveData(MainActivity.this,outState,false);
+        DataAutoSaveTools.saveData(MainActivity.this, outState, false);
     }
 
-    public void test(){
-        double pi=3.14;
-        PreferenceTools.putNum(this,"jhjl",pi);
+    public void test() {
+        double pi = 3.14;
+        PreferenceTools.putNum(this, "jhjl", pi);
 
-        double ip=Double.parseDouble( PreferenceTools.getNum(this,"jhjl"));
+        double ip = Double.parseDouble(PreferenceTools.getNum(this, "jhjl"));
 
-        Toast.makeText(this,"数字是:  "+ip,Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "数字是:  " + ip, Toast.LENGTH_LONG).show();
     }
 }

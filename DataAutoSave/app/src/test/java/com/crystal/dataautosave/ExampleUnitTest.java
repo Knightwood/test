@@ -2,6 +2,10 @@ package com.crystal.dataautosave;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 import static org.junit.Assert.*;
 
 /**
@@ -14,7 +18,27 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
 
-        String num="123";
+        String num = "123";
         System.out.println(Double.valueOf(num));
+
+        student student;
+
+        List<student> iop = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            student = new student(i + 10);
+            iop.add(student);
+        }
+        for (student i:iop) {
+            System.out.println(i.age);
+        }
+
+    }
+
+    class student {
+        public student(int age) {
+            this.age = age;
+        }
+
+        public int age = 24;
     }
 }
