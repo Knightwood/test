@@ -16,6 +16,8 @@ import com.crystal.dastools.DataAutoSaveTools;
 import com.crystal.dastools.PreferenceTools;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,9 +28,17 @@ public class MainActivity extends AppCompatActivity {
     public Ch[] testCh;
 
     @AutoSave
-    public String[] sry;
-
-    public HashMap<String, String> hsa;
+    public String[] array;
+    @AutoSave
+    public HashMap<String, String> hsahmap;
+    @AutoSave
+    public Set<String> stringSet;
+    @AutoSave
+    public List<String> stringList;
+    @AutoSave
+    public List<Integer> integerList;
+    @AutoSave
+    public List<Long> longList;
 
     TextView textView;
     Button button;

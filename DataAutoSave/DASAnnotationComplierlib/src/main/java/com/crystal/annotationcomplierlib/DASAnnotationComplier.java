@@ -153,19 +153,22 @@ public class DASAnnotationComplier extends AbstractProcessor {
         Map<TypeElement, BeCreateClassInfo> infoMap = new LinkedHashMap<>();
         DataAutoSaveFieldInfo tmp;
         for (Element element : roundEnv.getElementsAnnotatedWith(AutoSave.class)) {//获取被注解的元素
-            if (isCanSaveField(element)) {//如果是可以存储的元素
+            if (canProcess(element)) {//如果是可以处理的元素，此时还未判断是不是可以被存储的
                 TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取被注解元素所属的类元素，也就是被注解字段所属的类的信息
 
                 BeCreateClassInfo beCreateClassInfo = getWillGeneratedClassInfo(typeElement, infoMap);//创建需要被创造的类的信息，多个element可能有同一个父元素
                 tmp = new DataAutoSaveFieldInfo(
                         element.getSimpleName().toString(),
-                        getFieldType(element),
+                        getErasuredFieldType(element),
                         getProcessedFiledType((VariableElement) element),
+                        getFieldType(element),
                         element.getAnnotation(AutoSave.class).dataName()
                 );
-                procressConfilct(tmp, element);//处理使用bundle和persistence的冲突
-                beCreateClassInfo.addField(tmp);//添加这个被创建类中包含的所有注解字段的信息
-
+                if (procressConfilct(tmp, element)) {//处理使用bundle和persistence的冲突，如果是可以存储的，添加进beCreateClassInfo的list中
+                    beCreateClassInfo.addField(tmp);//添加这个被创建类中包含的所有注解字段的信息
+                } else {
+                    error(element, "被注解的变量类型不在被支持的列表中");
+                }
             } else {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "没有注解的元素");
             }
@@ -177,10 +180,10 @@ public class DASAnnotationComplier extends AbstractProcessor {
     /**
      * @param tmp     被注解字段信息
      * @param element 被注解元素
-     *                元素可能被注释使用bundle，也可能同时被注释使用永久化存储，
-     *                两种方式的支持列表不同，因此要解决他们的冲突。
+     *                元素可能被注释使用bundle，也可能同时被注释使用永久化存储，但是，即使被同事注视了两者，这个元素也可能不在被支持列表中
+     * @return
      */
-    private void procressConfilct(DataAutoSaveFieldInfo tmp, Element element) {
+    private boolean procressConfilct(DataAutoSaveFieldInfo tmp, Element element) {
         boolean useBundle = true;
         boolean useSharedPreference = false;
 
@@ -193,13 +196,22 @@ public class DASAnnotationComplier extends AbstractProcessor {
         if (null == processedFiledType) {
             useBundle = false;
         }
-        if (!SomeUtils.SUPPORTED_PERSISTENCE_FIELD_TYPE.contains(type)) {
-            useSharedPreference = false;
-        }
+
+        useSharedPreference = canPersistence(element);
 
         tmp.setPersistence(useSharedPreference);
         tmp.setUseBundle(useBundle);
 
+        return useBundle || useSharedPreference;
+    }
+
+    /**
+     * @param element
+     * @return 持久化列表中是不是支持这个元素类型
+     */
+    private boolean canPersistence(Element element) {
+        String type = getFieldType(element);
+        return SomeUtils.SUPPORTED_PERSISTENCE_FIELD_TYPE.contains(type);
     }
 
     /**
@@ -221,11 +233,29 @@ public class DASAnnotationComplier extends AbstractProcessor {
                 "simpleName: %S \n " +
                 "element asType: %s \n" +
                 "element.astype.getkind: %s \n" +
-                "element擦除泛型 : %s \n", element.getSimpleName().toString(), element.asType().toString(), element.asType().getKind().name(), getFieldType(element));
+                "element擦除泛型 : %s \n", element.getSimpleName().toString(), element.asType().toString(), element.asType().getKind().name(), getErasuredFieldType(element));
 
         return result;
 
     }
+
+    /**
+     * @param element 被注解的元素
+     * @return 如果符合条件，返回true，表示可以继续处理
+     */
+    private boolean isCanSaveField(Element element) {
+        boolean result = true;
+        result = canProcess(element);//验证是不是变量和public修饰
+
+        //如果被注解的变量类型不在被支持的列表中，抛出错误，用于bundle
+        String processedFiledType = getProcessedFiledType((VariableElement) element);
+        if (null == processedFiledType) {
+            error(element, "被注解的变量类型不在被支持的列表中");
+            result = false;
+        }
+        return result;
+    }
+
 
     /**
      * @param typeElement 类元素
@@ -248,7 +278,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
             );
             infoMap.put(typeElement, info);
 
-            log(typeElement, "被注解字段所属的类的包名： %s,\n" +
+            log(typeElement, "getWillGeneratedClassInfo方法:\n 被注解字段所属的类的包名： %s,\n" +
                             " 要生成的类的名称类名: %s, \n " +
                             "被注解字段所属的类的全名: %s \n",
                     classPackageName, genclassName, qualifiedName);
@@ -275,25 +305,9 @@ public class DASAnnotationComplier extends AbstractProcessor {
     }
 
     /**
-     * @param element 被注解的元素
-     * @return 如果符合条件，返回true，表示可以继续处理
+     * @param element 被注解元素
+     * @return 若是public修饰，或这是变量，返回true，标识这是可以被处理的。此时未判断在不在支持列表里
      */
-    private boolean isCanSaveField(Element element) {
-        boolean result = true;
-        //TypeElement typeElement = (TypeElement) element.getEnclosingElement();//获取父元素，转为类元素
-
-        result = canProcess(element);//验证是不是变量和public修饰
-
-        //如果被注解的变量类型不在被支持的列表中，抛出错误，用于bundle
-        String processedFiledType = getProcessedFiledType((VariableElement) element);
-        String type = element.asType().toString();//用于判断永久化存储
-        if (null == processedFiledType || !SomeUtils.SUPPORTED_PERSISTENCE_FIELD_TYPE.contains(type)) {
-            error(element, "被注解的变量类型不在被支持的列表中");
-            result = false;
-        }
-        return result;
-    }
-
     private boolean canProcess(Element element) {
         //如果被注解的元素不是变量，抛出错误
         if (!element.getKind().isField()) {
@@ -333,7 +347,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * @param info
      * @return 打印一些信息
      */
-    String mes(TypeElement key, BeCreateClassInfo info) {
+    private String mes(TypeElement key, BeCreateClassInfo info) {
         StringBuilder builder = new StringBuilder();
         builder.append("注解字段所属类包名： " + info.getTargetClassPackageName() + "\n")
                 .append("被生成类的类名： " + info.getWillGenerateClassName() + "\n")
@@ -369,7 +383,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * 对应支持的interfaceType的tpeMirror:  android.os.Parcelable
      */
     private String getProcessedFiledType(VariableElement element) {
-        String fieldType = getFieldType(element);//获取泛型擦除后的类型
+        String fieldType = getErasuredFieldType(element);//获取泛型擦除后的类型
         /*
          *element.asType()
          * 返回此元素定义的类型
@@ -407,14 +421,10 @@ public class DASAnnotationComplier extends AbstractProcessor {
             }
         }
 
-        log(element, "调用getFieldType得到的结果：  " +
-                "%s \n " +
-                "直接获取typeMirror结果：  " +
-                "%s \n" +
-                "获取组件类型： " +
-                "%S \n" +
-                "interfaceType的tpeMirror:  " +
-                "%s \n", fieldType, typeMirror.toString(), componentStr, stringBuilder.toString());//测试用
+        log(element, "getProcessedFiledType方法:\n 调用getFieldType得到的结果：  %s \n " +
+                "直接typeMirror.toString()结果： %s \n" +
+                "获取组件类型： %S \n" +
+                "interfaceType的tpeMirror: %s \n", fieldType, typeMirror.toString(), componentStr, stringBuilder.toString());//测试用
 
         return fieldType;
     }
@@ -425,11 +435,18 @@ public class DASAnnotationComplier extends AbstractProcessor {
      * 例如： public Ch[] testCh;  testCh就是一个com.crystal.dataautosave.Ch[]类型的变量，而Ch类继承自android.os.Parcelable
      * 结果返回com.crystal.dataautosave.Ch[]
      */
-    private String getFieldType(Element element) {
+    private String getErasuredFieldType(Element element) {
         //erasure方法：返回指定类型擦除后的TypeMirror.
         //不保存泛型的信息，只保留这是什么类型。例如List<?> list = new ArrayList<Object>();
         String name = types.erasure(element.asType()).toString();
-        log(element, "获取到的去除泛型的类型：  " + name);
+        log(element, "getErasuredFieldType方法: \n 获取到的去除泛型的类型： %s \n ", name);
         return name;
+    }
+
+    private String getFieldType(Element element) {
+        String result;
+        result = element.asType().toString();
+        log(element, "getFieldType方法，未擦除时的类型： %s", result);
+        return result;
     }
 }

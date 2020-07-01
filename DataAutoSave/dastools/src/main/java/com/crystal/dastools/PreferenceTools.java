@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StreamCorruptedException;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,43 +23,36 @@ import java.util.Set;
  * 创建者 kiylx
  * 创建时间 2020/6/26 16:11
  */
-public enum PreferenceTools {
-    INSTANCE;
-    private static String PREFERENCE_NAME = "conf_DATASAVEAUTO_veR1";
+public class PreferenceTools {
 
-    public static final List<String> SUPPORTED_FIELD_TYPE = Arrays.asList(
-            "int", "long", "float", "double", "byte", "short",
-            "java.lang.String[]", "boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
-            "boolean",
-            "java.lang.String",
-            "char",
-            "java.util.HashMap",
-            "java.util.List",
-            "java.lang.Object"
-    );
+    private static String PREFERENCE_NAME = "conf_DATASAVEAUTO_veR1";
     private static final List<String> SUPPORTED_ARRAY = Arrays.asList("boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]");
     private static final List<String> SUPPORTED_Num = Arrays.asList("int", "long", "float", "double", "byte", "short");
     public static HashMap<String, String> Method_SUFFIX = new HashMap<>();
 
-    public static void init() {
-        if (!Method_SUFFIX.isEmpty())
-            return;
-        for (String m : SUPPORTED_ARRAY) {
-            Method_SUFFIX.put(m, "Arrays");
+    static {
+        if (Method_SUFFIX.isEmpty()) {
+            for (String m : SUPPORTED_ARRAY) {
+                Method_SUFFIX.put(m, "Arrays");
+            }
+            for (String num : SUPPORTED_Num) {
+                Method_SUFFIX.put(num, "Num");
+            }
+            Method_SUFFIX.put("java.lang.String[]", "StringArray");
+            Method_SUFFIX.put("boolean", "Boolean");
+            Method_SUFFIX.put("char", "String");
+            Method_SUFFIX.put("java.lang.String", "String");
+            Method_SUFFIX.put("java.util.Set<java.lang.String>", "StringSet");
+            Method_SUFFIX.put("java.util.HashMap<java.lang.String,java.lang.String>", "HashMap");
+            Method_SUFFIX.put("java.util.List<java.lang.Integer>", "IntList");
+            Method_SUFFIX.put("java.util.List<java.lang.Long>", "LongList");
+            Method_SUFFIX.put("java.util.List<java.lang.String>", "StringList");
+            //Method_SUFFIX.put("java.lang.Object", "Bean");
+            //beanList
+            //bean
         }
-        for (String num : SUPPORTED_Num) {
-            Method_SUFFIX.put(num, "Num");
-        }
-        Method_SUFFIX.put("java.lang.String[]", "StringArray");
-        Method_SUFFIX.put("boolean", "Boolean");
-        Method_SUFFIX.put("char", "String");
-        Method_SUFFIX.put("java.lang.String", "String");
-        Method_SUFFIX.put("java.util.Set", "StringSet");
-        Method_SUFFIX.put("java.util.HashMap", "HashMap");
-        Method_SUFFIX.put("java.util.List", "List");
-        Method_SUFFIX.put("java.lang.Object", "Bean");
-
     }
+
 
     /**
      * @param context 上下文
@@ -89,15 +81,18 @@ public enum PreferenceTools {
     /**
      * @param context context
      *                <p>  "boolean[]","int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]",
+     * @return
      */
-    public static void getArrays(Context context, String key, String[] arrsys) {
+    public static String[] getArrays(Context context, String key) {
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         int length = settings.getInt(key, 0);
+        String[] arrays = new String[length + 3];
         if (length > 0) {
             for (int i = 0; i < length; i++) {
-                arrsys[i] = settings.getString(key + i, "");
+                arrays[i] = settings.getString(key + i, "");
             }
         }
+        return arrays;
     }
 
     /**

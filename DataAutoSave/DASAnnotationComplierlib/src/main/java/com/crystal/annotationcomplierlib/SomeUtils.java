@@ -1,6 +1,7 @@
 package com.crystal.annotationcomplierlib;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,9 +20,11 @@ public enum SomeUtils {
             "boolean",
             "java.lang.String",
             "char",
-            "java.util.HashMap",
-            "java.util.List",
-            "java.lang.Object"
+            "java.util.HashMap<java.lang.String,java.lang.String>",
+            "java.util.Set<java.lang.String>",
+            "java.util.List<java.lang.Integer>",
+            "java.util.List<java.lang.Long>",
+            "java.util.List<java.lang.String>"
     );
 
     /**
@@ -60,20 +63,45 @@ public enum SomeUtils {
      * LinkedHashMap存取数据，还是跟HashMap一样使用的Entry[]的方式，双向链表只是为了保证顺序。
      * LinkedHashMap是线程不安全的。
      */
-    static final LinkedHashMap<String, String> PUT_DATA_PRE_CODE_MAP = new LinkedHashMap<String, String>();
-
+    static final LinkedHashMap<String, String> Bundle_PUT_DATA_PRE_CODE_MAP = new LinkedHashMap<String, String>();
+    static final HashMap<String, String> Persistence_Method_SUFFIX = new HashMap<>();
+    private static final List<String> PERSISTENCE_SUPPORTED_ARRAY = Arrays.asList("boolean[]", "int[]", "double[]", "float[]", "long[]", "byte[]", "char[]", "short[]");
+    private static final List<String> PERSISTENCE_SUPPORTED_Num = Arrays.asList("int", "long", "float", "double", "byte", "short");
     /**
      * 初始化linkedhashmap，用于存储数据时，依据key的类型使用value的字符串拼接生成方法
      */
     void init() {
-        if (!PUT_DATA_PRE_CODE_MAP.isEmpty()){
+        if (!Bundle_PUT_DATA_PRE_CODE_MAP.isEmpty()) {
             return;
         }
-        Iterator<String> iterator=SUPPORTED_FIELD_TYPE.iterator();
-        Iterator<String> iterator1=PUT_DATA_PRE_CODE.iterator();
+        Iterator<String> iterator = SUPPORTED_FIELD_TYPE.iterator();
+        Iterator<String> iterator1 = PUT_DATA_PRE_CODE.iterator();
         while (iterator.hasNext()) {
-            PUT_DATA_PRE_CODE_MAP.put(iterator.next(),iterator1.next());
+            Bundle_PUT_DATA_PRE_CODE_MAP.put(iterator.next(), iterator1.next());
         }
+
+        if (Persistence_Method_SUFFIX.isEmpty()) {
+            for (String m : PERSISTENCE_SUPPORTED_ARRAY) {
+                Persistence_Method_SUFFIX.put(m, "Arrays");
+            }
+            for (String num : PERSISTENCE_SUPPORTED_Num) {
+                Persistence_Method_SUFFIX.put(num, "Num");
+            }
+            Persistence_Method_SUFFIX.put("java.lang.String[]", "StringArray");
+            Persistence_Method_SUFFIX.put("boolean", "Boolean");
+            Persistence_Method_SUFFIX.put("char", "String");
+            Persistence_Method_SUFFIX.put("java.lang.String", "String");
+            Persistence_Method_SUFFIX.put("java.util.Set<java.lang.String>", "StringSet");
+            Persistence_Method_SUFFIX.put("java.util.HashMap<java.lang.String,java.lang.String>", "HashMap");
+            Persistence_Method_SUFFIX.put("java.util.List<java.lang.Integer>", "IntList");
+            Persistence_Method_SUFFIX.put("java.util.List<java.lang.Long>", "LongList");
+            Persistence_Method_SUFFIX.put("java.util.List<java.lang.String>", "StringList");
+            //Method_SUFFIX.put("java.lang.Object", "Bean");
+            //beanList
+            //bean
+        }
+
+
     }
 
 

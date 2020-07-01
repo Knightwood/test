@@ -31,6 +31,7 @@ public class ExampleUnitTest {
         for (student i:iop) {
             System.out.println(i.age);
         }
+        PreferenceTools.pr();
 
     }
 
@@ -41,4 +42,26 @@ public class ExampleUnitTest {
 
         public int age = 24;
     }
+
+    public static class PreferenceTools {
+
+        static {
+            System.out.println("static触发了");
+        }
+
+        public static void pr() {
+            System.out.println("普通方法");
+        }
+
+        public static void pr2() {
+            System.out.println("普通方法2");
+        }
+
+        {
+            System.out.println("普通块");
+
+        }
+
+    }
+
 }

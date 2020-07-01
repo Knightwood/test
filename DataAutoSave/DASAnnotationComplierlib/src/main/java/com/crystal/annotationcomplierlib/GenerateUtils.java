@@ -23,6 +23,7 @@ public enum GenerateUtils {
     private ClassName mInterface = ClassName.get("com.crystal.dastools", "DASinterface");//保存数据和恢复数据的接口
     private TypeVariableName TtypeVariableName;//泛型参数
     private ClassName bundle = ClassName.get("android.os", "Bundle");//保存数据的类
+    private ClassName preferenceTools = ClassName.get("com.crystal.dastools", "PreferenceTools");
 
     /**
      * @param createClassInfo
@@ -30,7 +31,7 @@ public enum GenerateUtils {
      * @throws IOException
      */
     public void generate(BeCreateClassInfo createClassInfo, Filer filer) throws IOException {
-        TtypeVariableName = TypeVariableName.get("T", ClassName.get(createClassInfo.getTargetClassPackageName(),createClassInfo.getTargetClassSimpleClassName()));//泛型T，在这生成不同的类时，泛型参数继承自不同的类
+        TtypeVariableName = TypeVariableName.get("T", ClassName.get(createClassInfo.getTargetClassPackageName(), createClassInfo.getTargetClassSimpleClassName()));//泛型T，在这生成不同的类时，泛型参数继承自不同的类
 
         TypeSpec spec = generateClass(createClassInfo);//生成所需的类
         //生成java文件写入目录
@@ -38,11 +39,12 @@ public enum GenerateUtils {
         javaFile.writeTo(filer);
 
     }
+
     /**
      * @param createClassInfo 要生成的类的信息
      * @return 返回生成的类的TypeSpec
      * <p>
-     *     生成恢复数据方法
+     * 生成恢复数据方法
      */
     private MethodSpec generateGetDataFun(BeCreateClassInfo createClassInfo) {
 
@@ -52,15 +54,16 @@ public enum GenerateUtils {
         for (DataAutoSaveFieldInfo info1 : createClassInfo.getFields()) {
             VarName = info1.getFiledName().toString();
 
-            if (info1.isPersistence()){//如果需要持久化存储，生成持久化存储代码
-
+            if (info1.isPersistence()) {//如果需要持久化存储，生成持久化存储代码
+                stringBuilder.append(preferenceTools.canonicalName() + ".get" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\");\n");
             }
-
-            stringBuilder.append("if (bundle.containsKey(\"")
-                    .append(VarName)
-                    .append("\"))\n")
-                    .append("context." + VarName)
-                    .append("=(" + info1.getFieldType() + ") bundle.get(\"" + VarName + "\");\n");
+            if (info1.isUseBundle()) {
+                stringBuilder.append("if (bundle.containsKey(\"")
+                        .append(VarName)
+                        .append("\"))\n")
+                        .append("context." + VarName)
+                        .append("=(" + info1.getFieldType() + ") bundle.get(\"" + VarName + "\");\n");
+            }
         }
 
         MethodSpec RestoreData = MethodSpec.methodBuilder("RestoreData")
@@ -71,6 +74,7 @@ public enum GenerateUtils {
                 .addParameter(bundle, "bundle")
                 .addCode(stringBuilder.toString())
                 .build();
+        //.addStatement("$T.get$L(context,$S)",preferenceTools,"vdfg","fsf")
         return RestoreData;
 
     }
@@ -79,21 +83,24 @@ public enum GenerateUtils {
      * @param createClassInfo 要生成的类的信息
      * @return 返回生成的类的TypeSpec
      * <p>
-     *     生成保存数据方法
+     * 生成保存数据方法
      */
     private MethodSpec generateSaveDataFun(BeCreateClassInfo createClassInfo) {
-        StringBuilder builder=new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         String VarName;//就是从这个名称的变量中获取的数据
 
         for (DataAutoSaveFieldInfo info1 : createClassInfo.getFields()) {
             VarName = info1.getFiledName().toString();
 
-            if (info1.isPersistence()){//如果需要持久化存储，生成持久化存储代码
-
+            if (info1.isPersistence()) {//如果需要持久化存储，生成持久化存储代码
+                builder.append(preferenceTools.canonicalName() + ".put" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\",context." + VarName + ");\n");
             }
-            builder.append("bundle."+SomeUtils.PUT_DATA_PRE_CODE_MAP.get(info1.getTopLevelClassName()))
-                    .append("(\""+VarName+"\",")
-                    .append("context."+VarName+");\n");
+            if (info1.isUseBundle()) {
+                builder.append("bundle." + SomeUtils.Bundle_PUT_DATA_PRE_CODE_MAP.get(info1.getTopLevelClassName()))
+                        .append("(\"" + VarName + "\",")
+                        .append("context." + VarName + ");\n");
+            }
+
         }
 
 
