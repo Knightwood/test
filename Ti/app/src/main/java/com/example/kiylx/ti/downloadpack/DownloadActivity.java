@@ -18,7 +18,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadSettingFragment;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment;
-import com.example.kiylx.ti.downloadpack.fragments.SimpleDownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoViewModel;

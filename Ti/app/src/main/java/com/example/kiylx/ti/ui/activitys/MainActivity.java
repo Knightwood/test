@@ -41,6 +41,8 @@ import android.widget.Toast;
 
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
@@ -49,7 +51,7 @@ import com.example.kiylx.ti.tool.NetBroadcastReceiver;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
-import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
@@ -182,8 +184,9 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     }
 
     @Override
-    protected void initActivity() {
-
+    protected void initActivity(BaseLifecycleObserver observer) {
+        observer = new MainLifeCycleObserver(this);
+        getLifecycle().addObserver(observer);
     }
 
     /**
@@ -241,8 +244,8 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     @Override
     protected void onResume() {
         super.onResume();
-        int s = mWebViewManager.size();
-        Log.d("lifecycle", "onResume()" + "webview数量" + s);
+       /* int s = mWebViewManager.size();
+        Log.d("lifecycle", "onResume()" + "webview数量" + s);*/
     }
 
     @Override
@@ -268,7 +271,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         if (seviceBund)
             unbindService(connection);
         Log.d("lifecycle", "onDestroy()");
-        if (receiver!=null){
+        if (receiver != null) {
             unregisterReceiver(receiver);
         }
     }
@@ -288,7 +291,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
      */
     public static boolean IsVertical() {
         return isVertical;
-
     }
 
     /**
@@ -379,24 +381,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
      * 传入的参数不是null时，新建标签页，并载入传入的网址
      */
     public void newTab(String url) {
-        String home_url;
-        if (url == null) {
-            //条件true时获取自定义网址，是false时则使用默认主页
-            if (DefaultPreferenceTool.getBoolean(MainActivity.this, getString(R.string.useCustomHomepage_key), false)) {
-                home_url = DefaultPreferenceTool.getStrings(MainActivity.this, getString(R.string.homepageurl_key), "");
-                //补全网址，以及如果开了自定义网址，但是没有填写任何字符，也使用默认主页
-                if (home_url.equals("")) {
-                    home_url = SomeRes.default_homePage_url;
-                } else {
-                    home_url = ProcessUrl.converKeywordLoadOrSearch(home_url);
-                }
-            } else {
-                home_url = SomeRes.default_homePage_url;
-            }
-        } else {
-            //传入参数不是null
-            home_url = url;
-        }
+        String home_url = mWebViewManager.procressUrl(url);//处理网址
 
         //由多窗口的新建主页按钮调用，作用是新建webview放进mclist的最后的位置，remove掉旧的webivew视图，刷新视图。
         if (!mWebViewManager.isempty()) {
@@ -1135,17 +1120,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             fileUploadCallBack.onReceiveValue(null);
             fileUploadCallBack = null;
         }
-    }
-
-
-    /**
-     * 注册广播，监听网络变化
-     */
-    private void registerBroadCast() {
-        receiver = new NetBroadcastReceiver();
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-        registerReceiver(receiver, intentFilter);//注册广播
     }
 
 }

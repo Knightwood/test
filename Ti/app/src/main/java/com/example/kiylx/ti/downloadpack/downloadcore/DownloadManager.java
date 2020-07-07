@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
@@ -27,8 +27,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import kotlin.jvm.Synchronized;
 
 /*
  * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。

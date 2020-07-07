@@ -7,7 +7,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.tool.EventMessage;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 

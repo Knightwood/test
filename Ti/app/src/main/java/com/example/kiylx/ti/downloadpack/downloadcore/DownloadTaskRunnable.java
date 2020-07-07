@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.downloadpack.downloadcore;
 
-import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DOWNLOAD_TASK_FUN;
 
 import java.io.File;

@@ -32,7 +32,7 @@ public class PrivacyFragment extends PreferenceFragmentCompat implements Prefere
         switch (preference.getKey()){
             case "dont_track":
                 Xapplication xapplication= (Xapplication) Xapplication.getInstance();
-                xapplication.setDNT((boolean)newValue);
+                xapplication.getStateManager().setDNT((boolean)newValue);
                 break;
         }
         return true;

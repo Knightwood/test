@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
+import com.example.kiylx.ti.tool.SomeTools;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -103,8 +104,8 @@ public class CustomWebviewClient extends WebViewClient {
             e.printStackTrace();
         }
 
-        Xapplication xapplication= (Xapplication) Xapplication.getInstance();
-        if (xapplication.isDNT()){
+
+        if (SomeTools.getXapplication().getStateManager().isDNT()){//do not track header
             HashMap<String, String> extraHeaders = new HashMap<String, String>();
             extraHeaders.put("DNT", "1");
             view.loadUrl(url, extraHeaders);

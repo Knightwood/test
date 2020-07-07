@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.downloadpack.fragments;
+package com.example.kiylx.ti.downloadpack.bean;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;

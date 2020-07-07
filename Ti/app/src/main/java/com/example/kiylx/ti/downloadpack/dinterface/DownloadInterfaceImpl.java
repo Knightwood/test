@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.downloadpack.dinterface;
 
-import com.example.kiylx.ti.downloadpack.base.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 
 public interface DownloadInterfaceImpl {
     /**

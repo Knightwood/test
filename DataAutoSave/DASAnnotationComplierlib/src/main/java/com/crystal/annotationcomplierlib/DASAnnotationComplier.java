@@ -167,7 +167,7 @@ public class DASAnnotationComplier extends AbstractProcessor {
                 if (procressConfilct(tmp, element)) {//处理使用bundle和persistence的冲突，如果是可以存储的，添加进beCreateClassInfo的list中
                     beCreateClassInfo.addField(tmp);//添加这个被创建类中包含的所有注解字段的信息
                 } else {
-                    error(element, "被注解的变量类型不在被支持的列表中");
+                    log(element, "被注解的变量类型不在被支持的列表中");
                 }
             } else {
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, "没有注解的元素");
@@ -192,12 +192,11 @@ public class DASAnnotationComplier extends AbstractProcessor {
         useSharedPreference = element.getAnnotation(AutoSave.class).Persistence();
 
         String processedFiledType = getProcessedFiledType((VariableElement) element);//如果被注解的变量类型不在被支持的列表中，抛出错误，用于bundle
-        String type = element.asType().toString();//用于判断永久化存储
-        if (null == processedFiledType) {
+        if (null == processedFiledType) {//使用bundle存储，但是支持列表中不支持这种类型
             useBundle = false;
         }
-
-        useSharedPreference = canPersistence(element);
+        if (useSharedPreference)
+            useSharedPreference = canPersistence(element);//如果使用永久化存储，判断是不是可以使用永久化存储
 
         tmp.setPersistence(useSharedPreference);
         tmp.setUseBundle(useBundle);
@@ -211,7 +210,9 @@ public class DASAnnotationComplier extends AbstractProcessor {
      */
     private boolean canPersistence(Element element) {
         String type = getFieldType(element);
-        return SomeUtils.SUPPORTED_PERSISTENCE_FIELD_TYPE.contains(type);
+        boolean b=SomeUtils.SUPPORTED_PERSISTENCE_FIELD_TYPE.contains(type);
+        log(element,"判断永久化存储列表 ：%s,,,%s",type,b);
+        return b;
     }
 
     /**

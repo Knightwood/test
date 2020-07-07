@@ -1,10 +1,14 @@
 package com.example.kiylx.ti.tool;
 
 import android.annotation.SuppressLint;
+import android.app.usage.NetworkStatsManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.print.PrintAttributes;
@@ -131,6 +135,44 @@ public enum SomeTools {
                 .build();
         printManager.print(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath() + tmp.getTitle() + TimeProcess.getTime() + ".pdf", adapter, attributes);
 
+    }
+
+    /**
+     * @return 获取Xapplicatin实例
+     */
+    public static Xapplication getXapplication(){
+        return (Xapplication) Xapplication.getInstance();
+    }
+
+    /**
+     * @param context
+     * @return 返回网络状况，是使用的wifi还是流量又或者没有打开网络
+     */
+    public static NetState getNetState(Context context){
+        ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=manager.getActiveNetworkInfo();//方法 getActiveNetworkInfo() 返回 NetworkInfo 实例，表示其可以找到的第一个已连接的网络接口，如果未连接任何接口，则返回 null（意味着互联网连接不可用）
+        if (networkInfo!=null&&networkInfo.isConnected()){
+            for (Network netWork : manager.getAllNetworks()) {
+                NetworkInfo info=manager.getNetworkInfo(netWork);
+               if (info.getType()==ConnectivityManager.TYPE_WIFI){
+                   return NetState.WIFI;
+               }
+               if (info.getType()==ConnectivityManager.TYPE_MOBILE){
+                   return NetState.DATA;
+               }
+               return NetState.OFF;
+            }
+        }
+        return NetState.OFF;
+    }
+
+    public static boolean getNetWorkConnected(Context context){
+        //方法 getActiveNetworkInfo() 返回 NetworkInfo 实例，表示其可以找到的第一个已连接的网络接口，如果未连接任何接口，则返回 null（意味着互联网连接不可用）
+        ConnectivityManager manager= (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo=manager.getActiveNetworkInfo();
+        if (networkInfo!=null&&networkInfo.isConnected())
+            return true;
+        return false;
     }
 
 }

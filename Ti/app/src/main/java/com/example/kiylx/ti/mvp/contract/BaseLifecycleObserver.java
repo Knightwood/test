@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.mvp.presenter;
+package com.example.kiylx.ti.mvp.contract;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -6,40 +6,25 @@ import androidx.lifecycle.OnLifecycleEvent;
 
 /**
  * 创建者 kiylx
- * 创建时间 2020/6/12 17:54
+ * 创建时间 2020/7/6 10:21
+ * 基础的lifecycleObserver的接口
  */
-public class MainLifeCycleObserver implements LifecycleObserver {
-
-    public MainLifeCycleObserver() {
-    }
-
+public interface BaseLifecycleObserver extends LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    public void onCreateActivity() {
-
-    }
+    void onCreateActivity();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void onActivityStart() {
-
-    }
+   void onActivityStart();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onActivityResume() {
-
-    }
+    void onActivityResume();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void onActivityPause() {
-
-    }
+     void onActivityPause();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onActivityStop() {
-
-    }
+    void onActivityStop();
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    public void onActivityDestroy() {
-
-    }
+     void onActivityDestroy();
 }

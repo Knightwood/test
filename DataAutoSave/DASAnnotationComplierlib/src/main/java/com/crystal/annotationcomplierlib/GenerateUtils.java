@@ -51,17 +51,19 @@ public enum GenerateUtils {
         StringBuilder stringBuilder = new StringBuilder();
         String VarName;//就是从这个名称的变量中获取的数据
 
+        stringBuilder.append("//$T \n");//为了import preferencetools类
+
         for (DataAutoSaveFieldInfo info1 : createClassInfo.getFields()) {
             VarName = info1.getFiledName().toString();
 
             if (info1.isPersistence()) {//如果需要持久化存储，生成持久化存储代码
-                stringBuilder.append(preferenceTools.canonicalName() + ".get" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\");\n");
+                stringBuilder.append( "context."+VarName+"= PreferenceTools.get" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\");\n");
             }
             if (info1.isUseBundle()) {
                 stringBuilder.append("if (bundle.containsKey(\"")
                         .append(VarName)
                         .append("\"))\n")
-                        .append("context." + VarName)
+                        .append("\t context." + VarName)
                         .append("=(" + info1.getFieldType() + ") bundle.get(\"" + VarName + "\");\n");
             }
         }
@@ -72,9 +74,8 @@ public enum GenerateUtils {
                 .returns(void.class)
                 .addParameter(TtypeVariableName, "context")
                 .addParameter(bundle, "bundle")
-                .addCode(stringBuilder.toString())
+                .addCode(stringBuilder.toString(),preferenceTools)
                 .build();
-        //.addStatement("$T.get$L(context,$S)",preferenceTools,"vdfg","fsf")
         return RestoreData;
 
     }
@@ -93,7 +94,7 @@ public enum GenerateUtils {
             VarName = info1.getFiledName().toString();
 
             if (info1.isPersistence()) {//如果需要持久化存储，生成持久化存储代码
-                builder.append(preferenceTools.canonicalName() + ".put" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\",context." + VarName + ");\n");
+                builder.append( "PreferenceTools.put" + SomeUtils.Persistence_Method_SUFFIX.get(info1.getUnErasureTypeClassName()) + "(context,\"" + info1.getKey() + "\",context." + VarName + ");\n");
             }
             if (info1.isUseBundle()) {
                 builder.append("bundle." + SomeUtils.Bundle_PUT_DATA_PRE_CODE_MAP.get(info1.getTopLevelClassName()))

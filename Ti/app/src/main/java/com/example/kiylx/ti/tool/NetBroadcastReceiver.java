@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+
 /**
  * 创建者 kiylx
  * 创建时间 2020/5/24 23:05
@@ -11,6 +12,8 @@ import android.content.Intent;
 public class NetBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        if (("android.net.conn.CONNECTIVITY_CHANGE").equals(intent.getAction())) {
+            SomeTools.getXapplication().getStateManager().setNetWorkState(SomeTools.getNetState(context));
+        }
     }
 }

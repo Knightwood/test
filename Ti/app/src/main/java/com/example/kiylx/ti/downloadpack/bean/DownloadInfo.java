@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.downloadpack.base;
+package com.example.kiylx.ti.downloadpack.bean;
 
 import android.os.Environment;
 

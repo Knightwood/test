@@ -12,7 +12,7 @@ public class DataAutoSaveFieldInfo {
     private String fieldName;//被注解的变量的名称
     private String fieldType;//变量的类型
     private String topLevelClassName;//这个变量的类可能继承于其他的类，所以找到它继承自最开始的类,用于bundle存储
-    private String unErasureTypeClassName;//用于持久化存储
+    private String unErasureTypeClassName;//用于持久化存储,还保留泛型的类型名称
 
     private String dataName;//注解中的dataName字段。可以自己赋予以替代变量的名称
     private boolean persistence;//是否把它持久化存储

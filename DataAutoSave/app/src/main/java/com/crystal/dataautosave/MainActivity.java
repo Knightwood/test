@@ -1,11 +1,8 @@
 package com.crystal.dataautosave;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,10 +24,10 @@ public class MainActivity extends AppCompatActivity {
     @AutoSave
     public Ch[] testCh;
 
-    @AutoSave
-    public String[] array;
-    @AutoSave
-    public HashMap<String, String> hsahmap;
+    @AutoSave(Persistence = true)
+    public String[] array=new String[]{"hvjgb","jkbh"};
+    @AutoSave(Persistence = true)
+    public HashMap<String, String> hashMap =new HashMap<>();
     @AutoSave
     public Set<String> stringSet;
     @AutoSave
@@ -47,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        hashMap.put("kjsd","olll");
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.textView);
         textView.setText(testField);
@@ -71,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
                 //点击恢复数据
                 DataAutoSaveTools.restoreData(MainActivity.this, savedInstanceState, false);
                 textView.setText(testField);
-                test();
+
             }
         });
+
+
     }
 
     @Override
@@ -100,12 +99,4 @@ public class MainActivity extends AppCompatActivity {
         DataAutoSaveTools.saveData(MainActivity.this, outState, false);
     }
 
-    public void test() {
-        double pi = 3.14;
-        PreferenceTools.putNum(this, "jhjl", pi);
-
-        double ip = Double.parseDouble(PreferenceTools.getNum(this, "jhjl"));
-
-        Toast.makeText(this, "数字是:  " + ip, Toast.LENGTH_LONG).show();
-    }
 }

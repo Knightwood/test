@@ -69,6 +69,9 @@ public class PreferenceTools {
      *                </p>
      */
     public static <T> void putArrays(Context context, String key, T[] arrsys) {
+        if (arrsys==null||arrsys.length<=0){
+            return;
+        }
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(key, arrsys.length);
@@ -122,6 +125,9 @@ public class PreferenceTools {
     }
 
     public static void putStringSet(Context context, String key, Set<String> value) {
+        if (value==null||value.isEmpty()){
+            return;
+        }
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putStringSet(key, value);
@@ -146,7 +152,8 @@ public class PreferenceTools {
     }
 
     public static String[] getStringArray(Context context, String key) {
-        return (String[]) getStringList(context, key).toArray();
+        List<String> list = getStringList(context, key);
+        return list.toArray(new String[list.size()]);
     }
 
     enum StrCastBoolean {
@@ -187,6 +194,9 @@ public class PreferenceTools {
      * @param value   The new value for the preference
      */
     public static void putString(Context context, String key, String value) {
+        if (value==null){
+            return;
+        }
         SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key, value);
@@ -396,6 +406,9 @@ public class PreferenceTools {
      * @return
      */
     public static void putHashMap(Context context, String key, HashMap<String, String> map) {
+        if (map==null||map.isEmpty()){
+            return;
+        }
         SharedPreferences preferences = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         try {
@@ -457,7 +470,10 @@ public class PreferenceTools {
      * @param key
      * @param values
      */
-    public static void putStringList(Context context, String key, List<String> values) {
+    public static void putStringList(Context context, String key, List<String> values){
+        if (values==null||values.isEmpty()){
+            return;
+        }
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());
@@ -489,7 +505,10 @@ public class PreferenceTools {
      * @param key
      * @param values
      */
-    public static void putIntList(Context context, String key, List<Integer> values) {
+    public static void putIntList(Context context, String key, List<Integer> values){
+        if (values==null||values.isEmpty()){
+            return;
+        }
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());
@@ -522,6 +541,9 @@ public class PreferenceTools {
      * @param values
      */
     public static void putLongList(Context context, String key, List<Long> values) {
+        if (values==null||values.isEmpty()){
+            return;
+        }
         SharedPreferences.Editor edit = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         edit.putInt(key, values.size());

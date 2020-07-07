@@ -41,8 +41,9 @@ public class CustomAWebView extends WebView {
     }
 
     public CustomAWebView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        longClick();
+        this(context,attrs,0);
+        //super(context, attrs);
+        //longClick();
     }
 
     public CustomAWebView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -56,6 +57,8 @@ public class CustomAWebView extends WebView {
      * 识别类型，并通过拦截触摸事件获取的x，y值以及定义的处理连接的接口，来处理长按事件
      */
     private void longClick() {
+        if (handlerClick==null)
+            return;
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -103,8 +106,8 @@ public class CustomAWebView extends WebView {
     }
 
     /**
-     * 处理长按不同的url行为
-     * @param handleClickLinks
+     *
+     * @param handleClickLinks 处理长按不同的url行为的实现
      */
     public void setHandleClickLinks(HandleClickedLinks handleClickLinks) {
         this.handlerClick = handleClickLinks;
