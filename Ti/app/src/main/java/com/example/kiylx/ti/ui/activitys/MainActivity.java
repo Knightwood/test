@@ -614,7 +614,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         mTextView.requestFocus();
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.showSoftInput(mTextView, 0);
-        mTextView.selectAll();
+        //mTextView.selectAll();
         ViewStub stub = findViewById(R.id.viewStub_search_tool);
         if (stub != null) {
             mSearchToolView = stub.inflate();
@@ -1124,14 +1124,15 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
                 callback.invoke(origin, false, false);
                 return;
             }
+            //GeolocationPermissions.getInstance().allow(origin);
             new AlertDialog.Builder(MainActivity.this).setMessage("当前网址想要使用你的地理位置")
                     .setPositiveButton("允许", (dialog, which) -> {
-                        Log.d(TAG, "requestLocate: 位置请求成功");
                         callback.invoke(origin, true, false);
+                        Log.d(TAG, "requestLocate: 位置请求成功");
                     })
                     .setNegativeButton("拒绝", (dialog, which) -> {
-                        Log.d(TAG, "requestLocate: 位置请求失败");
                         callback.invoke(origin, false, false);
+                        Log.d(TAG, "requestLocate: 位置请求失败");
                     })
                     .setCancelable(false)
                     .show();

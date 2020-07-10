@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.mvp.presenter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
@@ -8,6 +9,7 @@ import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
@@ -42,7 +44,7 @@ public class WebSettingControl implements Observer {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public void ConfigWebview(WebView webView, AppCompatActivity context) {
+    public static void ConfigWebview(WebView webView, AppCompatActivity context,CookieManager cookieManager) {
         WebSettings settings = webView.getSettings();
 
         webView.canGoBack();
@@ -104,6 +106,9 @@ public class WebSettingControl implements Observer {
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         //启用地理位置
         settings.setGeolocationEnabled(true);
+        //设置定位的数据库路径
+        //String dir = Xapplication.getInstance().getDir("database", Context.MODE_PRIVATE).getPath();
+        //settings.setGeolocationDatabasePath(dir);
         //cookies设置
         cookieManager.setAcceptThirdPartyCookies(webView,PreferenceTools.getBoolean(context, "use_third_cookies", false) );
     }

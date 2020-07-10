@@ -4,13 +4,17 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
@@ -162,6 +166,43 @@ public class CustomWebchromeClient extends WebChromeClient {
         this.clientInterface = iupload;
     }
 
+    @Override
+    public void onCloseWindow(WebView window) {
+        super.onCloseWindow(window);
+    }
+
+    @Override
+    public void onGeolocationPermissionsHidePrompt() {
+        super.onGeolocationPermissionsHidePrompt();
+    }
+
+    @Override
+    public void onPermissionRequest(PermissionRequest request) {
+        super.onPermissionRequest(request);
+    }
+
+    @Override
+    public void onPermissionRequestCanceled(PermissionRequest request) {
+        super.onPermissionRequestCanceled(request);
+    }
+
+    @Nullable
+    @Override
+    public Bitmap getDefaultVideoPoster() {
+        return super.getDefaultVideoPoster();
+    }
+
+    @Nullable
+    @Override
+    public View getVideoLoadingProgressView() {
+        return super.getVideoLoadingProgressView();
+    }
+
+    @Override
+    public void getVisitedHistory(ValueCallback<String[]> callback) {
+        super.getVisitedHistory(callback);
+    }
+
     /**
      * @param origin
      * @param callback
@@ -169,8 +210,11 @@ public class CustomWebchromeClient extends WebChromeClient {
      */
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+        Log.d(TAG, "请求地理位置");
         if (clientInterface!=null){
            clientInterface.requestLocate(origin,callback);
         }
+
+        //super.onGeolocationPermissionsShowPrompt(origin, callback);
     }
 }

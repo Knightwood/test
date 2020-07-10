@@ -83,7 +83,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         //cookies设置
         cookieManager = CookieManager.getInstance();
         //webview的设置
-        mWebsettingControl = WebSettingControl.getInstance(SomeTools.getXapplication().getStateManager(), cookieManager);
+        //mWebsettingControl = WebSettingControl.getInstance(SomeTools.getXapplication().getStateManager(), cookieManager);
     }
 
     public static WebViewManager getInstance(@NonNull Context context, @NonNull HandleClickedLinks handleClickedLinks) {
@@ -108,8 +108,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         web.setHandleClickLinks(mHandleClickedLinks);
 
         web.setActionList();//点击浏览webview的菜单项
-
-        mWebsettingControl.ConfigWebview(web, appCompatActivity);
+        WebSettingControl.ConfigWebview(web, appCompatActivity,cookieManager);
         //给new出来的webview执行设置
         web.setWebViewClient(customWebviewClient);
         web.setWebChromeClient(customWebchromeClient);
@@ -135,7 +134,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         web.setActionList();//点击浏览webview的菜单项
 
-        mWebsettingControl.ConfigWebview(web, appCompatActivity);
+        WebSettingControl.ConfigWebview(web, appCompatActivity,cookieManager);
         //给new出来的webview执行设置
         web.setWebViewClient(customWebviewClient);
         web.setWebChromeClient(customWebchromeClient);
@@ -266,7 +265,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 刷新网页
      */
     public void reLoad(AppCompatActivity context) {
-        mWebsettingControl.ConfigWebview(getTop(MainActivity.getCurrent()), context);
+        WebSettingControl.ConfigWebview(getTop(MainActivity.getCurrent()), context,cookieManager);
         getTop(MainActivity.getCurrent()).reload();
     }
 

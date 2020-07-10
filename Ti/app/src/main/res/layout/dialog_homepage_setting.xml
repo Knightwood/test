@@ -56,6 +56,15 @@
                 android:focusable="true"
                 android:onClick="@{clicklister}"
                 android:text="@string/saveTomht" />
+            <TextView
+                android:id="@+id/show_pic"
+                style="@style/MenuItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{clicklister}"
+                android:text="@string/pictureMode"/>
         </LinearLayout>
 
         <ScrollView
@@ -178,7 +187,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@string/flash"
-                android:textAlignment="center" />
+                android:textAlignment="gravity" />
 
             <TextView
                 android:id="@+id/button_download"
@@ -197,7 +206,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@string/xiazai"
-                android:textAlignment="center" />
+                android:textAlignment="gravity" />
 
             <TextView
                 android:id="@+id/button_history"
@@ -215,7 +224,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@string/lishijilu"
-                android:textAlignment="center" />
+                android:textAlignment="gravity" />
 
             <TextView
                 android:id="@+id/button_bookmark"
@@ -233,7 +242,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@string/shuqian"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:textSize="14sp" />
 
             <TextView
@@ -253,7 +262,7 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@string/gongjuxiang"
-                android:textAlignment="center"
+                android:textAlignment="gravity"
                 android:textSize="14sp" />
         </LinearLayout>
 

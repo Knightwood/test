@@ -1,6 +1,8 @@
 package com.example.kiylx.ti.ui.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,7 +21,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
+import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.ShowPicMode;
+import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
@@ -58,9 +64,6 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homepageSettingBinding = DataBindingUtil.inflate(inflater, R.layout.dialog_homepage_setting, null, false);
-        //mRecyclerView= homepageSettingBinding.optionsRecyclerview;
-        //mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //updateUI(optionslist);
         homepageSettingBinding.setClicklister(this);
         return homepageSettingBinding.getRoot();
     }
@@ -87,7 +90,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
             }*/
             lp.gravity = Gravity.RIGHT | Gravity.BOTTOM;
             //lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setLayout(-2,-2);//第一个参数是宽度-1代表默认占满；第二个参数高度-2默认自适应高度（这两个参数也可以直接设置固定宽高）
+            window.setLayout(-2, -2);//第一个参数是宽度-1代表默认占满；第二个参数高度-2默认自适应高度（这两个参数也可以直接设置固定宽高）
             window.setBackgroundDrawable(new ColorDrawable(Color.rgb(255, 255, 255)));
             window.setWindowAnimations(R.style.animate_dialog);
             window.setDimAmount(0);//dialog周围全透明
@@ -147,12 +150,47 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.save_mht:
                 controlWebViewInterface.saveWeb();
+            case R.id.show_pic:
+                changePicMode();
                 break;
 
         }
         if (v.getId() != R.id.toolButton && v.getId() != R.id.back1)//既不是工具箱，也不是点击R.id.back1,就dismiss掉dialogFragment
             dismiss();
         Log.d(TAG, "onClick: " + v.getId());
+    }
+
+    /**
+     * 更改图片模式，影响网页图片显示
+     */
+    private void changePicMode() {
+        String[] menu = new String[]{"总是显示", "仅WIFI下显示", "禁止显示"};
+        int itemId=0;
+        ShowPicMode showPicMode = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(Xapplication.getInstance(), "showPicatureMode", "ALWAYS"));
+        switch (showPicMode){
+            case ALWAYS:
+                itemId=0;
+                break;
+            case JUSTWIFI:
+                itemId=1;
+                break;
+            case DONT:
+                itemId=2;
+                break;
+        }
+        new AlertDialog.Builder(getContext()).setSingleChoiceItems(menu,itemId, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    SomeTools.getXapplication().getStateManager().setShowPicMode(ShowPicMode.ALWAYS);
+                    break;
+                case 1:
+                    SomeTools.getXapplication().getStateManager().setShowPicMode(ShowPicMode.JUSTWIFI);
+                    break;
+                case 2:
+                    SomeTools.getXapplication().getStateManager().setShowPicMode(ShowPicMode.DONT);
+                    break;
+            }
+        }).setTitle("图片模式").create().show();
     }
 
     private void startDownload() {

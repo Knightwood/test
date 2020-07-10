@@ -41,9 +41,6 @@ public class StateManager extends Observable {
      */
     private void initData() {
         //netWorkState //初始化网络情况
-
-        //测试图片显示
-        showPicMode = ShowPicMode.JUSTWIFI;
         //获取当前网络状态
         netState=SomeTools.getCurrentNetwork(mContext.get());
     }
@@ -53,7 +50,7 @@ public class StateManager extends Observable {
      */
     private void initPreference() {
         DNT = DefaultPreferenceTool.getBoolean(mContext.get(), "dont_track", false);
-        //showPicMode = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(mContext.get(), "showPicatureMode", "ALWAYS"));
+        showPicMode = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(mContext.get(), "showPicatureMode", "ALWAYS"));
         isPrivacy = DefaultPreferenceTool.getBoolean(mContext.get(), "privacyMode", false);
 
     }
