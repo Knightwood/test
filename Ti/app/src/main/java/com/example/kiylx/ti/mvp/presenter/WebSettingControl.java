@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.mvp.presenter;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -22,6 +23,7 @@ import java.util.Observer;
  * 创建时间 2020/7/5 22:36
  */
 public class WebSettingControl implements Observer {
+    private static final String TAG = "webSteeing";
     private final Observable observable;
     private CookieManager cookieManager;
     private static WebSettingControl webSettingControl;
@@ -83,6 +85,7 @@ public class WebSettingControl implements Observer {
         settings.setAllowFileAccess(true);
         //settings.setNeedInitialFocus(true);
         //是否禁止图片显示
+       // Log.d(TAG, "ConfigWebview:应该图片显示？ "+SomeTools.getXapplication().getStateManager().canShowPic());
         settings.setBlockNetworkImage(!SomeTools.getXapplication().getStateManager().canShowPic());
         //设置WebView的访问UserAgent
         settings.setUserAgentString(PreferenceTools.getString(context, "user_agent", null));

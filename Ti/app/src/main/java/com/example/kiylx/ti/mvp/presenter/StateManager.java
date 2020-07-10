@@ -2,12 +2,14 @@ package com.example.kiylx.ti.mvp.presenter;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
-import com.example.kiylx.ti.Xapplication;
+
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.NetState;
+import com.example.kiylx.ti.tool.networkpack.NetState;
 import com.example.kiylx.ti.tool.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
+import com.example.kiylx.ti.tool.networkpack.NetworkMana;
 
 import java.lang.ref.WeakReference;
 import java.util.Observable;
@@ -18,28 +20,32 @@ import java.util.Observable;
  * 管理一些状态信息，使用观察者推送
  */
 public class StateManager extends Observable {
+    private static final String TAG = "stateManager";
     private WeakReference<Context> mContext;
 
     private ShowPicMode showPicMode;//是否显示网页图片，1：禁止显示图片；2：始终显示图片；3：在wifi下显示图片
     private boolean isPrivacy;//是否使用了隐私模式
     private boolean DNT;//是否发送不要跟踪的请求
-    private NetState netWorkState;//网络状态
+    private NetworkMana netWorkState;//网络状态集合
+    private NetState netState;//当前网络状态
 
 
     public StateManager(Context context) {
         mContext = new WeakReference<>(context);
         initData();
         initPreference();
-
     }
 
     /**
      * 初始化全局数据
      */
     private void initData() {
-        netWorkState = SomeTools.getNetState(Xapplication.getInstance());//初始化网络情况
+        //netWorkState //初始化网络情况
+
         //测试图片显示
-        showPicMode=ShowPicMode.JUSTWIFI;
+        showPicMode = ShowPicMode.JUSTWIFI;
+        //获取当前网络状态
+        netState=SomeTools.getCurrentNetwork(mContext.get());
     }
 
     /**
@@ -62,7 +68,11 @@ public class StateManager extends Observable {
      * 其余情况都是返回true，也就是可以显示图片，即使没有网络
      */
     public boolean canShowPic() {
-        if (showPicMode == ShowPicMode.DONT || (showPicMode == ShowPicMode.JUSTWIFI && netWorkState == NetState.DATA)) {
+        if (showPicMode == ShowPicMode.DONT) {//禁止显示图片或是没有网络连接
+            return false;
+        }
+
+        if (showPicMode == ShowPicMode.JUSTWIFI && netState==NetState.DATA) {
             return false;
         }
         return true;
@@ -91,13 +101,13 @@ public class StateManager extends Observable {
         this.DNT = DNT;
     }
 
-    public NetState getNetWorkState() {
+    public NetworkMana getNetWorkState() {
         return netWorkState;
     }
 
-    public void setNetWorkState(NetState netWorkState) {
+    public void setNetWorkState(NetworkMana netWorkState) {
         this.netWorkState = netWorkState;
-
+        Log.d(TAG, "setNetWorkState: data " + netWorkState.get(NetState.DATA) + "  wifi: " + netWorkState.get(NetState.WIFI));
     }
 
     /**
@@ -108,4 +118,11 @@ public class StateManager extends Observable {
         notifyObservers();
     }
 
+    public NetState getNetState() {
+        return netState;
+    }
+
+    public void setNetState(NetState netState) {
+        this.netState = netState;
+    }
 }

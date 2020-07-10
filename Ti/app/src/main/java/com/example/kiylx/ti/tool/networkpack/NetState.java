@@ -1,4 +1,6 @@
-package com.example.kiylx.ti.tool;
+package com.example.kiylx.ti.tool.networkpack;
+
+import java.util.Map;
 
 /**
  * 创建者 kiylx
@@ -6,5 +8,6 @@ package com.example.kiylx.ti.tool;
  * 网络状况，使用wifi，使用流量，关闭网络三种状态
  */
 public enum NetState {
-    WIFI,DATA,OFF
+    WIFI,DATA,OFF,ON,OTHER;
+
 }

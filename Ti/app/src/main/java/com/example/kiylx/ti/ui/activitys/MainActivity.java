@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -43,11 +43,13 @@ import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;
+import com.example.kiylx.ti.tool.networkpack.NetState;
+import com.example.kiylx.ti.tool.networkpack.NetworkLiveData;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.NetBroadcastReceiver;
+import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
@@ -124,6 +126,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         firstInstall();//判断是不是第一次安装
         setContentView(R.layout.activity_main);
 
@@ -179,14 +182,42 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
-
-        testContext();
     }
 
     @Override
     protected void initActivity(BaseLifecycleObserver observer) {
         observer = new MainLifeCycleObserver(this);
         getLifecycle().addObserver(observer);
+        //registerBroadCast();//注册广播，监听网络变化
+        listenNetWork();
+        Log.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
+    }
+    NetworkLiveData liveData;
+    /**
+     * 监听网络状态变化
+     */
+    private void listenNetWork() {
+        liveData=NetworkLiveData.getInstance();
+        liveData.observe(this, new Observer<NetState>() {
+            @Override
+            public void onChanged(NetState netState) {
+               /*
+               //测试状态的代码
+                switch (netState){
+                    case OFF:
+                        Toast.makeText(MainActivity.this,"网络已关闭",Toast.LENGTH_LONG).show();
+                        break;
+                    case WIFI:
+                        Toast.makeText(MainActivity.this,"wifi",Toast.LENGTH_LONG).show();
+                        break;
+                    case DATA:
+                        Toast.makeText(MainActivity.this,"data",Toast.LENGTH_LONG).show();
+                        break;
+
+                }*/
+                SomeTools.getXapplication().getStateManager().setNetState(netState);
+            }
+        });
     }
 
     /**
@@ -236,8 +267,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         EventBus.getDefault().register(this);
         bar = findViewById(R.id.webviewProgressBar);
         mWebViewManager.setOnUpdateProgress(this);
-
-        registerBroadCast();//注册广播，监听网络变化
     }
 
 

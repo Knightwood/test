@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.ui.base;
 
-import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
@@ -8,14 +7,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
-import com.example.kiylx.ti.tool.NetBroadcastReceiver;
+import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 
 /**
  * 创建者 kiylx
  * 创建时间 2020/6/12 17:28
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    public BroadcastReceiver receiver;
+    public NetBroadcastReceiver receiver;
     private BaseLifecycleObserver lifecycleObserver;
 
     @Override
@@ -29,7 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unRegisterBroadCast();
+        //unRegisterBroadCast();
     }
 
     /**
