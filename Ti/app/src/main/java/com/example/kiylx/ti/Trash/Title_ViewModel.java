@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.trash;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;

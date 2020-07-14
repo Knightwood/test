@@ -15,9 +15,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 import com.example.kiylx.ti.tool.SomeTools;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -25,12 +26,15 @@ import java.util.List;
 
 public class CustomWebviewClient extends WebViewClient {
     private Context mContext;
+    private JsManager jsManager;
     private static NotifyWebViewUpdate mNotifyWebViewUpdate;
 
 
-    public CustomWebviewClient(Context context){
+    public CustomWebviewClient(Context context, @NotNull JsManager jsManager){
         //用构造函数把context传进来，用来初始化getTitle接口，此接口用来传回网页标题
         mContext=context;
+        //jsmanager
+        this.jsManager=jsManager;
     }
     public static void setInterface(NotifyWebViewUpdate minterface) {
         CustomWebviewClient.mNotifyWebViewUpdate = minterface;
@@ -136,6 +140,7 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        jsManager.injectJsCode(view);
         super.onPageStarted(view, url, favicon);
 
     }
@@ -148,6 +153,7 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
+        jsManager.exeJsCode(view);
         // 更新工具栏上的文字
         super.onPageFinished(view, url);
     }

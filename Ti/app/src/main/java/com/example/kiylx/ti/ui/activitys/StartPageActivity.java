@@ -4,7 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

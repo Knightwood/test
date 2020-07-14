@@ -1,41 +1,42 @@
 package com.example.kiylx.ti.mvp.presenter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 
-import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.db.historydb2.HistoryEntity;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.ProcessUrl;
 import com.example.kiylx.ti.tool.SomeTools;
+import com.example.kiylx.ti.tool.networkpack.NetState;
+import com.example.kiylx.ti.tool.networkpack.NetworkLiveData;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.webview32.CustomWebchromeClient;
 import com.example.kiylx.ti.webview32.CustomWebviewClient;
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.trash.AboutHistory;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
-import com.example.kiylx.ti.tool.PreferenceTools;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
-import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
-import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
-import com.example.kiylx.ti.tool.EventMessage;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.SealedWebPageInfo;
+import com.example.kiylx.ti.webview32.JsManager;
+import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
+import com.example.kiylx.ti.webview32.WebSettingControl;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,22 +58,30 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private CustomWebchromeClient customWebchromeClient;
     private List<WebView> trashList;//要删除的webview先转移到这里，之后整体删除，避免在原list中操作耗时
     private CookieManager cookieManager;
+    private JsManager jsManager;
     private WebSettingControl mWebsettingControl;//webview的设置
 
     private AboutHistory aboutHistory;
     private HandleClickedLinks mHandleClickedLinks;//mainactivity实现的处理长按事件的方法
     private NotifyWebViewUpdate mUpdateInterface;
     private UpdateProgress mUpdateProgress;//更新网页加载进度的接口
+    private WeakReference<AppCompatActivity> appCompatActivityWeakReference = null;
+    private NetworkLiveData networkLiveData;
+    private SuggestLiveData suggestLiveData;
 
-    private WebViewManager(Context context, HandleClickedLinks handleClickedLinks) {
+    private WebViewManager(AppCompatActivity context, HandleClickedLinks handleClickedLinks) {
+        if (appCompatActivityWeakReference == null)
+            appCompatActivityWeakReference = new WeakReference<>(context);
         aboutHistory = AboutHistory.get(context);
 
         if (webViewArrayList == null) {
             webViewArrayList = new ArrayList<>();
-            //tmpData = new WebPage_Info(null, null, null, 0, null);
         }
+        //js代码注入管理器
+        jsManager=JsManager.getInstance();
+
         customWebchromeClient = new CustomWebchromeClient();
-        customWebviewClient = new CustomWebviewClient(context);
+        customWebviewClient = new CustomWebviewClient(context,jsManager);
 
         mHandleClickedLinks = handleClickedLinks;
 
@@ -84,9 +93,13 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         cookieManager = CookieManager.getInstance();
         //webview的设置
         //mWebsettingControl = WebSettingControl.getInstance(SomeTools.getXapplication().getStateManager(), cookieManager);
+
+        //监听livedata
+        listenNetWork();
+        listenSuggest();
     }
 
-    public static WebViewManager getInstance(@NonNull Context context, @NonNull HandleClickedLinks handleClickedLinks) {
+    public static WebViewManager getInstance(@NonNull AppCompatActivity context, @NonNull HandleClickedLinks handleClickedLinks) {
         if (sWebViewManager == null) {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
@@ -108,12 +121,14 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         web.setHandleClickLinks(mHandleClickedLinks);
 
         web.setActionList();//点击浏览webview的菜单项
-        WebSettingControl.ConfigWebview(web, appCompatActivity,cookieManager);
+        WebSettingControl.ConfigWebview(web, appCompatActivity, cookieManager);
         //给new出来的webview执行设置
         web.setWebViewClient(customWebviewClient);
         web.setWebChromeClient(customWebchromeClient);
-        //添加js，用来展开菜单的方法。
-        web.MenuJSInterface();
+
+        //js与java的代码映射
+        jsManager.addJSInterface(web);
+
         web.loadUrl(url);
 
         addInWebManager(web, pos);
@@ -134,12 +149,13 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         web.setActionList();//点击浏览webview的菜单项
 
-        WebSettingControl.ConfigWebview(web, appCompatActivity,cookieManager);
+        WebSettingControl.ConfigWebview(web, appCompatActivity, cookieManager);
         //给new出来的webview执行设置
         web.setWebViewClient(customWebviewClient);
         web.setWebChromeClient(customWebchromeClient);
-        //添加js，用来展开菜单的方法。
-        web.MenuJSInterface();
+
+        //js与java的代码映射
+        jsManager.addJSInterface(web);
 
         addInWebManager(web, pos);
         return web;
@@ -149,7 +165,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * @param url 网址
      * @return 若传入的url是null，返回默认网址，否则，不做处理，直接返回
      */
-    public String procressUrl(String url){
+    public String procressUrl(String url) {
         String home_url;
         if (url == null) {
             //条件true时获取自定义网址，是false时则使用默认主页
@@ -265,7 +281,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 刷新网页
      */
     public void reLoad(AppCompatActivity context) {
-        WebSettingControl.ConfigWebview(getTop(MainActivity.getCurrent()), context,cookieManager);
+        WebSettingControl.ConfigWebview(getTop(MainActivity.getCurrent()), context, cookieManager);
         getTop(MainActivity.getCurrent()).reload();
     }
 
@@ -459,6 +475,9 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         new Thread(new UpdateThread(title, url)).start();
     }
 
+    /**
+     * 插入数据库
+     */
     private static class InsertThread implements Runnable {
         private WebPage_Info info;
 
@@ -594,6 +613,48 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
     public void setOnUpdateProgress(UpdateProgress mInterface) {
         this.mUpdateProgress = mInterface;
+    }
+
+    /**
+     * 监听网络状态变化
+     */
+    private void listenNetWork() {
+        networkLiveData = NetworkLiveData.getInstance();
+        networkLiveData.observe(appCompatActivityWeakReference.get(), new Observer<NetState>() {
+            @Override
+            public void onChanged(NetState netState) {
+               /*
+               //测试状态的代码
+                switch (netState){
+                    case OFF:
+                        Toast.makeText(MainActivity.this,"网络已关闭",Toast.LENGTH_LONG).show();
+                        break;
+                    case WIFI:
+                        Toast.makeText(MainActivity.this,"wifi",Toast.LENGTH_LONG).show();
+                        break;
+                    case DATA:
+                        Toast.makeText(MainActivity.this,"data",Toast.LENGTH_LONG).show();
+                        break;
+
+                }*/
+                SomeTools.getXapplication().getStateManager().setNetState(netState);
+            }
+        });
+    }
+
+    /**
+     * 监听js代码传过来的搜索建议列表
+     */
+    private void listenSuggest() {
+        suggestLiveData = SuggestLiveData.getInstance();
+        suggestLiveData.observe(appCompatActivityWeakReference.get(), new Observer<String[]>() {
+            @Override
+            public void onChanged(String[] result) {
+                for (int i = 0; i < result.length; i++) {
+                    Log.d(TAG, "giveSuggest: " + result[i]);
+                }
+            }
+        });
     }
 
 }

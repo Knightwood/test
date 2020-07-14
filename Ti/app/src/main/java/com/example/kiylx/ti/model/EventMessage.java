@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.tool;
+package com.example.kiylx.ti.model;
 
 /**
  * 创建者 kiylx

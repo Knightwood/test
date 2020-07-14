@@ -1,16 +1,10 @@
 package com.example.kiylx.ti.ui.setting2;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -18,12 +12,11 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 
 /**
  * 创建者 kiylx
@@ -60,7 +53,7 @@ public class WebTextSizeFragment extends Fragment {
         webView = (WebView) v.findViewById(R.id.textsize_webview);
         webView.setWebViewClient(new WebViewClient());
         webView.getSettings().setTextZoom(defTextSize);//初始化显示的文字大小
-        webView.loadUrl("file:///android_asset/firstHtml.html");
+        webView.loadUrl("file:///android_asset/TextSizeHtml.html");
 
         seekBar = v.findViewById(R.id.textSizeSeekBar);
         seekBar.setProgress(defTextSize-50);//初始化滑动条

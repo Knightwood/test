@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.ui.setting2;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,10 +14,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.tool.HashMapProcess;
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 
 import java.util.HashMap;
 

@@ -64,28 +64,28 @@
     <!--preference-->
     <string name="useCustomHomepage_key">home_page_default</string><!--是否使用自定义主页key-->
     <string name="homepageurl_key"> home_page_url</string><!--自定义主页网址key-->
-    <string name="searchengine_key">search_engine</string><!--默认搜索引擎key-->
-    <string name="searchengineList_key">search_engine_list</string><!--内置搜索引擎列表 的key-->
-    <string name="customsearchengine_key">custom_search_engine</string><!--自定义搜索引擎的key，自定义的不一定会设置为默认，所以，这一项是为了在自定义的那项不是默认值时也能记住自定义的值-->
+    <!--<string name="searchengine_key">search_engine</string>--><!--默认搜索引擎key-->
+    <!--<string name="searchengineList_key">search_engine_list</string>--><!--内置搜索引擎列表 的key-->
+    <!-- <string name="customsearchengine_key">custom_search_engine</string>--><!--自定义搜索引擎的key，自定义的不一定会设置为默认，所以，这一项是为了在自定义的那项不是默认值时也能记住自定义的值-->
     <string name="customDownload_key">custom_download_listener</string><!--是否使用软件内置下载器key-->
-    <string name="userAgent_key">user_agent</string><!--默认浏览器标识key-->
-    <string name="userAgentList_key">useragent_list</string><!--浏览器标识列表key-->
-    <string name="deleteData_key">clean_data</string><!--清除数据key-->
-    <string name="textZoomPercentage_key">text_zoom</string><!--字体缩放key-->
-    <string name="textZoomList_key">text_zoom_list</string><!--字体缩放列表key-->
+    <!--<string name="userAgent_key">user_agent</string>--><!--默认浏览器标识key-->
+    <!--<string name="userAgentList_key">useragent_list</string>--><!--浏览器标识列表key-->
+    <!--<string name="deleteData_key">clean_data</string>--><!--清除数据key-->
+    <!--<string name="textZoomPercentage_key">text_zoom</string>--><!--字体缩放key-->
+    <!--<string name="textZoomList_key">text_zoom_list</string>--><!--字体缩放列表key-->
     <string name="resumeData_key">resume_data</string><!--是否打开恢复上次网址key-->
-    <string name="defaultDownloadPath_key">def_download_path</string><!--下载路径-->
-    <string name="defaultDownloadlimit_key">def_download_limit</string><!--下载数量限制-->
-    <string name="defaultDownloadthread_key">def_download_thread</string><!--下载线程数-->
+    <!--<string name="defaultDownloadPath_key">def_download_path</string>--><!--下载路径-->
+    <!--<string name="defaultDownloadlimit_key">def_download_limit</string>--><!--下载数量限制-->
+    <!--<string name="defaultDownloadthread_key">def_download_thread</string>--><!--下载线程数-->
     <string name="uploadMode_key">def_upload_mode</string><!--false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。-->
     <string name="SearchViewStyle_key">searchview_style</string><!--搜索页面样式，false是旧的样式，true是新样式-->
     <string name="searchSuggest_key">search_suggest</string><!--是否使用搜索匹配，false是不启用，true是启用-->
-    <string name="useCookies">use_cookies</string><!--是否使用cookies的key-->
+    <!--<string name="useCookies">use_cookies</string>--><!--是否使用cookies的key-->
     <string name="useThirdCookies">use_third_cookies</string><!--是否使用第三方cookie的key-->
-    <string name="PictureMode">picture mode</string><!--图片模式的key，仅wifi下加载图片，一直加载图片-->
-    <string name="useJavascript">use_javascript</string><!--是否使用js的key-->
+    <!--<string name="PictureMode">picture mode</string>--><!--图片模式的key，仅wifi下加载图片，一直加载图片-->
+    <!--<string name="useJavascript">use_javascript</string>--><!--是否使用js的key-->
     <string name="donotTrack">dont_track</string><!--发送不跟踪请求的key-->
-    <string name="webRequestLocate">web_request_locate</string><!--是否允许站点访问地理位置key-->
+    <!--<string name="webRequestLocate">web_request_locate</string>--><!--是否允许站点访问地理位置key-->
     <string name="exitCleanData">exit_clean_data</string><!--退出时清除浏览数据-->
 
     <!--userAgent-->

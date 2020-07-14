@@ -1,19 +1,16 @@
-package com.example.kiylx.ti.mvp.presenter;
+package com.example.kiylx.ti.webview32;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 

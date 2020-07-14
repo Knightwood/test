@@ -5,7 +5,7 @@ import android.webkit.DownloadListener;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;

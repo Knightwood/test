@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
@@ -43,21 +42,19 @@ import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;
-import com.example.kiylx.ti.tool.networkpack.NetState;
-import com.example.kiylx.ti.tool.networkpack.NetworkLiveData;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.tool.SomeTools;
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
-import com.example.kiylx.ti.tool.EventMessage;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.MultPage_Dialog;
@@ -99,13 +96,11 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
     private FrameLayout f1;//放置webview的容器
     private EditText mTextView;//主界面的工具栏里的搜索框
-    //private ActivityMainBinding mainBinding;//用于更新搜索框标题的databinding
     private View matcheTextView;//搜索webview文字的搜索框
     private MultPage_Dialog md;//多窗口dialogFragment
     private HandleClickedLinks handleClickedLinks;
     private ControlWebView controlInterface;
     private static boolean seviceBund = false;//绑定服务时把它改为true；
-    //private boolean isHide;//控制toolbar上菜单的显示与隐藏
     private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
     private boolean isOpenedEdit = false;//是否打开了搜索栏上的搜索框
     private ImageView menuButton;//底部菜单按钮
@@ -188,36 +183,8 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     protected void initActivity(BaseLifecycleObserver observer) {
         observer = new MainLifeCycleObserver(this);
         getLifecycle().addObserver(observer);
-        //registerBroadCast();//注册广播，监听网络变化
-        listenNetWork();
-        Log.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
-    }
-    NetworkLiveData liveData;
-    /**
-     * 监听网络状态变化
-     */
-    private void listenNetWork() {
-        liveData=NetworkLiveData.getInstance();
-        liveData.observe(this, new Observer<NetState>() {
-            @Override
-            public void onChanged(NetState netState) {
-               /*
-               //测试状态的代码
-                switch (netState){
-                    case OFF:
-                        Toast.makeText(MainActivity.this,"网络已关闭",Toast.LENGTH_LONG).show();
-                        break;
-                    case WIFI:
-                        Toast.makeText(MainActivity.this,"wifi",Toast.LENGTH_LONG).show();
-                        break;
-                    case DATA:
-                        Toast.makeText(MainActivity.this,"data",Toast.LENGTH_LONG).show();
-                        break;
 
-                }*/
-                SomeTools.getXapplication().getStateManager().setNetState(netState);
-            }
-        });
+        Log.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
     }
 
     /**
@@ -584,6 +551,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
      */
     public void searchBar(View v) {
         openSearchEdit();
+        mWebViewManager.getTop(current).evaluateJavascript("javascript:getSuggest()",null);
         /*if (useNewSearchStyle) {
             openSearchEdit();
         } else {
@@ -1050,7 +1018,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         public void printPdf() {
             WebView tmp = mWebViewManager.getTop(current);
             someTools.printPdf(tmp);
-
         }
     }
 

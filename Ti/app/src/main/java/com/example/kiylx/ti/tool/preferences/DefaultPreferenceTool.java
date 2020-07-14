@@ -1,8 +1,10 @@
-package com.example.kiylx.ti.tool;
+package com.example.kiylx.ti.tool.preferences;
 
 import android.content.Context;
 
 import androidx.preference.PreferenceManager;
+
+import com.example.kiylx.ti.tool.ConvertHashmapAndString;
 
 import java.io.IOException;
 import java.util.HashMap;

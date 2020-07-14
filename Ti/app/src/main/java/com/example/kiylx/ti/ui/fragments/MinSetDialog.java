@@ -2,7 +2,6 @@ package com.example.kiylx.ti.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,8 +22,8 @@ import android.view.WindowManager;
 
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.ShowPicMode;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
+import com.example.kiylx.ti.model.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;

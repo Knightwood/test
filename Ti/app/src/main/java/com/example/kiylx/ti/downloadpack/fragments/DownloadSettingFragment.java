@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import com.crystal.customview.fileindexview.SelectFolderFragment;
 import com.crystal.customview.numberpickerview.numberPicker;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 
 public class DownloadSettingFragment extends Fragment {

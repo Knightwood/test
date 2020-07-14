@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.tool;
+package com.example.kiylx.ti.tool.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;

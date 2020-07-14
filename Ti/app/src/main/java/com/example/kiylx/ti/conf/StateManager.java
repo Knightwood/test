@@ -1,13 +1,13 @@
-package com.example.kiylx.ti.mvp.presenter;
+package com.example.kiylx.ti.conf;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 
-import com.example.kiylx.ti.tool.DefaultPreferenceTool;
+import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.networkpack.NetState;
-import com.example.kiylx.ti.tool.ShowPicMode;
+import com.example.kiylx.ti.model.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.networkpack.NetworkMana;
 

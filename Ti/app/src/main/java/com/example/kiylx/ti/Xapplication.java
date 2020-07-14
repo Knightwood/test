@@ -3,7 +3,7 @@ package com.example.kiylx.ti;
 import android.app.Application;
 import android.content.Context;
 
-import com.example.kiylx.ti.mvp.presenter.StateManager;
+import com.example.kiylx.ti.conf.StateManager;
 
 /**
  * 创建者 kiylx

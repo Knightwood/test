@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.tool.EventMessage;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.model.MultiPage_Bean;
 import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.R;

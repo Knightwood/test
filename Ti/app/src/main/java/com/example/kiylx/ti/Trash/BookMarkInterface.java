@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.interfaces;
+package com.example.kiylx.ti.trash;
 
 import com.example.kiylx.ti.model.WebPage_Info;
 

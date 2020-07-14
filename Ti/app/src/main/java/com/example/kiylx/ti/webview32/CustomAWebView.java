@@ -19,6 +19,8 @@ import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.interfaces.ActionSelectListener;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
+import com.example.kiylx.ti.webview32.nestedjspack.NestedJsCode;
+import com.example.kiylx.ti.webview32.nestedjspack.Suggestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import java.util.List;
 
 public class CustomAWebView extends WebView {
 
-    static String TAG = "CustomActionWebView";
+    private static String TAG = "CustomActionWebView";
 
     ActionMode mActionMode;
     List<String> mActionList = new ArrayList<>();
@@ -41,9 +43,7 @@ public class CustomAWebView extends WebView {
     }
 
     public CustomAWebView(Context context, AttributeSet attrs) {
-        this(context,attrs,0);
-        //super(context, attrs);
-        //longClick();
+        this(context, attrs, 0);
     }
 
     public CustomAWebView(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -57,8 +57,7 @@ public class CustomAWebView extends WebView {
      * 识别类型，并通过拦截触摸事件获取的x，y值以及定义的处理连接的接口，来处理长按事件
      */
     private void longClick() {
-        if (handlerClick==null)
-            return;
+        Log.d(TAG, "longClick: 触发长按");
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -67,7 +66,7 @@ public class CustomAWebView extends WebView {
                     return false;
                 }
                 int type = result.getType();
-                String extra=result.getExtra();
+                String extra = result.getExtra();
                 switch (type) {
                     case HitTestResult.SRC_IMAGE_ANCHOR_TYPE://带图片的超链接
                     /*if (handlerClick!=null&&extra!=null&&URLUtil.isValidUrl(extra)){
@@ -75,13 +74,13 @@ public class CustomAWebView extends WebView {
 
                     }return true;*/
                     case HitTestResult.SRC_ANCHOR_TYPE://超链接
-                        if (handlerClick !=null&&extra!=null&& URLUtil.isValidUrl(extra)){
-                            handlerClick.onLinkSelected(touchX,touchY,result.getType(),extra);
+                        if (handlerClick != null && extra != null && URLUtil.isValidUrl(extra)) {
+                            handlerClick.onLinkSelected(touchX, touchY, result.getType(), extra);
                         }
-                       return true;
+                        return true;
                     case HitTestResult.IMAGE_TYPE://图片类型
-                        if (handlerClick !=null&&extra!=null&& URLUtil.isValidUrl(extra)){//URLUtil.isValidUrl(extra)是否是有效链接
-                            handlerClick.onImgSelected(touchX,touchY,result.getType(),extra);
+                        if (handlerClick != null && extra != null && URLUtil.isValidUrl(extra)) {//URLUtil.isValidUrl(extra)是否是有效链接
+                            handlerClick.onImgSelected(touchX, touchY, result.getType(), extra);
                         }
                         return true;
                     case HitTestResult.EDIT_TEXT_TYPE://文字
@@ -95,8 +94,7 @@ public class CustomAWebView extends WebView {
 
     /**
      * @param event 触摸事件
-     * @return
-     * 获取触摸的x,y值
+     * @return 获取触摸的x, y值
      */
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
@@ -106,7 +104,6 @@ public class CustomAWebView extends WebView {
     }
 
     /**
-     *
      * @param handleClickLinks 处理长按不同的url行为的实现
      */
     public void setHandleClickLinks(HandleClickedLinks handleClickLinks) {
@@ -118,8 +115,8 @@ public class CustomAWebView extends WebView {
         super.saveWebArchive(filename);
         /*BaseThread baseThread= new BaseThread(new DownloadEntity(filename.substring(filename.lastIndexOf("/"),filename.lastIndexOf(".")),filename,-2),this::insertDownloadInfo);
         baseThread.start();*/
-        Toast.makeText(getContext(),"以保存至Download文件夹",Toast.LENGTH_LONG).show();
-        Log.d(TAG, "saveWebArchive1: "+filename);
+        Toast.makeText(getContext(), "以保存至Download文件夹", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "saveWebArchive1: " + filename);
     }
 
     @Override
@@ -210,8 +207,8 @@ public class CustomAWebView extends WebView {
      * @param title 传入点击的item文本，一起通过js返回给原生接口
      */
     private void getSelectedData(String title) {
-
-        String js = "(function getSelectedText() {" +
+        String js = String.format(NestedJsCode.jsmenu, title);
+        /*String js = "(function getSelectedText() {" +
                 "var txt;" +
                 "var title = \"" + title + "\";" +
                 "if (window.getSelection) {" +
@@ -222,16 +219,8 @@ public class CustomAWebView extends WebView {
                 "txt = window.document.selection.createRange().text;" +
                 "}" +
                 "JSInterface.callback(txt,title);" +
-                "})()";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                "})()";*/
             evaluateJavascript("javascript:" + js, null);
-        } else {
-            loadUrl("javascript:" + js);
-        }
-    }
-
-    public void MenuJSInterface() {
-        addJavascriptInterface(new ActionSelectInterface(this), "JSInterface");
     }
 
     /**
@@ -261,7 +250,7 @@ public class CustomAWebView extends WebView {
 
 
     /**
-     * js选中的回掉接口
+     * js选中的回调接口
      */
     private class ActionSelectInterface {
 

@@ -22,10 +22,10 @@ import java.util.Map;
  * 创建时间 2020/7/9 14:11
  */
 public class NetworkLiveData extends LiveData<NetState> {
+    private static NetworkLiveData mInstance;
     private static final String TAG = "监听网络livedata";
 
     private Map<NetState, Boolean> netWorkState;//网络状态
-    private static NetworkLiveData mInstance;
 
     private ConnectivityManager connectivityManager;
     private NetworkRequest request;

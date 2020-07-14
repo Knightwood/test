@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.model;
+package com.example.kiylx.ti.trash;
 
 /**
  * 主界面的设置选项模型

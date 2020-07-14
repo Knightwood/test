@@ -19,7 +19,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.tool.HashMapProcess;
-import com.example.kiylx.ti.tool.PreferenceTools;
+import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 
 import java.util.HashMap;
 

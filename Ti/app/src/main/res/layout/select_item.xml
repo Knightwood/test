@@ -2,14 +2,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <!--当前废弃，曾作为搜索引擎列表设计中的item的view-->
 
     <data>
         <variable
             name="search_engine"
-            type="com.example.kiylx.ti.model.Title_ViewModel" />
+            type="com.example.kiylx.ti.trash.Title_ViewModel" />
         <variable
             name="check"
-            type="com.example.kiylx.ti.model.Checked_item" />
+            type="com.example.kiylx.ti.trash.searchenginelist.Checked_item" />
 
     </data>
 

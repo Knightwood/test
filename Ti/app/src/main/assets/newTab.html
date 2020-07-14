@@ -15,6 +15,7 @@
             document.getElementById("userAgentDiv").innerHTML = navigator.userAgent;
         }
 
+
 </script>
 <!--</body>
 <body>-->
@@ -28,12 +29,14 @@
         }
 
 
+
 </style>
 <script>
         var display = function(){
             var path = document.getElementById("file_chooser").textContent;
             document.getElementById("filechooser_display").innerHTML("<b>"+path+"</b>");
         }
+
 
 
 </script>
@@ -85,14 +88,52 @@ function showError(error)
       break;
     }
   }
+
 </script>
 
 </body>
 <br>
 <a href="http://192.168.1.10/D%3A" title="计算机" target="_blank">新窗口打开链接</a>
 
+<!--测试浏览器建议-->
+<!--点击按钮则调用call函数-->
+<br>
+<button type="button" id="button_sug0" onclick="getSuggest()">js回调</button>
+//<button type="button" id="button_sug1" onclick="getSuggest('天气')">js回调</button>
+//<button type="button" id="button_sug2" onclick="getSuggest('jk')">js回调</button>
+<!--<script type="text/javascript">
 
-<!--cookies-->
+            function getSuggest(str) {
+
+                //组装查询地址
+                var sugurl = "https://sug.so.360.cn/suggest?encodein=utf-8&encodeout=utf-8&format=json&word=#content#&callback=window.so.sug";
+                //var content = "关键字";
+                sugurl = sugurl.replace("#content#", str);
+
+                //定义回调函数
+                window.so = {
+                    sug: function(json) {
+                    var x=[];
+                    for (i = 0; i < json.result.length; i++) {
+                        var str=json.result[i].word;
+                        console.log(str  + "\n");
+                        x.push(str);
+                    }
+                       SuggestJS.giveSuggest(x)
+                    }
+                }
+
+                //动态添加JS脚本
+                var script = document.createElement("script");
+               script.src = sugurl;
+                document.body.appendChild(script);
+                //document.getElementsByTagName("head")[0].appendChild(script);
+
+            }
+
+
+</script>-->
+
 
 </body>
 </html>
