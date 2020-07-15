@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
@@ -38,6 +41,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.crystal.customview.baseadapter1.BaseAdapter;
+import com.crystal.customview.baseadapter1.BaseHolder;
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
@@ -68,18 +73,20 @@ import com.example.kiylx.ti.mvp.presenter.WebViewManager;
 import com.example.kiylx.ti.ui.fragments.MinSetDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.ProcessUrl;
+import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends BaseActivity implements MultiDialog_Functions, WebViewManager.UpdateProgress {
     private static final String TAG = "MainActivity";
-    private static final String CURRENT_URL = "current url";
     private static final String OPENED_EDIT = "opened_edit";
 
     public static int current = 0;//静态变量，保存current的值，防止activity被摧毁时重置为0；
@@ -130,7 +137,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         //实现控制webview的接口
         implControlexplorer();
         //获取WebViewManager的实例
-        mWebViewManager = WebViewManager.getInstance(MainActivity.this, handleClickedLinks);
+        mWebViewManager = WebViewManager.newInstance(MainActivity.this, handleClickedLinks);
 
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
@@ -247,15 +254,14 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     @Override
     protected void onPause() {
         super.onPause();
-        if (isOpenedEdit)
-            closeSearchEdit();
         Log.d("lifecycle", "onPause()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mWebViewManager.getTop(current).onPause();
+        if (!isOpenedEdit)//如果打开了搜索，就不停止当前的webview，如此，可以获得搜索建议
+            mWebViewManager.getTop(current).onPause();
         //f1.removeAllViews();//移除所有视图
         EventBus.getDefault().unregister(this);
         Log.d("lifecycle", "onStop()");
@@ -313,10 +319,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         // Check if the key event was the Back button and if there's history
         //这里还要处理其他的返回事件,当返回true，事件就不再向下传递，也就是处理完这个事件就让别的再处理
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (isOpenedEdit) {
-                closeSearchEdit();
-                return true;
-            }
             if (isOpenedSearchText) {
                 //先处理webview的文本搜索
                 closeMatchesText();
@@ -545,180 +547,14 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     }
 
     /**
-     * 搜索框代码,由activity_main.xml中的搜索框调用
-     * false是旧样式
-     * true是新样式
+     * 搜索框代码,由activity_main.xml中的搜索框调用,展示搜索框,输入文本，载入网页
      */
     public void searchBar(View v) {
-        openSearchEdit();
-        mWebViewManager.getTop(current).evaluateJavascript("javascript:getSuggest()",null);
-        /*if (useNewSearchStyle) {
-            openSearchEdit();
-        } else {
-            search_dialog();
-        }*/
-
-    }
-
-    /**
-     * 展示搜索框,输入文本，载入网页
-     */
-    private void search_dialog() {
-
-        Intent intent = new Intent(MainActivity.this, DoSearchActivity.class);
-        intent.putExtra(CURRENT_URL, mWebViewManager.getTop(current).getUrl());
+        isOpenedEdit = true;
+        Intent intent = new Intent(MainActivity.this, ContentToUrlActivity.class);
+        intent.putExtra("text_or_url", mTextView.getText().toString());
         //把当前网页网址传进去
         startActivityForResult(intent, 21);
-    }
-
-
-    /**
-     * 打开搜索框
-     */
-    private void openSearchEdit() {
-        //mTextView 搜索框
-        //获取焦点并弹出键盘
-        mTextView.setFocusableInTouchMode(true);
-        mTextView.requestFocus();
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.showSoftInput(mTextView, 0);
-        //mTextView.selectAll();
-        ViewStub stub = findViewById(R.id.viewStub_search_tool);
-        if (stub != null) {
-            mSearchToolView = stub.inflate();
-        }
-
-        openAnim();
-        isOpenedEdit = true;
-
-        Slider slider = mSearchToolView.findViewById(R.id.slidrp);
-        slider.setOnPlay(new Slider.Play() {
-            //接收滑动杆的移动事件，通过Str接口转发。
-            @Override
-            public void send(Slider.shiftPos shift) {
-                Log.d(TAG, "滑动事件: " + shift.toString());
-                shiftStr(shift.toString());
-            }
-
-        });
-
-
-        mTextView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Log.d(TAG, "onKeyDown: ");
-                    //监听回车键，按下的时候就开始执行搜索操作。
-                    String s = mTextView.getText().toString();
-                    if (!s.equals("")) {
-                        Log.d(TAG, "onKey: " + s + ":" + ProcessUrl.processString(s, getApplicationContext()));
-                        mWebViewManager.getTop(current).loadUrl(ProcessUrl.processString(s, getApplicationContext()));
-                    }
-                    closeSearchEdit();
-                    return true;
-                }
-                return false;
-            }
-        });
-        //透明的view，点击后关掉这个界面
-        ImageView closeView = findViewById(R.id.image_alpha0);
-        closeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeSearchEdit();
-            }
-        });
-    }
-
-    /**
-     * @param s left,right,stop，向左移动，向右移动，或是停止
-     *          移动光标
-     */
-    public void shiftStr(String s) {
-        if (!(s).equals("STOP")) {
-            //只要不是STOP，获取输入框字符串长度，获取当前光标位置，然后移动光标
-            int endPos = mTextView.length();
-            int now = mTextView.getSelectionStart();
-            if (s.equals("LEFT") && now > 0) {
-                mTextView.setSelection(--now);
-            } else {
-                if (now < endPos)
-                    mTextView.setSelection(++now);
-            }
-
-
-        }
-    }
-
-    //以下三个方法，把文字追加到搜索框
-    public void writewww(View v) {
-        mTextView.append("www.");
-    }
-
-    public void writehttp(View v) {
-        mTextView.append("http://");
-    }
-
-    public void writecom(View v) {
-        mTextView.append(".com");
-    }
-
-    private void closeIME(View v) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-    }
-
-    //关闭搜索框
-    private void closeSearchEdit() {
-        mTextView.clearFocus();
-        mTextView.setFocusableInTouchMode(false);
-        isOpenedEdit = false;
-        closeAnim();
-        closeIME(mTextView);
-    }
-
-    //打开搜索框的动画
-    private void openAnim() {
-        mSearchToolView.setAlpha(0f);
-        mSearchToolView.setVisibility(View.VISIBLE);
-        mSearchToolView.animate().alpha(1f).setDuration(500L).start();
-        multButton.setVisibility(View.GONE);
-        menuButton.setVisibility(View.GONE);
-        /*multButton.animate().alpha(0f).setDuration(100l).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
-
-        menuButton.animate().alpha(0f).setDuration(100l).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();*/
-
-    }
-
-    //关闭搜索框的动画
-    private void closeAnim() {
-        mSearchToolView.animate().alpha(0f).setDuration(500l).start();
-        mSearchToolView.setVisibility(View.GONE);
-        multButton.setVisibility(View.VISIBLE);
-        menuButton.setVisibility(View.VISIBLE);
-       /* multButton.animate().alpha(1f).setDuration(100l).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();
-
-        menuButton.animate().alpha(1f).setDuration(100l).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }).start();*/
     }
 
     /**
@@ -796,6 +632,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             //把DoSearchActivity的requestCode定义为21
             assert data != null;
             mWebViewManager.getTop(current).loadUrl(data.getStringExtra("text_or_url"));
+            mTextView.setText("正在载入...");
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
         if (requestCode == 2020) {
@@ -1118,7 +955,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             fileUploadCallBack = null;
         }
     }
-
 }
 /*
 *

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -98,10 +99,15 @@ public class IndexView extends LinearLayout {
         }
     }
 
-    private class FileInfoAdapter extends BaseAdapter<FileInfo> {
+    private class FileInfoAdapter extends BaseAdapter<FileInfo,BaseHolder<FileInfo>> {
 
         public FileInfoAdapter(List<FileInfo> list) {
             super(list);
+        }
+
+        @Override
+        public BaseHolder<FileInfo> createHolder(View v) {
+            return new BaseHolder<>(v);
         }
 
         @Override
@@ -110,8 +116,7 @@ public class IndexView extends LinearLayout {
         }
 
         @Override
-        public void bind(final BaseHolder holder, final FileInfo data) {
-
+        public void bind(BaseHolder<FileInfo> holder, FileInfo data) {
             holder.setImageResource(R.id.myFileImage, data.getImgId())
                     .setText(R.id.myFileName, data.getFileName())
                     .setOnIntemClickListener(new OnClickListener() {
@@ -134,7 +139,6 @@ public class IndexView extends LinearLayout {
                         }
                     }, data);
         }
-
     }
 
     /**

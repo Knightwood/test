@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.activitys;
+package com.example.kiylx.ti.trash;
 
 import android.content.Intent;
 
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.Window;
 
 import com.example.kiylx.ti.tool.ProcessUrl;
-import com.example.kiylx.ti.ui.fragments.Fragment_DoSearch;
+import com.example.kiylx.ti.trash.Fragment_DoSearch;
 import com.example.kiylx.ti.R;
 
 public class DoSearchActivity extends AppCompatActivity implements Fragment_DoSearch.OnFragmentInterfaceListener {

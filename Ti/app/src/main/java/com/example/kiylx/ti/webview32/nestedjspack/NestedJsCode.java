@@ -20,12 +20,12 @@ public  class NestedJsCode {
             "JSInterface.callback(txt,title);" +
             "})()";
 
-    public static String getSuggestCode(String str) {
-        String suggestCode = "function getSuggest() {" +
+    public static String getSuggestCode() {
+        String suggestCode = "function getSuggest(str1) {" +
 
                 //组装查询地址
                 "var sugurl = \"http://suggestion.baidu.com/su?wd=#content#&cb=window.baidu.sug\";" +
-                "var str = \"" + str + "\";" +
+                "var str = str1;" +
                 "sugurl = sugurl.replace(\"#content#\", str);" +
 
                 //定义回调函数

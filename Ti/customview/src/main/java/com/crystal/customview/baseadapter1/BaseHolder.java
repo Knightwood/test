@@ -7,16 +7,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crystal.customview.fileindexview.FileInfo;
-
 /**
  * 创建者 kiylx
  * 创建时间 2020/4/6 8:46
  */
-public class BaseHolder extends RecyclerView.ViewHolder {
+public class BaseHolder <N> extends RecyclerView.ViewHolder {
     private View itemView;
     private SparseArray<View> views;
-    private FileInfo fileInfo;
+    private N mInfo;
 
     public BaseHolder(View itemView) {
         super(itemView);
@@ -70,9 +68,9 @@ public class BaseHolder extends RecyclerView.ViewHolder {
     /**
      * 设置条目点击事件
      */
-    public void setOnIntemClickListener(View.OnClickListener listener, FileInfo info) {
+    public void setOnIntemClickListener(View.OnClickListener listener, N info) {
         itemView.setOnClickListener(listener);
-        this.fileInfo=info;
+        this.mInfo =info;
     }
 
     /**
@@ -82,7 +80,7 @@ public class BaseHolder extends RecyclerView.ViewHolder {
         itemView.setOnLongClickListener(listener);
     }
 
-    public FileInfo getFileInfo() {
-        return fileInfo;
+    public N getInfo() {
+        return mInfo;
     }
 }

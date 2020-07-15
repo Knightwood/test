@@ -10,13 +10,6 @@
     tools:context=".ui.activitys.MainActivity">
 
 
-    <!--<androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.activitys.MainActivity">-->
-
-
     <FrameLayout
         android:id="@+id/Webview_group"
         android:layout_width="match_parent"
@@ -29,15 +22,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
-
-    <ViewStub
-        android:id="@+id/viewStub_search_tool"
-        android:layout_width="0dp"
-        android:layout_height="45dp"
-        android:layout="@layout/search_tool"
-        app:layout_constraintBottom_toTopOf="@id/include"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

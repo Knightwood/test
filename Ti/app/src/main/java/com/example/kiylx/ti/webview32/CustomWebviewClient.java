@@ -153,7 +153,7 @@ public class CustomWebviewClient extends WebViewClient {
      */
     @Override
     public void onPageFinished(WebView view, String url) {
-        jsManager.exeJsCode(view);
+        jsManager.autoExeJsCode(view);
         // 更新工具栏上的文字
         super.onPageFinished(view, url);
     }

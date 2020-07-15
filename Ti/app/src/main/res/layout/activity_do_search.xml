@@ -5,6 +5,6 @@
     android:id="@+id/dosearch_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activitys.DoSearchActivity">
+    tools:context=".trash.DoSearchActivity">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

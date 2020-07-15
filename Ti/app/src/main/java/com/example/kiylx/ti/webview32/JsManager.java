@@ -66,17 +66,19 @@ public class JsManager {
      * @param view
      */
     public void injectJsCode(WebView view) {
-        view.evaluateJavascript("javascript:"+getSuggestCode("jk"),null);//搜索建议
+        view.evaluateJavascript("javascript:"+getSuggestCode(),null);//搜索建议
 
     }
 
     /**
-     * 执行注入的代码
+     * 自动执行注入的代码
      * @param view
      */
-    public void exeJsCode(WebView view) {
-        view.loadUrl("javascript:getSuggest()");//搜索建议
+    public void autoExeJsCode(WebView view) {
 
+    }
+    public void exeJsCode(WebView view,String s){
+        view.loadUrl("javascript:getSuggest('"+s +"')");//搜索建议
     }
 
 

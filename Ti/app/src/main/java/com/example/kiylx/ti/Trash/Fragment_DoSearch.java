@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.trash;
 
 import android.content.Context;
 import android.os.Bundle;

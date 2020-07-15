@@ -22,13 +22,15 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
+        <activity android:name=".ui.activitys.ContentToUrlActivity"></activity>
 
         <service android:name=".downloadpack.downloadcore.DownloadServices" />
 
-        <activity android:name=".ui.activitys.HistorysActivity"
+        <activity
+            android:name=".ui.activitys.HistorysActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
-            android:theme="@style/HistorysThemes"/>
+            android:theme="@style/HistorysThemes" />
         <activity
             android:name=".ui.activitys.Setting2Activity"
             android:label="设置"
@@ -47,12 +49,13 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />
-        <activity android:name=".ui.activitys.DoSearchActivity" />
-
-        <activity android:name=".ui.activitys.MainActivity"
+        <activity android:name=".trash.DoSearchActivity" />
+        <activity
+            android:name=".ui.activitys.MainActivity"
             android:theme="@style/MaterialThemes">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

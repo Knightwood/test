@@ -96,10 +96,10 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         //监听livedata
         listenNetWork();
-        listenSuggest();
+        //listenSuggest();
     }
 
-    public static WebViewManager getInstance(@NonNull AppCompatActivity context, @NonNull HandleClickedLinks handleClickedLinks) {
+    public static WebViewManager newInstance(@NonNull AppCompatActivity context, @NonNull HandleClickedLinks handleClickedLinks) {
         if (sWebViewManager == null) {
             synchronized (WebViewManager.class) {
                 if (sWebViewManager == null) {
@@ -109,6 +109,23 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
         }
         return sWebViewManager;
     }
+
+    /**
+     * @return 返回webviewmanager的实例，可是或取得的是null
+     */
+    public static WebViewManager getInstance(){
+        return sWebViewManager;
+    }
+
+    /**
+     * @return 获取jsmanager
+     */
+    public JsManager getJsManager() {
+        if (jsManager==null)
+            jsManager=JsManager.getInstance();
+        return jsManager;
+    }
+
 
     /**
      * @param pos pos，webview要添加进的位置
