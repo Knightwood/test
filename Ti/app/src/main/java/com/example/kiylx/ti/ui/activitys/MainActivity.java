@@ -116,9 +116,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     private ProcessUrl mProcessUrl;//处理字符串的类
     private static boolean isVertical;//当前屏幕是竖直状态还是横屏状态，竖直是true
     private WebViewChromeClientInterface chromeClientInterface;//上传文件接口
-    private boolean useNewSearchStyle = true;
     private ProgressBar bar;//网页加载进度条
-    private NetBroadcastReceiver receiver;
 
     //权限
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
@@ -180,8 +178,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         downloadDialog_startDownload();
         implchromeClientInterface();//实现文件上传，实现网页调用打开新窗口的方法
         //implOpenWendow();//实现网页调用打开新窗口的方法
-
-        useNewSearchStyle = DefaultPreferenceTool.getBoolean(this, getString(R.string.SearchViewStyle_key), true);
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);

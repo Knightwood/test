@@ -30,9 +30,9 @@
     <string name="shoucang">收藏</string>
     <string name="lishijilu">历史记录</string>
     <string name="fenxiang">分享</string>
-    <string name="yinshen">隐身</string>
+    <string name="yinshen">不记录历史</string>
     <string name="gongjuxiang">工具箱</string>
-    <string name="diannaomoshi">电脑模式</string>
+    <string name="diannaomoshi">请求桌面版网站</string>
     <string name="yejian">夜间</string>
     <string name="shuqian">书签</string>
 
@@ -78,7 +78,7 @@
     <!--<string name="defaultDownloadlimit_key">def_download_limit</string>--><!--下载数量限制-->
     <!--<string name="defaultDownloadthread_key">def_download_thread</string>--><!--下载线程数-->
     <string name="uploadMode_key">def_upload_mode</string><!--false则是自己写的方法，能上传所有文件，不去理会是什么type，默认是true，默认方式。-->
-    <string name="SearchViewStyle_key">searchview_style</string><!--搜索页面样式，false是旧的样式，true是新样式-->
+    <!--<string name="SearchViewStyle_key">searchview_style</string>--><!--搜索页面样式，false是旧的样式，true是新样式;废弃-->
     <string name="searchSuggest_key">search_suggest</string><!--是否使用搜索匹配，false是不启用，true是启用-->
     <!--<string name="useCookies">use_cookies</string>--><!--是否使用cookies的key-->
     <string name="useThirdCookies">use_third_cookies</string><!--是否使用第三方cookie的key-->

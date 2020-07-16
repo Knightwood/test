@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 
+import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.networkpack.NetState;
 import com.example.kiylx.ti.model.ShowPicMode;
@@ -28,6 +29,8 @@ public class StateManager extends Observable {
     private boolean DNT;//是否发送不要跟踪的请求
     private NetworkMana netWorkState;//网络状态集合
     private NetState netState;//当前网络状态
+    private Boolean pcMode;//是否请求桌面版网页
+    private Boolean dontRecordHistory;//true为不记录历史，false为可以记录历史记录
 
 
     public StateManager(Context context) {
@@ -52,7 +55,8 @@ public class StateManager extends Observable {
         DNT = DefaultPreferenceTool.getBoolean(mContext.get(), "dont_track", false);
         showPicMode = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(mContext.get(), "showPicatureMode", "ALWAYS"));
         isPrivacy = DefaultPreferenceTool.getBoolean(mContext.get(), "privacyMode", false);
-
+        pcMode=DefaultPreferenceTool.getBoolean(Xapplication.getInstance(), "pc_mode", false);
+        dontRecordHistory =DefaultPreferenceTool.getBoolean(Xapplication.getInstance(), "record_history", false);
     }
 
 
@@ -121,5 +125,23 @@ public class StateManager extends Observable {
 
     public void setNetState(NetState netState) {
         this.netState = netState;
+    }
+
+    public Boolean getPcMode() {
+        return pcMode;
+    }
+
+    public void setPcMode(Boolean pcMode) {
+        this.pcMode = pcMode;
+        PreferenceManager.getDefaultSharedPreferences(Xapplication.getInstance()).edit().putBoolean("pc_mode", pcMode).apply();
+    }
+
+    public Boolean getDontRecordHistory() {
+        return dontRecordHistory;
+    }
+
+    public void setDontRecordHistory(Boolean dontRecordHistory) {
+        this.dontRecordHistory = dontRecordHistory;
+        PreferenceManager.getDefaultSharedPreferences(Xapplication.getInstance()).edit().putBoolean("record_history", pcMode).apply();
     }
 }

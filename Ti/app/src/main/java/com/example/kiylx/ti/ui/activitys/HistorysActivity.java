@@ -3,6 +3,7 @@ package com.example.kiylx.ti.ui.activitys;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,7 +51,7 @@ public class HistorysActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        model = ViewModelProviders.of(this).get(HistorysViewModel.class);
+        model = new ViewModelProvider(this).get(HistorysViewModel.class);
 
         model.historiesLivePagedList.observe(this, historyEntities -> {
             try {

@@ -7,6 +7,8 @@ import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
@@ -27,21 +29,21 @@ public class WebSettingControl implements Observer {
     private CookieManager cookieManager;
     private static WebSettingControl webSettingControl;
 
-    public static WebSettingControl getInstance(Observable o,CookieManager cookieManager){
-        if (webSettingControl==null){
-            webSettingControl=new WebSettingControl(cookieManager,o);
+    public static WebSettingControl getInstance(Observable o, CookieManager cookieManager) {
+        if (webSettingControl == null) {
+            webSettingControl = new WebSettingControl(cookieManager, o);
         }
         return webSettingControl;
     }
 
-    public WebSettingControl(CookieManager cookieManager,Observable o) {
+    public WebSettingControl(CookieManager cookieManager, Observable o) {
         this.cookieManager = cookieManager;
-        this.observable=o;
+        this.observable = o;
         observable.addObserver(this);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public static void ConfigWebview(WebView webView, AppCompatActivity context,CookieManager cookieManager) {
+    public static void ConfigWebview(WebView webView, AppCompatActivity context, CookieManager cookieManager) {
         WebSettings settings = webView.getSettings();
 
         webView.canGoBack();
@@ -84,10 +86,13 @@ public class WebSettingControl implements Observer {
         settings.setAllowFileAccess(true);
         //settings.setNeedInitialFocus(true);
         //是否禁止图片显示
-       // Log.d(TAG, "ConfigWebview:应该图片显示？ "+SomeTools.getXapplication().getStateManager().canShowPic());
+        // Log.d(TAG, "ConfigWebview:应该图片显示？ "+SomeTools.getXapplication().getStateManager().canShowPic());
         settings.setBlockNetworkImage(!SomeTools.getXapplication().getStateManager().canShowPic());
         //设置WebView的访问UserAgent
-        settings.setUserAgentString(PreferenceTools.getString(context, "user_agent", null));
+        if (SomeTools.getXapplication().getStateManager().getPcMode()) {
+            settings.setUserAgentString(SomeRes.PCuserAgent);
+        } else
+            settings.setUserAgentString(PreferenceTools.getString(context, "user_agent", null));
         //设置脚本是否允许自动打开弹窗
         settings.setJavaScriptCanOpenWindowsAutomatically(true);
         settings.setAllowContentAccess(false);//内容Url访问允许WebView从安装在系统中的内容提供者载入内容。
@@ -107,7 +112,7 @@ public class WebSettingControl implements Observer {
         //String dir = Xapplication.getInstance().getDir("database", Context.MODE_PRIVATE).getPath();
         //settings.setGeolocationDatabasePath(dir);
         //cookies设置
-        cookieManager.setAcceptThirdPartyCookies(webView,PreferenceTools.getBoolean(context, "use_third_cookies", false) );
+        cookieManager.setAcceptThirdPartyCookies(webView, PreferenceTools.getBoolean(context, "use_third_cookies", false));
     }
 
     @Override

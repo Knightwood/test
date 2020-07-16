@@ -20,6 +20,8 @@ public class SomeRes {
     public static int downloadLimit = 5;//默认下载任务数量限制
     public static int downloadThreadNum = 8;//默认下载线程数
     public static String preference_conf_1 = "conf01";//sharedPreference的名称
+    public static String pcMode="pc_mode";//请求桌面版网页的preference的key
+    public static String canRecordHistory="record_history";//是否可以记录历史
 
 //默认的搜索引擎
     public static String baidu="http://www.baidu.com/s?wd=";

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
 import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.conf.StateManager;
 import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.db.historydb2.HistoryEntity;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
@@ -31,7 +32,6 @@ import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
 import com.example.kiylx.ti.model.SealedWebPageInfo;
 import com.example.kiylx.ti.webview32.JsManager;
-import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
 import com.example.kiylx.ti.webview32.WebSettingControl;
 
 import org.greenrobot.eventbus.EventBus;
@@ -67,21 +67,22 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private UpdateProgress mUpdateProgress;//更新网页加载进度的接口
     private WeakReference<AppCompatActivity> appCompatActivityWeakReference = null;
     private NetworkLiveData networkLiveData;
-    private SuggestLiveData suggestLiveData;
+    private StateManager stateManager;
 
     private WebViewManager(AppCompatActivity context, HandleClickedLinks handleClickedLinks) {
         if (appCompatActivityWeakReference == null)
             appCompatActivityWeakReference = new WeakReference<>(context);
         aboutHistory = AboutHistory.get(context);
+        stateManager = SomeTools.getXapplication().getStateManager();
 
         if (webViewArrayList == null) {
             webViewArrayList = new ArrayList<>();
         }
         //js代码注入管理器
-        jsManager=JsManager.getInstance();
+        jsManager = JsManager.getInstance();
 
         customWebchromeClient = new CustomWebchromeClient();
-        customWebviewClient = new CustomWebviewClient(context,jsManager);
+        customWebviewClient = new CustomWebviewClient(context, jsManager);
 
         mHandleClickedLinks = handleClickedLinks;
 
@@ -112,7 +113,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     /**
      * @return 返回webviewmanager的实例，可是或取得的是null
      */
-    public static WebViewManager getInstance(){
+    public static WebViewManager getInstance() {
         return sWebViewManager;
     }
 
@@ -120,8 +121,8 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * @return 获取jsmanager
      */
     public JsManager getJsManager() {
-        if (jsManager==null)
-            jsManager=JsManager.getInstance();
+        if (jsManager == null)
+            jsManager = JsManager.getInstance();
         return jsManager;
     }
 
@@ -483,12 +484,13 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 插入数据库
      */
     private void InsertToDB(WebPage_Info info) {
-        //aboutHistory.addToDataBase(info);
-        new Thread(new InsertThread(info)).start();
+        if (!stateManager.getDontRecordHistory())
+            new Thread(new InsertThread(info)).start();
     }
 
     private void UpdateTitleToDB(String title, String url) {
-        new Thread(new UpdateThread(title, url)).start();
+        if (!stateManager.getDontRecordHistory())
+            new Thread(new UpdateThread(title, url)).start();
     }
 
     /**

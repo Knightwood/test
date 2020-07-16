@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.conf.StateManager;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.model.ShowPicMode;
@@ -44,6 +45,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     private static WebPage_Info info;
     private ControlWebView controlWebViewInterface;
     private int currentMenu = 0;//第一层就是0，按下工具按钮展现的页面是1
+    private StateManager stateManager;
 
 
     public static MinSetDialog newInstance(WebPage_Info info) {
@@ -56,7 +58,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        stateManager = SomeTools.getXapplication().getStateManager();
     }
 
     @Nullable
@@ -69,6 +71,11 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        Boolean pcMode = stateManager.getPcMode();
+        homepageSettingBinding.pcMode.setChecked(pcMode);
+        Boolean canRecordHistory = stateManager.getDontRecordHistory();
+        homepageSettingBinding.hideSelf.setChecked(canRecordHistory);
     }
 
     @Override
@@ -124,10 +131,14 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 controlWebViewInterface.sharing(info.getUrl());
                 break;
             case R.id.pcMode:
-                controlWebViewInterface.usePcMode();
+                boolean b = homepageSettingBinding.pcMode.isChecked();
+                if (b)
+                    controlWebViewInterface.usePcMode();
+                stateManager.setPcMode(b);
                 break;
             case R.id.hideSelf:
-
+                boolean b1 = homepageSettingBinding.hideSelf.isChecked();
+                stateManager.setDontRecordHistory(b1);
                 break;
             case R.id.addBookmark:
                 controlWebViewInterface.addtobookmark(info.getUrl());
@@ -164,20 +175,20 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      */
     private void changePicMode() {
         String[] menu = new String[]{"总是显示", "仅WIFI下显示", "禁止显示"};
-        int itemId=0;
+        int itemId = 0;
         ShowPicMode showPicMode = ShowPicMode.valueOf(DefaultPreferenceTool.getStrings(Xapplication.getInstance(), "showPicatureMode", "ALWAYS"));
-        switch (showPicMode){
+        switch (showPicMode) {
             case ALWAYS:
-                itemId=0;
+                itemId = 0;
                 break;
             case JUSTWIFI:
-                itemId=1;
+                itemId = 1;
                 break;
             case DONT:
-                itemId=2;
+                itemId = 2;
                 break;
         }
-        new AlertDialog.Builder(getContext()).setSingleChoiceItems(menu,itemId, (dialog, which) -> {
+        new AlertDialog.Builder(getContext()).setSingleChoiceItems(menu, itemId, (dialog, which) -> {
             switch (which) {
                 case 0:
                     SomeTools.getXapplication().getStateManager().setShowPicMode(ShowPicMode.ALWAYS);

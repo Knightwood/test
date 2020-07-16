@@ -111,23 +111,25 @@
                     android:onClick="@{clicklister}"
                     android:text="@string/fenxiang" />
 
-                <TextView
+                <CheckBox
                     android:id="@+id/pcMode"
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
+                    android:layoutDirection="rtl"
                     android:onClick="@{clicklister}"
                     android:text="@string/diannaomoshi" />
 
-                <TextView
+                <CheckBox
                     android:id="@+id/hideSelf"
                     style="@style/MenuItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
+                    android:layoutDirection="rtl"
                     android:onClick="@{clicklister}"
                     android:text="@string/yinshen" />
 
