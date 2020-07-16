@@ -96,7 +96,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         //监听livedata
         listenNetWork();
-        //listenSuggest();
     }
 
     public static WebViewManager newInstance(@NonNull AppCompatActivity context, @NonNull HandleClickedLinks handleClickedLinks) {
@@ -655,21 +654,6 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
                 }*/
                 SomeTools.getXapplication().getStateManager().setNetState(netState);
-            }
-        });
-    }
-
-    /**
-     * 监听js代码传过来的搜索建议列表
-     */
-    private void listenSuggest() {
-        suggestLiveData = SuggestLiveData.getInstance();
-        suggestLiveData.observe(appCompatActivityWeakReference.get(), new Observer<String[]>() {
-            @Override
-            public void onChanged(String[] result) {
-                for (int i = 0; i < result.length; i++) {
-                    Log.d(TAG, "giveSuggest: " + result[i]);
-                }
             }
         });
     }

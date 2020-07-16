@@ -7,7 +7,7 @@
     android:background="@drawable/background"
     android:orientation="vertical">
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/image_alpha0"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/transparent" />
+        app:srcCompat="@android:color/transparent" />-->
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/some_matches"
@@ -24,8 +24,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_alpha0" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

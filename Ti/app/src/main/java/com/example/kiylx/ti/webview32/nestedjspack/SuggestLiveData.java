@@ -39,7 +39,7 @@ public class SuggestLiveData extends LiveData<String[]> {
     }
 
     @Override
-    protected void postValue(String[] value) {
+    public void postValue(String[] value) {
         super.postValue(value);
     }
 }

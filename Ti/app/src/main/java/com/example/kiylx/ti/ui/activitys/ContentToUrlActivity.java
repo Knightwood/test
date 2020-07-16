@@ -35,6 +35,8 @@ public class ContentToUrlActivity extends AppCompatActivity {
     private EditText mTextView;
     private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
     private String origin;//传入的字符串，它是现在正在搜索框中显示的
+    private SuggestLiveData suggestLiveData;
+
     /**
      * livedata会持有数据，在第一次获取搜索建议显示后，再次打开此界面时会因为上一次的查询，调用onchange进而触发更新界面而显示上一次的搜索建议。
      * 因此使用此变量标志每次打开此activity后，初始化为false，此时不触发更新界面，当键入内容时，更改为true，获取新的搜索建议列表
@@ -45,7 +47,14 @@ public class ContentToUrlActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_to_url);
+        initData();
         initView();
+    }
+
+    private void initData() {
+        suggestLiveData = SuggestLiveData.getInstance();
+        suggestLiveData.postValue(null);
+
     }
 
     private void initView() {
@@ -61,10 +70,16 @@ public class ContentToUrlActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         openSearchEdit();
-        exportSuggest(new ArrayList<>());//初始化简易列表
+        exportSuggest(null);//初始化建议列表
         listenSuggest();//监听搜索建议变化，更新界面
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        afterFirstEdit = false;
+        finish();
+    }
 
     /**
      * 打开搜索框
@@ -115,28 +130,38 @@ public class ContentToUrlActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!afterFirstEdit) {
                     //开始编辑文本，此时需要获取搜索建议，因此可以开始更新搜索建议界面
-                    afterFirstEdit=true;
+                    afterFirstEdit = true;
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                Log.d(TAG, "afterTextChanged: " + s.toString());
                 WebViewManager manager = WebViewManager.getInstance();
                 if (manager != null) {
-                    manager.getJsManager().exeJsCode(manager.getTop(MainActivity.getCurrent()), s.toString());
+                    String text = s.toString();
+                    if (text != null && !text.equals("")){
+                        manager.getJsManager().exeJsCode(manager.getTop(MainActivity.getCurrent()), text);
+                    }else {
+                        updateSuggest(null);
+                    }
                 }
             }
         });
         //透明的view，点击后关掉这个界面
-        ImageView closeView = findViewById(R.id.image_alpha0);
+        /*ImageView closeView = findViewById(R.id.image_alpha0);
         closeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 closeSearchEdit();
             }
-        });
+        });*/
     }
 
+    /**
+     * @param s 待处理的搜索内容字符串
+     *          处理输入内容，转化为url，然后结束当前activity，让webview载入网址。
+     */
     private void startSearchContent(String s) {
         String result = ProcessUrl.processString(s, getApplicationContext());
         Intent intent = new Intent();
@@ -205,6 +230,12 @@ public class ContentToUrlActivity extends AppCompatActivity {
 
     private void updateSuggest(List<String> list) {
         Log.d(TAG, "updateSuggest: 更新搜索建议");
+        if (list==null){
+            suggestAdapter.setData(new ArrayList<>());
+            suggestAdapter.notifyDataSetChanged();
+            return;
+        }
+
         if (suggestAdapter == null) {
             suggestAdapter = new SuggestAdapter(list);
             suggestRecyclerView.setAdapter(suggestAdapter);
@@ -233,22 +264,24 @@ public class ContentToUrlActivity extends AppCompatActivity {
         @Override
         public void bind(BaseHolder<String> holder, String data) {
             holder.setText(R.id.blacktext, data)
-            .setOnIntemClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startSearchContent(data);
-                }
-            },data);
+                    .setOnIntemClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startSearchContent(data);
+                        }
+                    }, data);
         }
     }
 
-    private SuggestLiveData suggestLiveData;
 
     private void listenSuggest() {
-        suggestLiveData = SuggestLiveData.getInstance();
+
         suggestLiveData.observe(this, new Observer<String[]>() {
             @Override
             public void onChanged(String[] result) {
+                if (result == null) {
+                    updateSuggest(null);
+                }
                 if (afterFirstEdit)
                     updateSuggest(Arrays.asList(result));
                 Log.d(TAG, "onChanged: livedata建议列表被改变");

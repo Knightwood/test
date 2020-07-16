@@ -39,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crystal.customview.baseadapter1.BaseAdapter;
@@ -102,7 +103,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     private SomeTools someTools;
 
     private FrameLayout f1;//放置webview的容器
-    private EditText mTextView;//主界面的工具栏里的搜索框
+    private TextView mTextView;//主界面的工具栏里的搜索框
     private View matcheTextView;//搜索webview文字的搜索框
     private MultPage_Dialog md;//多窗口dialogFragment
     private HandleClickedLinks handleClickedLinks;
@@ -260,7 +261,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     @Override
     protected void onStop() {
         super.onStop();
-        if (!isOpenedEdit)//如果打开了搜索，就不停止当前的webview，如此，可以获得搜索建议
+        if (!isOpenedEdit)//如果没打开搜索，就暂停视图，否则，就不停止当前的webview，如此，可以获得搜索建议
             mWebViewManager.getTop(current).onPause();
         //f1.removeAllViews();//移除所有视图
         EventBus.getDefault().unregister(this);
@@ -633,6 +634,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             assert data != null;
             mWebViewManager.getTop(current).loadUrl(data.getStringExtra("text_or_url"));
             mTextView.setText("正在载入...");
+            isOpenedEdit=false;
             Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
         if (requestCode == 2020) {

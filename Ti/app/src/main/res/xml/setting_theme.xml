@@ -8,7 +8,7 @@
         android:summary="若无法上传文件，请关闭此选项"
         android:title="默认文件上传方式" />
     <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="@string/searchSuggest_key"
         android:title="搜索时提供搜索建议"
         app:enabled="false" />
