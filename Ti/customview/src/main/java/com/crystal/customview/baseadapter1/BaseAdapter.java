@@ -7,26 +7,34 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 创建者 kiylx
  * 创建时间 2020/4/6 8:47
  */
-public abstract class BaseAdapter<T,N extends BaseHolder> extends RecyclerView.Adapter<N> {
+public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.Adapter<N> {
     List<T> list;
 
     public BaseAdapter(List<T> list) {
-        this.list = list;
+       setData(list);
     }
-    public void setData(List<T> list){
-        this.list=list;
+
+    public void setData(List<T> list) {
+        if (list == null) {
+            if (this.list != null)
+                this.list.clear();
+            else
+                this.list = new ArrayList<>();
+        } else
+            this.list = list;
     }
 
     @NonNull
     @Override
     public N onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView= LayoutInflater.from(parent.getContext()).inflate(itemResId(),parent,false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(itemResId(), parent, false);
         return createHolder(itemView);
     }
 
@@ -37,10 +45,10 @@ public abstract class BaseAdapter<T,N extends BaseHolder> extends RecyclerView.A
 
     @Override
     public int getItemCount() {
-        if (list==null){
+        if (list == null) {
             return -1;
-        }else
-        return list.size();
+        } else
+            return list.size();
     }
 
     /**

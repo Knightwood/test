@@ -126,7 +126,7 @@
     <string name="downloadFolder">下载文件夹</string>
     <string name="thread">下载线程数</string>
     <string name="backFolder">上一级</string>
-    <string name="welcome_sentence">欢迎使用，此应用还在早期构造阶段,有些功能还不可用。</string>
+    <string name="welcome_sentence">\t\t此应用还在早期构造阶段，接下来版本将会增添更多功能。</string>
     <string name="theStyle">样式</string>
     <string name="use_old_search_tool">使用新的搜索界面样式</string>
     <string name="use_search_matcher">使用搜索匹配</string>

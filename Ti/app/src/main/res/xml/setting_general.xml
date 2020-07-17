@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:defaultValue="false"
             android:key="@string/customDownload_key"
+            android:summary="现在还有些bug未解决"
             android:title="是否使用内置下载器" />
     </PreferenceCategory>
 

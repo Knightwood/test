@@ -36,6 +36,7 @@ public class ContentToUrlActivity extends AppCompatActivity {
     private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
     private String origin;//传入的字符串，它是现在正在搜索框中显示的
     private SuggestLiveData suggestLiveData;
+    private WebViewManager manager;
 
     /**
      * livedata会持有数据，在第一次获取搜索建议显示后，再次打开此界面时会因为上一次的查询，调用onchange进而触发更新界面而显示上一次的搜索建议。
@@ -52,9 +53,9 @@ public class ContentToUrlActivity extends AppCompatActivity {
     }
 
     private void initData() {
+        manager = WebViewManager.getInstance();
         suggestLiveData = SuggestLiveData.getInstance();
         suggestLiveData.postValue(null);
-
     }
 
     private void initView() {
@@ -123,11 +124,6 @@ public class ContentToUrlActivity extends AppCompatActivity {
         mTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!afterFirstEdit) {
                     //开始编辑文本，此时需要获取搜索建议，因此可以开始更新搜索建议界面
                     afterFirstEdit = true;
@@ -135,14 +131,18 @@ public class ContentToUrlActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
             public void afterTextChanged(Editable s) {
                 Log.d(TAG, "afterTextChanged: " + s.toString());
-                WebViewManager manager = WebViewManager.getInstance();
                 if (manager != null) {
                     String text = s.toString();
-                    if (text != null && !text.equals("")){
+                    if (text != null && !text.equals("")) {
                         manager.getJsManager().exeJsCode(manager.getTop(MainActivity.getCurrent()), text);
-                    }else {
+                    } else {
                         updateSuggest(null);
                     }
                 }
@@ -230,12 +230,6 @@ public class ContentToUrlActivity extends AppCompatActivity {
 
     private void updateSuggest(List<String> list) {
         Log.d(TAG, "updateSuggest: 更新搜索建议");
-        if (list==null){
-            suggestAdapter.setData(new ArrayList<>());
-            suggestAdapter.notifyDataSetChanged();
-            return;
-        }
-
         if (suggestAdapter == null) {
             suggestAdapter = new SuggestAdapter(list);
             suggestRecyclerView.setAdapter(suggestAdapter);
@@ -281,10 +275,16 @@ public class ContentToUrlActivity extends AppCompatActivity {
             public void onChanged(String[] result) {
                 if (result == null) {
                     updateSuggest(null);
+                    Log.d(TAG, "onChanged: livedata建议列表null");
                 }
-                if (afterFirstEdit)
+                if (afterFirstEdit && result != null){
                     updateSuggest(Arrays.asList(result));
-                Log.d(TAG, "onChanged: livedata建议列表被改变");
+                    for (int i = 0; i < result.length; i++) {
+                        Log.d(TAG, "onChanged: "+result[i]+"\n");
+                    }
+                    Log.d(TAG, "onChanged: livedata建议列表被改变");
+                }
+
             }
         });
     }
