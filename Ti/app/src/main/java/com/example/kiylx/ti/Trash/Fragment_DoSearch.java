@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.ProcessUrl;
 import com.example.kiylx.ti.model.WebPage_Info;
 
@@ -71,7 +72,7 @@ public class Fragment_DoSearch extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInterfaceListener");
         }
-        Log.d(TAG, "onAttach: ");
+        LogUtil.d(TAG, "onAttach: ");
     }
 
     @Override
@@ -83,7 +84,7 @@ public class Fragment_DoSearch extends Fragment {
         }
         if(null== mProcessUrl)
         mProcessUrl =new ProcessUrl(getActivity());
-        Log.d(TAG, "onCreate: ");
+        LogUtil.d(TAG, "onCreate: ");
     }
 
     @Override
@@ -99,7 +100,7 @@ public class Fragment_DoSearch extends Fragment {
         //updateList();//展示空的recyclerview
         textWatcher();
         enter_key();
-        Log.d(TAG, "onCreateView: ");
+        LogUtil.d(TAG, "onCreateView: ");
         if(!mCurrentURL.equals(SomeRes.default_homePage_url))
         searchbox.setText(mCurrentURL);//如果当前网页网址不是默认的主页，那就填充网址到搜索栏
         searchbox.selectAll();//让文字被全选
@@ -108,13 +109,13 @@ public class Fragment_DoSearch extends Fragment {
         slider.setOnChangeStripSize(new Slider.changeStripSize() {
             @Override
             public void changeSize(View v) {
-                Log.d(TAG, "changeSize: "+v.getX());
+                LogUtil.d(TAG, "changeSize: "+v.getX());
             }
         });
         slider.setOnPlay(new Slider.Play() {
             @Override
             public void send(Slider.shiftPos shift) {
-                Log.d(TAG, "send: "+shift.toString());
+                LogUtil.d(TAG, "send: "+shift.toString());
             }
         });
 
@@ -134,7 +135,7 @@ public class Fragment_DoSearch extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        Log.d(TAG, "onDetach: ");
+        LogUtil.d(TAG, "onDetach: ");
     }
 
     /**
@@ -145,7 +146,7 @@ public class Fragment_DoSearch extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if(keyCode==KeyEvent.KEYCODE_ENTER){
-                    Log.d(TAG, "onKeyDown: ");
+                    LogUtil.d(TAG, "onKeyDown: ");
                     //监听回车键，按下的时候就开始执行搜索操作。
                     mListener.analysisText(searchbarTEXT);
                     return true;
@@ -164,7 +165,7 @@ public class Fragment_DoSearch extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int Bookmarkt, int before, int count) {
-                Log.d(TAG, "onTextChanged: ");
+                LogUtil.d(TAG, "onTextChanged: ");
 
             }
 

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class BaseHolder <N> extends RecyclerView.ViewHolder {
     private View itemView;
     private SparseArray<View> views;
-    private N mInfo;
+    private N mInfo;//N类型的bean
 
     public BaseHolder(View itemView) {
         super(itemView);

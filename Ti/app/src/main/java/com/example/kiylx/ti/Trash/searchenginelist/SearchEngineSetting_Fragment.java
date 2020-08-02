@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
@@ -97,7 +98,7 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
         new MyTask().execute(Action.GETALL);
         //myTask.execute(Action.UPDATEINFO,)
         //return rootView;//super.onCreateView(inflater, container, savedInstanceState);
-        Log.d(TAG, "onCreateDialog: 对话框显示");
+        LogUtil.d(TAG, "onCreateDialog: 对话框显示");
 
         return dialogBuilder.create();
     }
@@ -162,8 +163,8 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
             @Override
             public void run() {
                 urlList= mdao.getAll();
-                Log.d(TAG, "run: "+urlList.isEmpty());
-                Log.d(TAG, "run: "+urlList.get(0).getUrl());
+                LogUtil.d(TAG, "run: "+urlList.isEmpty());
+                LogUtil.d(TAG, "run: "+urlList.get(0).getUrl());
             }
         }).start();
 
@@ -233,10 +234,10 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
         @Override
         protected void onPostExecute(List<SearchEngineEntity> searchEngineEntities) {
             for (int i = 0; i < searchEngineEntities.size(); i++) {
-                Log.d(TAG, "更改之后的数据: " + searchEngineEntities.get(i).getUrl() + "    " + searchEngineEntities.get(i).isCheck_b());
+                LogUtil.d(TAG, "更改之后的数据: " + searchEngineEntities.get(i).getUrl() + "    " + searchEngineEntities.get(i).isCheck_b());
             }
             uodateUI(searchEngineEntities);
-            Log.d(TAG, "线程执行完: " + searchEngineEntities.size());
+            LogUtil.d(TAG, "线程执行完: " + searchEngineEntities.size());
         }
     }
 
@@ -261,7 +262,7 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
 
         SearchUrlAdapter(List<SearchEngineEntity> mlists) {
             this.lists = mlists;
-            Log.d(TAG, "SearchUrlAdapter: " + lists.isEmpty());
+            LogUtil.d(TAG, "SearchUrlAdapter: " + lists.isEmpty());
         }
 
         void setLists(List<SearchEngineEntity> mlists) {
@@ -337,13 +338,13 @@ public class SearchEngineSetting_Fragment extends DialogFragment implements Setm
             assert manager != null;
             dialog.show(manager, "编辑文本");
 
-            Log.d(TAG, "搜索引擎条目的点击事件---编辑文本" + olds);
+            LogUtil.d(TAG, "搜索引擎条目的点击事件---编辑文本" + olds);
         }
 
         @Override
         public void deleteItem(String s) {
             new MyTask().execute(Action.DELETE, s);
-            Log.d(TAG, "搜索引擎条目的点击事件---删除条目" + s);
+            LogUtil.d(TAG, "搜索引擎条目的点击事件---删除条目" + s);
         }
     };
 }

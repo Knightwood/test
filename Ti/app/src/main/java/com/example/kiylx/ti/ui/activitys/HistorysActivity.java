@@ -20,6 +20,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 
 public class HistorysActivity extends AppCompatActivity {
@@ -60,7 +61,7 @@ public class HistorysActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             adapter.submitList(historyEntities);//给adapter数据
-            Log.d("重写后的历史记录activity", "onChanged: " + historyEntities);
+            LogUtil.d("重写后的历史记录activity", "onChanged: " + historyEntities);
         });
         model.query("");
         recyclerView.setAdapter(adapter);
@@ -126,7 +127,7 @@ public class HistorysActivity extends AppCompatActivity {
             @SuppressLint("CheckResult")
             @Override
             public boolean onQueryTextChange(String newText) {
-                Log.d(TAG, "onQueryTextChange: " + newText);
+                LogUtil.d(TAG, "onQueryTextChange: " + newText);
                 return false;
             }
         });

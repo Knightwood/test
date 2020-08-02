@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.SomeTools;
 
 
@@ -18,7 +19,7 @@ public class NetBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (("android.net.conn.CONNECTIVITY_CHANGE").equals(intent.getAction())) {
             //SomeTools.getXapplication().getStateManager().setNetWorkState(SomeTools.getNetState(context));
-            Log.d(TAG, "onReceive:接收到网络状态改变 ");
+            LogUtil.d(TAG, "onReceive:接收到网络状态改变 ");
         }
     }
 }

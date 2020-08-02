@@ -8,6 +8,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -47,7 +48,7 @@ public class GeneralFragment extends PreferenceFragmentCompat implements Prefere
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        Log.d(TAG, "偏好值被改变了: key： " + preference.getKey() + "  值： " + (boolean) newValue);
+        LogUtil.d(TAG, "偏好值被改变了: key： " + preference.getKey() + "  值： " + (boolean) newValue);
         return true;
     }
 

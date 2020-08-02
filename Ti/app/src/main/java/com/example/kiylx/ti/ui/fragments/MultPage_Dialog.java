@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
 import com.example.kiylx.ti.conf.SomeRes;
@@ -87,14 +88,14 @@ public class MultPage_Dialog extends DialogFragment {
                 dismiss();
             }
         });
-        Log.d(TAG, "onCreateView: ");
+        LogUtil.d(TAG, "onCreateView: ");
         return v;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated: ");
+        LogUtil.d(TAG, "onViewCreated: ");
     }
 
     @Override
@@ -131,7 +132,7 @@ public class MultPage_Dialog extends DialogFragment {
             //设置点击外部可以取消对话框
             setCancelable(true);
         }
-        Log.d(TAG, "onBookmarkt: ");
+        LogUtil.d(TAG, "onBookmarkt: ");
         //获取当前网页的pos
         mCurrect = MainActivity.getCurrent();
 
@@ -142,7 +143,7 @@ public class MultPage_Dialog extends DialogFragment {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop: ");
+        LogUtil.d(TAG, "onStop: ");
         if (trashNum > 0) {
             notifyThrowTrash();//通知MainActivity销毁被删除的webview
         }
@@ -152,13 +153,13 @@ public class MultPage_Dialog extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: ");
+        LogUtil.d(TAG, "onResume: ");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView: ");
+        LogUtil.d(TAG, "onDestroyView: ");
     }
 
     /**
@@ -189,11 +190,11 @@ public class MultPage_Dialog extends DialogFragment {
 
     private void updateUI() {
         lists = WebViewInfo_Manager.getPageList();
-        Log.d(TAG, "updateUI: 多窗口处的数组大小" + lists.size());
+        LogUtil.d(TAG, "updateUI: 多窗口处的数组大小" + lists.size());
         if (null == mWebSiteAdapter) {
             mWebSiteAdapter = new WebSiteAdapter(lists);
             mRecyclerView.setAdapter(mWebSiteAdapter);
-            Log.d(TAG, "onClick: setAdapter方法被触发");
+            LogUtil.d(TAG, "onClick: setAdapter方法被触发");
         } else {
             mCurrect = MainActivity.getCurrent();//重新拿到current值，用于当删除某个标签页时能正确设置颜色
 
@@ -210,13 +211,13 @@ public class MultPage_Dialog extends DialogFragment {
         WebSiteAdapter(List<WebPage_Info> mlists) {
             this.lists = mlists;
             boolean ta = lists.isEmpty();
-            Log.d("MultPage_Dialog", "onClick: Adapter构造函数被触发" + ta);
+            LogUtil.d("MultPage_Dialog", "onClick: Adapter构造函数被触发" + ta);
         }
 
         @NonNull
         @Override
         public WebsiteHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            Log.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
+            LogUtil.d(TAG, "onClick: onCreateViewHolder构造方法被触发");
             pageitemBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.multi_page_item, viewGroup, false);
             return new WebsiteHolder(pageitemBinding);
 
@@ -224,7 +225,7 @@ public class MultPage_Dialog extends DialogFragment {
 
         @Override
         public void onBindViewHolder(@NonNull WebsiteHolder websiteHolder, int i) {
-            Log.d(TAG, "onClick: onBindViewHolder方法被触发");
+            LogUtil.d(TAG, "onClick: onBindViewHolder方法被触发");
             websiteHolder.bind(lists.get(i), i);
         }
 
@@ -256,7 +257,7 @@ public class MultPage_Dialog extends DialogFragment {
             //绑定上viewmodel
             mBinding.setInfos(new MultiPage_Bean());
             mBinding.setClickon(this);
-            Log.d(TAG, "onClick: WebsiteHolder构造方法被触发");
+            LogUtil.d(TAG, "onClick: WebsiteHolder构造方法被触发");
 
 
         }
@@ -276,7 +277,7 @@ public class MultPage_Dialog extends DialogFragment {
             }
 
             //通过拿到currect值，改变文字颜色。
-            Log.d(TAG, "onClick: bind方法被触发,位置："+pos+"  current:"+mCurrect);
+            LogUtil.d(TAG, "onClick: bind方法被触发,位置："+pos+"  current:"+mCurrect);
 
         }
 
@@ -284,7 +285,7 @@ public class MultPage_Dialog extends DialogFragment {
         public void onClick(View v) {
             switch ((v.getId())) {
                 case R.id.close_button:
-                    Log.d("多窗口关闭点击", "onClick:" + pos);
+                    LogUtil.d("多窗口关闭点击", "onClick:" + pos);
                     minterface.delete_page(pos);//移除webview
                     trashNum += 1;
                     //mWebSiteAdapter.notifyItemRemoved(pos);
@@ -293,7 +294,7 @@ public class MultPage_Dialog extends DialogFragment {
 
                     break;
                 case R.id.website_item:
-                    Log.d(TAG, "onClick: 网页切换按钮被触发");
+                    LogUtil.d(TAG, "onClick: 网页切换按钮被触发");
                     minterface.switchPage(pos);
                     dismiss();
                     break;

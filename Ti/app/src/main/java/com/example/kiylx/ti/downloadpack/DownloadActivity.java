@@ -25,6 +25,7 @@ import com.example.kiylx.ti.downloadpack.db.DownloadInfoViewModel;
 import com.example.kiylx.ti.downloadpack.db.InfoTransformToEntitiy;
 import com.example.kiylx.ti.downloadpack.fragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
@@ -121,7 +122,7 @@ public class DownloadActivity extends AppCompatActivity {
         });
 
         //bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
-        //Log.d(TAG, "fragment数量：" + manager.getFragments().toString());
+        //LogUtil.d(TAG, "fragment数量：" + manager.getFragments().toString());
 
     }
 
@@ -226,7 +227,7 @@ public class DownloadActivity extends AppCompatActivity {
         /*LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
         List<DownloadEntity> list = listLiveData.getValue();
         for (int i = 0; i < list.size(); i++) {
-            Log.d("下载管理",
+            LogUtil.d("下载管理",
                     "当前大小" + list.get(i).currentLength
                             + "总大小" + list.get(i).contentLength
                             + "文件名称" + list.get(i).filename);
@@ -239,12 +240,12 @@ public class DownloadActivity extends AppCompatActivity {
             public void run() {
                 this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
                 if (list == null) {
-                    Log.d(TAG, "getChildrenList: 数据库出错");
+                    LogUtil.d(TAG, "getChildrenList: 数据库出错");
                 } else if (list.isEmpty()) {
-                    Log.d(TAG, "下载activity：数据库里是空的");
+                    LogUtil.d(TAG, "下载activity：数据库里是空的");
                 } else {
                     for (int i = 0; i < list.size(); i++) {
-                        Log.d(TAG, "文件名称" + list.get(i).filename
+                        LogUtil.d(TAG, "文件名称" + list.get(i).filename
                                 + "暂停:" + list.get(i).pause
                                 + "等待:" + list.get(i).waitDownload
                                 + "完成:" + list.get(i).downloadSuccess
@@ -321,7 +322,7 @@ public class DownloadActivity extends AppCompatActivity {
             downloadInfoList.clear();
             for (DownloadEntity entity : downloadEntities) {
                 downloadInfoList.add(InfoTransformToEntitiy.transformToSimple(entity));
-                Log.d("下载管理", "getDownloadList: " + entity.currentLength / entity.contentLength);
+                LogUtil.d("下载管理", "getDownloadList: " + entity.currentLength / entity.contentLength);
             }
         });
 

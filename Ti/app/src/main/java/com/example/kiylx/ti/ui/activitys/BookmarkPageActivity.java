@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
 import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
@@ -143,7 +144,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         if (null == adapter) {
             adapter = new RecyclerAdapter(mBookmarkArrayList);//这里的lists是包含未分类
             mRecyclerView.setAdapter(adapter);
-            Log.d("收藏activity", "onClick: 创建adapter函数被触发");
+            LogUtil.d("收藏activity", "onClick: 创建adapter函数被触发");
         } else {
             adapter.setList(mBookmarkArrayList);
             adapter.notifyDataSetChanged();
@@ -283,7 +284,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            Log.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
+            LogUtil.d("收藏activity", " HistoryViewHolder构造函数函数被触发");
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
             title.setOnClickListener(this);
@@ -337,7 +338,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             title.setText(title_1);
             url.setText(url_1);
 
-            Log.d("收藏activity", "bind函数被触发");
+            LogUtil.d("收藏activity", "bind函数被触发");
         }
 
         @Override
@@ -349,12 +350,12 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                     mopenWeb.loadUrl(url_1, false);
                     break;
                 case R.id.more_setting:
-                    Log.d("BookmarkPageActivity", "more_setting被触发");
+                    LogUtil.d("BookmarkPageActivity", "more_setting被触发");
                     addPopMenu(itemView.findViewById(R.id.more_setting), title_1, url_1);
                     break;
             }
 
-            Log.d("收藏activity", "onclick函数被触发");
+            LogUtil.d("收藏activity", "onclick函数被触发");
         }
 
         /**
@@ -385,7 +386,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Log.d(TAG, "searchview查询文本1: " + query);
+                LogUtil.d(TAG, "searchview查询文本1: " + query);
                 return false;
             }
 
@@ -396,7 +397,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
                     getlistWithFolderName(bookmarkFolderName);
                 } else {
                     mBookmarkArrayList = mAboutBookmark.queryBookmark(newText);
-                    Log.d(TAG, "searchview查询文本2: " + newText);
+                    LogUtil.d(TAG, "searchview查询文本2: " + newText);
                     if (mBookmarkArrayList.isEmpty()) {
                         Toast.makeText(BookmarkPageActivity.this, "未找到结果", Toast.LENGTH_LONG).show();
                     } else {
@@ -437,7 +438,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 int i=item.getItemId();
-                Log.d("Popmenu", String.valueOf(i));
+                LogUtil.d("Popmenu", String.valueOf(i));
                 //设置标签筛选的标题
                 setTags(item.getTitle().toString());
                 return false;

@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import com.crystal.customview.fileindexview.SelectFolderFragment;
 import com.crystal.customview.numberpickerview.numberPicker;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 
@@ -88,14 +89,14 @@ public class DownloadSettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.file_path_view) {
-                    Log.d(TAG, "onClick: 点击了选择文件夹view");
+                    LogUtil.d(TAG, "onClick: 点击了选择文件夹view");
                     FragmentManager fm = getFragmentManager();
                     SelectFolderFragment folderFragment = new SelectFolderFragment();
                     folderFragment.show(fm, "选择下载文件夹路径");
                     folderFragment.setSendPath(new SelectFolderFragment.SendPath() {
                         @Override
                         public void send(String path) {
-                            Log.d(TAG, "send: "+path);
+                            LogUtil.d(TAG, "send: "+path);
                             filePathView.setText(path);
                             PreferenceTools.putString(getActivity(), WebviewConf.defaultDownloadPath,path);
                         }

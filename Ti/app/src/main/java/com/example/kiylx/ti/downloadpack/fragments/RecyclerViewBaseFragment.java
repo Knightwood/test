@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.tool.LogUtil;
 
 
 import java.util.List;
@@ -56,7 +57,7 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     public RecyclerViewBaseFragment() {
         super();
         this.mDownloadInfoArrayList=downloadInfoList();
-        Log.d(TAG, "无参构造");
+        LogUtil.d(TAG, "无参构造");
     }
 
     @Nullable
@@ -81,19 +82,19 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     }
 
     public void updateUI() {
-        Log.d(TAG, "updateUI: ");
+        LogUtil.d(TAG, "updateUI: ");
         if (mDownloadInfoArrayList == null) {
-            Log.d(TAG, "下载信息列表不存在 ");
+            LogUtil.d(TAG, "下载信息列表不存在 ");
             return;
         }
         if (mAdapter == null) {
             mAdapter = new listAdapter(mDownloadInfoArrayList);
             viewContainer.setAdapter(mAdapter);
-            Log.d(TAG, "适配器创建");
+            LogUtil.d(TAG, "适配器创建");
         } else {
             mAdapter.setLists(mDownloadInfoArrayList);
             mAdapter.notifyDataSetChanged();
-            Log.d(TAG, "更新数据");
+            LogUtil.d(TAG, "更新数据");
         }
 
     }

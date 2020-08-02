@@ -2,11 +2,11 @@ package com.example.kiylx.ti.downloadpack.downloadcore;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
@@ -108,7 +108,7 @@ public class DownloadManager {
 
                 updateInfo(info);
             }
-            Log.d(TAG, "下载暂停成功");
+            LogUtil.d(TAG, "下载暂停成功");
             return true;
         }
 
@@ -193,17 +193,18 @@ public class DownloadManager {
         downloading.remove(info);
         updateInfo(info);//更新数据库数据
 
-        sendMes();//通知别的类，这里的列表发生了改变
+        sendMes(info.getUrl());//通知别的类，这里的列表发生了改变
     }
 
     /**
      * 发送列表更新的通知
+     * @param url
      */
-    private void sendMes() {
+    private void sendMes(String url) {
         EventMessage msg = new EventMessage(1, "更新下载列表");
         EventBus.getDefault().post(msg);
 
-        Log.d(TAG, "下载数：" + downloading.size() + "暂停数：" + pausedownload.size());
+        LogUtil.d(TAG, "下载数：" + downloading.size() + "暂停数：" + pausedownload.size());
 
     }
 
@@ -313,7 +314,7 @@ public class DownloadManager {
         downloading.remove(info);
         pausedownload.add(info);
 
-        Log.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
+        LogUtil.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
                 + "正在下载：" + downloading.size() + "\n"
                 + "准备下载：" + readyDownload.size() + "\n"
                 + "完成下载：" + completeDownload.size());
@@ -387,7 +388,7 @@ public class DownloadManager {
 
         updateInfo(info);
 
-        Log.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
+        LogUtil.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
                 + "正在下载：" + downloading.size() + "\n"
                 + "准备下载：" + readyDownload.size() + "\n"
                 + "完成下载：" + completeDownload.size());
@@ -413,7 +414,7 @@ public class DownloadManager {
         info.setCancel(true);
         pausedownload.remove(info);
         deleteFile(info);
-        sendMes();//通知别的类，这里的列表发生了改变
+        sendMes(info.getUrl());//通知别的类，这里的列表发生了改变
     }
 
     /**
@@ -535,7 +536,7 @@ public class DownloadManager {
 
                 }
             }
-            Log.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
+            LogUtil.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
         }
     }
 

@@ -1,14 +1,13 @@
 package com.example.kiylx.ti.db.historydb2;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 /**
  * 创建者 kiylx

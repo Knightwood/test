@@ -4,6 +4,7 @@ package com.example.kiylx.ti.mvp.presenter;
 import android.util.Log;
 
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.mvp.presenter.WebViewManager.Action;
 import com.example.kiylx.ti.model.SealedWebPageInfo;
@@ -115,20 +116,20 @@ public class WebViewInfo_Manager implements Observer {
             case NEWTAB:
             case ADD:
                 addToList(pos, info);
-                Log.d(TAG, "updateItem: 添加后数量" + mCurrectList.size());
+                LogUtil.d(TAG, "updateItem: 添加后数量" + mCurrectList.size());
                 break;
             case DELETE:
                 delete(pos);
                 break;
             case UPDATEINFO:
                 for (WebPage_Info hi : mCurrectList) {
-                    Log.d(TAG, "更新网页前: " + pos);
+                    LogUtil.d(TAG, "更新网页前: " + pos);
                 }
                 updateinfo(info, pos);
                 break;
         }
         for (WebPage_Info hi : mCurrectList) {
-            Log.d(TAG, "更新网页时: " + hi.getUrl() + "***" + hi.getTitle());
+            LogUtil.d(TAG, "更新网页时: " + hi.getUrl() + "***" + hi.getTitle());
         }
     }
 

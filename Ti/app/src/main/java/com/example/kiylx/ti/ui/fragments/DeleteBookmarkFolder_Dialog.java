@@ -17,6 +17,7 @@ import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.LogUtil;
 
 public class DeleteBookmarkFolder_Dialog extends DialogFragment {
     private static final String TAG = "删除书签文件夹";
@@ -44,7 +45,7 @@ public class DeleteBookmarkFolder_Dialog extends DialogFragment {
         aboutBookmark=AboutBookmark.get(getActivity());
         if(getArguments() !=null){
             folderName =getArguments().getString(ARG_PARAM);
-            Log.d(TAG, String.format("要删除的标签%s", folderName));
+            LogUtil.d(TAG, String.format("要删除的标签%s", folderName));
         }
 
     }

@@ -11,9 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
@@ -29,7 +26,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -42,17 +38,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crystal.customview.baseadapter1.BaseAdapter;
-import com.crystal.customview.baseadapter1.BaseHolder;
-import com.crystal.customview.slider.Slider;
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
-import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.mvp.presenter.WebViewInfo_Manager;
@@ -74,15 +67,12 @@ import com.example.kiylx.ti.mvp.presenter.WebViewManager;
 import com.example.kiylx.ti.ui.fragments.MinSetDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.ProcessUrl;
-import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -151,7 +141,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
         //判断webviewmanager中有没有webview，有的话执行恢复方法，把webview重新放进屏幕。当新进应用，是没有webview的，那么添加wevbview，否则，就把activity  stop()时remove的view加载回来
         if (mWebViewManager.isempty()) {
-            Log.d(TAG, "onCreate: isempty");
+            LogUtil.d(TAG, "onCreate: isempty");
             newTab(null);
         } else {
             mWebViewManager.getTop(current).onResume();
@@ -170,7 +160,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             current = savedInstanceState.getInt(CURRENTINT);
             //isOpenedEdit = savedInstanceState.getBoolean(OPENED_EDIT);
         }
-        Log.d("lifecycle", "onCreate()");
+        LogUtil.d("lifecycle", "onCreate()");
 
 //接口回调
         openwebpage_fromhistoryORbookmark();
@@ -188,15 +178,15 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         observer = new MainLifeCycleObserver(this);
         getLifecycle().addObserver(observer);
 
-        Log.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
+        LogUtil.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
     }
 
     /**
      * 测试上下文
      */
     private void testContext() {
-        Log.d(TAG, "测试上下文，getApplication得到的是:  " + getApplicationContext());
-        Log.d(TAG, "测试上下文，Xapplication.getInstance()得到的是：   " + Xapplication.getInstance());
+        LogUtil.d(TAG, "测试上下文，getApplication得到的是:  " + getApplicationContext());
+        LogUtil.d(TAG, "测试上下文，Xapplication.getInstance()得到的是：   " + Xapplication.getInstance());
     }
 
     /**
@@ -221,7 +211,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         super.onRestart();
         mWebViewManager.getTop(current).onResume();
         //f1.addView(mWebViewManager.getTop(current));
-        Log.d("lifecycle", "onReStart()");
+        LogUtil.d("lifecycle", "onReStart()");
     }
 
 
@@ -234,7 +224,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         if (null == mProcessUrl) {
             mProcessUrl = new ProcessUrl();
         }
-        Log.d("lifecycle", "onStart'");
+        LogUtil.d("lifecycle", "onStart'");
         EventBus.getDefault().register(this);
         bar = findViewById(R.id.webviewProgressBar);
         mWebViewManager.setOnUpdateProgress(this);
@@ -245,13 +235,13 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     protected void onResume() {
         super.onResume();
        /* int s = mWebViewManager.size();
-        Log.d("lifecycle", "onResume()" + "webview数量" + s);*/
+        LogUtil.d("lifecycle", "onResume()" + "webview数量" + s);*/
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d("lifecycle", "onPause()");
+        LogUtil.d("lifecycle", "onPause()");
     }
 
     @Override
@@ -261,7 +251,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             mWebViewManager.getTop(current).onPause();
         //f1.removeAllViews();//移除所有视图
         EventBus.getDefault().unregister(this);
-        Log.d("lifecycle", "onStop()");
+        LogUtil.d("lifecycle", "onStop()");
     }
 
     @Override
@@ -269,7 +259,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         super.onDestroy();
         if (seviceBund)
             unbindService(connection);
-        Log.d("lifecycle", "onDestroy()");
+        LogUtil.d("lifecycle", "onDestroy()");
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
@@ -464,7 +454,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         current = pos;
         willSwitch.onResume();
 
-        Log.d(TAG, "switchPage: " + willSwitch.getProgress());
+        LogUtil.d(TAG, "switchPage: " + willSwitch.getProgress());
         setTextForbar(current);//更新工具栏上的文字
         update(willSwitch.getProgress());
     }
@@ -619,7 +609,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != RESULT_OK) {
-            Log.d(TAG, "onActivityResult: 结果失败");
+            LogUtil.d(TAG, "onActivityResult: 结果失败");
             if (requestCode == 2020) {
                 cancelUpLoad();//未选择任何文件，消费掉callback。
             }
@@ -631,7 +621,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             mWebViewManager.getTop(current).loadUrl(data.getStringExtra("text_or_url"));
             mTextView.setText("正在载入...");
             isOpenedEdit=false;
-            Log.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
+            LogUtil.d(TAG, "onActivityResult: 被触发" + data.getStringExtra("text_or_url"));
         }
         if (requestCode == 2020) {
             if (fileUploadCallBack == null) {
@@ -641,12 +631,12 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             if (result != null) {
                 fileUploadCallBack.onReceiveValue(new Uri[]{result});
             } else {
-                Log.d(TAG, "onActivityResult: 选择文件结果，result是null");
+                LogUtil.d(TAG, "onActivityResult: 选择文件结果，result是null");
                 fileUploadCallBack.onReceiveValue(new Uri[]{});
             }
             fileUploadCallBack = null;
             //fileUploadCallBack.onReceiveValue(CustomWebchromeClient.FileChooserParams.parseResult(2020,data));
-            Log.d(TAG, "onActivityResult: " + data.getData().toString());
+            LogUtil.d(TAG, "onActivityResult: " + data.getData().toString());
         }
     }
 
@@ -711,7 +701,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     class HandleClickLinksImpl implements HandleClickedLinks {
         @Override
         public void onImgSelected(int x, int y, int type, String extra) {
-            Log.d(TAG, "onImgSelected: " + extra);
+            LogUtil.d(TAG, "onImgSelected: " + extra);
             String[] menu = new String[]{"复制图片链接地址", "新窗口打开图片", "分享图片", "保存图片"};
             new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
                 @Override
@@ -750,7 +740,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
         @Override
         public void onLinkSelected(int x, int y, int type, String extra) {
-            Log.d(TAG, "onLinkSelected: " + extra);
+            LogUtil.d(TAG, "onLinkSelected: " + extra);
             String[] menu = new String[]{"复制链接地址", "新窗口打开", "分享", "后台打开", "添加到书签"};
             new AlertDialog.Builder(MainActivity.this).setItems(menu, new DialogInterface.OnClickListener() {
                 @Override
@@ -887,7 +877,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
                     startActivityForResult(Intent.createChooser(intent2, "上传文件"), 2020);
                 } else {
                     Intent intent = fileChooserParams.createIntent();
-                    Log.d(TAG, "onShowFileChooser: type:" + intent.getType() + " action:" + intent.getAction() + " category:" + intent.getCategories());
+                    LogUtil.d(TAG, "onShowFileChooser: type:" + intent.getType() + " action:" + intent.getAction() + " category:" + intent.getCategories());
                     startActivityForResult(Intent.createChooser(intent, "上传文件"), 2020);
                 }
 
@@ -930,11 +920,11 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             new AlertDialog.Builder(MainActivity.this).setMessage("当前网址想要使用你的地理位置")
                     .setPositiveButton("允许", (dialog, which) -> {
                         callback.invoke(origin, true, false);
-                        Log.d(TAG, "requestLocate: 位置请求成功");
+                        LogUtil.d(TAG, "requestLocate: 位置请求成功");
                     })
                     .setNegativeButton("拒绝", (dialog, which) -> {
                         callback.invoke(origin, false, false);
-                        Log.d(TAG, "requestLocate: 位置请求失败");
+                        LogUtil.d(TAG, "requestLocate: 位置请求失败");
                     })
                     .setCancelable(false)
                     .show();

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -62,7 +63,7 @@ public class SearchToolFragment extends Fragment {
                         s = "www.";
                         break;
                 }
-                Log.d(TAG, "点击文本: "+s);
+                LogUtil.d(TAG, "点击文本: "+s);
                 if (mStr != null) {
                     mStr.sendText(s);
                 }
@@ -74,7 +75,7 @@ public class SearchToolFragment extends Fragment {
             //接收滑动杆的移动事件，通过Str接口转发。
             @Override
             public void send(Slider.shiftPos shift) {
-                Log.d(TAG, "滑动事件: "+shift.toString());
+                LogUtil.d(TAG, "滑动事件: "+shift.toString());
                 if (mStr != null) mStr.sendPos(shift);
             }
         });

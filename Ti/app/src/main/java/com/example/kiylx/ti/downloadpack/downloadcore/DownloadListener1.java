@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.DownloadListener;
 
+import com.example.kiylx.ti.tool.LogUtil;
+
 /**
  * 调用系统自带的下载器下载
  */
@@ -24,8 +26,8 @@ public class DownloadListener1 implements DownloadListener {
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         this.mContext.startActivity(intent);
 
-        Log.d(TAG, "onDownloadStart:下载地址 "+url);
-        Log.d(TAG, "onDownloadStart: 标识"+userAgent);
-        Log.d(TAG, "onDownloadStart: 文件大小"+contentLength);
+        LogUtil.d(TAG, "onDownloadStart:下载地址 "+url);
+        LogUtil.d(TAG, "onDownloadStart: 标识"+userAgent);
+        LogUtil.d(TAG, "onDownloadStart: 文件大小"+contentLength);
     }
 }

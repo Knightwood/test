@@ -2,7 +2,7 @@ package com.example.kiylx.ti.webview32;
 
 import android.webkit.WebView;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.webview32.nestedjspack.Suggestion;
 
 import java.io.ByteArrayOutputStream;

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.interfaces.NotifyWebViewUpdate;
+import com.example.kiylx.ti.tool.LogUtil;
 
 
 public class CustomWebchromeClient extends WebChromeClient {
@@ -50,7 +51,7 @@ public class CustomWebchromeClient extends WebChromeClient {
         if (newProgress == 100) {
             //在webviewClient中更新了网址，在网页加载完成时再更新一次
             mNotifyWebViewUpdate.updateTitle(view);
-            Log.d(TAG, "onProgressChanged: 网页加载完成,更新标题");
+            LogUtil.d(TAG, "onProgressChanged: 网页加载完成,更新标题");
         }
 
 
@@ -210,7 +211,7 @@ public class CustomWebchromeClient extends WebChromeClient {
      */
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-        Log.d(TAG, "请求地理位置");
+        LogUtil.d(TAG, "请求地理位置");
         if (clientInterface!=null){
            clientInterface.requestLocate(origin,callback);
         }

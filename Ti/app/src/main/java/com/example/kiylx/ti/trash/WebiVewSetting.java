@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
+import com.example.kiylx.ti.tool.LogUtil;
 
 /**
  * webview的设置
@@ -74,7 +75,7 @@ public class WebiVewSetting {
     private String get_user_agent(Context context){
         if (sharedPreferences==null)
         sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
-        Log.d(TAG, "获取浏览器标识: "+ sharedPreferences.getString("explorer_flags",null));
+        LogUtil.d(TAG, "获取浏览器标识: "+ sharedPreferences.getString("explorer_flags",null));
         String user_agent=sharedPreferences.getString("explorer_flags",null);
         if (user_agent.equals("0"))
             return null;

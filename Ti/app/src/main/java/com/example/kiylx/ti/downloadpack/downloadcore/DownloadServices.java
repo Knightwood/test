@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class DownloadServices extends Service {
                 mDownloadManager = DownloadManager.getInstance();
             }
             try {
-                mDownloadManager.startDownload(info,false);
+                mDownloadManager.startDownload(info, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,20 +126,25 @@ public class DownloadServices extends Service {
                         return mDownloadManager.getPercentage(info);
                     }
 
+                    /**
+                     * @return 获取下载条目list，若downloadInfoList不为null，那就置downloadInfoList为null，然后重新获取下载条目list
+                     */
                     @Override
                     public List<DownloadInfo> getAllDownload() {
                         if (downloadInfoList == null) {
                             downloadInfoList = new ArrayList<>();
-                        }
-                        downloadInfoList.clear();
-                        downloadInfoList.addAll(mDownloadManager.getDownloading());
-                        downloadInfoList.addAll(mDownloadManager.getPausedownload());
-                        downloadInfoList.addAll(mDownloadManager.getReadyDownload());
 
-                        Log.d("下载服务：", "暂停下载："+mDownloadManager.getPausedownload().size()+"\n"
-                                +"正在下载："+mDownloadManager.getDownloading().size()+"\n"
-                                +"准备下载："+mDownloadManager.getReadyDownload().size()+"\n"
-                                );
+                            downloadInfoList.addAll(mDownloadManager.getDownloading());
+                            downloadInfoList.addAll(mDownloadManager.getPausedownload());
+                            downloadInfoList.addAll(mDownloadManager.getReadyDownload());
+                        }else{
+                            downloadInfoList=null;
+                            getAllDownload();
+                        }
+                        LogUtil.d("下载服务：", "暂停下载：" + mDownloadManager.getPausedownload().size() + "\n"
+                                + "正在下载：" + mDownloadManager.getDownloading().size() + "\n"
+                                + "准备下载：" + mDownloadManager.getReadyDownload().size() + "\n"
+                        );
 
                         return downloadInfoList;
 
@@ -148,9 +154,11 @@ public class DownloadServices extends Service {
                     public List<DownloadInfo> getAllComplete() {
                         if (completeInfoList == null) {
                             completeInfoList = new ArrayList<>();
+                            completeInfoList.addAll(mDownloadManager.getCompleteDownload());
+                        }else{
+                            completeInfoList=null;
+                            getAllComplete();
                         }
-                        completeInfoList.clear();
-                        completeInfoList.addAll(mDownloadManager.getCompleteDownload());
                         return completeInfoList;
                     }
                 };
@@ -158,7 +166,6 @@ public class DownloadServices extends Service {
             }
             return controlMethod;
         }
-
 
         public void resumeAll() {
             mDownloadManager.resumeAll();

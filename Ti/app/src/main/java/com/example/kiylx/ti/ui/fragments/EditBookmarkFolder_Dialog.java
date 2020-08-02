@@ -22,6 +22,7 @@ import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
 import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.tool.LogUtil;
 
 /**
  * 编辑书签文件夹时，打开这个对话框。
@@ -81,7 +82,7 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
                 public void onClick(DialogInterface dialog, int which) {
                     //更新文件夹名称
                     folderName = view1.getText().toString();//获取编辑框里改好的文件夹名称
-                    Log.d(TAG, "onClick: tagname被改为" + folderName + "oldFoldername:" + oldFoldername + "tmp2:" + tmp2);
+                    LogUtil.d(TAG, "onClick: tagname被改为" + folderName + "oldFoldername:" + oldFoldername + "tmp2:" + tmp2);
 
                     //更新该文件夹名称
                     mBookMarkFolderManager.updateitem(oldFoldername, folderName);
@@ -160,7 +161,7 @@ public class EditBookmarkFolder_Dialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d("EditBox", "onDetach");
+        LogUtil.d("EditBox", "onDetach");
         mContext = null;
 
     }

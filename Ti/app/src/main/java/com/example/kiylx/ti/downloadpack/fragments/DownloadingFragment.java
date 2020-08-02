@@ -10,6 +10,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,7 +52,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveMsg(EventMessage message) {
         if (message.getType() == 1) {
-            Log.d(TAG, "eventbus接受到了事件，正在更新视图");
+            LogUtil.d(TAG, "eventbus接受到了事件，正在更新视图");
             downloadInfoList= controlInterface.getAllDownload();
             updateUI(downloadInfoList);
         }
@@ -124,7 +125,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
                 try {
                     Thread.sleep(500);
                     this.bar.setProgress(info.getIntPercent());
-                    Log.d(TAG, "下载进度: "
+                    LogUtil.d(TAG, "下载进度: "
                             + info.getFileName()
                             + "已下载"
                             + info.getCurrentLength()

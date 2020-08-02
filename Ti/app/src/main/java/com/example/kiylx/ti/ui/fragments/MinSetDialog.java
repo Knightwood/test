@@ -20,7 +20,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.conf.StateManager;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
@@ -114,7 +115,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 break;
             case R.id.back1:
             case R.id.toolButton:
-                Log.d(TAG, "onClick: 切换菜单");
+                LogUtil.d(TAG, "onClick: 切换菜单");
                 if (currentMenu == 0) {
                     //当前页是0，要切换到1
                     showView(homepageSettingBinding.toolSecond, homepageSettingBinding.toolFirst);
@@ -167,7 +168,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
         }
         if (v.getId() != R.id.toolButton && v.getId() != R.id.back1)//既不是工具箱，也不是点击R.id.back1,就dismiss掉dialogFragment
             dismiss();
-        Log.d(TAG, "onClick: " + v.getId());
+        LogUtil.d(TAG, "onClick: " + v.getId());
     }
 
     /**

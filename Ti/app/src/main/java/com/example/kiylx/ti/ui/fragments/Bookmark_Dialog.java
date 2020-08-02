@@ -33,6 +33,7 @@ import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.util.List;
 import java.util.UUID;
@@ -141,14 +142,14 @@ public class Bookmark_Dialog extends DialogFragment {
                         if (beBookmarked_info.getUuid()==null){
                             beBookmarked_info.setUuid(UUID.randomUUID());
                             mAboutBookmark.InsertItem(beBookmarked_info);
-                            Log.d(TAG, "onClick: uuid是null");
+                            LogUtil.d(TAG, "onClick: uuid是null");
                         }else {
-                            Log.d(TAG, "onClick: uuid不是null，所以更新数据库");
+                            LogUtil.d(TAG, "onClick: uuid不是null，所以更新数据库");
                             mAboutBookmark.updateItem(beBookmarked_info);
                         }
                         //如果intentid是2(BookmarkPageActivity打开的，用来编辑已经存在的书签)，更新视图
                         if (intentid == 2) {
-                            Log.d(TAG, "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
+                            LogUtil.d(TAG, "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
                             refresh.refresh(null);
                         }
 
@@ -187,7 +188,7 @@ public class Bookmark_Dialog extends DialogFragment {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
+                LogUtil.d(TAG, "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
 
                 //选择某一个文件夹后更新webviewinfo信息
                 beBookmarked_info.setBookmarkFolderName(bookmarkFolderlists.get(position));
@@ -255,7 +256,7 @@ public class Bookmark_Dialog extends DialogFragment {
             return;
         }
         //只有一个fragment与之关联，且此方法只有一个更新界面的方法，所以用不着验证是哪个fragment传来的
-        Log.d(TAG, "onActivityResult");
+        LogUtil.d(TAG, "onActivityResult");
         //用新的list更新界面
         String name = data.getStringExtra("newTagName");
         bookmarkFolderlists=mBookMarkFolderManager.getBookmarkFolderlists();
@@ -271,7 +272,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach: ");
+        LogUtil.d(TAG, "onDetach: ");
         mContext = null;
 
     }
@@ -315,7 +316,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 if(i==-1){
 
                 }else{
-                Log.d("Bookmark_Dialog_Popmenu", String.valueOf(i));
+                LogUtil.d("Bookmark_Dialog_Popmenu", String.valueOf(i));
                 //设置标签筛选的标题
                 setTags(item.getTitle().toString());}
                 return false;

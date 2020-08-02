@@ -19,6 +19,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class SearchEngineListFragment extends Fragment {
                     textView1.setVisibility(View.INVISIBLE);
                 }
 
-                Log.d(TAG, "onClick: " + url);
+                LogUtil.d(TAG, "onClick: " + url);
             }
         });
 

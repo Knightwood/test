@@ -17,10 +17,10 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * 创建者 kiylx
@@ -45,7 +45,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
 
         this.afterClick = afterClick;
         weakReference = new WeakReference<>(context);
-        Log.d("历史记录", "HistoryListAdapter:构造函数 ");
+        LogUtil.d("历史记录", "HistoryListAdapter:构造函数 ");
 
     }
 
@@ -61,8 +61,8 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
     @Override
     public void onBindViewHolder(@NonNull HViewHolder holder, int position) {
         holder.bind(getItem(position));
-        Log.d("历史记录", "绑定布局时item数量: " + getItemCount());
-        Log.d("历史activity", " onBindViewHolder函数被触发");
+        LogUtil.d("历史记录", "绑定布局时item数量: " + getItemCount());
+        LogUtil.d("历史activity", " onBindViewHolder函数被触发");
     }
 
 
@@ -75,7 +75,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
 
         public HViewHolder(@NonNull View itemView) {
             super(itemView);
-            Log.d("历史activity", " HistoryViewHolder构造函数函数被触发");
+            LogUtil.d("历史activity", " HistoryViewHolder构造函数函数被触发");
 
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
@@ -92,7 +92,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
                 URL = info.url;
                 title.setText(info.title);
                 url.setText(info.url);
-                Log.d("历史activity", "bind函数被触发");
+                LogUtil.d("历史activity", "bind函数被触发");
             }
 
         }

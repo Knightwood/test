@@ -16,6 +16,7 @@ import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     public List<DownloadInfo> downloadInfoList() {
         if (completeList==null){
             completeList=controlInterface.getAllComplete();
-            Log.d(TAG, "下载完成列表: "+completeList.size());
+            LogUtil.d(TAG, "下载完成列表: "+completeList.size());
         }
 
         new Thread(new Runnable() {
@@ -55,7 +56,7 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
                 list=DownloadInfoDatabaseUtil.getDao(getActivity()).getAll();
                 for (DownloadEntity e:list
                 ) {
-                    Log.d(TAG, "downloadInfoList: 数量"+e.filename);
+                    LogUtil.d(TAG, "downloadInfoList: 数量"+e.filename);
                 }
             }
         }).start();

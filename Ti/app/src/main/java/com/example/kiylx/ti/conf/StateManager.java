@@ -5,7 +5,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.networkpack.NetState;
 import com.example.kiylx.ti.model.ShowPicMode;
@@ -108,7 +109,7 @@ public class StateManager extends Observable {
 
     public void setNetWorkState(NetworkMana netWorkState) {
         this.netWorkState = netWorkState;
-        Log.d(TAG, "setNetWorkState: data " + netWorkState.get(NetState.DATA) + "  wifi: " + netWorkState.get(NetState.WIFI));
+        LogUtil.d(TAG, "setNetWorkState: data " + netWorkState.get(NetState.DATA) + "  wifi: " + netWorkState.get(NetState.WIFI));
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.tool;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -19,7 +18,7 @@ import android.print.PrintManager;
 import android.webkit.WebView;
 
 import com.bumptech.glide.Glide;
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.tool.networkpack.NetState;
 

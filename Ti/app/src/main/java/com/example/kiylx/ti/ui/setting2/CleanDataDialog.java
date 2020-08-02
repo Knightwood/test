@@ -22,7 +22,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.webview32.CustomAWebView;
 
@@ -107,7 +108,7 @@ public class CleanDataDialog extends DialogFragment implements CompoundButton.On
                 break;
 
         }
-        Log.d(TAG, "onClick: " + buttonView.getId() + "  网页存储："
+        LogUtil.d(TAG, "onClick: " + buttonView.getId() + "  网页存储："
                 + cleanLocalStorage + "  历史记录："
                 + cleanHistory + "  缓存："
                 + cleanCache + "  表单："

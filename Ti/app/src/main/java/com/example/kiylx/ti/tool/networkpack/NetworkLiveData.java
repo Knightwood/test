@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.tool.networkpack;
 
-import android.app.usage.NetworkStats;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -13,7 +12,8 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ public class NetworkLiveData extends LiveData<NetState> {
     private ConnectivityManager.NetworkCallback networkCallback;
 
     public static NetworkLiveData getInstance() {
-        Log.d(TAG, "NetworkLiveData: getInstance初始化");
+        LogUtil.d(TAG, "NetworkLiveData: getInstance初始化");
         if (mInstance == null) {
             synchronized (NetworkLiveData.class) {
                 if (mInstance == null) {
@@ -44,7 +44,7 @@ public class NetworkLiveData extends LiveData<NetState> {
     }
 
     private NetworkLiveData() {
-        Log.d(TAG, "NetworkLiveData: 初始化");
+        LogUtil.d(TAG, "NetworkLiveData: 初始化");
         request = new NetworkRequest.Builder().build();
         connectivityManager = (ConnectivityManager) Xapplication.getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         networkCallback = new NetWorkCallbackImpl();
@@ -85,7 +85,7 @@ public class NetworkLiveData extends LiveData<NetState> {
         @Override
         public void onAvailable(Network network) {
             super.onAvailable(network);
-            Log.d(TAG, "onAvailable: ");
+            LogUtil.d(TAG, "onAvailable: ");
             getInstance().postValue(NetState.ON);
 
         }
@@ -99,7 +99,7 @@ public class NetworkLiveData extends LiveData<NetState> {
         public void onLost(Network network) {
             super.onLost(network);
 
-            Log.d(TAG, "onLost: ");
+            LogUtil.d(TAG, "onLost: ");
             getInstance().postValue(NetState.OFF);
 
         }
@@ -130,15 +130,15 @@ public class NetworkLiveData extends LiveData<NetState> {
         public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
             super.onCapabilitiesChanged(network, networkCapabilities);
             if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {//测试此实例的能力
-                Log.d(TAG, "onCapabilitiesChanged: 开始");
+                LogUtil.d(TAG, "onCapabilitiesChanged: 开始");
                 if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                     getInstance().postValue(NetState.DATA);
-                    Log.d(TAG, "onCapabilitiesChanged: data");
+                    LogUtil.d(TAG, "onCapabilitiesChanged: data");
                     //移动数据
                 } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {//测试实例有无这个传输存在
                     //wifi
                     getInstance().postValue(NetState.WIFI);
-                    Log.d(TAG, "onCapabilitiesChanged: wifi");
+                    LogUtil.d(TAG, "onCapabilitiesChanged: wifi");
                 } else {
                     getInstance().postValue(NetState.OTHER);
                 }

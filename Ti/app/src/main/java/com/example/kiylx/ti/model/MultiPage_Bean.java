@@ -5,6 +5,8 @@ import android.util.Log;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
+import com.example.kiylx.ti.tool.LogUtil;
+
 /**
  * 用于多窗口更新文字，使用的databinding
  */
@@ -45,6 +47,6 @@ public class MultiPage_Bean extends BaseObservable {
     }
 
     public void ClickMethod() {
-        Log.d(TAG, "ClickMethod: 选项被点击了");
+        LogUtil.d(TAG, "ClickMethod: 选项被点击了");
     }
 }

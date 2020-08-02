@@ -10,6 +10,7 @@ import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderCursorWrapper;
 import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDbSchema;
 import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDBOpenHelper;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,7 @@ public class BookMarkFolderManager {
         if (isExist(folder)) {
             return;
         }
-        Log.d("tag添加", folder);
+        LogUtil.d("tag添加", folder);
         ContentValues values = getContentValues(folder);
         mDatabase.insert(BookmarkFolderDbSchema.FolderTable.NAME, null, values);
         addTagintoLists(folder);
@@ -152,7 +153,7 @@ public class BookMarkFolderManager {
         //如果文件夹list仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是文件夹list仅被初始化还没有从数据库里拿数据
         if (!bookmarkFolderlists.isEmpty() )
             try {
-                Log.d("书签文件夹数量", String.valueOf(cursor.getCount()));
+                LogUtil.d("书签文件夹数量", String.valueOf(cursor.getCount()));
                 if (cursor.getCount() == 0) {
                     return bookmarkFolderlists;
                 }

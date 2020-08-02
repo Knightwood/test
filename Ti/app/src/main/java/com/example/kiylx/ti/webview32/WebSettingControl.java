@@ -7,7 +7,6 @@ import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kiylx.ti.Xapplication;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener1;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadListener2;
@@ -86,7 +85,7 @@ public class WebSettingControl implements Observer {
         settings.setAllowFileAccess(true);
         //settings.setNeedInitialFocus(true);
         //是否禁止图片显示
-        // Log.d(TAG, "ConfigWebview:应该图片显示？ "+SomeTools.getXapplication().getStateManager().canShowPic());
+        // LogUtil.d(TAG, "ConfigWebview:应该图片显示？ "+SomeTools.getXapplication().getStateManager().canShowPic());
         settings.setBlockNetworkImage(!SomeTools.getXapplication().getStateManager().canShowPic());
         //设置WebView的访问UserAgent
         if (SomeTools.getXapplication().getStateManager().getPcMode()) {

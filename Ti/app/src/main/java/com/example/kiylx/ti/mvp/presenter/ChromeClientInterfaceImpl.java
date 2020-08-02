@@ -14,12 +14,10 @@ import android.webkit.WebView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.interfaces.WebViewChromeClientInterface;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
-import com.example.kiylx.ti.ui.activitys.MainActivity;
-import com.example.kiylx.ti.webview32.CustomAWebView;
 
 import java.lang.ref.WeakReference;
 
@@ -54,7 +52,7 @@ public class ChromeClientInterfaceImpl implements WebViewChromeClientInterface {
                 context.get().startActivityForResult(Intent.createChooser(intent2, "上传文件"), 2020);
             } else {
                 Intent intent = fileChooserParams.createIntent();
-                Log.d(TAG, "onShowFileChooser: type:" + intent.getType() + " action:" + intent.getAction() + " category:" + intent.getCategories());
+                LogUtil.d(TAG, "onShowFileChooser: type:" + intent.getType() + " action:" + intent.getAction() + " category:" + intent.getCategories());
                 context.get().startActivityForResult(Intent.createChooser(intent, "上传文件"), 2020);
             }
 
@@ -98,11 +96,11 @@ public class ChromeClientInterfaceImpl implements WebViewChromeClientInterface {
         new AlertDialog.Builder(context.get()).setMessage("当前网址想要使用你的地理位置")
                 .setPositiveButton("允许", (dialog, which) -> {
                     callback.invoke(origin, true, false);
-                    Log.d(TAG, "requestLocate: 位置请求成功");
+                    LogUtil.d(TAG, "requestLocate: 位置请求成功");
                 })
                 .setNegativeButton("拒绝", (dialog, which) -> {
                     callback.invoke(origin, false, false);
-                    Log.d(TAG, "requestLocate: 位置请求失败");
+                    LogUtil.d(TAG, "requestLocate: 位置请求失败");
                 })
                 .setCancelable(false)
                 .show();

@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.tool.HashMapProcess;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class UserAgentFragment extends Fragment {
                     textView1.setVisibility(View.INVISIBLE);
                 }
 
-                Log.d(TAG, "onClick: " + useragent);
+                LogUtil.d(TAG, "onClick: " + useragent);
             }
         });
 

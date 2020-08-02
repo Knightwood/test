@@ -9,7 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
-import com.example.kiylx.ti.Xapplication;
+import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.conf.StateManager;
 import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
 import com.example.kiylx.ti.db.historydb2.HistoryEntity;
@@ -215,7 +216,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     public void addInWebManager(WebView v, int pos) {
         webViewArrayList.add(pos, v);
         notifyupdate(v, pos, Action.NEWTAB, DatebaseAction.DONOTHING);
-        Log.d(TAG, "addInWebManager: ");
+        LogUtil.d(TAG, "addInWebManager: ");
 
     }
 
@@ -360,7 +361,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * 获取封装好的WebPageInfo，后面将用它作为推送给观察者的数据
      */
     private SealedWebPageInfo getSealedData(WebPage_Info info, int pos, Action action) {
-        Log.d(TAG, "getSealedData: 添加数据");
+        LogUtil.d(TAG, "getSealedData: 添加数据");
         return new SealedWebPageInfo(info, pos, action);
     }
 
@@ -385,7 +386,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                     int pos = webViewArrayList.indexOf(webView);
                     //Action是对于多标签也窗口而言的，也就是说，用UPDATEINFO更新多窗口界面的信息，用insertTodatabase控制这一个新的网址加入数据库
                     notifyupdate(webView, pos, Action.UPDATEINFO, DatebaseAction.INSERT);
-                    Log.d(TAG, "SaveWebPageUrl: pos" + pos + "current" + pos);
+                    LogUtil.d(TAG, "SaveWebPageUrl: pos" + pos + "current" + pos);
                     if (MainActivity.getCurrent() != pos) {
                         stop(pos);//后台加载网页时，current就和这个webview在list中的pos不等。
                     }
@@ -447,7 +448,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
     private void notifyupdate(WebView webView, int pos, Action action, DatebaseAction datebaseAction) {
         //用传入的webview更新tmpData，后面需要用tmp进行封装
         WebPage_Info info = null;
-        Log.d("网页管理", action.toString());
+        LogUtil.d("网页管理", action.toString());
 
         switch (action) {
             case NEWTAB:

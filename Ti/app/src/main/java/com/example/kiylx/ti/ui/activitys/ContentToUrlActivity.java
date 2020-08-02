@@ -22,6 +22,7 @@ import com.crystal.customview.baseadapter1.BaseHolder;
 import com.crystal.customview.slider.Slider;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.mvp.presenter.WebViewManager;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.ProcessUrl;
 import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
 
@@ -98,7 +99,7 @@ public class ContentToUrlActivity extends AppCompatActivity {
             //接收滑动杆的移动事件，通过Str接口转发。
             @Override
             public void send(Slider.shiftPos shift) {
-                Log.d(TAG, "滑动事件: " + shift.toString());
+                LogUtil.d(TAG, "滑动事件: " + shift.toString());
                 shiftStr(shift.toString());
             }
 
@@ -108,11 +109,11 @@ public class ContentToUrlActivity extends AppCompatActivity {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                    Log.d(TAG, "onKeyDown: ");
+                    LogUtil.d(TAG, "onKeyDown: ");
                     //监听回车键，按下的时候就开始执行搜索操作。
                     String s = mTextView.getText().toString();
                     if (!s.equals("")) {
-                        Log.d(TAG, "onKey: " + s + ":" + ProcessUrl.processString(s, getApplicationContext()));
+                        LogUtil.d(TAG, "onKey: " + s + ":" + ProcessUrl.processString(s, getApplicationContext()));
                         startSearchContent(s);
                     }
                     closeSearchEdit();
@@ -137,7 +138,7 @@ public class ContentToUrlActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.d(TAG, "afterTextChanged: " + s.toString());
+                LogUtil.d(TAG, "afterTextChanged: " + s.toString());
                 if (manager != null) {
                     String text = s.toString();
                     if (text != null && !text.equals("")) {
@@ -229,7 +230,7 @@ public class ContentToUrlActivity extends AppCompatActivity {
     }
 
     private void updateSuggest(List<String> list) {
-        Log.d(TAG, "updateSuggest: 更新搜索建议");
+        LogUtil.d(TAG, "updateSuggest: 更新搜索建议");
         if (suggestAdapter == null) {
             suggestAdapter = new SuggestAdapter(list);
             suggestRecyclerView.setAdapter(suggestAdapter);
@@ -275,14 +276,14 @@ public class ContentToUrlActivity extends AppCompatActivity {
             public void onChanged(String[] result) {
                 if (result == null) {
                     updateSuggest(null);
-                    Log.d(TAG, "onChanged: livedata建议列表null");
+                    LogUtil.d(TAG, "onChanged: livedata建议列表null");
                 }
                 if (afterFirstEdit && result != null){
                     updateSuggest(Arrays.asList(result));
                     for (int i = 0; i < result.length; i++) {
-                        Log.d(TAG, "onChanged: "+result[i]+"\n");
+                        LogUtil.d(TAG, "onChanged: "+result[i]+"\n");
                     }
-                    Log.d(TAG, "onChanged: livedata建议列表被改变");
+                    LogUtil.d(TAG, "onChanged: livedata建议列表被改变");
                 }
 
             }

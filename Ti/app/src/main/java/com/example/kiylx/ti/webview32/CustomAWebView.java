@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.interfaces.ActionSelectListener;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.webview32.nestedjspack.NestedJsCode;
 import com.example.kiylx.ti.webview32.nestedjspack.Suggestion;
 
@@ -57,7 +58,7 @@ public class CustomAWebView extends WebView {
      * 识别类型，并通过拦截触摸事件获取的x，y值以及定义的处理连接的接口，来处理长按事件
      */
     private void longClick() {
-        Log.d(TAG, "longClick: 触发长按");
+        LogUtil.d(TAG, "longClick: 触发长按");
         setOnLongClickListener(new OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -116,13 +117,13 @@ public class CustomAWebView extends WebView {
         /*BaseThread baseThread= new BaseThread(new DownloadEntity(filename.substring(filename.lastIndexOf("/"),filename.lastIndexOf(".")),filename,-2),this::insertDownloadInfo);
         baseThread.start();*/
         Toast.makeText(getContext(), "以保存至Download文件夹", Toast.LENGTH_LONG).show();
-        Log.d(TAG, "saveWebArchive1: " + filename);
+        LogUtil.d(TAG, "saveWebArchive1: " + filename);
     }
 
     @Override
     public void saveWebArchive(String basename, boolean autoname, @Nullable ValueCallback<String> callback) {
         super.saveWebArchive(basename, autoname, callback);
-        Log.d(TAG, "saveWebArchive:2 ");
+        LogUtil.d(TAG, "saveWebArchive:2 ");
     }
 
     //把离线保存的网页信息保存在下载记录数据库
