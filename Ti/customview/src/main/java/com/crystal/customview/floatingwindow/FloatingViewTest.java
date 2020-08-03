@@ -2,10 +2,11 @@ package com.crystal.customview.floatingwindow;
 
 import android.graphics.Color;
 import android.graphics.PixelFormat;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+
+import com.crystal.customview.tools.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -23,7 +24,7 @@ public class FloatingViewTest extends FloatingWindowService {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: 按钮被点击了");
+                LogUtil.d(TAG, "onClick: 按钮被点击了");
                 if (a > 0){
                     canEdit(true);
                     button.requestFocus();
@@ -39,7 +40,7 @@ public class FloatingViewTest extends FloatingWindowService {
         editText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: 按钮被点击了");
+                LogUtil.d(TAG, "onClick: 按钮被点击了");
                 if (a > 0){
                     canEdit(true);
                     editText.requestFocus();

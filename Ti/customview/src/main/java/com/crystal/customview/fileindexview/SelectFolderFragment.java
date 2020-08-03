@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.crystal.customview.R;
+import com.crystal.customview.tools.LogUtil;
 
 
 /**
@@ -24,7 +25,7 @@ import com.crystal.customview.R;
  * 创建时间 2020/4/7 17:04
  */
 public class SelectFolderFragment extends DialogFragment {
-    private static final String TAG = "下载设置-选择文件夹";
+    private static final String TAG = "IndexView";
     private View dialogRoot;
     private TextView positiveButton;
     private TextView backButton;
@@ -49,11 +50,13 @@ public class SelectFolderFragment extends DialogFragment {
         pathView = dialogRoot.findViewById(R.id.folder_path);
 
         indexView = dialogRoot.findViewById(R.id.folder_index);
+        indexView.initData("/storage/emulated/0/Download",IndexView.SelectAction.FILE,false);
         indexView.setClickAfter(new IndexView.ClickAfter() {
             //这里是after接口的实现
             @Override
             public void after(String path) {
                 //指示当前的路径
+                LogUtil.d(TAG,"fragment中获取的路径"+path);
                 SelectFolderFragment.path = path;
                 pathView.setText(path);
             }
@@ -66,7 +69,7 @@ public class SelectFolderFragment extends DialogFragment {
         positiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: "+path);
+                LogUtil.d(TAG, "onClick: "+path);
                 if (sendPath!=null){
                     sendPath.send(path);
                 }

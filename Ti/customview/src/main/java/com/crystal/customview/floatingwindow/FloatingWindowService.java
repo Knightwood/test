@@ -6,11 +6,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
+import com.crystal.customview.tools.LogUtil;
 
 import java.lang.ref.WeakReference;
 
@@ -31,7 +32,7 @@ public abstract class FloatingWindowService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStartCommand: 被调用了");
+        LogUtil.d(TAG, "onStartCommand: 被调用了");
         showFloatingWindow();
         return super.onStartCommand(intent, flags, startId);
     }
@@ -130,7 +131,7 @@ public abstract class FloatingWindowService extends Service {
      * @return 是否添加成功
      */
     public boolean addView(View v, WindowManager.LayoutParams lp) {
-        Log.d(TAG, "addView: 添加了视图");
+        LogUtil.d(TAG, "addView: 添加了视图");
         try {
             manager.addView(v, lp);
             return true;

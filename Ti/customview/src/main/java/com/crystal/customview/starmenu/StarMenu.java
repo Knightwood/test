@@ -3,7 +3,6 @@ package com.crystal.customview.starmenu;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 
 import com.crystal.customview.R;
+import com.crystal.customview.tools.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -183,7 +183,7 @@ public class StarMenu extends ViewGroup implements View.OnClickListener {
 
         }
         changeStatus();
-        Log.e(TAG, mCurrentStatus.name() + "");
+        LogUtil.d(TAG, mCurrentStatus.name() + "");
     }
 
     //保存动画后的状态

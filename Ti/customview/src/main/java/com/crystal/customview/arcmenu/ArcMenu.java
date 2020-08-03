@@ -6,11 +6,12 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+
+import com.crystal.customview.tools.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -195,7 +196,7 @@ public class ArcMenu extends ViewGroup implements View.OnClickListener {
                     public void onClick(View v) {
                         if (mClickInterface!=null)
                         mClickInterface.click(v);
-                        Log.d(TAG, "onClick:被点击的view的id： "+v.getId());
+                        LogUtil.d(TAG, "onClick:被点击的view的id： "+v.getId());
                         //scaleBigAnim(v);
                         closeAnim();
                     }

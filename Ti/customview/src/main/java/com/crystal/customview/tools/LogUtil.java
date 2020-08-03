@@ -1,8 +1,6 @@
-package com.example.kiylx.ti.tool;
+package com.crystal.customview.tools;
 
 import android.util.Log;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 创建者 kiylx
@@ -51,7 +49,7 @@ public class LogUtil {
 
     public static void e(String tag, String msg, Object... args) {
         if (nowLevel <= ERROR) {
-            Log.e(tag, String.format(msg, args));
+            LogUtil.d(tag, String.format(msg, args));
 
         }
     }

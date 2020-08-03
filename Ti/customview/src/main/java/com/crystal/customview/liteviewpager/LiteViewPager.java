@@ -3,15 +3,15 @@ package com.crystal.customview.liteviewpager;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Matrix;
-import android.text.Layout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
+
+import com.crystal.customview.tools.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -405,7 +405,7 @@ public class LiteViewPager extends ViewGroup {
         mLastX = x;
         mLastY = y;
 
-        Log.d(TAG, "onTouchEvent: " + "mLastX：" + mLastX + "mLastY: " + mLastY + "点击： " + x + "---" + y);
+        LogUtil.d(TAG, "onTouchEvent: " + "mLastX：" + mLastX + "mLastY: " + mLastY + "点击： " + x + "---" + y);
 
         return true;
     }
@@ -555,7 +555,7 @@ public class LiteViewPager extends ViewGroup {
         updateChildrenAlphaAndScale();
         //请求重新布局
         requestLayout();
-        Log.d(TAG, "onItemMove: 滑动百分比: " + mOffsetPercent + "移动距离: " + mOffsetX + "整体的宽度: " + getWidth() + "是否交换过顺序： " + isReordered);
+        LogUtil.d(TAG, "onItemMove: 滑动百分比: " + mOffsetPercent + "移动距离: " + mOffsetX + "整体的宽度: " + getWidth() + "是否交换过顺序： " + isReordered);
     }
 
     private static final String TAG = "litePager";

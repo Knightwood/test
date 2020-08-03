@@ -7,11 +7,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.crystal.customview.R;
 import com.crystal.customview.floatingwindow.FloatingViewTest;
+import com.crystal.customview.tools.LogUtil;
 
 public class SecondActivity extends AppCompatActivity {
     private static final String TAG="secondActivity";
@@ -20,7 +20,7 @@ public class SecondActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d(TAG, "onCreate: "+ Settings.canDrawOverlays(this));
+            LogUtil.d(TAG, "onCreate: "+ Settings.canDrawOverlays(this));
         }
 
         startFloatingService();
@@ -32,7 +32,7 @@ public class SecondActivity extends AppCompatActivity {
                 Toast.makeText(this, "当前无权限，请授权", Toast.LENGTH_SHORT);
                 startActivityForResult(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName())), 0);
             } else {
-                Log.d(TAG, "startFloatingService: ");
+                LogUtil.d(TAG, "startFloatingService: ");
                 startService(new Intent(SecondActivity.this, FloatingViewTest.class));
             }
         }

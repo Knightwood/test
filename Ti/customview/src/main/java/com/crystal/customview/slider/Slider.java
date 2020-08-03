@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.crystal.customview.R;
+import com.crystal.customview.tools.LogUtil;
 
 import static com.crystal.customview.slider.Slider.shiftPos.LEFT;
 import static com.crystal.customview.slider.Slider.shiftPos.RIGHT;
@@ -130,19 +130,19 @@ public class Slider extends ConstraintLayout {
                     }
 
                     if (Math.abs(nowX-lastX) > ViewConfiguration.get(getContext()).getScaledTouchSlop()) {
-                        Log.d(TAG, "onTouch:当前 "+nowX+"--左"+strip.getLeft()+"--右"+strip.getRight());
-                        Log.d(TAG, "onTouch:当前绝对 "+nowX+"--dX"+ dX);
+                        LogUtil.d(TAG, "onTouch:当前 "+nowX+"--左"+strip.getLeft()+"--右"+strip.getRight());
+                        LogUtil.d(TAG, "onTouch:当前绝对 "+nowX+"--dX"+ dX);
                         if (dX <0&&nowX<=stripLocation[0]) {
                             l=strip.getLeft();
-                            Log.d(TAG, "onTouch: 超出左边空间");
+                            LogUtil.d(TAG, "onTouch: 超出左边空间");
                         } else if (dX >0&&nowX>=stripLocation[0]+strip.getWidth()) {
-                            Log.d(TAG, "onTouch: 超出右边空间");
+                            LogUtil.d(TAG, "onTouch: 超出右边空间");
                             l=strip.getRight()-v.getWidth();
                         }else{
                             l=v.getLeft()+ dX;
                         }
                         lastX=nowX;
-                        Log.d(TAG, "onTouch: " + nowX);
+                        LogUtil.d(TAG, "onTouch: " + nowX);
                         v.layout(l, v.getTop(), l+v.getWidth(), v.getBottom());
                     }
                     if (direction > 0) {
