@@ -5,12 +5,14 @@
     <SwitchPreference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:summary="使用自定义主页"
         app:key="@string/useCustomHomepage_key"
         app:title="启用自定义主页"
         app:useSimpleSummaryProvider="true" />
     <EditTextPreference
         android:layout_width="wrap_content"
+        android:icon="@drawable/ic_settings_black_24dp"
         android:key="@string/homepageurl_key"
         android:selectAllOnFocus="true"
         android:singleLine="true"
@@ -20,27 +22,31 @@
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:key="search_engine"
         android:fragment="com.example.kiylx.ti.ui.setting2.SearchEngineListFragment"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:key="search_engine"
         app:title="设置搜索引擎" />
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:key="explorer_flags"
         android:fragment="com.example.kiylx.ti.ui.setting2.UserAgentFragment"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:key="explorer_flags"
         app:title="浏览器标识"
         app:useSimpleSummaryProvider="true" />
 
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:fragment="com.example.kiylx.ti.ui.setting2.WebTextSizeFragment"
         app:key="textZoomlist"
         app:title="字体缩放"
-        app:fragment="com.example.kiylx.ti.ui.setting2.WebTextSizeFragment"
         app:useSimpleSummaryProvider="true" />
     <SwitchPreference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:icon="@drawable/ic_settings_black_24dp"
         app:defaultValue="false"
         app:enabled="false"
         app:key="@string/resumeData_key"
@@ -48,6 +54,7 @@
     <Preference
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:icon="@drawable/ic_delete_forever_black_24dp"
         app:key="deleteData"
         app:title="清除数据" />
     <PreferenceCategory android:title="下载相关">
@@ -56,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:defaultValue="false"
+            android:icon="@drawable/ic_file_download_black_24dp"
             android:key="@string/customDownload_key"
             android:summary="现在还有些bug未解决"
             android:title="是否使用内置下载器" />

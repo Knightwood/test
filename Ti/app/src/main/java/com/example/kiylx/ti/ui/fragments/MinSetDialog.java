@@ -109,63 +109,64 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.reload_webview:
-                controlWebViewInterface.reload();
-                break;
-            case R.id.back1:
-            case R.id.toolButton:
-                LogUtil.d(TAG, "onClick: 切换菜单");
-                if (currentMenu == 0) {
-                    //当前页是0，要切换到1
-                    showView(homepageSettingBinding.toolSecond, homepageSettingBinding.toolFirst);
-                    currentMenu = 1;
-                } else {
-                    showView(homepageSettingBinding.toolFirst, homepageSettingBinding.toolSecond);
-                    currentMenu = 0;
-                }
-                break;
-            case R.id.findtext:
-                controlWebViewInterface.searchText();
-                break;
-            case R.id.share:
-                controlWebViewInterface.sharing(info.getUrl());
-                break;
-            case R.id.pcMode:
-                boolean b = homepageSettingBinding.pcMode.isChecked();
-                if (b)
-                    controlWebViewInterface.usePcMode();
-                stateManager.setPcMode(b);
-                break;
-            case R.id.hideSelf:
-                boolean b1 = homepageSettingBinding.hideSelf.isChecked();
-                stateManager.setDontRecordHistory(b1);
-                break;
-            case R.id.addBookmark:
-                controlWebViewInterface.addtobookmark(info.getUrl());
-                break;
-            case R.id.menu:
-                startSetting();
-                break;
-            case R.id.button_download:
-                startDownload();
-                break;
-            case R.id.button_bookmark:
-                startBookmarked();
-                break;
-            case R.id.button_history:
-                startHistory();
-                break;
-            case R.id.save_pdf:
-                controlWebViewInterface.printPdf();
-                break;
-            case R.id.save_mht:
-                controlWebViewInterface.saveWeb();
-            case R.id.show_pic:
-                changePicMode();
-                break;
+        if (controlWebViewInterface != null)
+            switch (v.getId()) {
+                case R.id.reload_webview:
+                    controlWebViewInterface.reload();
+                    break;
+                case R.id.back1:
+                case R.id.toolButton:
+                    LogUtil.d(TAG, "onClick: 切换菜单");
+                    if (currentMenu == 0) {
+                        //当前页是0，要切换到1
+                        showView(homepageSettingBinding.toolSecond, homepageSettingBinding.toolFirst);
+                        currentMenu = 1;
+                    } else {
+                        showView(homepageSettingBinding.toolFirst, homepageSettingBinding.toolSecond);
+                        currentMenu = 0;
+                    }
+                    break;
+                case R.id.findtext:
+                    controlWebViewInterface.searchText();
+                    break;
+                case R.id.share:
+                    controlWebViewInterface.sharing(info.getUrl());
+                    break;
+                case R.id.pcMode:
+                    boolean b = homepageSettingBinding.pcMode.isChecked();
+                    if (b)
+                        controlWebViewInterface.usePcMode();
+                    stateManager.setPcMode(b);
+                    break;
+                case R.id.hideSelf:
+                    boolean b1 = homepageSettingBinding.hideSelf.isChecked();
+                    stateManager.setDontRecordHistory(b1);
+                    break;
+                case R.id.addBookmark:
+                    controlWebViewInterface.addtobookmark(info.getUrl());
+                    break;
+                case R.id.menu:
+                    startSetting();
+                    break;
+                case R.id.button_download:
+                    startDownload();
+                    break;
+                case R.id.button_bookmark:
+                    startBookmarked();
+                    break;
+                case R.id.button_history:
+                    startHistory();
+                    break;
+                case R.id.save_pdf:
+                    controlWebViewInterface.printPdf();
+                    break;
+                case R.id.save_mht:
+                    controlWebViewInterface.saveWeb();
+                case R.id.show_pic:
+                    changePicMode();
+                    break;
 
-        }
+            }
         if (v.getId() != R.id.toolButton && v.getId() != R.id.back1)//既不是工具箱，也不是点击R.id.back1,就dismiss掉dialogFragment
             dismiss();
         LogUtil.d(TAG, "onClick: " + v.getId());

@@ -34,6 +34,9 @@ import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +45,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private static final String TAG = "添加书签的弹窗";
     private AboutBookmark mAboutBookmark;
     private static WebPage_Info beBookmarked_info;
-    private TextView newFolderButton;
+    private MaterialButton newFolderButton;
     private Spinner mSpinner;
     private Context mContext;
     private List<String> bookmarkFolderlists;
@@ -53,6 +56,7 @@ public class Bookmark_Dialog extends DialogFragment {
     private static int intentid;//谁启动了这个对话框
     private static RefreshBookMark refresh;
 
+    //private View view;
     private EditText titleView;
     private EditText urlView;
 
@@ -98,7 +102,6 @@ public class Bookmark_Dialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bookmarkFolderlists = mBookMarkFolderManager.getBookmarkFolderlists();
-
     }
 
     @Override
@@ -125,13 +128,19 @@ public class Bookmark_Dialog extends DialogFragment {
         }
     }
 
+
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //注：onCreateDialog在onCreate之后，onCreateView之前被调用
+      final View  view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
+        /*layoutTitle=view.findViewById(R.id.layout_edit_title);
+        layoutTitle.setHint("@string/title");
+        layoutUrl=view.findViewById(R.id.layout_edit_url);
+        layoutUrl.setHint("@string/fileUrl");*/
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
         builder.setView(view)
                 .setPositiveButton(R.string.enter, new DialogInterface.OnClickListener() {
                     @Override

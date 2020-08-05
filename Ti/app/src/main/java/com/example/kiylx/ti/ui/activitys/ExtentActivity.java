@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.kiylx.ti.R;
@@ -23,6 +24,13 @@ public class ExtentActivity extends AppCompatActivity {
     private void initToolbar() {
         Toolbar extToolbar=(Toolbar) findViewById(R.id.toolbar_jsadd);
         setSupportActionBar(extToolbar);
+        getSupportActionBar().setTitle("JS管理器");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.js_extent_add,menu);
+        return true;
     }
 
     @Override

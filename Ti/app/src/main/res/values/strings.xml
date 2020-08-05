@@ -142,4 +142,8 @@
     <string name="small">小</string>
     <string name="reset">重置</string>
     <string name="pictureMode">图片模式</string>
+    <string name="addJsExt">添加脚本</string>
+    <string name="jsManager">JS管理器</string>
+    <string name="name">名称</string>
+    <string name="edit">键入文本</string>
 </resources>

@@ -10,7 +10,7 @@
         android:id="@+id/toolbar_jsadd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background"
+        android:background="@color/orange"
         android:elevation="16dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -20,6 +20,7 @@
         app:menu="@menu/js_extent_add" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/js_recy"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

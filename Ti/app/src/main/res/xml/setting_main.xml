@@ -4,18 +4,23 @@
     <Preference
         android:fragment="com.example.kiylx.ti.ui.setting2.GeneralFragment"
         android:key="conventional"
-        android:title="常规" />
+        android:title="常规"
+        app:icon="@drawable/ic_settings_black_24dp" />
     <Preference
         android:fragment="com.example.kiylx.ti.ui.setting2.StyleFragment"
         android:key="theme"
-        android:title="样式" />
+        android:title="样式"
+        app:icon="@drawable/ic_settings_black_24dp" />
     <Preference
         android:fragment="com.example.kiylx.ti.ui.settings.PrivacyFragment"
         android:key="privacy"
-        android:title="隐私" />
+        android:title="隐私"
+        app:icon="@drawable/ic_settings_black_24dp" />
     <Preference
+        android:fragment="com.example.kiylx.ti.ui.setting2.BetaFragment"
         android:key="beta"
-        android:title="实验室" />
+        android:title="实验室"
+        app:icon="@drawable/ic_report_problem_black_24dp" />
 
     <PreferenceCategory
         app:key="about"

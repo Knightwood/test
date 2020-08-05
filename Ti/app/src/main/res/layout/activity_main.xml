@@ -105,7 +105,7 @@
         <ViewStub
             android:id="@+id/viewStub_search"
             android:layout_width="0dp"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout="@layout/webviewsearch"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
