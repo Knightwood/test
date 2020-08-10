@@ -6,7 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.kiylx.ti.mvp.contract.IbaseContract;
+import com.example.kiylx.ti.mvp.contract.base.BaseContract;
 import com.example.kiylx.ti.mvp.presenter.base.BasePresenter;
 
 /**
@@ -25,7 +25,7 @@ public class MainPresenter extends BasePresenter {
     }
 
     @Override
-    public void attachView(@NonNull IbaseContract.View view) {
+    public void attachView(@NonNull BaseContract.View view) {
 
     }
 

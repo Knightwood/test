@@ -2,6 +2,8 @@ package com.example.kiylx.ti.conf;
 
 import android.os.Environment;
 
+import java.util.UUID;
+
 /**
  * @创建者 kiylx
  * @创建时间 2020/2/14 10:21
@@ -12,6 +14,7 @@ import android.os.Environment;
  */
 public class SomeRes {
     //=================================资源名称，多个地方会使用这些名称=========================================//
+    static {}
     public static final String homePage = "主页";//默认主页名称
     public static final String default_homePage_value = "about:newTab";
     public static final String default_homePage_url = "file:///android_asset/tabNew.html";//默认主页
@@ -25,6 +28,7 @@ public class SomeRes {
     public static String pcMode="pc_mode";//请求桌面版网页的preference的key
     public static String canRecordHistory="record_history";//是否可以记录历史
     public static String rootPath= Environment.getExternalStorageDirectory().getPath();
+    public static String defaultBookmarkFolderUUID= UUID.randomUUID().toString();
 
 //默认的搜索引擎
     public static String baidu="http://www.baidu.com/s?wd=";

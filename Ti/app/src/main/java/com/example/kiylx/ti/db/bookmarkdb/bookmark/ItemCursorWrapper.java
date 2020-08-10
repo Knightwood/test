@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.db.bookmarkdb;
+package com.example.kiylx.ti.db.bookmarkdb.bookmark;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -18,7 +18,7 @@ public class ItemCursorWrapper extends CursorWrapper {
         String id=getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.ID));
         String title = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.TITLE));
         String url = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.url));
-        String folder = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder));
+        String folder = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolderUuid));
 
         return new WebPage_Info(id,title,url,folder);
     }

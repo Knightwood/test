@@ -1,29 +1,36 @@
-package com.example.kiylx.ti.mvp.presenter;
+package com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderCursorWrapper;
-import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDbSchema;
-import com.example.kiylx.ti.db.bookmarkdb.BookmarkFolderDBOpenHelper;
+import com.example.kiylx.ti.model.BookmarkFolderNode;
 import com.example.kiylx.ti.tool.LogUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BookMarkFolderManager {
     /*书签文件夹，如果在添加标签的时候选择的是未分类，那么这一条*/
     private static BookMarkFolderManager sBookMarkFolderManager;
     private SQLiteDatabase mDatabase;
     private List<String> bookmarkFolderlists;
+
     /*taglist是一个全局的列表，
     会从数据库里拿数据后添加进taglist返回给需要的对象，
     所以，必要时需要判断taglist是不是空的再决定是否从数据库里拿数据放进去*/
     /*添加或是删除时，会让数据库和taglists保持一致，因为其他类的lists也是taglist的引用，所以不需要做额外工作*/
+    public static BookMarkFolderManager get(Context context) {
+        if (null == sBookMarkFolderManager) {
+            sBookMarkFolderManager = new BookMarkFolderManager(context);
+        }
+        return sBookMarkFolderManager;
+    }
 
     private BookMarkFolderManager(Context context) {
 
@@ -32,12 +39,6 @@ public class BookMarkFolderManager {
         bookmarkFolderlists.add(0, SomeRes.defaultBookmarkFolder);//在这里添加了未分类文件夹，数据库里是没有的
     }
 
-    public static BookMarkFolderManager get(Context context) {
-        if (null == sBookMarkFolderManager) {
-            sBookMarkFolderManager = new BookMarkFolderManager(context);
-        }
-        return sBookMarkFolderManager;
-    }
 
     /**
      * 文件夹名称不是“未分类”就添加进去
@@ -86,7 +87,6 @@ public class BookMarkFolderManager {
      * 查询是否有与文件夹重复的元素
      */
     private boolean isExist(String folderName) {
-
         return bookmarkFolderlists.contains(folderName);
     }
 
@@ -108,6 +108,7 @@ public class BookMarkFolderManager {
     }
 
     //=============================以下数据库操作===================//
+    @Deprecated
     public void add(String folder) {
         if (isExist(folder)) {
             return;
@@ -119,6 +120,7 @@ public class BookMarkFolderManager {
 
     }
 
+
     public void delete(String folderName) {
         mDatabase.delete(BookmarkFolderDbSchema.FolderTable.NAME, BookmarkFolderDbSchema.FolderTable.childs.FOLDER + " =? ", new String[]{folderName});
         deleteTagfromLists(folderName);
@@ -129,6 +131,7 @@ public class BookMarkFolderManager {
      * @param oldName 文件夹旧有名称
      * @param newName 文件夹新名称
      */
+    @Deprecated
     public void updateitem(String oldName, String newName) {
         mDatabase.execSQL("UPDATE BookmarkFolderTab SET folderName=? where folderName=?", new String[]{newName, oldName});
         //updateFolderName(oldName, newName);//实时刷新taglist中的值
@@ -151,7 +154,7 @@ public class BookMarkFolderManager {
     private List<String> getfolderListfromDB() {
         BookmarkFolderCursorWrapper cursor = getAllFolder(null);
         //如果文件夹list仅有一个“未分类，那有两种情况，一种是数据库里没有其他标签，一种是文件夹list仅被初始化还没有从数据库里拿数据
-        if (!bookmarkFolderlists.isEmpty() )
+        if (!bookmarkFolderlists.isEmpty())
             try {
                 LogUtil.d("书签文件夹数量", String.valueOf(cursor.getCount()));
                 if (cursor.getCount() == 0) {
@@ -191,4 +194,8 @@ public class BookMarkFolderManager {
 
         return new BookmarkFolderCursorWrapper(cursor);
     }
+
+    //==================================new code
+
+
 }

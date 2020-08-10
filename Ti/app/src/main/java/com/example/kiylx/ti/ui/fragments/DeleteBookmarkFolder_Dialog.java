@@ -3,7 +3,6 @@ package com.example.kiylx.ti.ui.fragments;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -12,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
-import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;

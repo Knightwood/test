@@ -43,7 +43,7 @@ public class Xapplication extends Application {
      * 初始化全局数据
      */
     private void initData() {
-        stateManager = new StateManager(mContext);
+        stateManager = StateManager.getInstance(mContext);
 
     }
 
@@ -52,6 +52,8 @@ public class Xapplication extends Application {
     }
 
     public StateManager getStateManager() {
+        if (stateManager==null)
+            stateManager = StateManager.getInstance(mContext);
         return stateManager;
     }
 

@@ -2,8 +2,7 @@ package com.example.kiylx.ti.mvp.presenter.lifecycles;
 
 import android.content.Context;
 
-import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
-import com.example.kiylx.ti.ui.activitys.MainActivity;
+import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 
 /**
  * 创建者 kiylx

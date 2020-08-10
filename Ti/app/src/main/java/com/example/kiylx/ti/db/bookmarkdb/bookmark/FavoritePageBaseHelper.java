@@ -1,10 +1,10 @@
-package com.example.kiylx.ti.db.bookmarkdb;
+package com.example.kiylx.ti.db.bookmarkdb.bookmark;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.kiylx.ti.db.bookmarkdb.FavoritepageDbSchema.FavoriteTable;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.FavoritepageDbSchema.FavoriteTable;
 
 public class FavoritePageBaseHelper extends SQLiteOpenHelper {
 
@@ -17,7 +17,7 @@ public class FavoritePageBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + FavoriteTable.NAME + "(" + "_id integer primary key autoincrement, " + FavoriteTable.childs.ID + "," + FavoriteTable.childs.TITLE + "," + FavoriteTable.childs.url + "," + FavoriteTable.childs.BookmarkFolder + ")");
+        db.execSQL("create table " + FavoriteTable.NAME + "(" + "_id integer primary key autoincrement, " + FavoriteTable.childs.ID + "," + FavoriteTable.childs.TITLE + "," + FavoriteTable.childs.url + "," + FavoriteTable.childs.BookmarkFolderUuid + ")");
     }
 
     @Override

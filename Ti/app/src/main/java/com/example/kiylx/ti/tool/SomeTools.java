@@ -95,24 +95,16 @@ public enum SomeTools {
      * @param target 输出文件
      */
     public void copy(File source, File target) {
-        FileInputStream fileInputStream = null;
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileInputStream = new FileInputStream(source);
-            fileOutputStream = new FileOutputStream(target);
+
+        try (FileInputStream fileInputStream = new FileInputStream(source);
+             FileOutputStream fileOutputStream = new FileOutputStream(target)) {
+
             byte[] buffer = new byte[1024];
             while (fileInputStream.read(buffer) > 0) {
                 fileOutputStream.write(buffer);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                fileInputStream.close();
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 

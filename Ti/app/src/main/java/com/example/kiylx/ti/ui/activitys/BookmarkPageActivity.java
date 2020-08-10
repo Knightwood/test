@@ -2,14 +2,12 @@ package com.example.kiylx.ti.ui.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,9 +23,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
-import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
+import com.example.kiylx.ti.model.BookmarkFolderNode;
+import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
+import com.example.kiylx.ti.tool.KeyValue;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
@@ -38,7 +41,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.List;
 
-public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark {
+public class BookmarkPageActivity extends BaseActivity implements RefreshBookMark, BookmarkActivityContract {
     private RecyclerView mRecyclerView;
     private List<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
@@ -87,6 +90,11 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
 
         Toolbar toolbar = findViewById(R.id.bookmark_toolbar);
         setSupportActionBar(toolbar);
+
+    }
+
+    @Override
+    protected void initActivity(BaseLifecycleObserver observer) {
 
     }
 
@@ -245,6 +253,15 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
         fr.show(fm, "删除标签dialog");
     }
 
+    /**
+     * 更新界面
+     * @param keyValue 包含有文件夹list和书签list的键值对
+     */
+    @Override
+    public void UpdateUI(KeyValue<BookmarkFolderNode, WebPage_Info> keyValue) {
+
+    }
+
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         private List<WebPage_Info> mList;
 
@@ -333,7 +350,7 @@ public class BookmarkPageActivity extends AppCompatActivity implements RefreshBo
             title_1 = info.getTitle();
             url_1 = info.getUrl();
             id = info.getUuid();
-            bookmarkFolderName_1 = info.getBookmarkFolderName();
+            bookmarkFolderName_1 = info.getBookmarkFolderUUID();
 
             title.setText(title_1);
             url.setText(url_1);

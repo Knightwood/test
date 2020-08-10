@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.mvp.contract;
+package com.example.kiylx.ti.mvp.contract.base;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;

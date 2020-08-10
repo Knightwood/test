@@ -39,7 +39,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.xapplication.Xapplication;
-import com.example.kiylx.ti.mvp.contract.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.webview32.CustomAWebView;
@@ -126,6 +126,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         implControlexplorer();
         //获取WebViewManager的实例
         mWebViewManager = WebViewManager.newInstance(MainActivity.this, handleClickedLinks);
+        //StateManager stateManager=SomeTools.getXapplication().getStateManager().setWebviewManager(mWebViewManager);
 
         //获取Converted_Webpage_List,并传入mWebViewManager注册观察者
         mConverted_lists = WebViewInfo_Manager.get(mWebViewManager);
@@ -170,6 +171,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);
+        bar = findViewById(R.id.webviewProgressBar);
     }
 
     @Override
@@ -225,7 +227,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         }
         LogUtil.d("lifecycle", "onStart'");
         EventBus.getDefault().register(this);
-        bar = findViewById(R.id.webviewProgressBar);
         mWebViewManager.setOnUpdateProgress(this);
     }
 
@@ -233,8 +234,6 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     @Override
     protected void onResume() {
         super.onResume();
-       /* int s = mWebViewManager.size();
-        LogUtil.d("lifecycle", "onResume()" + "webview数量" + s);*/
     }
 
     @Override
@@ -250,6 +249,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             mWebViewManager.getTop(current).onPause();
         //f1.removeAllViews();//移除所有视图
         EventBus.getDefault().unregister(this);
+        mWebViewManager.setOnUpdateProgress(null);
         LogUtil.d("lifecycle", "onStop()");
     }
 
@@ -288,6 +288,9 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
      */
     @Override
     public void update(int progress) {
+        if(bar==null){
+            bar=findViewById(R.id.webviewProgressBar);
+        }
         if (bar.getVisibility() == View.GONE) {
             bar.setProgress(0);
             bar.setVisibility(View.VISIBLE);

@@ -22,9 +22,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.activitys.ExtentActivity"
-            android:theme="@style/MaterialThemes">
-        </activity>
+        <activity android:name=".ui.activitys.BookmarkManagerActivity"></activity>
+        <activity
+            android:name=".ui.activitys.ExtentActivity"
+            android:theme="@style/MaterialThemes"></activity>
         <activity android:name=".ui.activitys.ContentToUrlActivity" />
 
         <service android:name=".downloadpack.downloadcore.DownloadServices" />

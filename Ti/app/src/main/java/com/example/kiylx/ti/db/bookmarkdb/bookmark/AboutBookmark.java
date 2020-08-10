@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.mvp.presenter;
+package com.example.kiylx.ti.db.bookmarkdb.bookmark;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,9 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.model.WebPage_Info;
-import com.example.kiylx.ti.db.bookmarkdb.FavoritePageBaseHelper;
-import com.example.kiylx.ti.db.bookmarkdb.FavoritepageDbSchema;
-import com.example.kiylx.ti.db.bookmarkdb.ItemCursorWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +15,7 @@ public class AboutBookmark {
     private static List<WebPage_Info> bookMarklists;
     private SQLiteDatabase mDatabase;
     private Context mContext;
+    private String currentPath;//当前展示的所有内容所属的父类的uuid。父向uuid：abc，子项
 
     private AboutBookmark(Context context) {
         mContext = context;
@@ -62,7 +60,7 @@ public class AboutBookmark {
         ContentValues values = new ContentValues();
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder, info.getBookmarkFolderName());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolderUuid, info.getBookmarkFolderUUID());
         try {
             mDatabase.update(FavoritepageDbSchema.FavoriteTable.NAME, values, FavoritepageDbSchema.FavoriteTable.childs.ID + "=?", new String[]{uuid});
         } catch (Exception e) {
@@ -113,7 +111,7 @@ public class AboutBookmark {
         if (folder == null) {
             cursor = queryFavority(null, null);
         } else
-            cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder + " =?", new String[]{folder});
+            cursor = queryFavority(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolderUuid + " =?", new String[]{folder});
         try {
             if (cursor.getCount() == 0) {
                 return mlists;
@@ -211,7 +209,7 @@ public class AboutBookmark {
         values.put(FavoritepageDbSchema.FavoriteTable.childs.ID, info.getUuid());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.TITLE, info.getTitle());
         values.put(FavoritepageDbSchema.FavoriteTable.childs.url, info.getUrl());
-        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolder, info.getBookmarkFolderName());
+        values.put(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolderUuid, info.getBookmarkFolderUUID());
 
         return values;
     }

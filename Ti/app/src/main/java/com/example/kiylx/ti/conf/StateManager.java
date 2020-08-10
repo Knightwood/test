@@ -1,11 +1,12 @@
 package com.example.kiylx.ti.conf;
 
 import android.content.Context;
+import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.activitys.ContentToUrlActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.networkpack.NetState;
@@ -13,7 +14,10 @@ import com.example.kiylx.ti.model.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.networkpack.NetworkMana;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 
 /**
@@ -22,6 +26,7 @@ import java.util.Observable;
  * 管理一些状态信息，使用观察者推送
  */
 public class StateManager extends Observable {
+    private volatile static StateManager stateManager;
     private static final String TAG = "stateManager";
     private WeakReference<Context> mContext;
 
@@ -32,9 +37,21 @@ public class StateManager extends Observable {
     private NetState netState;//当前网络状态
     private Boolean pcMode;//是否请求桌面版网页
     private Boolean dontRecordHistory;//true为不记录历史，false为可以记录历史记录
+    private List<String> jsFilePathList;//存储js文件的路径
 
 
-    public StateManager(Context context) {
+    public static StateManager getInstance(Context context){
+        if (stateManager==null){
+            synchronized (StateManager.class){
+                if (stateManager==null){
+                    stateManager=new StateManager(context);
+                }
+            };
+        }
+        return stateManager;
+    }
+
+    private StateManager(Context context) {
         mContext = new WeakReference<>(context);
         initData();
         initPreference();
@@ -47,6 +64,15 @@ public class StateManager extends Observable {
         //netWorkState //初始化网络情况
         //获取当前网络状态
         netState=SomeTools.getCurrentNetwork(mContext.get());
+        initJsList();
+
+    }
+
+    private void initJsList() {
+        if (jsFilePathList==null)
+            jsFilePathList=new ArrayList<>();
+        File jsFolder= mContext.get().getFilesDir();
+
     }
 
     /**
@@ -144,5 +170,12 @@ public class StateManager extends Observable {
     public void setDontRecordHistory(Boolean dontRecordHistory) {
         this.dontRecordHistory = dontRecordHistory;
         PreferenceManager.getDefaultSharedPreferences(Xapplication.getInstance()).edit().putBoolean("record_history", pcMode).apply();
+    }
+
+    public List<String> getJsFilePathList() {
+        return jsFilePathList;
+    }
+    public void addJsPathToList(String path){
+        this.jsFilePathList.add(path);
     }
 }

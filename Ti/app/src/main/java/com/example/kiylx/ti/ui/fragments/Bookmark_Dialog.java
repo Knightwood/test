@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,17 +25,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
-import com.example.kiylx.ti.mvp.presenter.AboutBookmark;
-import com.example.kiylx.ti.mvp.presenter.BookMarkFolderManager;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 import java.util.UUID;
@@ -76,7 +72,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
-        Bookmark_Dialog.beBookmarked_info = new WebPage_Info(info.getUuid(),info.getTitle(),info.getUrl(),info.getBookmarkFolderName());
+        Bookmark_Dialog.beBookmarked_info = new WebPage_Info(info.getUuid(),info.getTitle(),info.getUrl(),info.getBookmarkFolderUUID());
         return bookmark_dialog;
     }
 
@@ -158,7 +154,7 @@ public class Bookmark_Dialog extends DialogFragment {
                         }
                         //如果intentid是2(BookmarkPageActivity打开的，用来编辑已经存在的书签)，更新视图
                         if (intentid == 2) {
-                            LogUtil.d(TAG, "onClick: " + beBookmarked_info.getBookmarkFolderName() + "intentid" + intentid);
+                            LogUtil.d(TAG, "onClick: " + beBookmarked_info.getBookmarkFolderUUID() + "intentid" + intentid);
                             refresh.refresh(null);
                         }
 
@@ -175,7 +171,7 @@ public class Bookmark_Dialog extends DialogFragment {
         });
         mSpinner = view.findViewById(R.id.select_Tags);
         //设置spinner显示的选项，即将新添加的网页的书签文件夹信息是null，这里会默认显示为“未分类”。
-        selectOneFolder(mBookMarkFolderManager.getPosfromLists(beBookmarked_info.getBookmarkFolderName()));
+        selectOneFolder(mBookMarkFolderManager.getPosfromLists(beBookmarked_info.getBookmarkFolderUUID()));
 
         return builder.create();
 
@@ -200,7 +196,7 @@ public class Bookmark_Dialog extends DialogFragment {
                 LogUtil.d(TAG, "onItemSelected: " + position + "数组大小" + mBookMarkFolderManager.getSize());
 
                 //选择某一个文件夹后更新webviewinfo信息
-                beBookmarked_info.setBookmarkFolderName(bookmarkFolderlists.get(position));
+                beBookmarked_info.setBookmarkFolderUUID(bookmarkFolderlists.get(position));
             }
 
             @Override
