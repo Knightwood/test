@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.TimerTask;
 public class DownloadManager {
     private static final String TAG = "下载管理器";
 
-    private volatile static DownloadManager mDownloadManager;
+    private  static volatile DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
     private Handler handler = new Handler();
 
@@ -47,7 +48,7 @@ public class DownloadManager {
     private List<DownloadInfo> completeDownload;
 
     private int downloadNumLimit;
-    private Context mContext;
+    private WeakReference< Context> mContext;
 
     public static DownloadManager getInstance() {
         if (mDownloadManager == null) {
@@ -67,9 +68,9 @@ public class DownloadManager {
      */
     private DownloadManager() {
         initDownloadManager();
-        this.mContext = Xapplication.getInstance();
+        this.mContext = new WeakReference<>(Xapplication.getInstance()) ;
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        downloadNumLimit = PreferenceTools.getInt(mContext, WebviewConf.defaultDownloadlimit, 3);
+        downloadNumLimit = PreferenceTools.getInt(mContext.get(), WebviewConf.defaultDownloadlimit, 3);
         //从数据库拿数据
         resumeInfoFromDB();
         scheduleWrite();
@@ -164,7 +165,7 @@ public class DownloadManager {
         }
 
         //更改下载到的文件夹
-        String downloadFolder = PreferenceTools.getString(mContext, WebviewConf.defaultDownloadPath, null);
+        String downloadFolder = PreferenceTools.getString(mContext.get(), WebviewConf.defaultDownloadPath, null);
         if (downloadFolder != null) {
             info.setPath(downloadFolder);
         }
@@ -544,21 +545,21 @@ public class DownloadManager {
      * @param info 把下载数据写入数据库
      */
     private void insertData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext).insertAll(InfoTransformToEntitiy.transformToEntity(info));
+        DownloadInfoDatabaseUtil.getDao(mContext.get()).insertAll(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     /**
      * @param info 更新下载数据库
      */
     private void updateData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext).update(InfoTransformToEntitiy.transformToEntity(info));
+        DownloadInfoDatabaseUtil.getDao(mContext.get()).update(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     /**
      * @param info 把数据从数据库删除
      */
     private void deleteData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext).delete(InfoTransformToEntitiy.transformToEntity(info));
+        DownloadInfoDatabaseUtil.getDao(mContext.get()).delete(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     /**
@@ -568,7 +569,7 @@ public class DownloadManager {
      * 如果获取的数据是空的,什么也不做,返回空的arraylist
      */
     private List<DownloadInfo> getData() {
-        List<DownloadEntity> list = DownloadInfoDatabaseUtil.getDao(mContext).getAll();
+        List<DownloadEntity> list = DownloadInfoDatabaseUtil.getDao(mContext.get()).getAll();
         List<DownloadInfo> result = new ArrayList<>();
         if (list.isEmpty() || list == null) {
 

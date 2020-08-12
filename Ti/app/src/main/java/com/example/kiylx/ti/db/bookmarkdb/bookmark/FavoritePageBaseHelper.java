@@ -17,7 +17,11 @@ public class FavoritePageBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + FavoriteTable.NAME + "(" + "_id integer primary key autoincrement, " + FavoriteTable.childs.ID + "," + FavoriteTable.childs.TITLE + "," + FavoriteTable.childs.url + "," + FavoriteTable.childs.BookmarkFolderUuid + ")");
+        db.execSQL("create table " + FavoriteTable.NAME + "(" + "_id integer primary key autoincrement, " +
+                FavoriteTable.childs.ID + "," +
+                FavoriteTable.childs.TITLE + "," +
+                FavoriteTable.childs.url + "," +
+                FavoriteTable.childs.BookmarkFolderUuid + ")");
     }
 
     @Override

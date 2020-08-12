@@ -117,8 +117,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        firstInstall();//判断是不是第一次安装
-        setContentView(R.layout.activity_main);
+        //firstInstall();//判断是不是第一次安装
 
         //实现处理webview长按事件的接口
         achieveHandlerClickInterface();
@@ -182,6 +181,10 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         LogUtil.d(TAG, "测试initActivity，重写oncreate后此方法被调用了");
     }
 
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_main;
+    }
     /**
      * 测试上下文
      */

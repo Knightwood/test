@@ -1,9 +1,7 @@
 package com.example.kiylx.ti.mvp.contract;
 
-import com.example.kiylx.ti.model.BookmarkFolderNode;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
-import com.example.kiylx.ti.tool.KeyValue;
 
 import java.util.List;
 
@@ -17,7 +15,7 @@ public interface BookmarkActivityContract extends BaseContract.View {
 
     /**
      * 更新界面
-     * @param keyValue 包含有文件夹list和书签list的键值对
+     * @param folderAndBookmark 包含有文件夹和书签的混合list
      */
-    void UpdateUI(KeyValue<BookmarkFolderNode, WebPage_Info> keyValue);
+    void UpdateUI(List<WebPage_Info> folderAndBookmark);
 }

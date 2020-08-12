@@ -1,7 +1,7 @@
 package com.example.kiylx.ti.db.bookmarkdb.bookmark;
 
-public final class FavoritepageDbSchema {
-    private FavoritepageDbSchema(){}
+public class FavoritepageDbSchema {
+
 public static final class FavoriteTable{
     public static final String NAME="Favorite_tab";
 

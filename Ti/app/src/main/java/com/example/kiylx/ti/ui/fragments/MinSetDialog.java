@@ -21,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.conf.StateManager;
 import com.example.kiylx.ti.downloadpack.DownloadActivity;
@@ -229,7 +230,8 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
      * 启动书签页面
      */
     private void startBookmarked() {
-        Intent Bookmark_intent = new Intent(getActivity(), BookmarkPageActivity.class);
+        //Intent Bookmark_intent = new Intent(getActivity(), BookmarkPageActivity.class);
+        Intent Bookmark_intent = new Intent(getActivity(), BookmarkManagerActivity.class);
         startActivity(Bookmark_intent);
     }
 

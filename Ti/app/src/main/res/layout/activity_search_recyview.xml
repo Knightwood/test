@@ -7,19 +7,18 @@
     tools:context=".ui.activitys.HistorysActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/historytoolbar"
+        android:id="@+id/only_a_searchtoolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/orange"
-        android:elevation="4dp"
+        android:elevation="10dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/MaterialThemes"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/history1" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline7"

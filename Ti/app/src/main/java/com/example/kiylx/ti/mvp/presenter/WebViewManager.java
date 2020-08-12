@@ -452,11 +452,17 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
 
         switch (action) {
             case NEWTAB:
-                info = new WebPage_Info(SomeRes.homePage, SomeRes.default_homePage_url, null, 0, TimeProcess.getTime2());
+                info = new WebPage_Info.Builder(SomeRes.default_homePage_url)
+                        .title(SomeRes.homePage)
+                        .date(TimeProcess.getTime2())
+                        .build();
                 break;
             case ADD:
             case UPDATEINFO:
-                info = new WebPage_Info(webView.getTitle(), webView.getUrl(), null, 0, TimeProcess.getTime2());
+                info = new WebPage_Info.Builder(webView.getUrl())
+                        .title(webView.getTitle())
+                        .date(TimeProcess.getTime2())
+                        .build();
                 break;
             case DELETE:
                 info = null;

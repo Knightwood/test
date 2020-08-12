@@ -34,7 +34,7 @@ public class BookMarkFolderManager {
 
     private BookMarkFolderManager(Context context) {
 
-        mDatabase = new BookmarkFolderDBOpenHelper(context, BookmarkFolderDbSchema.FolderTable.NAME, null, 1).getWritableDatabase();
+        mDatabase = new BookmarkFolderDBOpenHelper(context, null, 1).getWritableDatabase();
         bookmarkFolderlists = new ArrayList<>();
         bookmarkFolderlists.add(0, SomeRes.defaultBookmarkFolder);//在这里添加了未分类文件夹，数据库里是没有的
     }

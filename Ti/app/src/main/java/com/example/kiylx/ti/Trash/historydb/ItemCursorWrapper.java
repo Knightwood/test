@@ -18,8 +18,9 @@ public class ItemCursorWrapper extends CursorWrapper {
         String url=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.URL));
         String title=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.TITLE));
         String date=getString(getColumnIndex(HistoryDbSchema.HistoryTable.Childs.DATE));
+        return new WebPage_Info.Builder(url).title(title).date(date).build();
 
-        return new WebPage_Info(title,url,null,1,date);
+        //return new WebPage_Info(title,url,null,1,date);
 
     }
 }

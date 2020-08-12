@@ -54,7 +54,8 @@ public class WebViewInfo_Manager implements Observer {
      * @param info 传入的webPage_info
      */
     private void addToList(int pos, WebPage_Info info) {
-        mCurrectList.add(pos, new WebPage_Info(info.getTitle(), info.getUrl(), null, info.getWEB_feature(), info.getDate()));
+       // mCurrectList.add(pos, new WebPage_Info(info.getTitle(), info.getUrl(), null, info.getWEB_feature(), info.getDate()));
+        mCurrectList.add(pos, info);
     }
 
     public void delete(int index) {

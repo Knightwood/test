@@ -1,18 +1,13 @@
 package com.example.kiylx.ti.ui.activitys;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
@@ -20,11 +15,12 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
+import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 
-public class HistorysActivity extends AppCompatActivity {
-    private SearchView searchView;
+public class HistorysActivity extends BaseRecy_search_ViewActivity {
     private RecyclerView recyclerView;
 
     private HistoryListAdapter adapter;
@@ -39,10 +35,7 @@ public class HistorysActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_historys);
-
+    protected void initActivity(BaseLifecycleObserver observer) {
         if (method == null) {
             method = new ClickMethod();
         }
@@ -65,20 +58,39 @@ public class HistorysActivity extends AppCompatActivity {
         });
         model.query("");
         recyclerView.setAdapter(adapter);
-
-//toolbar
-        Toolbar toolbar=findViewById(R.id.historytoolbar);
-        setSupportActionBar(toolbar);
-
+        setToolbarTitle("历史记录",null);
     }
 
+    /**
+     * @param searchView
+     *
+     *     搜索历史记录
+     *
+     */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.historys_toolbar_menu,menu);
-        searchView= (SearchView) menu.findItem(R.id.histories_searchview).getActionView();
-        searchHistory();
-        return super.onCreateOptionsMenu(menu);
+    protected void searchControl(SearchView searchView) {
+        searchView.setOnCloseListener(() -> {
+            //关闭搜索时显示全部item
+            model.query("");
+            return false;
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                model.query(query);
+                return true;
+            }
+
+            @SuppressLint("CheckResult")
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                LogUtil.d(TAG, "onQueryTextChange: " + newText);
+                return false;
+            }
+        });
     }
+
 
     private class ClickMethod implements HistoryListAdapter.AfterClick {
 
@@ -103,33 +115,7 @@ public class HistorysActivity extends AppCompatActivity {
     public void addToBookMark(String url) {
         FragmentManager fm = getSupportFragmentManager();
         //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info(url));
+        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info.Builder(url).build());
         dialog.show(fm, "收藏当前网页");
-    }
-
-    /**
-     * 搜索历史记录
-     */
-    private void searchHistory() {
-        searchView.setOnCloseListener(() -> {
-            //关闭搜索时显示全部item
-            model.query("");
-            return false;
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                model.query(query);
-                return true;
-            }
-
-            @SuppressLint("CheckResult")
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                LogUtil.d(TAG, "onQueryTextChange: " + newText);
-                return false;
-            }
-        });
     }
 }

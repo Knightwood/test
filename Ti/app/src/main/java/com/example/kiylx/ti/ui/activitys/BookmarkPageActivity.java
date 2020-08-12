@@ -2,6 +2,7 @@ package com.example.kiylx.ti.ui.activitys;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,10 +26,8 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
-import com.example.kiylx.ti.model.BookmarkFolderNode;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
-import com.example.kiylx.ti.tool.KeyValue;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
@@ -41,7 +40,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.List;
 
-public class BookmarkPageActivity extends BaseActivity implements RefreshBookMark, BookmarkActivityContract {
+public class BookmarkPageActivity extends AppCompatActivity implements RefreshBookMark {
     private RecyclerView mRecyclerView;
     private List<WebPage_Info> mBookmarkArrayList;
     private AboutBookmark mAboutBookmark;
@@ -90,11 +89,6 @@ public class BookmarkPageActivity extends BaseActivity implements RefreshBookMar
 
         Toolbar toolbar = findViewById(R.id.bookmark_toolbar);
         setSupportActionBar(toolbar);
-
-    }
-
-    @Override
-    protected void initActivity(BaseLifecycleObserver observer) {
 
     }
 
@@ -253,14 +247,7 @@ public class BookmarkPageActivity extends BaseActivity implements RefreshBookMar
         fr.show(fm, "删除标签dialog");
     }
 
-    /**
-     * 更新界面
-     * @param keyValue 包含有文件夹list和书签list的键值对
-     */
-    @Override
-    public void UpdateUI(KeyValue<BookmarkFolderNode, WebPage_Info> keyValue) {
 
-    }
 
     public class RecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         private List<WebPage_Info> mList;
@@ -382,7 +369,7 @@ public class BookmarkPageActivity extends BaseActivity implements RefreshBookMar
          *                           显示书签编辑对话框
          */
         void showBookmarkDialog(String id, String title, String url, String bookmarkFolderName) {
-            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info(id, title, url, bookmarkFolderName));
+            Bookmark_Dialog Bookmark_dialog = Bookmark_Dialog.newInstance(2, new WebPage_Info.Builder(url).uuid(id).title(title).bookmarkFolderUUID(bookmarkFolderName).build());
             FragmentManager fm = getSupportFragmentManager();
             Bookmark_dialog.show(fm, "changeBookmark");
         }

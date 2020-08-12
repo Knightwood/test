@@ -4,9 +4,16 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.CallSuper;
+import androidx.annotation.LayoutRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
@@ -21,14 +28,73 @@ import java.util.List;
 public abstract class BaseActivity extends AppCompatActivity implements BaseContract.View {
     public NetBroadcastReceiver receiver;
     private BaseLifecycleObserver lifecycleObserver;
+    @Nullable
+    protected Toolbar toolbar;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(layoutId());
+        initView(savedInstanceState);
         initActivity(lifecycleObserver);
     }
 
+    @CallSuper
+    protected void initView(Bundle savedInstanceState) {
+        toolbar = setToolbar();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+    }
+
     protected abstract void initActivity(BaseLifecycleObserver observer);
+
+
+    /**
+     * @return 提供布局中的toolbar
+     */
+    protected Toolbar setToolbar() {
+        return null;
+    }
+
+    /**
+     * 设置toolbar的标题
+     *
+     * @param title    标题
+     * @param subTitle 子标题
+     */
+    protected void setToolbarTitle(String title, String subTitle) {
+        if (getSupportActionBar() != null) {
+            if (title != null) {
+                getSupportActionBar().setTitle(title);
+            }
+            if (subTitle != null) {
+                getSupportActionBar().setSubtitle(subTitle);
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public <T extends View> T f(int resId) {
+        return (T) findViewById(resId);
+    }
+
+    /**
+     * @return 提供activity的布局id
+     */
+    @LayoutRes
+    protected abstract int layoutId();
 
     @Override
     protected void onDestroy() {
@@ -46,7 +112,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         registerReceiver(receiver, intentFilter);//注册广播
     }
 
-    public void unRegisterBroadCast(){
+    public void unRegisterBroadCast() {
         unregisterReceiver(receiver);
     }
 
@@ -77,7 +143,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
 
     @Override
     public void showToast(String message) {
-
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -6,38 +6,33 @@ package com.example.kiylx.ti.model;
  * packageName：com.example.kiylx.ti.model
  * 描述：描述书签文件夹的信息。
  */
-public class BookmarkFolderNode {
-    private String FolderName;
-    private String UUID;
-    private String parentUUID;
-
+public class BookmarkFolderNode extends WebPage_Info{
     public BookmarkFolderNode(String folderName, String UUID, String parentUUID) {
-        FolderName = folderName;
-        this.UUID = UUID;
-        this.parentUUID = parentUUID;
+        super(new Builder("nul").title(folderName).uuid(UUID).bookmarkFolderUUID(parentUUID));
+         setWEB_feature(-2);//标识为书签文件夹
     }
 
     public String getFolderName() {
-        return FolderName;
+        return getUUID();
     }
 
     public void setFolderName(String folderName) {
-        FolderName = folderName;
+        setTitle(folderName);
     }
 
     public String getUUID() {
-        return UUID;
+        return getUuid();
     }
 
     public void setUUID(String UUID) {
-        this.UUID = UUID;
+        setUUID( UUID);
     }
 
     public String getParentUUID() {
-        return parentUUID;
+        return getBookmarkFolderUUID();
     }
 
     public void setParentUUID(String parentUUID) {
-        this.parentUUID = parentUUID;
+        setBookmarkFolderUUID(parentUUID);
     }
 }

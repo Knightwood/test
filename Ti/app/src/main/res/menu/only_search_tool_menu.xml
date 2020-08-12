@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+<!--仅有一个搜索框的菜单-->
     <item
-        android:id="@+id/histories_searchview"
+        android:id="@+id/only_a_searchview"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/searchbar"
         app:actionViewClass="android.widget.SearchView"

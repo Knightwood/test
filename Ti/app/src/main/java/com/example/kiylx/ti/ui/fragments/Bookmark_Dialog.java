@@ -72,7 +72,11 @@ public class Bookmark_Dialog extends DialogFragment {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
-        Bookmark_Dialog.beBookmarked_info = new WebPage_Info(info.getUuid(),info.getTitle(),info.getUrl(),info.getBookmarkFolderUUID());
+        Bookmark_Dialog.beBookmarked_info = new WebPage_Info.Builder(info.getUrl())
+                .uuid(info.getUuid())
+                .title(info.getTitle())
+                .bookmarkFolderUUID(info.getBookmarkFolderUUID())
+                .build();
         return bookmark_dialog;
     }
 
@@ -125,12 +129,11 @@ public class Bookmark_Dialog extends DialogFragment {
     }
 
 
-
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //注：onCreateDialog在onCreate之后，onCreateView之前被调用
-      final View  view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
         /*layoutTitle=view.findViewById(R.id.layout_edit_title);
         layoutTitle.setHint("@string/title");
         layoutUrl=view.findViewById(R.id.layout_edit_url);
@@ -144,11 +147,11 @@ public class Bookmark_Dialog extends DialogFragment {
                         beBookmarked_info.setTitle(titleView.getText().toString());
                         beBookmarked_info.setUrl(urlView.getText().toString());
 
-                        if (beBookmarked_info.getUuid()==null){
+                        if (beBookmarked_info.getUuid() == null) {
                             beBookmarked_info.setUuid(UUID.randomUUID());
                             mAboutBookmark.InsertItem(beBookmarked_info);
                             LogUtil.d(TAG, "onClick: uuid是null");
-                        }else {
+                        } else {
                             LogUtil.d(TAG, "onClick: uuid不是null，所以更新数据库");
                             mAboutBookmark.updateItem(beBookmarked_info);
                         }
@@ -234,7 +237,7 @@ public class Bookmark_Dialog extends DialogFragment {
 
         titleView = v.findViewById(R.id.edit_title);
         titleView.setText(beBookmarked_info.getTitle());
-        urlView= v.findViewById(R.id.editUrl);
+        urlView = v.findViewById(R.id.editUrl);
         urlView.setText(beBookmarked_info.getUrl());
 
     }
@@ -264,7 +267,7 @@ public class Bookmark_Dialog extends DialogFragment {
         LogUtil.d(TAG, "onActivityResult");
         //用新的list更新界面
         String name = data.getStringExtra("newTagName");
-        bookmarkFolderlists=mBookMarkFolderManager.getBookmarkFolderlists();
+        bookmarkFolderlists = mBookMarkFolderManager.getBookmarkFolderlists();
         selectOneFolder(bookmarkFolderlists.indexOf(name));
 
     }

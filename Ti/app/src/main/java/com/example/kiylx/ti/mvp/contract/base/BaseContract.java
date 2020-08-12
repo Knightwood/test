@@ -25,8 +25,7 @@ public interface BaseContract {
 
         void showTipDialog(String content);
 
-        void showConfirmDialog(String msn, String title, String confirmText
-                , DialogInterface.OnClickListener confirmListener);
+        void showConfirmDialog(String msn, String title, String confirmText, DialogInterface.OnClickListener confirmListener);
 
         void showToast(String message);
 

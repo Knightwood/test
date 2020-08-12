@@ -1,5 +1,11 @@
 package com.example.kiylx.ti.model;
 
+import android.os.Build;
+
+import com.example.kiylx.ti.ui.base.BaseActivity;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.UUID;
 
 public class WebPage_Info {
@@ -12,16 +18,44 @@ public class WebPage_Info {
     private String bookmarkFolderUUID;//这是书签所属的文件夹的名称，它不是显示的name，是文件夹节点的uuid
     private int progress;//网页加载进度
     /*WEB_feature：0，主页,不计入历史记录;，url指定为about:newTab
-     *所以除了0以外的flags都是可以计入历史记录的
-     *1，将载入网址，可以计入历史记录;
-     *-1：网页被收藏;
-     *-2表示这是一个给收藏网页分类的标签，这个网页标题是标签，网址是null*/
-    //bookmarkFolderName,网页收藏时所用的标签
+     * 所以除了0以外的flags都是可以计入历史记录的
+     * 1，将载入网址，可以计入历史记录;
+     * -1：网页被收藏;
+     * -2这是表示用作书签文件夹的标识，uuid是文件夹的uuid，bookmarkFolderUUID是文件夹的父文件夹uuid，title是文件夹名称，url设为“nul”
+     * */
+    //feature 标志，0或者-1都可以，0在不计入收藏时，-1是计入收藏时写入的，但是在收藏记录那，压根就没用过。所以，以后要删除这个标志
 
+    /**
+     * @param URL
+     */
+    @Deprecated
+    public WebPage_Info(String URL) {
+        this("", URL, null, 0, null);
+    }
 
-    /*public WebPage_Info clone(WebPage_Info info){
-        WebPage_Info cloned=new WebPage_Info()
-    }*/
+    /**
+     * @param title
+     * @param URL
+     * @param date
+     */
+    @Deprecated
+    public WebPage_Info(String title, String URL, String date) {
+        this(title, URL, null, date);
+    }
+
+    /**
+     * @param uuid
+     * @param title
+     * @param url
+     * @param bookmarkFolder
+     */
+    @Deprecated
+    public WebPage_Info(String uuid, String title, String url, String bookmarkFolder) {
+        this.uuid = uuid;
+        this.title = title;
+        this.url = url;
+        this.bookmarkFolderUUID = bookmarkFolder;
+    }
 
     /**
      * @param title              标题
@@ -30,35 +64,28 @@ public class WebPage_Info {
      * @param web_feature        标识是否被收藏了  -标识网页是属于什么类的，收藏，历史，为加载网址。以半废弃
      *                           使用的地方：1，在webviewManager中会写为0，传入webpageinfo到webViewInfo_Manager类
      *                           2，在收藏里没有使用，所以默认给一个0就可以
-     *                           3.Fragment_DoSearch中有使用
      * @param date               网页加载时间
      */
+    @Deprecated
     public WebPage_Info(String title, String url, String bookmarkFolderUUID, int web_feature, String date) {
         this.title = title;
         this.url = url;
         this.bookmarkFolderUUID = bookmarkFolderUUID;
         this.WEB_feature = web_feature;
         this.date = date;
-
     }
 
-    public WebPage_Info(String URL) {
-        this("", URL, null, 0, null);
-    }
-
-    public WebPage_Info(String id, String title, String url, String folder) {
-        this.uuid = id;
-        this.title = title;
-        this.url = url;
-        this.bookmarkFolderUUID = folder;
-    }
 
     /**
-     * @param URL     网址
-     * @param feature 标志，0或者-1都可以，0在不计入收藏时，-1是计入收藏时写入的，但是在收藏记录那，压根就没用过。所以，以后要删除这个标志
+     * @param builder
      */
-    public WebPage_Info(String URL, int feature) {
-        this("", URL, null, feature, null);
+    public WebPage_Info(Builder builder) {
+        this.uuid = builder.uuid;
+        this.title = builder.title;
+        this.url = builder.url;
+        this.WEB_feature = builder.WEB_feature;
+        this.date = builder.date;
+        this.bookmarkFolderUUID = builder.bookmarkFolderUUID;
     }
 
     public String getTitle() {
@@ -115,5 +142,57 @@ public class WebPage_Info {
 
     public void setProgress(int progress) {
         this.progress = progress;
+    }
+
+    /**
+     * 根据需求生成wegpage_info
+     */
+    public static final class Builder {
+        private final String url;
+
+        private String uuid;//书签本身的uuid，标识其唯一性
+        private String title;
+        private int WEB_feature;
+        private String date;
+        private String bookmarkFolderUUID;//这是书签所属的文件夹的名称，它不是显示的name，是文件夹节点的uuid
+        private int progress;
+
+        public Builder(String url) {
+            this.url = url;
+        }
+
+        public Builder uuid(String uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        public Builder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public Builder date(String date) {
+            this.date = date;
+            return this;
+        }
+
+        public Builder WEB_feature(int WEB_feature) {
+            this.WEB_feature = WEB_feature;
+            return this;
+        }
+
+        public Builder bookmarkFolderUUID(String bookmarkFolderUUID) {
+            this.bookmarkFolderUUID = bookmarkFolderUUID;
+            return this;
+        }
+
+        public Builder progress(int progress) {
+            this.progress = progress;
+            return this;
+        }
+
+        public WebPage_Info build() {
+            return new WebPage_Info(this);
+        }
     }
 }

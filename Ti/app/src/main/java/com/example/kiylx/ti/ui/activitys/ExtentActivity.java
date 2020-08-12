@@ -8,23 +8,32 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
+import com.example.kiylx.ti.ui.base.BaseActivity;
 
-public class ExtentActivity extends AppCompatActivity {
+public class ExtentActivity extends BaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_extent);
+    protected void initActivity(BaseLifecycleObserver observer) {
+
+    }
+
+    @Override
+    protected void initView(Bundle savedInstanceState) {
+        super.initView(savedInstanceState);
         initToolbar();
+    }
+
+    @Override
+    protected Toolbar setToolbar() {
+        return (Toolbar) findViewById(R.id.toolbar_jsadd);
     }
 
     /**
      * 添加tolbar
      */
     private void initToolbar() {
-        Toolbar extToolbar=(Toolbar) findViewById(R.id.toolbar_jsadd);
-        setSupportActionBar(extToolbar);
-        getSupportActionBar().setTitle("JS管理器");
+        setToolbarTitle("JS管理器",null);
     }
 
     @Override
@@ -41,6 +50,11 @@ public class ExtentActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected int layoutId() {
+        return R.layout.activity_extent;
     }
 
     /**

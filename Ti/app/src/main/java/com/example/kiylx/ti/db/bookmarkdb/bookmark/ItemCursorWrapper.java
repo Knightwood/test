@@ -20,7 +20,8 @@ public class ItemCursorWrapper extends CursorWrapper {
         String url = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.url));
         String folder = getString(getColumnIndex(FavoritepageDbSchema.FavoriteTable.childs.BookmarkFolderUuid));
 
-        return new WebPage_Info(id,title,url,folder);
+        return new WebPage_Info.Builder(url).uuid(id).title(title).bookmarkFolderUUID( folder).build();
+        //return new WebPage_Info(id,title,url,folder);
     }
 
 }
