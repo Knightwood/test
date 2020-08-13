@@ -784,9 +784,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         public void onImgLink(int touchX, int touchY, int type, String extra) {
 
         }
-
     }
-
 
     /**
      * 实现一些控制网页的方法，用于minsetDialog或者长按菜单
@@ -795,17 +793,12 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         if (controlInterface == null) {
             controlInterface = new ControlWebViewImpl();
         }
-
     }
 
     class ControlWebViewImpl implements com.example.kiylx.ti.interfaces.ControlWebView {
         @Override
         public void sharing(String url) {
-            Intent i = new Intent(Intent.ACTION_SEND);
-            i.setType("text/plain");
-            i.putExtra(Intent.EXTRA_TEXT, url);
-            i.putExtra(Intent.EXTRA_SUBJECT, "网址");
-            startActivity(i);
+            share(url);
         }
 
         @Override

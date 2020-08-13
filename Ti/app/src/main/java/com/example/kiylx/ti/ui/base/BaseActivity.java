@@ -2,6 +2,7 @@ package com.example.kiylx.ti.ui.base;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
@@ -180,6 +181,16 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
     public void showLoginPage() {
 
     }
+
+    @Override
+    public void share(String s) {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("text/plain");
+        i.putExtra(Intent.EXTRA_TEXT, s);//消息
+        i.putExtra(Intent.EXTRA_SUBJECT, "分享");//消息包含的主题行
+        startActivity(i);
+    }
+
 
     @Override
     public <T> void updateUI(List<T> list) {

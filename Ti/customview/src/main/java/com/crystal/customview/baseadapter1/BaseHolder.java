@@ -11,35 +11,37 @@ import androidx.recyclerview.widget.RecyclerView;
  * 创建者 kiylx
  * 创建时间 2020/4/6 8:46
  */
-public class BaseHolder <N> extends RecyclerView.ViewHolder {
+public class BaseHolder<N> extends RecyclerView.ViewHolder {
     private View itemView;
-    private SparseArray<View> views;
+    private SparseArray<View> views;//缓存一些view
     private N mInfo;//N类型的bean
 
     public BaseHolder(View itemView) {
         super(itemView);
         this.itemView = itemView;
-        views=new SparseArray<>();//暂存itemView中的子view的id和view对象，
+        views = new SparseArray<>();//暂存itemView中的子view的id和view对象，
     }
 
     /**
      * @param resId 资源id
-     * @param <T> 要从itemView中获取的view的类型
+     * @param <T>   要从itemView中获取的view的类型
      * @return 返回查找的view
      * 查找itemview中resId 的view。
      * views用来存储itemview中的子view，减少findviewbyid的次数
      */
-    public <T extends View> T getView(int resId){
-        View v=views.get(resId);
-        if (v==null){
-            v=itemView.findViewById(resId);
-            views.put(resId,v);
+    public <T extends View> T getView(int resId) {
+        View v = views.get(resId);
+        if (v == null) {
+            v = itemView.findViewById(resId);
+            views.put(resId, v);
         }
-        return (T)v;
+        return (T) v;
     }
-    public View getItemView(){
+
+    public View getItemView() {
         return itemView;
     }
+
     /**
      * 设置TextView文本
      */
@@ -48,6 +50,7 @@ public class BaseHolder <N> extends RecyclerView.ViewHolder {
         tv.setText(text);
         return this;
     }
+
     /**
      * 设置View的Visibility
      */
@@ -68,16 +71,18 @@ public class BaseHolder <N> extends RecyclerView.ViewHolder {
     /**
      * 设置条目点击事件
      */
-    public void setOnIntemClickListener(View.OnClickListener listener, N info) {
+    public BaseHolder setOnIntemClickListener(View.OnClickListener listener, N info) {
         itemView.setOnClickListener(listener);
-        this.mInfo =info;
+        this.mInfo = info;
+        return this;
     }
 
     /**
      * 设置条目长按事件
      */
-    public void setOnIntemLongClickListener(View.OnLongClickListener listener) {
+    public BaseHolder setOnIntemLongClickListener(View.OnLongClickListener listener) {
         itemView.setOnLongClickListener(listener);
+        return this;
     }
 
     public N getInfo() {

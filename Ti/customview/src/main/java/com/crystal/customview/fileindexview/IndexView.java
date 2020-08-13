@@ -164,17 +164,22 @@ public class IndexView extends LinearLayout {
         }
 
         @Override
-        public BaseHolder<FileInfo> createHolder(View v) {
-            return new BaseHolder<>(v);
-        }
-
-        @Override
-        public int itemResId() {
+        protected int getItemViewResId(int viewType) {
             return R.layout.file_item;
         }
 
         @Override
-        public void bind(BaseHolder<FileInfo> holder, FileInfo data) {
+        public int getViewType(FileInfo bean) {
+            return 0;
+        }
+
+        @Override
+        public BaseHolder<FileInfo> createHolder(View itemView, int viewType) {
+            return new BaseHolder<>(itemView);
+        }
+
+        @Override
+        public void bind(BaseHolder<FileInfo> holder, FileInfo data, int viewType) {
             holder.setImageResource(R.id.myFileImage, data.getImgId())
                     .setText(R.id.myFileName, data.getFileName())
                     .setOnIntemClickListener(new OnClickListener() {

@@ -43,6 +43,8 @@ public interface BaseContract {
 
         void showLoginPage();
 
+        void share(String s);
+
         <T> void updateUI(List<T> list);
 
     }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.DrawableUtils;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
@@ -70,6 +71,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
         TextView title;
         TextView url;
         ImageView itemMenu;
+        ImageView icon;
         String URL;
         HistoryEntity info;
 
@@ -80,6 +82,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             title = itemView.findViewById(R.id.itemTitle);
             url = itemView.findViewById(R.id.itemurl);
             itemMenu = itemView.findViewById(R.id.more_setting);
+            icon=itemView.findViewById(R.id.Bookmarkimage);
             title.setOnClickListener(this);
             itemMenu.setOnClickListener(this);
         }
@@ -88,6 +91,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             if (info == null) {
                 title.setText("loading");//使用分页后，容器的数量可能会大于数据的数量，所以如果容器数量多，传入的info会是null，所以在此装饰成正在加载的样子
             } else {
+                icon.setImageResource(R.drawable.accesstime);
                 this.info = info;
                 URL = info.url;
                 title.setText(info.title);

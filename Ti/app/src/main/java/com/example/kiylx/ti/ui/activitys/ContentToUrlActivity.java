@@ -10,12 +10,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.crystal.customview.baseadapter1.BaseHolder;
@@ -26,7 +24,6 @@ import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.ProcessUrl;
 import com.example.kiylx.ti.webview32.nestedjspack.SuggestLiveData;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -247,19 +244,24 @@ public class ContentToUrlActivity extends AppCompatActivity {
         }
 
         @Override
-        public BaseHolder<String> createHolder(View v) {
-            return new BaseHolder<>(v);
+        protected int getItemViewResId(int viewType) {
+            return R.layout.item_a;
         }
 
         @Override
-        public int itemResId() {
-            return R.layout.blackitem;
+        public int getViewType(String bean) {
+            return 0;
         }
 
         @Override
-        public void bind(BaseHolder<String> holder, String data) {
-            holder.setText(R.id.blacktext, data)
-                    .setOnIntemClickListener(new View.OnClickListener() {
+        public BaseHolder<String> createHolder(View itemView, int viewType) {
+            return new BaseHolder<>(itemView);
+        }
+
+        @Override
+        public void bind(BaseHolder<String> holder, String data, int viewType) {
+            holder.setText(R.id.blacktext, data);
+            holder.setOnIntemClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             startSearchContent(data);

@@ -63,8 +63,25 @@
         <item name="android:background">@drawable/touch_color</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:layout_marginBottom">2dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+    <style name="Textview" parent="@android:style/Widget.Material.Light.TextView.SpinnerItem">
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginBottom">15dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">10dp</item>
+        <item name="radius">5dp</item>
+    </style>
+    <style name="Textview2" parent="@android:style/Widget.Material.Light.TextView.SpinnerItem">
+        <item name="android:background">@drawable/hover_border</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginTop">15dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:padding">10dp</item>
     </style>
