@@ -68,16 +68,16 @@ public class BookmarkDBcontrol {
     }
 
     /**
-     * @param id            webpage_info的id
+     * @param uuid            webpage_info的uuid或是它的partentUUID，这取决于第二个参数。
      * @param isDeleteChild 若是传入true，则将传入的uuid视作某一个文件夹的uuid，将会查询此uuid代表的文件夹下的所有书签，并将其删除
      *                      根据提供的euuid删除书签
      */
-    public void delete(String id, boolean isDeleteChild) {
+    public void delete(String uuid, boolean isDeleteChild) {
         try {
             if (isDeleteChild) {
-                mDatabase.execSQL("DELETE from Favorite_tab where folderUUID =?", new String[]{id});
+                mDatabase.execSQL("DELETE from Favorite_tab where folderUUID =?", new String[]{uuid});
             } else {
-                mDatabase.execSQL("DELETE from Favorite_tab where uuid =?", new String[]{id});
+                mDatabase.execSQL("DELETE from Favorite_tab where uuid =?", new String[]{uuid});
             }
 
         } catch (Exception e) {
@@ -122,6 +122,7 @@ public class BookmarkDBcontrol {
             }
         } finally {
             cursor.close();
+            //closeDB();
         }
         return mlists;
     }
@@ -188,6 +189,9 @@ public class BookmarkDBcontrol {
         return new ItemCursorWrapper(cursor);
     }
 
-    private void destroyDB(){
+    private void closeDB() {
+        if (mDatabase != null) {
+            mDatabase.close();
+        }
     }
 }

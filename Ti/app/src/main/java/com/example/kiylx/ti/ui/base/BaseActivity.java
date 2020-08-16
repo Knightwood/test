@@ -39,6 +39,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         setContentView(layoutId());
         initView(savedInstanceState);
         initActivity(lifecycleObserver);
+        initViewAfter(savedInstanceState);
     }
 
     @CallSuper
@@ -50,6 +51,10 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
     }
 
     protected abstract void initActivity(BaseLifecycleObserver observer);
+    @CallSuper
+    protected void initViewAfter(Bundle savedInstanceState) {
+
+    }
 
 
     /**
@@ -191,9 +196,4 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         startActivity(i);
     }
 
-
-    @Override
-    public <T> void updateUI(List<T> list) {
-
-    }
 }

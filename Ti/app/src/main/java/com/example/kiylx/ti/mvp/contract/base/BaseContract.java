@@ -45,7 +45,7 @@ public interface BaseContract {
 
         void share(String s);
 
-        <T> void updateUI(List<T> list);
+        //<T> void updateUI(List<T> list);
 
     }
 

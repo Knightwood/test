@@ -15,6 +15,7 @@ import com.example.kiylx.ti.R;
  * 描述：仅有一个toolbar和一个recyclerview。toolbar中只有一个searchview的菜单。
  * 可以由子类添加自定义的menu项。
  * 提供了监听menuItem的方法,提供了对searchview的调整和控制监听
+ * recyclerview: histories_recyclerView
  */
 public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
     protected SearchView searchView;

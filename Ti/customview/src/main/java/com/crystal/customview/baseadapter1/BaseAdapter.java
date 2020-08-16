@@ -8,6 +8,7 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,9 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
     List<T> list;//T类型的bean的list集合
 
     public BaseAdapter(List<T> list) {
-        setData(list);
+        if (list == null)
+            list = new ArrayList<>();
+        this.list = list;
     }
 
     public List<T> getData() {
@@ -37,29 +40,30 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
     @NonNull
     @Override
     public N onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView=LayoutInflater.from(parent.getContext()).inflate(getItemViewResId(viewType),parent,false);
-        return createHolder(itemView,viewType);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(getItemViewResId(viewType), parent, false);
+        return createHolder(itemView, viewType);
     }
-
 
 
     @Override
     public void onBindViewHolder(@NonNull N holder, int position) {
-        bind(holder, list.get(position),getItemViewType(position));
+        bind(holder, list.get(position), getItemViewType(position));
     }
 
     @Override
     public int getItemCount() {
         if (list == null) {
-            return -1;
+            return 0;
         } else
             return list.size();
     }
+
     /**
      * @param viewType viewtype
-     * @return 根据viewType,返回不同的itemView的layoutId
+     * @return 根据viewType, 返回不同的itemView的layoutId
      */
     protected abstract int getItemViewResId(int viewType);
+
     /**
      * @param bean 数据bean
      * @return 根据bean返回不同的viewtype
@@ -74,13 +78,13 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
      * @param viewType viewType
      * @return 根据ViewType的不同生成不同的viewHolder实例
      */
-    public abstract N createHolder(View itemView,int viewType);
+    public abstract N createHolder(View itemView, int viewType);
 
     /**
-     * @param holder viewHolder
-     * @param data 给viewholder的数据bean
+     * @param holder   viewHolder
+     * @param data     给viewholder的数据bean
      * @param viewType 此itemview的viewtype
      *                 根据viewType将数据绑定在不同的holder上
      */
-    public abstract void bind(N holder, T data,int viewType);
+    public abstract void bind(N holder, T data, int viewType);
 }

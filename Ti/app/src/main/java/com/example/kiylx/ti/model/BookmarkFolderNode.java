@@ -19,7 +19,7 @@ public class BookmarkFolderNode extends WebPage_Info{
     }
 
     public String getFolderName() {
-        return getUUID();
+        return getTitle();
     }
 
     public void setFolderName(String folderName) {

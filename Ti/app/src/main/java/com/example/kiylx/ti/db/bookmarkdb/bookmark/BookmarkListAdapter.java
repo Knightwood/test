@@ -43,16 +43,33 @@ public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<We
 
     @Override
     public void bind(BaseHolder<WebPage_Info> holder, WebPage_Info data, int viewType) {
-        holder.setImageResource(R.id.Bookmarkimage, R.drawable.ic_bookmark_border_black_24dp)
-                .setText(R.id.itemTitle, data.getTitle())
-                .setText(R.id.itemurl, data.getUrl())
-                .setImageResource(R.id.more_setting, R.drawable.morevert);
-        holder.setOnIntemClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        switch (viewType){
+            case BookmarkKind.folder:
+                holder.setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp)
+                        .setText(R.id.itemTitle, data.getTitle())
+                        .setImageResource(R.id.more_setting, R.drawable.chevronright);
 
-            }
-        }, data);
+                holder.setOnIntemClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }, data);
+                break;
+            case BookmarkKind.bookmark:
+                holder.setImageResource(R.id.Bookmarkimage, R.drawable.ic_bookmark_black_24dp)
+                    .setText(R.id.itemTitle, data.getTitle())
+                    .setText(R.id.itemurl, data.getUrl())
+                    .setImageResource(R.id.more_setting, R.drawable.morevert);
+                holder.setOnIntemClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }, data);
+                break;
+        }
+
     }
 
     static class BookmarkKind {

@@ -41,9 +41,10 @@ public class BookmarkfolderDBcontrol {
         insertNode(node);
 
     }
+
     public BookmarkFolderNode insertNode(BookmarkFolderNode node) {
         ContentValues values = getContentValues(node);
-        mDatabase.insert(BookmarkFolderDbSchema.FolderTable.NAME,null,values);
+        mDatabase.insert(BookmarkFolderDbSchema.FolderTable.NAME, null, values);
         return node;
     }
 
@@ -80,8 +81,15 @@ public class BookmarkfolderDBcontrol {
             if (tmpCursor != null) {
                 tmpCursor.close();
             }
+            //closeDB();
         }
         return nodes;
+    }
+
+    private void closeDB() {
+        if (mDatabase != null) {
+            mDatabase.close();
+        }
     }
 
     /**
@@ -93,11 +101,11 @@ public class BookmarkfolderDBcontrol {
     }
 
     /**
-     * @param uuid 文件夹自身的uuid
+     * @param uuid          文件夹自身的uuid
      * @param newParentuuid 该文件夹的新parentuuid
      *                      更改文件夹到另一个文件夹下，只需要更改文件夹的parentuuid就可以做到
      */
-    public void updateFolderParentuuid(String uuid,String newParentuuid){
+    public void updateFolderParentuuid(String uuid, String newParentuuid) {
         mDatabase.execSQL("UPDATE BookmarkFolderTab SET parentUuid=? where uuid=?", new String[]{newParentuuid, uuid});
     }
 
