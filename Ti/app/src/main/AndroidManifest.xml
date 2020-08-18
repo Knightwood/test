@@ -23,7 +23,9 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
         <activity android:name=".ui.base.BaseRecy_search_ViewActivity"></activity>
-        <activity android:name=".ui.activitys.BookmarkManagerActivity" />
+        <activity
+            android:name=".ui.activitys.BookmarkManagerActivity"
+            android:theme="@style/MaterialThemes" />
         <activity
             android:name=".ui.activitys.ExtentActivity"
             android:theme="@style/MaterialThemes" />

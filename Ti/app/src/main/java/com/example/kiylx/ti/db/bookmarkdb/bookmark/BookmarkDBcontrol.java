@@ -11,6 +11,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 /**
  * 创建者 kiylx
  * 创建时间 2020/8/8 22:48
@@ -31,6 +39,41 @@ public class BookmarkDBcontrol {
 
     private BookmarkDBcontrol(Context context) {
         mDatabase = new FavoritePageBaseHelper(context).getWritableDatabase();
+    }
+
+    /**
+     * @param info 即将插入数据库的书签信息
+     *             将书签信息插入数据库
+     */
+    public void insertBookmark(WebPage_Info info) {
+        Observable.create(new ObservableOnSubscribe<WebPage_Info>() {
+            @Override
+            public void subscribe(ObservableEmitter<WebPage_Info> emitter) throws Exception {
+                Insert(info);
+                emitter.onComplete();
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<WebPage_Info>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(WebPage_Info webPage_info) {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
 

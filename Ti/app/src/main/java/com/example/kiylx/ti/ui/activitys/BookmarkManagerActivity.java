@@ -1,18 +1,20 @@
 package com.example.kiylx.ti.ui.activitys;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SearchView;
 
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.crystal.customview.baseadapter1.BaseAdapter;
-import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkListAdapter;
@@ -23,6 +25,7 @@ import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +36,13 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     private BookmarkManager sBookmarkManager;
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
+    private static boolean containBookmarks=true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
+
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
-        recyclerView = findViewById(R.id.histories_recyclerView);
+        recyclerView = findViewById(R.id.base_search_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -45,7 +50,14 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     protected void initActivity(BaseLifecycleObserver observer) {
         sBookmarkManager = BookmarkManager.getInstance(Xapplication.getInstance(), this);
         setToolbarTitle("收藏夹", null);
-        initTest();
+        if (getIntent() != null){
+            containBookmarks = getIntent().getBooleanExtra("isShowBookmarks", true);
+            if (!containBookmarks) {
+                addButtonView();
+            }
+        }
+
+        //initTest();
 
     }
 
@@ -62,9 +74,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         if (sBookmarkManager.getBookmarkList() == null) {
             //从manager中拿数据，若是数据是null，那就从数据库里读取在更新界面，否则直接用数据更新界面
             //若是我每次都用getIndex()方法从数据库拿数据来更新界面，在第二次打开activity时就会什么也不显示，但明明已经拿到了数据，我猜测可能与线程调度与activity的生命周期有问题
-            sBookmarkManager.getIndex(SomeRes.defaultBookmarkFolderUUID);
+            sBookmarkManager.getIndex(SomeRes.defaultBookmarkFolderUUID, containBookmarks);
         } else {
-            UpdateUI(sBookmarkManager.getBookmarkList());
+            updateUI(sBookmarkManager.getBookmarkList());
         }
     }
 
@@ -74,12 +86,8 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
      * @param folderAndBookmark 包含有文件夹list和书签list的键值对
      */
     @Override
-    public void UpdateUI(List<WebPage_Info> folderAndBookmark) {
+    public void updateUI(List<WebPage_Info> folderAndBookmark) {
         showToast("接收到了更新");
-        for (WebPage_Info info :
-                folderAndBookmark) {
-            LogUtil.d(TAG, "开始更新界面，接收到的数据： " + info.getUuid());
-        }
         if (adapter == null) {
             if (folderAndBookmark == null || folderAndBookmark.isEmpty()) {
                 adapter = new BookmarkListAdapter(new ArrayList<>());
@@ -96,7 +104,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             adapter.setData(folderAndBookmark);
             adapter.notifyDataSetChanged();
         }
-
+        for (WebPage_Info info : folderAndBookmark) {
+            LogUtil.d(TAG, "开始更新界面，接收到的数据： " + info.getUuid());
+        }
 
     }
 
@@ -112,8 +122,8 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     }
 
     @Override
-    protected void ListenItem(MenuItem item) {
-        super.ListenItem(item);
+    protected void ListenItemClick(MenuItem item) {
+        super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
                 sBookmarkManager.createFolder("xnnnn", SomeRes.defaultBookmarkFolderUUID);
@@ -207,5 +217,29 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         }
     }
 
+    /**
+     * 添加一个按钮
+     */
+    private void addButtonView() {
+        MaterialButton button = new MaterialButton(this);
+        button.setText(R.string.complete);
+
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.bottomToBottom = R.id.base_search_recyclerView;
+        lp.rightToRight = R.id.base_rec_root;
+        lp.setMargins(10, 10, 30, 35);
+        button.setLayoutParams(lp);
+
+        addSomeView(button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = getIntent();
+                intent.putExtra("FolderName",sBookmarkManager.getUpperLevel());
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+            }
+        });
+    }
 
 }

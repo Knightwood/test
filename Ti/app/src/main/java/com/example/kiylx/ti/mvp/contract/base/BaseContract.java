@@ -45,8 +45,6 @@ public interface BaseContract {
 
         void share(String s);
 
-        //<T> void updateUI(List<T> list);
-
     }
 
     interface Presenter<V extends BaseContract.View>{

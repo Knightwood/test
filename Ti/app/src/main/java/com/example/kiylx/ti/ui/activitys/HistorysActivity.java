@@ -18,7 +18,6 @@ import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
-import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
 
 public class HistorysActivity extends BaseRecy_search_ViewActivity {
     private RecyclerView recyclerView;
@@ -40,7 +39,7 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
             method = new ClickMethod();
         }
 
-        recyclerView = findViewById(R.id.histories_recyclerView);
+        recyclerView = findViewById(R.id.base_search_recyclerView);
         adapter = new HistoryListAdapter(method, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -115,7 +114,7 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
     public void addToBookMark(String url) {
         FragmentManager fm = getSupportFragmentManager();
         //把当前网页信息传给收藏dialog
-        Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, new WebPage_Info.Builder(url).build());
+        EditBookmarkActivity dialog = EditBookmarkActivity.newInstance( new WebPage_Info.Builder(url).build(),null);
         dialog.show(fm, "收藏当前网页");
     }
 }

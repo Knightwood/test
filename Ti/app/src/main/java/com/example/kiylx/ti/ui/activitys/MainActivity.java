@@ -10,6 +10,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.ServiceConnection;
@@ -54,8 +55,7 @@ import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
 import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
-import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
-import com.example.kiylx.ti.ui.fragments.MultPage_Dialog;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.MultPage_Dialog;
 import com.example.kiylx.ti.interfaces.ActionSelectListener;
 import com.example.kiylx.ti.interfaces.ControlWebView;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadInterfaceImpl;
@@ -63,7 +63,7 @@ import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.mvp.presenter.WebViewManager;
-import com.example.kiylx.ti.ui.fragments.MinSetDialog;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.MinSetDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.ProcessUrl;
 
@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
     private View matcheTextView;//搜索webview文字的搜索框
     private MultPage_Dialog md;//多窗口dialogFragment
     private HandleClickedLinks handleClickedLinks;
-    private ControlWebView controlInterface;
+private static ControlWebView controlInterface;
     private static boolean seviceBund = false;//绑定服务时把它改为true；
     private View mSearchToolView;//搜索界面，包括有历史匹配和快捷输入
     private boolean isOpenedEdit = false;//是否打开了搜索栏上的搜索框
@@ -795,6 +795,10 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
         }
     }
 
+    public static ControlWebView getControlInterface() {
+        return controlInterface;
+    }
+
     class ControlWebViewImpl implements com.example.kiylx.ti.interfaces.ControlWebView {
         @Override
         public void sharing(String url) {
@@ -803,10 +807,11 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
 
         @Override
         public void addtobookmark(String url) {
-            FragmentManager fm = getSupportFragmentManager();
+            /*FragmentManager fm = getSupportFragmentManager();
             //把当前网页信息传给收藏dialog
-            Bookmark_Dialog dialog = Bookmark_Dialog.newInstance(1, mConverted_lists.getInfo(current));
-            dialog.show(fm, "收藏当前网页");
+            EditBookmarkActivity dialog = EditBookmarkActivity.newInstance( mConverted_lists.getInfo(current),null);
+            dialog.show(fm, "收藏当前网页");*/
+
         }
 
         @Override
@@ -842,6 +847,7 @@ public class MainActivity extends BaseActivity implements MultiDialog_Functions,
             WebView tmp = mWebViewManager.getTop(current);
             someTools.printPdf(tmp);
         }
+
     }
 
     /**

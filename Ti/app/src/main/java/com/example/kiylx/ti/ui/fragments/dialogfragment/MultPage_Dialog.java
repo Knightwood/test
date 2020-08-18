@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.fragments.dialogfragment;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;

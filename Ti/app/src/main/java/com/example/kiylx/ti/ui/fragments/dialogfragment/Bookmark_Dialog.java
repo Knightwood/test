@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.fragments.dialogfragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,6 +32,7 @@ import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -72,11 +73,12 @@ public class Bookmark_Dialog extends DialogFragment {
 
         Bookmark_Dialog bookmark_dialog = new Bookmark_Dialog();
         Bookmark_Dialog.intentid = id;
-        Bookmark_Dialog.beBookmarked_info = new WebPage_Info.Builder(info.getUrl())
+        /*Bookmark_Dialog.beBookmarked_info = new WebPage_Info.Builder(info.getUrl())
                 .uuid(info.getUuid())
                 .title(info.getTitle())
                 .bookmarkFolderUUID(info.getBookmarkFolderUUID())
-                .build();
+                .build();*/
+        Bookmark_Dialog.beBookmarked_info=info;
         return bookmark_dialog;
     }
 
@@ -133,11 +135,7 @@ public class Bookmark_Dialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         //注：onCreateDialog在onCreate之后，onCreateView之前被调用
-        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_bookmark_webpage, null);
-        /*layoutTitle=view.findViewById(R.id.layout_edit_title);
-        layoutTitle.setHint("@string/title");
-        layoutUrl=view.findViewById(R.id.layout_edit_url);
-        layoutUrl.setHint("@string/fileUrl");*/
+        final View view = LayoutInflater.from(getActivity()).inflate(R.layout.edit_bookmark_layout, null);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
@@ -165,14 +163,14 @@ public class Bookmark_Dialog extends DialogFragment {
                 });
 
         setMassage(view);//填充网页信息
-        newFolderButton = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
+        /*newFolderButton = view.findViewById(R.id.tag_add);//添加新建tag dialog的关联
         newFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newEditBox();
             }
         });
-        mSpinner = view.findViewById(R.id.select_Tags);
+        mSpinner = view.findViewById(R.id.select_Tags);*/
         //设置spinner显示的选项，即将新添加的网页的书签文件夹信息是null，这里会默认显示为“未分类”。
         selectOneFolder(mBookMarkFolderManager.getPosfromLists(beBookmarked_info.getBookmarkFolderUUID()));
 
@@ -283,6 +281,14 @@ public class Bookmark_Dialog extends DialogFragment {
         LogUtil.d(TAG, "onDetach: ");
         mContext = null;
 
+    }
+
+    private void selectFolder() {
+        Intent intent = new Intent(getActivity(), BookmarkManagerActivity.class);
+        intent.putExtra("isShowBookmarks", false);
+        intent.putExtra("url",urlView.getText());
+        intent.putExtra("title",titleView.getText());
+        startActivity(intent);
     }
 }
 /*

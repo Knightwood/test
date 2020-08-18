@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.interfaces;
 
+import androidx.fragment.app.DialogFragment;
+
 /**
  * 创建者 kiylx
  * 创建时间 2020/3/27 13:04
@@ -50,4 +52,5 @@ public interface ControlWebView {
      * 把网页打印成pdf
      */
     void printPdf();
+
 }

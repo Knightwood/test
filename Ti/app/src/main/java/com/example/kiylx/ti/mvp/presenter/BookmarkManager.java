@@ -27,7 +27,6 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -41,11 +40,10 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     private static final String TAG = "BookmarkManager";
     private static volatile BookmarkManager sBookmarkManager;
 
-    private String currentFolderUUID;//当前展示的所有内容所属的父类的uuid。
+    private Stack<String> backStack;//记录点击的文件夹层级，便于回退到上一级目录
+    private String currentPath;//当前文件夹层级
     private List<WebPage_Info> bookmarkList;
-    private List<BookmarkFolderNode> bookmarkFolderList;
-    private Stack<String> folderStack;//记录点击进入的文件夹层级，栈顶是当前文件夹的uuid，随后的是当前文件夹的父级
-
+    private List<WebPage_Info> bookmarkFolderList;
     //DataBase
     private BookmarkDBcontrol sBookmarkDBcontrol;
     private BookmarkfolderDBcontrol sBookmarkfolderDBcontrol;
@@ -65,22 +63,56 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         super((BookmarkActivityContract) view);
         sBookmarkDBcontrol = BookmarkDBcontrol.get(context);
         sBookmarkfolderDBcontrol = BookmarkfolderDBcontrol.get(context);
+        currentPath = SomeRes.defaultBookmarkFolderUUID;
     }
 
-    public void back() {
+    /**
+     * 点击返回时，回退到上级文件夹层级目录
+     *
+     * @param containBookmark 最终的结果是否包含书签记录
+     */
+    public void back(boolean containBookmark) {
+        getIndex(getUpperLevel(), containBookmark);
+    }
+
+    /**
+     * @param uuid            被点击文件夹的uuid
+     * @param containBookmark true则结果中包含有书签记录，否则只包含文件夹
+     *                        获取被点击文件夹的子目录
+     */
+    public void clickPath(String uuid, boolean containBookmark) {
+        backStack.push(currentPath);
+        currentPath = uuid;
+        getIndex(uuid, containBookmark);
 
     }
 
     /**
-     * @param uuid 当前文件夹的uuid
-     *             从数据库读取文件夹和书签记录，放在同一个list中，并更新界面
+     * @return 返回当前文件夹的父目录的uuid。
      */
-    public void getIndex(@NotNull String uuid) {
+    public String getUpperLevel() {
+        if (backStack == null || backStack.empty()) {
+            currentPath = SomeRes.defaultBookmarkFolderUUID;
+        } else {
+            currentPath = backStack.pop();
+        }
+        return currentPath;
+    }
+
+    /**
+     * @param uuid            当前文件夹的uuid
+     * @param containBookmark 是否获取的list中包含书签记录。
+     *                        从数据库读取当前文件夹的子文件夹和书签记录，放在同一个list中，并更新界面
+     */
+    public void getIndex(@NotNull String uuid, boolean containBookmark) {
         Observable.create((ObservableOnSubscribe<List<WebPage_Info>>) emitter -> {
+
             List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
             List<WebPage_Info> result = new ArrayList<>();
             result.addAll(folders);
-            result.addAll(sBookmarkDBcontrol.queryBookmarks(uuid));
+            if (containBookmark) {
+                result.addAll(sBookmarkDBcontrol.queryBookmarks(uuid));
+            }
             emitter.onNext(result);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
@@ -98,43 +130,13 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
                         for (WebPage_Info in : webPage_infos) {
                             LogUtil.d(TAG, "rxjava拿到的数据uuid:" + in.getUuid());
                         }
-                        bookmarkList = webPage_infos;
-                        viewContract.UpdateUI(bookmarkList);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        d.dispose();
-                    }
-                });
-    }
-
-    public List<BookmarkFolderNode> getFolderList(String uuid) {
-        Observable.create((ObservableOnSubscribe<List<BookmarkFolderNode>>) emitter -> {
-            emitter.onNext(sBookmarkfolderDBcontrol.queryFolder(uuid, true));
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<BookmarkFolderNode>>() {
-                    private Disposable d;
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        this.d = d;
-                    }
-
-                    @Override
-                    public void onNext(List<BookmarkFolderNode> bookmarkFolders) {
-                        for (WebPage_Info in : bookmarkFolders) {
-                            LogUtil.d(TAG, "rxjava拿到的数据uuid:" + in.getUuid());
+                        if (containBookmark) {
+                            bookmarkList = webPage_infos;
+                            viewContract.updateUI(bookmarkList);
+                        } else {
+                            bookmarkFolderList = webPage_infos;
+                            viewContract.updateUI(bookmarkFolderList);
                         }
-                        bookmarkFolderList = bookmarkFolders;
-                        viewContract.UpdateUI(bookmarkList);
                     }
 
                     @Override
@@ -147,9 +149,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
                         d.dispose();
                     }
                 });
-        return getBookmarkFolderList();
     }
-
 
     /**
      * @param name       将要创建的文件夹名称
@@ -157,23 +157,26 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      * @return 返回创建并插入数据库的文件夹node
      */
     public BookmarkFolderNode createFolder(@NotNull String name, @NotNull String parentUUID) {
-        final BookmarkFolderNode[] node = {null};
+        WebPage_Info folderInfo = new BookmarkFolderNode(name, UUID.randomUUID().toString(), parentUUID);
+        bookmarkList.add(folderInfo);
+        viewContract.updateUI(bookmarkList);
+
         Observable.fromCallable(new Callable<BookmarkFolderNode>() {
 
             @Override
             public BookmarkFolderNode call() throws Exception {
-                return sBookmarkfolderDBcontrol.insertNode(new BookmarkFolderNode(name, UUID.randomUUID().toString(), parentUUID));
+                return sBookmarkfolderDBcontrol.insertNode((BookmarkFolderNode) folderInfo);
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<BookmarkFolderNode>() {
                     @Override
                     public void accept(BookmarkFolderNode bookmarkFolderNode) throws Exception {
-                        node[0] = bookmarkFolderNode;
+
                     }
                 });
-        return node[0];
 
+        return (BookmarkFolderNode) folderInfo;
     }
 
     /**
@@ -183,6 +186,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      *                       false则将该文件夹下的书签迁移到根目录
      */
     public void deleteFolder(@NotNull String uuid, boolean deleteBookmark) {
+
         Observable.fromCallable(new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -287,7 +291,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     /**
      * @return 返回已经拿到的书签文件夹列表信息，此列表只包含书签文件夹
      */
-    public List<BookmarkFolderNode> getBookmarkFolderList() {
+    public List<WebPage_Info> getBookmarkFolderList() {
         return bookmarkFolderList;
     }
 

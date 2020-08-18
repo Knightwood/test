@@ -52,35 +52,34 @@
         android:id="@+id/folder"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/tag"
         android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/layout_edit_url"
         app:layout_constraintTop_toBottomOf="@+id/layout_edit_url" />
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/tag_add"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/bookmarkFolderView"
+        style="@style/Widget.MaterialComponents.TextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/new_a_tag"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:hint="@string/editBookmarkFolderName"
+        android:textSize="16sp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/layout_edit_url"
+        app:layout_constraintStart_toStartOf="@+id/folder"
         app:layout_constraintTop_toBottomOf="@+id/folder" />
 
-    <Spinner
-        android:id="@+id/select_Tags"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:spinnerMode="dropdown"
-        app:layout_constraintBottom_toBottomOf="@+id/tag_add"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/tag_add"
-        app:layout_constraintTop_toTopOf="@+id/tag_add" />
+    <Button
+        android:id="@+id/saveBookmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/save"
+        app:layout_constraintEnd_toEndOf="@+id/bookmarkFolderView"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkFolderView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.fragments.dialogfragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -22,6 +22,7 @@ import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 
 /**
  * 编辑书签文件夹时，打开这个对话框。

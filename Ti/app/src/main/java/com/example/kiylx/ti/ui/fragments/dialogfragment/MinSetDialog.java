@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.fragments.dialogfragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +28,6 @@ import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.model.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
-import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.model.WebPage_Info;

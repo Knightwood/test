@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments;
+package com.example.kiylx.ti.ui.fragments.dialogfragment;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -17,8 +17,7 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.interfaces.Setmessage;
 import com.example.kiylx.ti.db.searchenginedb.SearchEngineDao;
 import com.example.kiylx.ti.db.searchenginedb.SearchEngine_db_Util;
-
-import java.util.Objects;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 /**
  * @创建者 kiylx
@@ -30,8 +29,8 @@ public class EditText_Dialog extends DialogFragment {
     private static final String BUNDLE_PARAM1 = "param1";
 
     private EditText view1;//编辑框
-    String oldString;
-    private Setmessage mInterface;//用于执行某些操作，比如点击确定后的更新界面
+    private String oldString;
+    private static Setmessage mInterface;//用于执行某些操作，比如点击确定后的更新界面
 
 
     public static EditText_Dialog getInstance(String s){
@@ -79,12 +78,12 @@ public class EditText_Dialog extends DialogFragment {
     /**
      * 0位置存放旧string，1位置存放新string
      */
-    private class MyTask extends AsyncTask<String,Void,Void> {
+    private static class MyTask extends AsyncTask<String,Void,Void> {
         SearchEngineDao dao;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dao= SearchEngine_db_Util.getDao(getContext());
+            dao= SearchEngine_db_Util.getDao(Xapplication.getInstance());
         }
 
         @Override
@@ -100,7 +99,7 @@ public class EditText_Dialog extends DialogFragment {
         }
     }
     public void setInterface(Setmessage mInterface){
-        this.mInterface=mInterface;
+        EditText_Dialog.mInterface =mInterface;
     }
 
     @Override

@@ -146,4 +146,6 @@
     <string name="jsManager">JS管理器</string>
     <string name="name">名称</string>
     <string name="edit">键入文本</string>
+    <string name="complete">完成</string>
+    <string name="save">保存</string>
 </resources>

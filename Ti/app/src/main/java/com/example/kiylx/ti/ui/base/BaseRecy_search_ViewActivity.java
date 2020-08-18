@@ -1,9 +1,11 @@
 package com.example.kiylx.ti.ui.base;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
@@ -18,6 +20,7 @@ import com.example.kiylx.ti.R;
  * recyclerview: histories_recyclerView
  */
 public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
+    protected ConstraintLayout layout;
     protected SearchView searchView;
 
     @Override
@@ -41,7 +44,7 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        ListenItem(item);//让子类监听menuItem项
+        ListenItemClick(item);//让子类监听menuItem项
         return super.onOptionsItemSelected(item);
     }
 
@@ -56,11 +59,23 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
      * @param item 此activity中的menu中的item。
      *             此方法提供子类监听item使用
      */
-    protected void ListenItem(MenuItem item) {
+    protected void ListenItemClick(MenuItem item) {
     }
 
     /**
      * @param searchView 允许子activity对searchview进行调整和控制
      */
     protected abstract void searchControl(SearchView searchView);
+
+    protected void addSomeView(View v) {
+        getRootView();
+        layout.addView(v);
+    }
+
+    protected ConstraintLayout getRootView() {
+        if (layout == null) {
+            layout = findViewById(R.id.base_rec_root);
+        }
+        return layout;
+    }
 }

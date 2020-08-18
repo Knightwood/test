@@ -26,13 +26,10 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
-import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
-import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
 import com.example.kiylx.ti.tool.LogUtil;
-import com.example.kiylx.ti.ui.base.BaseActivity;
-import com.example.kiylx.ti.ui.fragments.DeleteBookmarkFolder_Dialog;
-import com.example.kiylx.ti.ui.fragments.Bookmark_Dialog;
-import com.example.kiylx.ti.ui.fragments.EditBookmarkFolder_Dialog;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.DeleteBookmarkFolder_Dialog;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.Bookmark_Dialog;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
