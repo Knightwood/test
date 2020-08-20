@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import io.reactivex.schedulers.Schedulers;
 public class BookmarkDBcontrol {
     private static BookmarkDBcontrol bookmarkDBcontrol;
     private SQLiteDatabase mDatabase;
+    private SimpleThreadPool simpleThreadPool;
 
 
     public static BookmarkDBcontrol get(Context context) {
@@ -39,43 +41,21 @@ public class BookmarkDBcontrol {
 
     private BookmarkDBcontrol(Context context) {
         mDatabase = new FavoritePageBaseHelper(context).getWritableDatabase();
+        simpleThreadPool=SimpleThreadPool.getInstance();
     }
 
     /**
      * @param info 即将插入数据库的书签信息
-     *             将书签信息插入数据库
+     *             将书签信息插入数据库,使用子线程处理
      */
     public void insertBookmark(WebPage_Info info) {
-        Observable.create(new ObservableOnSubscribe<WebPage_Info>() {
+        simpleThreadPool.getExecutorService().execute(new Runnable() {
             @Override
-            public void subscribe(ObservableEmitter<WebPage_Info> emitter) throws Exception {
+            public void run() {
                 Insert(info);
-                emitter.onComplete();
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<WebPage_Info>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(WebPage_Info webPage_info) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        });
     }
-
 
     public void Insert(WebPage_Info info) {
         if (info == null || info.getUrl() == null) {

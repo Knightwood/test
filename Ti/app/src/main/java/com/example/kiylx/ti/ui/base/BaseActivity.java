@@ -16,9 +16,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
 import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 import java.util.List;
 
@@ -196,4 +199,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         startActivity(i);
     }
 
+    @Override
+    public void saveBookmark(WebPage_Info info) {
+        BookmarkDBcontrol.get(Xapplication.getInstance()).insertBookmark(info);
+    }
 }

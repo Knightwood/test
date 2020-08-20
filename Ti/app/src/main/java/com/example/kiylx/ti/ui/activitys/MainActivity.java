@@ -38,6 +38,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
@@ -807,11 +808,10 @@ private static ControlWebView controlInterface;
 
         @Override
         public void addtobookmark(String url) {
-            /*FragmentManager fm = getSupportFragmentManager();
+            saveBookmark(new WebPage_Info.Builder(url).build());
             //把当前网页信息传给收藏dialog
-            EditBookmarkActivity dialog = EditBookmarkActivity.newInstance( mConverted_lists.getInfo(current),null);
-            dialog.show(fm, "收藏当前网页");*/
-
+           /* Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).build(), MainActivity.this, null);
+            startActivity(i);*/
         }
 
         @Override

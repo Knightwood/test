@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.util.Log;
 import android.widget.SearchView;
 
@@ -57,14 +58,11 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
         });
         model.query("");
         recyclerView.setAdapter(adapter);
-        setToolbarTitle("历史记录",null);
+        setToolbarTitle("历史记录", null);
     }
 
     /**
-     * @param searchView
-     *
-     *     搜索历史记录
-     *
+     * @param searchView 搜索历史记录
      */
     @Override
     protected void searchControl(SearchView searchView) {
@@ -112,9 +110,8 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
     }
 
     public void addToBookMark(String url) {
-        FragmentManager fm = getSupportFragmentManager();
         //把当前网页信息传给收藏dialog
-        EditBookmarkActivity dialog = EditBookmarkActivity.newInstance( new WebPage_Info.Builder(url).build(),null);
-        dialog.show(fm, "收藏当前网页");
+        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).build(), this, null);
+        startActivity(i);
     }
 }

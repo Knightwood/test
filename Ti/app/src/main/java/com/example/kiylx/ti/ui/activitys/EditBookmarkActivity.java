@@ -12,11 +12,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseActivity;
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 import java.util.UUID;
 
@@ -71,6 +74,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void initActivity(BaseLifecycleObserver observer) {
+        mDataBase= BookmarkDBcontrol.get(Xapplication.getInstance());
         intent = getIntent();
         beBookmarked_info = new WebPage_Info.Builder(intent.getStringExtra("url"))
                 .title(intent.getStringExtra("title"))
@@ -101,6 +105,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
             LogUtil.d(TAG, "onClick: uuid不是null，所以更新数据库");
             mDataBase.update(beBookmarked_info);
         }
+        setResult(Activity.RESULT_OK);
     }
 
     /**
@@ -120,7 +125,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == 31) {
+            if (requestCode == ActivityCode.selectBookmarkFolder) {
                 if (data != null) {
                     this.folderName = data.getStringExtra("FolderName");
                     setMassage();
@@ -135,7 +140,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
     private void selectFolder() {
         Intent intent = new Intent(this, BookmarkManagerActivity.class);
         intent.putExtra("isShowBookmarks", false);
-        startActivityForResult(intent, 31);
+        startActivityForResult(intent, ActivityCode.selectBookmarkFolder);
     }
 
     @Override

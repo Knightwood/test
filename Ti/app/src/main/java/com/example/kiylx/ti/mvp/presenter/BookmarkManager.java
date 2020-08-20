@@ -42,6 +42,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
 
     private Stack<String> backStack;//记录点击的文件夹层级，便于回退到上一级目录
     private String currentPath;//当前文件夹层级
+
     private List<WebPage_Info> bookmarkList;
     private List<WebPage_Info> bookmarkFolderList;
     //DataBase
@@ -63,7 +64,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         super((BookmarkActivityContract) view);
         sBookmarkDBcontrol = BookmarkDBcontrol.get(context);
         sBookmarkfolderDBcontrol = BookmarkfolderDBcontrol.get(context);
-        currentPath = SomeRes.defaultBookmarkFolderUUID;
+        currentPath = DefaultBookmarkFolder.uuid;
     }
 
     /**
@@ -92,7 +93,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      */
     public String getUpperLevel() {
         if (backStack == null || backStack.empty()) {
-            currentPath = SomeRes.defaultBookmarkFolderUUID;
+            currentPath = BookmarkManager.DefaultBookmarkFolder.uuid;
         } else {
             currentPath = backStack.pop();
         }
@@ -105,6 +106,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      *                        从数据库读取当前文件夹的子文件夹和书签记录，放在同一个list中，并更新界面
      */
     public void getIndex(@NotNull String uuid, boolean containBookmark) {
+        /*getAll(containBookmark, uuid)*/
         Observable.create((ObservableOnSubscribe<List<WebPage_Info>>) emitter -> {
 
             List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
@@ -116,6 +118,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
             emitter.onNext(result);
             emitter.onComplete();
         }).subscribeOn(Schedulers.io())
+
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<WebPage_Info>>() {
                     private Disposable d;
@@ -149,6 +152,20 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
                         d.dispose();
                     }
                 });
+    }
+
+    private Observable<List<WebPage_Info>> getAll(boolean containBookmark, String uuid) {
+        return Observable.create((ObservableOnSubscribe<List<WebPage_Info>>) emitter -> {
+
+            List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
+            List<WebPage_Info> result = new ArrayList<>();
+            result.addAll(folders);
+            if (containBookmark) {
+                result.addAll(sBookmarkDBcontrol.queryBookmarks(uuid));
+            }
+            emitter.onNext(result);
+            emitter.onComplete();
+        }).subscribeOn(Schedulers.io());
     }
 
     /**
@@ -193,7 +210,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
                 sBookmarkfolderDBcontrol.deleteFolder(uuid);
                 sBookmarkDBcontrol.delete(uuid, deleteBookmark);
                 if (!deleteBookmark) {
-                    sBookmarkDBcontrol.updateFolderUUID(uuid, SomeRes.defaultBookmarkFolderUUID);
+                    sBookmarkDBcontrol.updateFolderUUID(uuid, BookmarkManager.DefaultBookmarkFolder.uuid);
                 }
                 return uuid;
             }
@@ -205,6 +222,10 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
                         LogUtil.d(TAG, "删除的文件夹：" + s);
                     }
                 });
+    }
+
+    public void deleteBookmark(String uuid) {
+
     }
 
     public void changeFolderName(@NotNull String uuid, @NotNull String newName) {
@@ -292,7 +313,60 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      * @return 返回已经拿到的书签文件夹列表信息，此列表只包含书签文件夹
      */
     public List<WebPage_Info> getBookmarkFolderList() {
+        if (bookmarkFolderList == null) {
+            getAll(false, BookmarkManager.DefaultBookmarkFolder.uuid)
+                    .subscribe(new Observer<List<WebPage_Info>>() {
+                        private Disposable d;
+
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            this.d = d;
+                        }
+
+                        @Override
+                        public void onNext(List<WebPage_Info> webPage_infos) {
+                            bookmarkFolderList = webPage_infos;
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            d.dispose();
+                        }
+                    });
+        }
+        if (bookmarkFolderList.isEmpty()) {
+
+        }
         return bookmarkFolderList;
     }
 
+    /**
+     * @param uuid 文件夹的uuid
+     * @return 返回该uuid文件夹的名称
+     */
+    public String queryFolderName(String uuid) {
+        if (bookmarkFolderList == null || bookmarkFolderList.isEmpty()) {
+            getBookmarkFolderList();
+        }
+        for (WebPage_Info info : bookmarkFolderList) {
+            if (((BookmarkFolderNode) info).getUUID().equals(uuid)) {
+                return ((BookmarkFolderNode) info).getFolderName();
+            }
+        }
+        return " ";
+    }
+
+    /**
+     * 定义默认的书签的根目录
+     */
+    public static class DefaultBookmarkFolder {
+        public static final String folderName = "默认文件夹";
+        public static final String uuid = "siefwyrwrklfhiwGFQD";
+        public static final String parentUUID = null;
+    }
 }

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.kiylx.ti.model.WebPage_Info;
+
 import java.util.List;
 
 /**
@@ -44,6 +46,8 @@ public interface BaseContract {
         void showLoginPage();
 
         void share(String s);
+
+        void saveBookmark(WebPage_Info info);
 
     }
 

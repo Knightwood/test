@@ -28,7 +28,6 @@ public class SomeRes {
     public static String pcMode="pc_mode";//请求桌面版网页的preference的key
     public static String canRecordHistory="record_history";//是否可以记录历史
     public static String rootPath= Environment.getExternalStorageDirectory().getPath();
-    public static String defaultBookmarkFolderUUID= "abcdefg";//UUID.randomUUID().toString();
 
 //默认的搜索引擎
     public static String baidu="http://www.baidu.com/s?wd=";

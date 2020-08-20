@@ -4,20 +4,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 
 
+import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crystal.customview.baseadapter1.BaseAdapter;
+import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkListAdapter;
+import com.example.kiylx.ti.conf.ActivityCode;
+import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
@@ -33,10 +38,11 @@ import java.util.UUID;
 
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract {
     private static final String TAG = "BookmarkActivity2";
+    private static OpenOneWebpage mopenWeb;//用于调用mainactivity中的接口
     private BookmarkManager sBookmarkManager;
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
-    private static boolean containBookmarks=true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
+    private static boolean containBookmarks = true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
 
 
     @Override
@@ -50,15 +56,13 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     protected void initActivity(BaseLifecycleObserver observer) {
         sBookmarkManager = BookmarkManager.getInstance(Xapplication.getInstance(), this);
         setToolbarTitle("收藏夹", null);
-        if (getIntent() != null){
+        if (getIntent() != null) {
             containBookmarks = getIntent().getBooleanExtra("isShowBookmarks", true);
             if (!containBookmarks) {
                 addButtonView();
             }
         }
-
-        //initTest();
-
+//initTest();
     }
 
     @Override
@@ -71,13 +75,18 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         adapter = new BookmarkListAdapter(null);
         recyclerView.setAdapter(adapter);
 
-        if (sBookmarkManager.getBookmarkList() == null) {
+        if (sBookmarkManager.getBookmarkList() == null || sBookmarkManager.getBookmarkList().isEmpty()) {
             //从manager中拿数据，若是数据是null，那就从数据库里读取在更新界面，否则直接用数据更新界面
             //若是我每次都用getIndex()方法从数据库拿数据来更新界面，在第二次打开activity时就会什么也不显示，但明明已经拿到了数据，我猜测可能与线程调度与activity的生命周期有问题
-            sBookmarkManager.getIndex(SomeRes.defaultBookmarkFolderUUID, containBookmarks);
+            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, containBookmarks);
         } else {
             updateUI(sBookmarkManager.getBookmarkList());
         }
+        /*updateUI(testList);*/
+    }
+
+    public static void setInterface(OpenOneWebpage minterface) {
+        BookmarkManagerActivity.mopenWeb = minterface;
     }
 
     /**
@@ -97,12 +106,12 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
 
             recyclerView.setAdapter(adapter);
         } else {
-           /* List<WebPage_Info> oldData = adapter.getData();
+            List<WebPage_Info> oldData = adapter.getData();
             adapter.setData(folderAndBookmark);
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData, folderAndBookmark));
-            diffResult.dispatchUpdatesTo(adapter);*/
-            adapter.setData(folderAndBookmark);
-            adapter.notifyDataSetChanged();
+            diffResult.dispatchUpdatesTo(adapter);
+            /*adapter.setData(folderAndBookmark);
+            adapter.notifyDataSetChanged();*/
         }
         for (WebPage_Info info : folderAndBookmark) {
             LogUtil.d(TAG, "开始更新界面，接收到的数据： " + info.getUuid());
@@ -126,13 +135,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
-                sBookmarkManager.createFolder("xnnnn", SomeRes.defaultBookmarkFolderUUID);
-                WebPage_Info info = new WebPage_Info.Builder("www.baidu.com")
-                        .title("测试")
-                        .uuid(UUID.randomUUID().toString())
-                        .bookmarkFolderUUID(SomeRes.defaultBookmarkFolderUUID)
-                        .build();
-                sBookmarkManager.insertBookmark(info);
+
                 break;
         }
     }
@@ -143,12 +146,12 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         WebPage_Info info = new WebPage_Info.Builder("www.baidu.com")
                 .title("测试")
                 .uuid(UUID.randomUUID().toString())
-                .bookmarkFolderUUID(SomeRes.defaultBookmarkFolderUUID)
+                .bookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid)
                 .build();
         WebPage_Info info2 = new WebPage_Info.Builder("www.baidu.com")
                 .title("测试")
                 .uuid(UUID.randomUUID().toString())
-                .bookmarkFolderUUID(SomeRes.defaultBookmarkFolderUUID)
+                .bookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid)
                 .build();
         if (testList == null) {
             testList = new ArrayList<>();
@@ -235,11 +238,123 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
-                intent.putExtra("FolderName",sBookmarkManager.getUpperLevel());
-                setResult(Activity.RESULT_OK,intent);
+                intent.putExtra("FolderName", sBookmarkManager.queryFolderName(sBookmarkManager.getUpperLevel()));
+                setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == ActivityCode.editBookmarkCode) {
+                //updateUI();
+            }
+        }
+    }
+
+    public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<WebPage_Info>> {
+        public BookmarkListAdapter(List<WebPage_Info> list) {
+            super(list);
+        }
+
+        @Override
+        protected int getItemViewResId(int viewType) {
+            switch (viewType) {
+                case BookmarkKind.folder:
+                    break;
+                case BookmarkKind.bookmark:
+                    break;
+            }
+            return R.layout.history_item;
+        }
+
+        @Override
+        public int getViewType(WebPage_Info bean) {
+            return bean.getWEB_feature() == -2 ? BookmarkKind.folder : BookmarkKind.bookmark;
+        }
+
+        @Override
+        public BaseHolder<WebPage_Info> createHolder(View itemView, int viewType) {
+            return new BaseHolder<>(itemView);
+        }
+
+        @Override
+        public void bind(BaseHolder<WebPage_Info> holder, WebPage_Info data, int viewType) {
+            switch (viewType) {
+                case BookmarkKind.folder:
+                    holder.setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp)
+                            .setText(R.id.itemTitle, data.getTitle())
+                            .setImageResource(R.id.more_setting, R.drawable.chevronright);
+
+                    holder.setOnIntemClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    }, data);
+                    break;
+                case BookmarkKind.bookmark:
+                    holder.setImageResource(R.id.Bookmarkimage, R.drawable.ic_bookmark_black_24dp)
+                            .setText(R.id.itemTitle, data.getTitle())
+                            .setText(R.id.itemurl, data.getUrl())
+                            .setImageResource(R.id.more_setting, R.drawable.morevert);
+                    holder.setOnIntemClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            switch (v.getId()) {
+                                case R.id.itemTitle:
+                                    //点击item后访问网址
+                                    finish();
+                                    mopenWeb.loadUrl(data.getUrl(), false);
+                                    break;
+                                case R.id.more_setting:
+                                    addPopMenu(v, data);
+                                    break;
+                            }
+                        }
+                    }, data);
+                    break;
+            }
+
+        }
+
+        /**
+         * @param v    要添加popmenu的视图
+         * @param info info
+         */
+        void addPopMenu(View v, WebPage_Info info) {
+            PopupMenu popupMenu = new PopupMenu(BookmarkManagerActivity.this, v);
+            MenuInflater menuInflater = popupMenu.getMenuInflater();
+            menuInflater.inflate(R.menu.bookmark_item_options, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.edit_Bookmark:
+                            Intent i = EditBookmarkActivity.newInstance(info, getApplicationContext(), sBookmarkManager.queryFolderName(info.getBookmarkFolderUUID()));
+                            startActivityForResult(i, ActivityCode.editBookmarkCode);
+                            break;
+                        case R.id.delete_Bookmark:
+                            sBookmarkManager.deleteBookmark(info.getUuid());
+                            break;
+                        case R.id.openPageinNewWindow:
+                            finish();
+                            //因为mainactivity里加载网页代码太烂，这里写true用新标签页打开会有bug
+                            mopenWeb.loadUrl(info.getUrl(), true);
+                    }
+                    return false;
+                }
+            });
+            popupMenu.show();
+
+        }
+
+        class BookmarkKind {
+            public static final int folder = 1;
+            public static final int bookmark = 2;
+        }
+    }
 }
