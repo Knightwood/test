@@ -808,7 +808,7 @@ private static ControlWebView controlInterface;
 
         @Override
         public void addtobookmark(String url) {
-            saveBookmark(new WebPage_Info.Builder(url).build());
+            saveBookmark(new WebPage_Info.Builder(url).title("测试").build());
             //把当前网页信息传给收藏dialog
            /* Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).build(), MainActivity.this, null);
             startActivity(i);*/

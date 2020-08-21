@@ -93,13 +93,13 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
 
         @Override
         public void After(String url, boolean closeActivity, HistoryListAdapter.Action action) {
+            if (sOpenOneWebpage==null){
+                return;
+            }
             switch (action) {
                 case JUSTOPEN:
                     sOpenOneWebpage.loadUrl(url, false);
                     finish();
-                    break;
-                case ADDTOBOOKMARK:
-                    addToBookMark(url);
                     break;
                 case OPENINNEWWINDOW:
                     sOpenOneWebpage.loadUrl(url, true);
@@ -107,11 +107,18 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
                     break;
             }
         }
+
+        @Override
+        public void After(String url, String title, boolean b, HistoryListAdapter.Action action) {
+            if (action == HistoryListAdapter.Action.ADDTOBOOKMARK) {
+                addToBookMark(url, title);
+            }
+        }
     }
 
-    public void addToBookMark(String url) {
+    public void addToBookMark(String url,String title) {
         //把当前网页信息传给收藏dialog
-        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).build(), this, null);
+        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).title(title).build(), this, null);
         startActivity(i);
     }
 }

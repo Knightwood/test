@@ -1,9 +1,9 @@
 package com.example.kiylx.ti.mvp.presenter;
 
 import android.content.Context;
+import android.os.Handler;
 
 
-import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkfolderDBcontrol;
 import com.example.kiylx.ti.model.BookmarkFolderNode;
@@ -12,6 +12,7 @@ import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
 import com.example.kiylx.ti.mvp.presenter.base.BasePresenter;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,11 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -39,6 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     private static final String TAG = "BookmarkManager";
     private static volatile BookmarkManager sBookmarkManager;
+    private final Handler handler;
 
     private Stack<String> backStack;//记录点击的文件夹层级，便于回退到上一级目录
     private String currentPath;//当前文件夹层级
@@ -49,22 +47,33 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     private BookmarkDBcontrol sBookmarkDBcontrol;
     private BookmarkfolderDBcontrol sBookmarkfolderDBcontrol;
 
-    public static BookmarkManager getInstance(Context context, BaseContract.View view) {
+    //threadpool
+    private SimpleThreadPool threadPool;
+
+    public static BookmarkManager getInstance(Context context, BaseContract.View view, Handler handler) {
         if (sBookmarkManager == null) {
             synchronized (BookmarkManager.class) {
                 if (sBookmarkManager == null) {
-                    sBookmarkManager = new BookmarkManager(context, view);
+                    sBookmarkManager = new BookmarkManager(context, view, handler);
                 }
             }
         }
         return sBookmarkManager;
     }
 
-    private BookmarkManager(Context context, BaseContract.View view) {
+    private BookmarkManager(Context context, BaseContract.View view, Handler handler) {
         super((BookmarkActivityContract) view);
+        //初始化数据库控制
         sBookmarkDBcontrol = BookmarkDBcontrol.get(context);
         sBookmarkfolderDBcontrol = BookmarkfolderDBcontrol.get(context);
+
         currentPath = DefaultBookmarkFolder.uuid;
+        this.handler = handler;
+        threadPool = SimpleThreadPool.getInstance();
+
+        //初始化书签及文件夹list和文件夹list
+        getIndex(DefaultBookmarkFolder.uuid, false);
+        getBookmarkFolderList(DefaultBookmarkFolder.uuid, false);
     }
 
     /**
@@ -73,7 +82,11 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      * @param containBookmark 最终的结果是否包含书签记录
      */
     public void back(boolean containBookmark) {
-        getIndex(getUpperLevel(), containBookmark);
+        if (containBookmark) {
+            getIndex(getUpperLevel(), true);
+        } else {
+            getBookmarkFolderList(getUpperLevel(), true);
+        }
     }
 
     /**
@@ -84,7 +97,10 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     public void clickPath(String uuid, boolean containBookmark) {
         backStack.push(currentPath);
         currentPath = uuid;
-        getIndex(uuid, containBookmark);
+        if (containBookmark)
+            getIndex(uuid, true);
+        else
+            getBookmarkFolderList(uuid, true);
 
     }
 
@@ -101,99 +117,43 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     }
 
     /**
-     * @param uuid            当前文件夹的uuid
-     * @param containBookmark 是否获取的list中包含书签记录。
-     *                        从数据库读取当前文件夹的子文件夹和书签记录，放在同一个list中，并更新界面
+     * @param uuid 当前文件夹的uuid
+     *             从数据库读取当前文件夹的子文件夹和书签记录，放在同一个list中，并更新界面
+     * @param b true则触发更新界面，false则不做更新界面处理
      */
-    public void getIndex(@NotNull String uuid, boolean containBookmark) {
-        /*getAll(containBookmark, uuid)*/
-        Observable.create((ObservableOnSubscribe<List<WebPage_Info>>) emitter -> {
-
-            List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
-            List<WebPage_Info> result = new ArrayList<>();
-            result.addAll(folders);
-            if (containBookmark) {
+    public void getIndex(@NotNull String uuid, boolean b) {
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
+                List<WebPage_Info> result = new ArrayList<>(folders);
                 result.addAll(sBookmarkDBcontrol.queryBookmarks(uuid));
+                bookmarkList = result;
+                if (b) {
+                    handler.sendEmptyMessage(HandlerMsg.updateUI_bookmark_folder);
+                }
+
             }
-            emitter.onNext(result);
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io())
-
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<WebPage_Info>>() {
-                    private Disposable d;
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        this.d = d;
-                    }
-
-                    @Override
-                    public void onNext(List<WebPage_Info> webPage_infos) {
-                        for (WebPage_Info in : webPage_infos) {
-                            LogUtil.d(TAG, "rxjava拿到的数据uuid:" + in.getUuid());
-                        }
-                        if (containBookmark) {
-                            bookmarkList = webPage_infos;
-                            viewContract.updateUI(bookmarkList);
-                        } else {
-                            bookmarkFolderList = webPage_infos;
-                            viewContract.updateUI(bookmarkFolderList);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        d.dispose();
-                    }
-                });
-    }
-
-    private Observable<List<WebPage_Info>> getAll(boolean containBookmark, String uuid) {
-        return Observable.create((ObservableOnSubscribe<List<WebPage_Info>>) emitter -> {
-
-            List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
-            List<WebPage_Info> result = new ArrayList<>();
-            result.addAll(folders);
-            if (containBookmark) {
-                result.addAll(sBookmarkDBcontrol.queryBookmarks(uuid));
-            }
-            emitter.onNext(result);
-            emitter.onComplete();
-        }).subscribeOn(Schedulers.io());
+        });
     }
 
     /**
      * @param name       将要创建的文件夹名称
      * @param parentUUID 文件夹所属的父级文件夹
-     * @return 返回创建并插入数据库的文件夹node
      */
-    public BookmarkFolderNode createFolder(@NotNull String name, @NotNull String parentUUID) {
+    public void createFolder(@NotNull String name, @NotNull String parentUUID) {
         WebPage_Info folderInfo = new BookmarkFolderNode(name, UUID.randomUUID().toString(), parentUUID);
         bookmarkList.add(folderInfo);
-        viewContract.updateUI(bookmarkList);
+        bookmarkFolderList.add(folderInfo);
 
-        Observable.fromCallable(new Callable<BookmarkFolderNode>() {
+        viewContract.updateUI();
 
+        threadPool.getExecutorService().execute(new Runnable() {
             @Override
-            public BookmarkFolderNode call() throws Exception {
-                return sBookmarkfolderDBcontrol.insertNode((BookmarkFolderNode) folderInfo);
+            public void run() {
+                sBookmarkfolderDBcontrol.insertNode((BookmarkFolderNode) folderInfo);
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<BookmarkFolderNode>() {
-                    @Override
-                    public void accept(BookmarkFolderNode bookmarkFolderNode) throws Exception {
-
-                    }
-                });
-
-        return (BookmarkFolderNode) folderInfo;
+        });
     }
 
     /**
@@ -203,46 +163,73 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      *                       false则将该文件夹下的书签迁移到根目录
      */
     public void deleteFolder(@NotNull String uuid, boolean deleteBookmark) {
-
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                sBookmarkfolderDBcontrol.deleteFolder(uuid);
-                sBookmarkDBcontrol.delete(uuid, deleteBookmark);
-                if (!deleteBookmark) {
-                    sBookmarkDBcontrol.updateFolderUUID(uuid, BookmarkManager.DefaultBookmarkFolder.uuid);
-                }
-                return uuid;
+        for (WebPage_Info info : bookmarkList) {
+            if (info.getUuid().equals(uuid)) {
+                bookmarkList.remove(info);
+                bookmarkFolderList.remove(info);
+                break;
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        LogUtil.d(TAG, "删除的文件夹：" + s);
+            viewContract.updateUI();
+
+            threadPool.getExecutorService().execute(new Runnable() {
+                @Override
+                public void run() {
+                    sBookmarkfolderDBcontrol.deleteFolder(uuid);
+                    sBookmarkDBcontrol.delete(uuid, deleteBookmark);
+                    if (!deleteBookmark) {
+                        sBookmarkDBcontrol.updateFolderUUID(uuid, DefaultBookmarkFolder.uuid);
                     }
-                });
+                }
+            });
+
+        }
     }
 
+    /**
+     * @param uuid 待删除书签的uuid
+     *             根据uuid删除数据库中的书签
+     */
     public void deleteBookmark(String uuid) {
+        int i = 0;
+        while (i < bookmarkList.size()) {
+            if (bookmarkList.get(i).getUuid().equals(uuid)) {
+                bookmarkList.remove(i);
+                break;
+            }
+            i++;
+        }
+        viewContract.updateUI();
 
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                sBookmarkDBcontrol.delete(uuid, false);
+            }
+        });
     }
 
     public void changeFolderName(@NotNull String uuid, @NotNull String newName) {
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                sBookmarkfolderDBcontrol.updateFolderName(uuid, newName);
-                return uuid;
+        int i = 0;
+        WebPage_Info info;
+        while (i < bookmarkList.size()) {
+            info = bookmarkList.get(i);
+            if (info.getUuid().equals(uuid)) {
+                info.setTitle(newName);
+                break;
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        LogUtil.d(TAG, "被修改名称的文件夹uuid：" + s);
-                    }
-                });
+            i++;
+        }
+
+
+
+        viewContract.updateUI();
+
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                sBookmarkfolderDBcontrol.updateFolderName(uuid, newName);
+            }
+        });
     }
 
     /**
@@ -250,20 +237,25 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      * @param newParentUuid 将文件夹迁移到另一个的文件夹下，这是另一个文件夹的uuid
      */
     public void changeFolderLevel(@NotNull String uuid, @NotNull String newParentUuid) {
-        Observable.fromCallable(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                sBookmarkfolderDBcontrol.updateFolderParentuuid(uuid, newParentUuid);
-                return uuid;
+        int i = 0;
+        WebPage_Info info;
+        while (i < bookmarkList.size()) {
+            info = bookmarkList.get(i);
+            if (info.getUuid().equals(uuid)) {
+               bookmarkList.remove(info);
+                break;
             }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String s) throws Exception {
-                        LogUtil.d(TAG, "被修改层级的文件夹uuid：" + s);
-                    }
-                });
+            i++;
+        }
+        viewContract.updateUI();
+
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                sBookmarkfolderDBcontrol.updateFolderParentuuid(uuid, newParentUuid);
+                LogUtil.d(TAG, "被修改层级的文件夹uuid：" );
+            }
+        });
     }
 
 
@@ -272,34 +264,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      *             将书签信息插入数据库
      */
     public void insertBookmark(WebPage_Info info) {
-        Observable.create(new ObservableOnSubscribe<WebPage_Info>() {
-            @Override
-            public void subscribe(ObservableEmitter<WebPage_Info> emitter) throws Exception {
-                sBookmarkDBcontrol.Insert(info);
-                emitter.onComplete();
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<WebPage_Info>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(WebPage_Info webPage_info) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        sBookmarkDBcontrol.insertBookmark(info);
     }
 
     /**
@@ -312,36 +277,20 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     /**
      * @return 返回已经拿到的书签文件夹列表信息，此列表只包含书签文件夹
      */
-    public List<WebPage_Info> getBookmarkFolderList() {
-        if (bookmarkFolderList == null) {
-            getAll(false, BookmarkManager.DefaultBookmarkFolder.uuid)
-                    .subscribe(new Observer<List<WebPage_Info>>() {
-                        private Disposable d;
+    public List<WebPage_Info> getBookmarkFolderList(String uuid, boolean b) {
 
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            this.d = d;
-                        }
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
+                List<WebPage_Info> result = new ArrayList<>(folders);
 
-                        @Override
-                        public void onNext(List<WebPage_Info> webPage_infos) {
-                            bookmarkFolderList = webPage_infos;
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            d.dispose();
-                        }
-                    });
-        }
-        if (bookmarkFolderList.isEmpty()) {
-
-        }
+                bookmarkFolderList = result;
+                if (b){
+                    handler.sendEmptyMessage(HandlerMsg.updateUI_folder);
+                }
+            }
+        });
         return bookmarkFolderList;
     }
 
@@ -351,7 +300,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      */
     public String queryFolderName(String uuid) {
         if (bookmarkFolderList == null || bookmarkFolderList.isEmpty()) {
-            getBookmarkFolderList();
+            getBookmarkFolderList(DefaultBookmarkFolder.uuid, false);
         }
         for (WebPage_Info info : bookmarkFolderList) {
             if (((BookmarkFolderNode) info).getUUID().equals(uuid)) {
@@ -368,5 +317,10 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         public static final String folderName = "默认文件夹";
         public static final String uuid = "siefwyrwrklfhiwGFQD";
         public static final String parentUUID = null;
+    }
+
+    public static class HandlerMsg {
+        public static final int updateUI_bookmark_folder = 200;
+        public static final int updateUI_folder = 201;
     }
 }

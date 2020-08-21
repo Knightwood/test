@@ -52,7 +52,7 @@ public class BookmarkfolderDBcontrol {
      * node： uuid和parentUuid
      *
      * @param uuid        文件夹的uuid
-     * @param isFindChild 若是查找此节点（文件夹）的所以子节点(传入true)，那就得传入此节点的parentUuid，查询以parentUuid作为parentuuid的值
+     * @param isFindChild 若是查找此uuid作为父uuid的文件夹：传入true。
      * @return 如果存在，返回list，若是不存在，返回空的list
      */
     public List<BookmarkFolderNode> queryFolder(@NotNull String uuid, boolean isFindChild) {

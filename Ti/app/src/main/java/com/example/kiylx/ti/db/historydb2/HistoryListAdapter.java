@@ -142,7 +142,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
                         break;
                     case R.id.addToBookmark:
                         if (afterClick != null) {
-                            afterClick.After(entity.url, false, Action.ADDTOBOOKMARK);
+                            afterClick.After(entity.url,entity.title, false, Action.ADDTOBOOKMARK);
                         }
                         break;
                 }
@@ -158,6 +158,8 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
      */
     public interface AfterClick {
         void After(String url, boolean closeActivity, Action action);
+
+        void After(String url, String title, boolean b, Action addtobookmark);
     }
 
     public enum Action {

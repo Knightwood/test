@@ -20,10 +20,13 @@ import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
 import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.xapplication.Xapplication;
 
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * 创建者 kiylx
@@ -40,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layoutId());
+
         initView(savedInstanceState);
         initActivity(lifecycleObserver);
         initViewAfter(savedInstanceState);
@@ -201,6 +205,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
 
     @Override
     public void saveBookmark(WebPage_Info info) {
+        info.setBookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid);
+        info.setUuid(UUID.randomUUID());
         BookmarkDBcontrol.get(Xapplication.getInstance()).insertBookmark(info);
     }
 }

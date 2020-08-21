@@ -15,8 +15,8 @@ public interface BookmarkActivityContract extends BaseContract.View {
 
     /**
      * 更新界面
-     * @param folderAndBookmark 包含有文件夹和书签的混合list
+     * 包含有文件夹和书签的混合list
      */
-    void updateUI(List<WebPage_Info> folderAndBookmark);
+    void updateUI();
 
 }

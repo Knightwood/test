@@ -3,6 +3,8 @@ package com.example.kiylx.ti.ui.activitys;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.widget.SearchView;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,9 +35,7 @@ import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract {
     private static final String TAG = "BookmarkActivity2";
@@ -43,18 +44,20 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
     private static boolean containBookmarks = true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
+    private Handler handler;
 
 
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
         recyclerView = findViewById(R.id.base_search_recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     protected void initActivity(BaseLifecycleObserver observer) {
-        sBookmarkManager = BookmarkManager.getInstance(Xapplication.getInstance(), this);
+        createHandler();
+        LogUtil.d(TAG, "触发initActivity()方法");
+        sBookmarkManager = BookmarkManager.getInstance(Xapplication.getInstance(), this, handler);
         setToolbarTitle("收藏夹", null);
         if (getIntent() != null) {
             containBookmarks = getIntent().getBooleanExtra("isShowBookmarks", true);
@@ -62,27 +65,23 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                 addButtonView();
             }
         }
-//initTest();
-    }
-
-    @Override
-    protected void initViewAfter(Bundle savedInstanceState) {
-        super.initViewAfter(savedInstanceState);
         initRecyclerView();
     }
 
+    /**
+     * 初始化recyclerview
+     */
     private void initRecyclerView() {
-        adapter = new BookmarkListAdapter(null);
+        adapter = new BookmarkListAdapter(sBookmarkManager.getBookmarkList());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
-
-        if (sBookmarkManager.getBookmarkList() == null || sBookmarkManager.getBookmarkList().isEmpty()) {
-            //从manager中拿数据，若是数据是null，那就从数据库里读取在更新界面，否则直接用数据更新界面
-            //若是我每次都用getIndex()方法从数据库拿数据来更新界面，在第二次打开activity时就会什么也不显示，但明明已经拿到了数据，我猜测可能与线程调度与activity的生命周期有问题
-            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, containBookmarks);
+        //获取数据
+        if (containBookmarks) {
+            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, false);
         } else {
-            updateUI(sBookmarkManager.getBookmarkList());
+            sBookmarkManager.getBookmarkFolderList(BookmarkManager.DefaultBookmarkFolder.uuid, false);
         }
-        /*updateUI(testList);*/
     }
 
     public static void setInterface(OpenOneWebpage minterface) {
@@ -91,36 +90,50 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
 
     /**
      * 更新界面
-     *
-     * @param folderAndBookmark 包含有文件夹list和书签list的键值对
+     * 包含有文件夹list和书签list的键值对
      */
     @Override
-    public void updateUI(List<WebPage_Info> folderAndBookmark) {
+    public void updateUI() {
         showToast("接收到了更新");
         if (adapter == null) {
-            if (folderAndBookmark == null || folderAndBookmark.isEmpty()) {
-                adapter = new BookmarkListAdapter(new ArrayList<>());
-            } else {
-                adapter = new BookmarkListAdapter(folderAndBookmark);
-            }
-
+            adapter = new BookmarkListAdapter(sBookmarkManager.getBookmarkList());
             recyclerView.setAdapter(adapter);
         } else {
+            /*List<WebPage_Info> newData=sBookmarkManager.getBookmarkList();
             List<WebPage_Info> oldData = adapter.getData();
-            adapter.setData(folderAndBookmark);
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData, folderAndBookmark));
-            diffResult.dispatchUpdatesTo(adapter);
-            /*adapter.setData(folderAndBookmark);
-            adapter.notifyDataSetChanged();*/
+            adapter.setData(newData);
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData,newData));
+            diffResult.dispatchUpdatesTo(adapter);*/
+            adapter.setData(sBookmarkManager.getBookmarkList());
+            adapter.notifyDataSetChanged();
         }
-        for (WebPage_Info info : folderAndBookmark) {
-            LogUtil.d(TAG, "开始更新界面，接收到的数据： " + info.getUuid());
-        }
+        LogUtil.d(TAG, "开始更新界面，接收到的数据： ");
+
 
     }
 
     @Override
     protected void searchControl(SearchView searchView) {
+
+    }
+
+
+    /**
+     * 创建handler处理消息，更新界面
+     */
+    public void createHandler() {
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case BookmarkManager.HandlerMsg.updateUI_bookmark_folder:
+                    case BookmarkManager.HandlerMsg.updateUI_folder:
+                        updateUI();
+                        break;
+                }
+            }
+        };
 
     }
 
@@ -140,26 +153,6 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         }
     }
 
-    List<WebPage_Info> testList;
-
-    public void initTest() {
-        WebPage_Info info = new WebPage_Info.Builder("www.baidu.com")
-                .title("测试")
-                .uuid(UUID.randomUUID().toString())
-                .bookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid)
-                .build();
-        WebPage_Info info2 = new WebPage_Info.Builder("www.baidu.com")
-                .title("测试")
-                .uuid(UUID.randomUUID().toString())
-                .bookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid)
-                .build();
-        if (testList == null) {
-            testList = new ArrayList<>();
-        }
-        testList.add(info);
-        testList.add(info2);
-    }
-
     class BookmarkCallback extends DiffUtil.Callback {
         private List<WebPage_Info> oldData;
         private List<WebPage_Info> newData;
@@ -167,14 +160,6 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         public BookmarkCallback(List<WebPage_Info> oldData, List<WebPage_Info> newData) {
             this.oldData = oldData;
             this.newData = newData;
-            for (WebPage_Info info :
-                    oldData) {
-                LogUtil.d(TAG, "旧数据：" + info.getUuid());
-            }
-            for (WebPage_Info info :
-                    newData) {
-                LogUtil.d(TAG, "新数据：" + info.getUuid());
-            }
         }
 
         @Override
@@ -207,7 +192,6 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             LogUtil.d(TAG, "旧标题：新标题" + oldInfo.getTitle() + " : " + newInfo.getTitle());
             LogUtil.d(TAG, "UUID，旧：新" + oldInfo.getUuid() + " : " + newInfo.getUuid());
             if (!oldInfo.getTitle().equals(newInfo.getTitle())) {//标题比较
-
                 return false;
             }
             if (!oldInfo.getBookmarkFolderUUID().equals(newInfo.getBookmarkFolderUUID())) {//所属的文件夹的uuid比较

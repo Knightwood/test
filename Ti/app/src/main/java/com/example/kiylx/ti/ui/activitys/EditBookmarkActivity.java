@@ -32,9 +32,8 @@ import java.util.UUID;
 public class EditBookmarkActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "添加书签的弹窗";
 
-    private static WebPage_Info beBookmarked_info;
+    private WebPage_Info beBookmarked_info;
     private BookmarkDBcontrol mDataBase;
-    private Intent intent;
 
     //private View view;
     private EditText titleView;
@@ -45,19 +44,20 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
 
 
     /**
-     * @param info 要添加进数据库的网页信息,url,title是必须的，bookmarkFolder可以为null，即将新添加到收藏网页，bookmarkFolder一定是null
+     * @param info       要添加进数据库的网页信息,url,title是必须的，bookmarkFolder可以为null，即将新添加到收藏网页，bookmarkFolder一定是null
+     * @param folderName 该书签所属文件夹的名称。
      * @return bookmark_dialog
      */
-    public static Intent newInstance(WebPage_Info info, Context context, @Nullable String name) {
+    public static Intent newInstance(WebPage_Info info, Context context, @Nullable String folderName) {
         Intent intent = new Intent(context, EditBookmarkActivity.class);
         intent.putExtra("url", info.getUrl());
         intent.putExtra("title", info.getTitle());
         intent.putExtra("uuid", info.getUuid());
         intent.putExtra("parentUUID", info.getBookmarkFolderUUID());
-        if (name == null)
+        if (folderName == null)
             intent.putExtra("FolderName", "默认文件夹");
         else
-            intent.putExtra("FolderName", name);
+            intent.putExtra("FolderName", folderName);
         return intent;
     }
 
@@ -74,14 +74,16 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     protected void initActivity(BaseLifecycleObserver observer) {
-        mDataBase= BookmarkDBcontrol.get(Xapplication.getInstance());
-        intent = getIntent();
-        beBookmarked_info = new WebPage_Info.Builder(intent.getStringExtra("url"))
-                .title(intent.getStringExtra("title"))
-                .uuid(intent.getStringExtra("uuid"))
-                .bookmarkFolderUUID(intent.getStringExtra("parentUUID"))
-                .build();
-        folderName = intent.getStringExtra("FolderName");
+        mDataBase = BookmarkDBcontrol.get(Xapplication.getInstance());
+        Intent intent = getIntent();
+        if (intent != null) {
+            beBookmarked_info = new WebPage_Info.Builder(intent.getStringExtra("url"))
+                    .title(intent.getStringExtra("title"))
+                    .uuid(intent.getStringExtra("uuid"))
+                    .bookmarkFolderUUID(intent.getStringExtra("parentUUID"))
+                    .build();
+            folderName = intent.getStringExtra("FolderName");
+        }
         setMassage();
     }
 
@@ -96,14 +98,19 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
     private void saveInfo() {
         beBookmarked_info.setTitle(titleView.getText().toString());
         beBookmarked_info.setUrl(urlView.getText().toString());
-
+        if (beBookmarked_info.getTitle() == null) {
+            beBookmarked_info.setTitle("  ");
+        }
+        if (beBookmarked_info.getBookmarkFolderUUID() == null) {
+            beBookmarked_info.setBookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid);
+        }
         if (beBookmarked_info.getUuid() == null) {
             beBookmarked_info.setUuid(UUID.randomUUID());
             mDataBase.insertBookmark(beBookmarked_info);
             LogUtil.d(TAG, "onClick: uuid是null");
         } else {
             LogUtil.d(TAG, "onClick: uuid不是null，所以更新数据库");
-            mDataBase.update(beBookmarked_info);
+            mDataBase.updateBookmark(beBookmarked_info);
         }
         setResult(Activity.RESULT_OK);
     }
@@ -112,11 +119,14 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
      * beBookmarked_info的信息填充到收藏对话框
      */
     private void setMassage() {
+        if (beBookmarked_info==null){
+            return;
+        }
         titleView.setText(beBookmarked_info.getTitle());
         urlView.setText(beBookmarked_info.getUrl());
         if (folderName != null) {
             folderView.setText(folderName);
-        } else{
+        } else {
             folderView.setText("...");
         }
     }
@@ -145,13 +155,15 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bookmarkFolderView:
                 selectFolder();
                 break;
             case R.id.saveBookmark:
                 saveInfo();
+                finish();
                 break;
         }
     }
+
 }

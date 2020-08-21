@@ -16,11 +16,9 @@ import java.util.List;
  * 创建时间 2020/4/6 8:47
  */
 public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.Adapter<N> {
-    List<T> list;//T类型的bean的list集合
+   private List<T> list;//T类型的bean的list集合
 
     public BaseAdapter(List<T> list) {
-        if (list == null)
-            list = new ArrayList<>();
         this.list = list;
     }
 

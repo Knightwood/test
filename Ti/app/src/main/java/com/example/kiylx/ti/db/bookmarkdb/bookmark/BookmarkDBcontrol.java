@@ -41,7 +41,20 @@ public class BookmarkDBcontrol {
 
     private BookmarkDBcontrol(Context context) {
         mDatabase = new FavoritePageBaseHelper(context).getWritableDatabase();
-        simpleThreadPool=SimpleThreadPool.getInstance();
+        simpleThreadPool = SimpleThreadPool.getInstance();
+    }
+
+
+    public void Insert(WebPage_Info info) {
+        if (info == null || info.getUrl() == null) {
+            return;
+        }
+        if (isMarked(info)) {
+            return;
+        }
+        ContentValues values = getContentValues(info);
+        mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME, null, values);
+
     }
 
     /**
@@ -57,16 +70,17 @@ public class BookmarkDBcontrol {
         });
     }
 
-    public void Insert(WebPage_Info info) {
-        if (info == null || info.getUrl() == null) {
-            return;
-        }
-        if (isMarked(info)) {
-            return;
-        }
-        ContentValues values = getContentValues(info);
-        mDatabase.insert(FavoritepageDbSchema.FavoriteTable.NAME, null, values);
-
+    /**
+     * @param info 即将要更新书签的信息
+     *             将书签信息在数据库中更新,使用子线程处理
+     */
+    public void updateBookmark(WebPage_Info info) {
+        simpleThreadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                update(info);
+            }
+        });
     }
 
     /**
@@ -91,7 +105,7 @@ public class BookmarkDBcontrol {
     }
 
     /**
-     * @param uuid            webpage_info的uuid或是它的partentUUID，这取决于第二个参数。
+     * @param uuid          webpage_info的uuid或是它的partentUUID，这取决于第二个参数。
      * @param isDeleteChild 若是传入true，则将传入的uuid视作某一个文件夹的uuid，将会查询此uuid代表的文件夹下的所有书签，并将其删除
      *                      根据提供的euuid删除书签
      */
@@ -145,7 +159,6 @@ public class BookmarkDBcontrol {
             }
         } finally {
             cursor.close();
-            //closeDB();
         }
         return mlists;
     }
@@ -175,7 +188,7 @@ public class BookmarkDBcontrol {
         ItemCursorWrapper cursor = new ItemCursorWrapper(tmpCursor);
 
         try {
-            if ( cursor.moveToFirst()) {
+            if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     mlists.add(cursor.getFavoriterinfo());
                     cursor.moveToNext();
