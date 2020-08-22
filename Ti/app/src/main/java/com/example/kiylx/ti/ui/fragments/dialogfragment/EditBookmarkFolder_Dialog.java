@@ -17,12 +17,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
-import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
+import com.example.kiylx.ti.trash.AboutBookmark;
+import com.example.kiylx.ti.trash.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.LogUtil;
-import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 
 /**
  * 编辑书签文件夹时，打开这个对话框。

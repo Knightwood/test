@@ -78,9 +78,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         recyclerView.setAdapter(adapter);
         //获取数据
         if (containBookmarks) {
-            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, false);
+            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, true);
         } else {
-            sBookmarkManager.getBookmarkFolderList(BookmarkManager.DefaultBookmarkFolder.uuid, false);
+            sBookmarkManager.getBookmarkFolderList(BookmarkManager.DefaultBookmarkFolder.uuid, true);
         }
     }
 
@@ -99,17 +99,16 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             adapter = new BookmarkListAdapter(sBookmarkManager.getBookmarkList());
             recyclerView.setAdapter(adapter);
         } else {
-            /*List<WebPage_Info> newData=sBookmarkManager.getBookmarkList();
+            /*List<WebPage_Info> newData = sBookmarkManager.getBookmarkList();
             List<WebPage_Info> oldData = adapter.getData();
             adapter.setData(newData);
-            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData,newData));
+            DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData, newData));
             diffResult.dispatchUpdatesTo(adapter);*/
-            adapter.setData(sBookmarkManager.getBookmarkList());
-            adapter.notifyDataSetChanged();
+           //不使用差异计算时的测试
+           adapter.setData(sBookmarkManager.getBookmarkList());
+           adapter.notifyDataSetChanged();
         }
         LogUtil.d(TAG, "开始更新界面，接收到的数据： ");
-
-
     }
 
     @Override
@@ -148,7 +147,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
-
+                sBookmarkManager.createFolder("测试", BookmarkManager.DefaultBookmarkFolder.uuid);
                 break;
         }
     }
@@ -340,5 +339,10 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             public static final int folder = 1;
             public static final int bookmark = 2;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

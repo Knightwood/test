@@ -10,7 +10,6 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.ServiceConnection;
@@ -40,6 +39,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.trash.BookmarkPageActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.lifecycles.MainLifeCycleObserver;

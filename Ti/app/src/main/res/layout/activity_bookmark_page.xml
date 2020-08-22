@@ -6,7 +6,7 @@
     style="@style/Widget.MaterialComponents.Chip.Action"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activitys.BookmarkPageActivity">
+    tools:context=".trash.BookmarkPageActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bookmark_toolbar"

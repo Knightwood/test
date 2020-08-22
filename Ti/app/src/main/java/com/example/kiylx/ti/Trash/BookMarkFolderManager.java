@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder;
+package com.example.kiylx.ti.trash;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,14 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.model.BookmarkFolderNode;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkFolderCursorWrapper;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkFolderDBOpenHelper;
+import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkFolderDbSchema;
 import com.example.kiylx.ti.tool.LogUtil;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BookMarkFolderManager {
     /*书签文件夹，如果在添加标签的时候选择的是未分类，那么这一条*/

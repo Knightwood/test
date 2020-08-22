@@ -122,4 +122,8 @@ public class BookmarkfolderDBcontrol {
     }
 
 
+    public void destroy() {
+        mDatabase.close();
+        bookmarkfolderDBcontrol=null;
+    }
 }

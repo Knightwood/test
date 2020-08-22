@@ -1,10 +1,13 @@
-package com.example.kiylx.ti.db.bookmarkdb.bookmark;
+package com.example.kiylx.ti.trash;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.FavoritePageBaseHelper;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.FavoritepageDbSchema;
+import com.example.kiylx.ti.db.bookmarkdb.bookmark.ItemCursorWrapper;
 import com.example.kiylx.ti.model.WebPage_Info;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments.dialogfragment;
+package com.example.kiylx.ti.trash;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,13 +26,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
-import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.EditBookmarkFolder_Dialog;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;

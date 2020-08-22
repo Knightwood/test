@@ -230,4 +230,10 @@ public class BookmarkDBcontrol {
             mDatabase.close();
         }
     }
+
+    public void destroy() {
+        mDatabase.close();
+        simpleThreadPool=null;
+        bookmarkDBcontrol=null;
+    }
 }

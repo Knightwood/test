@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments.dialogfragment;
+package com.example.kiylx.ti.trash;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

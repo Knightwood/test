@@ -52,7 +52,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />
         <activity
-            android:name=".ui.activitys.BookmarkPageActivity"
+            android:name=".trash.BookmarkPageActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />

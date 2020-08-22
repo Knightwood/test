@@ -29,7 +29,7 @@ import com.example.kiylx.ti.conf.WebviewConf;
 import com.example.kiylx.ti.databinding.SelectItemBinding;
 import com.example.kiylx.ti.trash.Action;
 import com.example.kiylx.ti.trash.Title_ViewModel;
-import com.example.kiylx.ti.ui.fragments.dialogfragment.EditText_Dialog;
+import com.example.kiylx.ti.trash.EditText_Dialog;
 import com.example.kiylx.ti.interfaces.Setmessage;
 import com.example.kiylx.ti.db.searchenginedb.SearchEngineDao;
 import com.example.kiylx.ti.db.searchenginedb.SearchEngineDatabase;

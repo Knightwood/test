@@ -17,6 +17,7 @@ import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 
@@ -118,7 +119,7 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
 
     public void addToBookMark(String url,String title) {
         //把当前网页信息传给收藏dialog
-        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).title(title).build(), this, null);
+        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).title(title).build(), this, BookmarkManager.DefaultBookmarkFolder.folderName);
         startActivity(i);
     }
 }

@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
-import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
+import com.example.kiylx.ti.trash.AboutBookmark;
+import com.example.kiylx.ti.trash.BookMarkFolderManager;
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;

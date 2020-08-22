@@ -54,10 +54,12 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
         intent.putExtra("title", info.getTitle());
         intent.putExtra("uuid", info.getUuid());
         intent.putExtra("parentUUID", info.getBookmarkFolderUUID());
-        if (folderName == null)
+        if (folderName == null) {
             intent.putExtra("FolderName", "默认文件夹");
-        else
+        } else {
             intent.putExtra("FolderName", folderName);
+        }
+
         return intent;
     }
 
@@ -119,7 +121,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
      * beBookmarked_info的信息填充到收藏对话框
      */
     private void setMassage() {
-        if (beBookmarked_info==null){
+        if (beBookmarked_info == null) {
             return;
         }
         titleView.setText(beBookmarked_info.getTitle());

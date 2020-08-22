@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.activitys;
+package com.example.kiylx.ti.trash;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,11 +24,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.AboutBookmark;
-import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookMarkFolderManager;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.fragments.dialogfragment.DeleteBookmarkFolder_Dialog;
-import com.example.kiylx.ti.ui.fragments.dialogfragment.Bookmark_Dialog;
 import com.example.kiylx.ti.ui.fragments.dialogfragment.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.interfaces.RefreshBookMark;
