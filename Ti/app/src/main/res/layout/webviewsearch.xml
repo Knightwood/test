@@ -5,7 +5,8 @@
     android:id="@+id/searchContanier"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp">
+    android:layout_margin="10dp"
+    android:elevation="10dp">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout"

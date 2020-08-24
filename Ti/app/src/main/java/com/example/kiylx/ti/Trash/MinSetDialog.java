@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments.dialogfragment;
+package com.example.kiylx.ti.trash;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.example.kiylx.ti.databinding.HomepageSettingBinding;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
@@ -29,7 +30,6 @@ import com.example.kiylx.ti.model.ShowPicMode;
 import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.databinding.DialogHomepageSettingBinding;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.interfaces.ControlWebView;
 import com.example.kiylx.ti.ui.activitys.Setting2Activity;
@@ -40,7 +40,7 @@ import com.example.kiylx.ti.ui.activitys.Setting2Activity;
  */
 public class MinSetDialog extends DialogFragment implements View.OnClickListener {
     /*设置，下载，收藏，历史记录，分享，隐身，工具箱，电脑模式*/
-    private DialogHomepageSettingBinding homepageSettingBinding;
+    private HomepageSettingBinding homepageSettingBinding;
     private static final String TAG = "MinSetDialog";
     private static WebPage_Info info;
     private ControlWebView controlWebViewInterface;
@@ -64,7 +64,7 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        homepageSettingBinding = DataBindingUtil.inflate(inflater, R.layout.dialog_homepage_setting, null, false);
+        homepageSettingBinding = DataBindingUtil.inflate(inflater, R.layout.homepage_setting, null, false);
         homepageSettingBinding.setClicklister(this);
         return homepageSettingBinding.getRoot();
     }
@@ -116,14 +116,14 @@ public class MinSetDialog extends DialogFragment implements View.OnClickListener
                 case R.id.back1:
                 case R.id.toolButton:
                     LogUtil.d(TAG, "onClick: 切换菜单");
-                    if (currentMenu == 0) {
+                   /* if (currentMenu == 0) {
                         //当前页是0，要切换到1
-                        showView(homepageSettingBinding.toolSecond, homepageSettingBinding.toolFirst);
+                        showView(homepageSettingBinding.toolGroup2, homepageSettingBinding.toolGroup1);
                         currentMenu = 1;
                     } else {
-                        showView(homepageSettingBinding.toolFirst, homepageSettingBinding.toolSecond);
+                        showView(homepageSettingBinding.toolGroup1, homepageSettingBinding.toolGroup2);
                         currentMenu = 0;
-                    }
+                    }*/
                     break;
                 case R.id.findtext:
                     controlWebViewInterface.searchText();

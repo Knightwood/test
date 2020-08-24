@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.ui.activitys;
 
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.SearchView;
 
@@ -17,7 +17,7 @@ import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
 import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
-import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 
@@ -36,7 +36,7 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
     }
 
     @Override
-    protected void initActivity(BaseLifecycleObserver observer) {
+    protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         if (method == null) {
             method = new ClickMethod();
         }
@@ -119,7 +119,7 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
 
     public void addToBookMark(String url,String title) {
         //把当前网页信息传给收藏dialog
-        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).title(title).build(), this, BookmarkManager.DefaultBookmarkFolder.folderName);
+        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder(url).title(title).build(), this, BookmarkManagerPresenter.DefaultBookmarkFolder.folderName);
         startActivity(i);
     }
 }

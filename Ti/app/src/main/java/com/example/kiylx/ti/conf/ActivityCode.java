@@ -10,6 +10,8 @@ public class ActivityCode {
     public static final int createBookmarkCode=30;
     public static final int selectBookmarkFolder=31;
     public static final int editBookmarkCode=32;
+    public static final int uploadFile =2020;
+    public static final int openSearchActivity=21;
 
 
 }

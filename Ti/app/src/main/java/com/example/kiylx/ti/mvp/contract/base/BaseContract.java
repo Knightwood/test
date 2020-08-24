@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,6 +49,8 @@ public interface BaseContract {
         void share(String s);
 
         void saveBookmark(WebPage_Info info);
+
+        void showSnackbar(android.view.View view, String actionText,String text, Object... args);
 
     }
 

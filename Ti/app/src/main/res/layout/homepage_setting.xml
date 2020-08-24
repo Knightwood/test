@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="clicklister"
+            type="android.view.View.OnClickListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/homepage_setting"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="top">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/tool_group_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="findtext,share,pcMode,hideSelf,addBookmark,menu" />
+
+        <TextView
+            android:id="@+id/findtext"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:text="@string/findText"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/share"
+            android:textIsSelectable="false" />
+
+        <TextView
+            android:id="@+id/share"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            app:layout_constraintTop_toBottomOf="@id/findtext"
+            app:layout_constraintLeft_toLeftOf="@id/findtext"
+            app:layout_constraintRight_toRightOf="@id/findtext"
+            app:layout_constraintBottom_toTopOf="@id/pcMode"
+            android:text="@string/fenxiang" />
+
+        <CheckBox
+            android:id="@+id/pcMode"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layoutDirection="rtl"
+            android:onClick="@{clicklister}"
+            app:layout_constraintTop_toBottomOf="@id/share"
+            app:layout_constraintLeft_toLeftOf="@id/share"
+            app:layout_constraintRight_toRightOf="@id/share"
+            app:layout_constraintBottom_toTopOf="@id/hideSelf"
+            android:text="@string/diannaomoshi" />
+
+        <CheckBox
+            android:id="@+id/hideSelf"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layoutDirection="rtl"
+            android:onClick="@{clicklister}"
+            app:layout_constraintTop_toBottomOf="@id/pcMode"
+            app:layout_constraintLeft_toLeftOf="@id/pcMode"
+            app:layout_constraintRight_toRightOf="@id/pcMode"
+            app:layout_constraintBottom_toTopOf="@id/addBookmark"
+            android:text="@string/yinshen" />
+
+        <TextView
+            android:id="@+id/addBookmark"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            app:layout_constraintTop_toBottomOf="@id/hideSelf"
+            app:layout_constraintLeft_toLeftOf="@id/hideSelf"
+            app:layout_constraintRight_toRightOf="@id/hideSelf"
+            app:layout_constraintBottom_toTopOf="@id/menu"
+            android:text="@string/add_to_Bookmark" />
+
+        <TextView
+            android:id="@+id/menu"
+            style="@style/MenuItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            app:layout_constraintTop_toBottomOf="@id/addBookmark"
+            app:layout_constraintLeft_toLeftOf="@id/addBookmark"
+            app:layout_constraintRight_toRightOf="@id/addBookmark"
+            app:layout_constraintBottom_toTopOf="@id/tool_guideline"
+            android:text="@string/menu" />
+
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/tool_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="68dp" />
+
+        <TextView
+            android:id="@+id/reload_webview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/touch_color"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_cached_black_24dp"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/flash"
+            android:textAlignment="gravity"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/button_download"
+            app:layout_constraintTop_toTopOf="@id/tool_guideline" />
+
+        <TextView
+            android:id="@+id/button_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/touch_color"
+            android:clickable="true"
+            android:contentDescription="@string/xiazai"
+            android:drawableTop="@drawable/ic_get_app_black_24dp"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/xiazai"
+            android:textAlignment="gravity"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/reload_webview"
+            app:layout_constraintRight_toLeftOf="@+id/button_history"
+            app:layout_constraintTop_toTopOf="@id/tool_guideline" />
+
+        <TextView
+            android:id="@+id/button_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/touch_color"
+            android:clickable="true"
+            android:contentDescription="@string/lishijilu"
+            android:drawableTop="@drawable/ic_history_black_24dp"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/lishijilu"
+            android:textAlignment="gravity"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/button_download"
+            app:layout_constraintRight_toLeftOf="@id/button_bookmark"
+            app:layout_constraintTop_toTopOf="@id/tool_guideline" />
+
+        <TextView
+            android:id="@+id/button_bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/touch_color"
+            android:clickable="true"
+            android:contentDescription="@string/Bookmark"
+            android:drawableTop="@drawable/ic_bookmark_black_24dp"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/shuqian"
+            android:textAlignment="gravity"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/button_history"
+            app:layout_constraintRight_toLeftOf="@+id/toolButton"
+            app:layout_constraintTop_toTopOf="@id/tool_guideline" />
+
+        <TextView
+            android:id="@+id/toolButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/touch_color"
+            android:clickable="true"
+            android:contentDescription="@string/gongjuxiang"
+            android:drawableTop="@drawable/ic_work_black_24dp"
+            android:focusable="true"
+            android:onClick="@{clicklister}"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/gongjuxiang"
+            android:textAlignment="gravity"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/button_bookmark"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tool_guideline" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

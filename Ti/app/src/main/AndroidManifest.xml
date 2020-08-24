@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.base.BaseRecy_search_ViewActivity"></activity>
+        <activity android:name=".ui.base.BaseRecy_search_ViewActivity"/>
         <activity
             android:name=".ui.activitys.BookmarkManagerActivity"
             android:theme="@style/MaterialThemes" />
@@ -68,6 +68,7 @@
         </activity>
         <activity android:name=".ui.activitys.EditBookmarkActivity"
             android:theme="@style/MaterialThemes"/>
+        <activity android:name=".ui.base.BaseWebviewActivity" />
     </application>
 
 </manifest>

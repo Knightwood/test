@@ -4,9 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkfolderDBcontrol;
 import com.example.kiylx.ti.model.BookmarkFolderNode;
@@ -23,12 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * 创建者 kiylx
@@ -36,9 +27,9 @@ import io.reactivex.schedulers.Schedulers;
  * packageName：com.example.kiylx.ti.mvp.presenter
  * 描述：
  */
-public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
+public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityContract> {
     private static final String TAG = "BookmarkManager";
-    private static volatile BookmarkManager sBookmarkManager;
+    private static volatile BookmarkManagerPresenter sBookmarkManagerPresenter;
     private final Handler handler;
 
     private Stack<String> backStack;//记录点击的文件夹层级，便于回退到上一级目录
@@ -54,18 +45,18 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     //threadpool
     private SimpleThreadPool threadPool;
 
-    public static BookmarkManager getInstance(Context context, BaseContract.View view, Handler handler) {
-        if (sBookmarkManager == null) {
-            synchronized (BookmarkManager.class) {
-                if (sBookmarkManager == null) {
-                    sBookmarkManager = new BookmarkManager(context, view, handler);
+    public static BookmarkManagerPresenter getInstance(Context context, BaseContract.View view, Handler handler) {
+        if (sBookmarkManagerPresenter == null) {
+            synchronized (BookmarkManagerPresenter.class) {
+                if (sBookmarkManagerPresenter == null) {
+                    sBookmarkManagerPresenter = new BookmarkManagerPresenter(context, view, handler);
                 }
             }
         }
-        return sBookmarkManager;
+        return sBookmarkManagerPresenter;
     }
 
-    private BookmarkManager(Context context, BaseContract.View view, Handler handler) {
+    private BookmarkManagerPresenter(Context context, BaseContract.View view, Handler handler) {
         super((BookmarkActivityContract) view);
         //初始化数据库控制
         sBookmarkDBcontrol = BookmarkDBcontrol.get(context);
@@ -77,7 +68,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
 
         //初始化书签及文件夹list和文件夹list
         getIndex(DefaultBookmarkFolder.uuid, false);
-        getBookmarkFolderList(DefaultBookmarkFolder.uuid, false);
+        getFolderIndex(DefaultBookmarkFolder.uuid, false);
     }
 
     /**
@@ -89,7 +80,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         if (containBookmark) {
             getIndex(getUpperLevel(), true);
         } else {
-            getBookmarkFolderList(getUpperLevel(), true);
+            getFolderIndex(getUpperLevel(), true);
         }
     }
 
@@ -104,7 +95,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         if (containBookmark)
             getIndex(uuid, true);
         else
-            getBookmarkFolderList(uuid, true);
+            getFolderIndex(uuid, true);
 
     }
 
@@ -113,7 +104,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      */
     public String getUpperLevel() {
         if (backStack == null || backStack.empty()) {
-            currentPath = BookmarkManager.DefaultBookmarkFolder.uuid;
+            currentPath = BookmarkManagerPresenter.DefaultBookmarkFolder.uuid;
         } else {
             currentPath = backStack.pop();
         }
@@ -144,6 +135,31 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
 
             }
         });
+    }
+
+    /**
+     * @return 返回已经拿到的书签文件夹列表信息，此列表只包含书签文件夹
+     */
+    public List<WebPage_Info> getFolderIndex(String uuid, boolean b) {
+
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
+                List<WebPage_Info> result = new ArrayList<>(folders);
+
+                if (bookmarkFolderList==null){
+                    bookmarkFolderList=new ArrayList<>();
+                }else{
+                    bookmarkFolderList.clear();
+                }
+                bookmarkFolderList.addAll(result);
+                if (b) {
+                    handler.sendEmptyMessage(HandlerMsg.updateUI_folder);
+                }
+            }
+        });
+        return bookmarkFolderList;
     }
 
     /**
@@ -281,31 +297,13 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
     public List<WebPage_Info> getBookmarkList() {
         return bookmarkList;
     }
-
     /**
-     * @return 返回已经拿到的书签文件夹列表信息，此列表只包含书签文件夹
+     * @return 返回已经拿到的文件夹信息，此列表只包含文件夹
      */
-    public List<WebPage_Info> getBookmarkFolderList(String uuid, boolean b) {
-
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
-                List<WebPage_Info> result = new ArrayList<>(folders);
-
-                if (bookmarkFolderList==null){
-                    bookmarkFolderList=new ArrayList<>();
-                }else{
-                    bookmarkFolderList.clear();
-                }
-                bookmarkFolderList.addAll(result);
-                if (b) {
-                    handler.sendEmptyMessage(HandlerMsg.updateUI_folder);
-                }
-            }
-        });
+    public List<WebPage_Info> getBookmarkFolderList() {
         return bookmarkFolderList;
     }
+
 
     /**
      * @param uuid 文件夹的uuid
@@ -313,7 +311,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
      */
     public String queryFolderName(String uuid) {
         if (bookmarkFolderList == null || bookmarkFolderList.isEmpty()) {
-            getBookmarkFolderList(DefaultBookmarkFolder.uuid, false);
+            getFolderIndex(DefaultBookmarkFolder.uuid, false);
         }
         for (WebPage_Info info : bookmarkFolderList) {
             if (((BookmarkFolderNode) info).getUUID().equals(uuid)) {
@@ -330,7 +328,7 @@ public class BookmarkManager extends BasePresenter<BookmarkActivityContract> {
         sBookmarkfolderDBcontrol.destroy();
         sBookmarkDBcontrol = null;
         sBookmarkfolderDBcontrol = null;
-        sBookmarkManager=null;
+        sBookmarkManagerPresenter =null;
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.example.kiylx.ti.mvp.presenter;
 
 import android.content.Context;
-import android.util.Log;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
 
@@ -408,9 +407,9 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
                     //如果发生进度条更新的不是当前正在浏览的webview，传入-1
                     if (mUpdateProgress != null) {
                         if (v == webViewArrayList.get(MainActivity.getCurrent())) {
-                            mUpdateProgress.update(progress);
+                            mUpdateProgress.updateWebviewProgress(progress);
                         } else {
-                            mUpdateProgress.update(-1);
+                            mUpdateProgress.updateWebviewProgress(-1);
                         }
                     }
 
@@ -633,7 +632,7 @@ public class WebViewManager extends Observable {//implements NotifyWebViewUpdate
      * ，webviewmanager调用mainactivity实现的UpdateProgress接口，使得mainactivity更新进度条
      */
     public interface UpdateProgress {
-        void update(int progress);
+        void updateWebviewProgress(int progress);
     }
 
     public void setOnUpdateProgress(UpdateProgress mInterface) {

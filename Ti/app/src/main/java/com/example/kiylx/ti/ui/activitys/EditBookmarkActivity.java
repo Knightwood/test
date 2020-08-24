@@ -16,7 +16,7 @@ import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
-import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
@@ -75,7 +75,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
     }
 
     @Override
-    protected void initActivity(BaseLifecycleObserver observer) {
+    protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         mDataBase = BookmarkDBcontrol.get(Xapplication.getInstance());
         Intent intent = getIntent();
         if (intent != null) {
@@ -104,7 +104,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
             beBookmarked_info.setTitle("  ");
         }
         if (beBookmarked_info.getBookmarkFolderUUID() == null) {
-            beBookmarked_info.setBookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid);
+            beBookmarked_info.setBookmarkFolderUUID(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
         }
         if (beBookmarked_info.getUuid() == null) {
             beBookmarked_info.setUuid(UUID.randomUUID());

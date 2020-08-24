@@ -29,7 +29,7 @@ import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
-import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
 import com.example.kiylx.ti.xapplication.Xapplication;
@@ -40,7 +40,7 @@ import java.util.List;
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract {
     private static final String TAG = "BookmarkActivity2";
     private static OpenOneWebpage mopenWeb;//用于调用mainactivity中的接口
-    private BookmarkManager sBookmarkManager;
+    private BookmarkManagerPresenter sBookmarkManagerPresenter;
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
     private static boolean containBookmarks = true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
@@ -54,10 +54,10 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     }
 
     @Override
-    protected void initActivity(BaseLifecycleObserver observer) {
+    protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         createHandler();
         LogUtil.d(TAG, "触发initActivity()方法");
-        sBookmarkManager = BookmarkManager.getInstance(Xapplication.getInstance(), this, handler);
+        sBookmarkManagerPresenter = BookmarkManagerPresenter.getInstance(Xapplication.getInstance(), this, handler);
         setToolbarTitle("收藏夹", null);
         if (getIntent() != null) {
             containBookmarks = getIntent().getBooleanExtra("isShowBookmarks", true);
@@ -72,15 +72,18 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
      * 初始化recyclerview
      */
     private void initRecyclerView() {
-        adapter = new BookmarkListAdapter(sBookmarkManager.getBookmarkList());
+        if (containBookmarks)
+           { adapter = new BookmarkListAdapter(sBookmarkManagerPresenter.getBookmarkList());}
+        else
+          {  adapter = new BookmarkListAdapter(sBookmarkManagerPresenter.getBookmarkFolderList());}
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
         //获取数据
         if (containBookmarks) {
-            sBookmarkManager.getIndex(BookmarkManager.DefaultBookmarkFolder.uuid, true);
+            sBookmarkManagerPresenter.getIndex(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid, true);
         } else {
-            sBookmarkManager.getBookmarkFolderList(BookmarkManager.DefaultBookmarkFolder.uuid, true);
+            sBookmarkManagerPresenter.getFolderIndex(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid, true);
         }
     }
 
@@ -96,7 +99,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     public void updateUI() {
         showToast("接收到了更新");
         if (adapter == null) {
-            adapter = new BookmarkListAdapter(sBookmarkManager.getBookmarkList());
+            adapter = new BookmarkListAdapter(sBookmarkManagerPresenter.getBookmarkList());
             recyclerView.setAdapter(adapter);
         } else {
             /*List<WebPage_Info> newData = sBookmarkManager.getBookmarkList();
@@ -104,9 +107,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             adapter.setData(newData);
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData, newData));
             diffResult.dispatchUpdatesTo(adapter);*/
-           //不使用差异计算时的测试
-           adapter.setData(sBookmarkManager.getBookmarkList());
-           adapter.notifyDataSetChanged();
+            //不使用差异计算时的测试
+            adapter.setData(sBookmarkManagerPresenter.getBookmarkList());
+            adapter.notifyDataSetChanged();
         }
         LogUtil.d(TAG, "开始更新界面，接收到的数据： ");
     }
@@ -126,8 +129,8 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 switch (msg.what) {
-                    case BookmarkManager.HandlerMsg.updateUI_bookmark_folder:
-                    case BookmarkManager.HandlerMsg.updateUI_folder:
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_folder:
                         updateUI();
                         break;
                 }
@@ -147,7 +150,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
-                sBookmarkManager.createFolder("测试", BookmarkManager.DefaultBookmarkFolder.uuid);
+                sBookmarkManagerPresenter.createFolder("测试", BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
                 break;
         }
     }
@@ -221,7 +224,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             @Override
             public void onClick(View v) {
                 Intent intent = getIntent();
-                intent.putExtra("FolderName", sBookmarkManager.queryFolderName(sBookmarkManager.getUpperLevel()));
+                intent.putExtra("FolderName", sBookmarkManagerPresenter.queryFolderName(sBookmarkManagerPresenter.getUpperLevel()));
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
@@ -317,11 +320,11 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.edit_Bookmark:
-                            Intent i = EditBookmarkActivity.newInstance(info, getApplicationContext(), sBookmarkManager.queryFolderName(info.getBookmarkFolderUUID()));
+                            Intent i = EditBookmarkActivity.newInstance(info, getApplicationContext(), sBookmarkManagerPresenter.queryFolderName(info.getBookmarkFolderUUID()));
                             startActivityForResult(i, ActivityCode.editBookmarkCode);
                             break;
                         case R.id.delete_Bookmark:
-                            sBookmarkManager.deleteBookmark(info.getUuid());
+                            sBookmarkManagerPresenter.deleteBookmark(info.getUuid());
                             break;
                         case R.id.openPageinNewWindow:
                             finish();

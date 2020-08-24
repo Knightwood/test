@@ -18,7 +18,7 @@
         android:layout_weight="0.8"
         android:background="@color/grey0"
         android:focusableInTouchMode="false"
-        android:onClick="searchBar"
+        android:onClick="openSearchView"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textColor="@android:color/black"

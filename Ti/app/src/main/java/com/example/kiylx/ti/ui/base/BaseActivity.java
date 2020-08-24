@@ -20,12 +20,12 @@ import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
-import com.example.kiylx.ti.mvp.presenter.BookmarkManager;
+import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.xapplication.Xapplication;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -45,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         setContentView(layoutId());
 
         initView(savedInstanceState);
-        initActivity(lifecycleObserver);
+        initActivity(lifecycleObserver,savedInstanceState);
         initViewAfter(savedInstanceState);
     }
 
@@ -57,7 +57,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         }
     }
 
-    protected abstract void initActivity(BaseLifecycleObserver observer);
+    protected abstract void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState);
+
     @CallSuper
     protected void initViewAfter(Bundle savedInstanceState) {
 
@@ -205,8 +206,26 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
 
     @Override
     public void saveBookmark(WebPage_Info info) {
-        info.setBookmarkFolderUUID(BookmarkManager.DefaultBookmarkFolder.uuid);
+        info.setBookmarkFolderUUID(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
         info.setUuid(UUID.randomUUID());
         BookmarkDBcontrol.get(Xapplication.getInstance()).insertBookmark(info);
+    }
+
+    @Override
+    public void showSnackbar(View view, String actionText, String text, Object... args) {
+        String msg;
+        if (args.length > 0)
+            msg = String.format(text, args);
+        else
+            msg = text;
+
+        Snackbar.make(view, msg, BaseTransientBottomBar.LENGTH_LONG).setAction(actionText, v -> chickSnackBar()).show();
+    }
+
+    /**
+     * 点击snackbar时被调用的行为
+     */
+    protected void chickSnackBar(){
+
     }
 }

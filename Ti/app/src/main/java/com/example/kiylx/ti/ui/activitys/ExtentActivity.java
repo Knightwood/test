@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.ui.activitys;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
@@ -14,7 +13,7 @@ import com.example.kiylx.ti.ui.base.BaseActivity;
 public class ExtentActivity extends BaseActivity {
 
     @Override
-    protected void initActivity(BaseLifecycleObserver observer) {
+    protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
 
     }
 
