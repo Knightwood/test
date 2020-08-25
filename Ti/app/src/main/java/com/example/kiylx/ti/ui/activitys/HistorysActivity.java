@@ -13,8 +13,8 @@ import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
-import com.example.kiylx.ti.db.historydb2.HistoryListAdapter;
-import com.example.kiylx.ti.db.historydb2.HistorysViewModel;
+import com.example.kiylx.ti.adapters.historysadapter.HistoryListAdapter;
+import com.example.kiylx.ti.viewmodel.HistorysViewModel;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;

@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class BaseHolder<N> extends RecyclerView.ViewHolder {
     private View itemView;
     private SparseArray<View> views;//缓存一些view
-    private N mInfo;//N类型的bean
+   // private N mInfo;//N类型的bean
 
     public BaseHolder(View itemView) {
         super(itemView);
@@ -71,21 +71,23 @@ public class BaseHolder<N> extends RecyclerView.ViewHolder {
     /**
      * 设置条目点击事件
      */
-    public BaseHolder setOnIntemClickListener(View.OnClickListener listener, N info) {
+    public void setOnIntemClickListener(View.OnClickListener listener, N info) {
         itemView.setOnClickListener(listener);
-        this.mInfo = info;
-        return this;
     }
-
+    public void  setOnIntemClickListener(View.OnClickListener listener) {
+        itemView.setOnClickListener(listener);
+    }
     /**
      * 设置条目长按事件
      */
-    public BaseHolder setOnIntemLongClickListener(View.OnLongClickListener listener) {
+    public void setOnIntemLongClickListener(View.OnLongClickListener listener) {
         itemView.setOnLongClickListener(listener);
-        return this;
     }
 
-    public N getInfo() {
-        return mInfo;
+    /**
+     * 绑定数据
+     */
+    public void bind(N data) {
+
     }
 }

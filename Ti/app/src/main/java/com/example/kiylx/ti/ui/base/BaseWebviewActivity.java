@@ -53,6 +53,7 @@ import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.trash.BookmarkPageActivity;
+import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.ui.activitys.StartPageActivity;
 import com.example.kiylx.ti.ui.fragments.dialogfragment.MultPage_Dialog;
@@ -99,7 +100,7 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
     String[] allperm = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.INTERNET};
     String[] locatePerm = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
     private ValueCallback<Uri[]> fileUploadCallBack;
-    private OpenWebview mOpenWebview;
+    protected OpenWebview mOpenWebview;
     protected StateManager stateManager;
 
 
@@ -402,7 +403,7 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
         if (mOpenWebview == null) {
             mOpenWebview = new OpenWebview();
         }
-        BookmarkPageActivity.setInterface(mOpenWebview);
+        BookmarkManagerActivity.setInterface(mOpenWebview);
         HistorysActivity.setInterface(mOpenWebview);
     }
 
@@ -411,7 +412,7 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
      * flags为假，在当前页面打开；
      * 为在历史记录或是收藏记录中，点击打开时被调用
      */
-    class OpenWebview implements OpenOneWebpage {
+   protected class OpenWebview implements OpenOneWebpage {
 
         @Override
         public void loadUrl(String url, boolean flags) {

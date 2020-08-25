@@ -223,6 +223,7 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
                 break;
 
         }
+        closeBottomSheet();
 
         LogUtil.d(TAG, "onClick: " + v.getId());
     }
@@ -275,7 +276,6 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
      * 启动设置页面
      */
     private void startSetting() {
-        //Intent settingIntent = new Intent(getActivity(), SettingActivity.class);
         Intent settingIntent = new Intent(MainActivity.this, Setting2Activity.class);
         startActivity(settingIntent);
     }
@@ -284,7 +284,6 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
      * 启动书签页面
      */
     private void startBookmarked() {
-        //Intent Bookmark_intent = new Intent(getActivity(), BookmarkPageActivity.class);
         Intent Bookmark_intent = new Intent(MainActivity.this, BookmarkManagerActivity.class);
         startActivity(Bookmark_intent);
     }
@@ -317,7 +316,7 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
     }
 
     /**
-     * 底部菜单界面
+     * 打开底部菜单界面
      */
     public void buttomMenu(View v) {
         collapsed(1);
@@ -325,6 +324,7 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
 
     /**
      * @param i 若是1，只展示和隐藏底部菜单；若是2，在底部菜单与工具箱菜单之间切换
+     *          切换两个底部菜单的打开隐藏状态
      */
     private void collapsed(int i) {
         if (i == 1) {
@@ -360,6 +360,10 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
             behavior2.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }
+
+    /**
+     * @return 若是有底部菜单是打开状态，返回true
+     */
     private boolean isExpendedBottomset(){
         if (behavior2.getState() == BottomSheetBehavior.STATE_EXPANDED||behavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
             return true;
@@ -374,8 +378,8 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
-        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        if (behavior2.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            behavior2.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         }
     }

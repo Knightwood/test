@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.db.historydb2;
+package com.example.kiylx.ti.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
+import com.example.kiylx.ti.db.historydb2.HistoryDao;
+import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
+import com.example.kiylx.ti.db.historydb2.HistoryEntity;
 import com.example.kiylx.ti.xapplication.Xapplication;
 
 /**

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--点击波纹效果-->
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/grey0">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/grey0">
     <item android:id="@android:id/mask" android:drawable="@color/white"/>
     <!--<item>
         <selector>

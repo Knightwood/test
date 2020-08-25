@@ -1,5 +1,6 @@
 package com.crystal.customview.baseadapter1;
 
+import android.text.method.Touch;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,7 @@ import java.util.List;
  * 创建时间 2020/4/6 8:47
  */
 public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.Adapter<N> {
-   private List<T> list;//T类型的bean的list集合
+    private List<T> list;//T类型的bean的list集合
 
     public BaseAdapter(List<T> list) {
         this.list = list;
@@ -45,7 +46,8 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
 
     @Override
     public void onBindViewHolder(@NonNull N holder, int position) {
-        bind(holder, list.get(position), getItemViewType(position));
+        T data = list.get(position);
+        bind(holder, data, getItemViewType(position));
     }
 
     @Override
@@ -85,4 +87,5 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
      *                 根据viewType将数据绑定在不同的holder上
      */
     public abstract void bind(N holder, T data, int viewType);
+
 }

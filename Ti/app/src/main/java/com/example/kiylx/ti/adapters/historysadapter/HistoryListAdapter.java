@@ -1,7 +1,6 @@
-package com.example.kiylx.ti.db.historydb2;
+package com.example.kiylx.ti.adapters.historysadapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.DrawableUtils;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.db.historydb2.HistoryDbUtil;
+import com.example.kiylx.ti.db.historydb2.HistoryEntity;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.xapplication.Xapplication;
 
