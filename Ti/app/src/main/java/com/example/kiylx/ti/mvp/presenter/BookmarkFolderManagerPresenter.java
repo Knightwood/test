@@ -2,8 +2,6 @@ package com.example.kiylx.ti.mvp.presenter;
 
 import android.os.Handler;
 
-
-import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkfolderDBcontrol;
 import com.example.kiylx.ti.model.BookmarkFolderNode;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -23,60 +21,48 @@ import java.util.UUID;
 
 /**
  * 创建者 kiylx
- * 创建时间 2020/8/8 22:43
+ * 创建时间 2020/8/26 11:08
  * packageName：com.example.kiylx.ti.mvp.presenter
  * 描述：
  */
-public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityContract> implements com.example.kiylx.ti.interfaces.BookmarkManagerContract {
+public class BookmarkFolderManagerPresenter extends BasePresenter<BookmarkActivityContract> implements com.example.kiylx.ti.interfaces.BookmarkManagerContract {
     private static final String TAG = "BookmarkManager";
-    //private static volatile BookmarkManagerPresenter sBookmarkManagerPresenter;
+    private static volatile BookmarkFolderManagerPresenter sBookmarkManagerPresenter;
     private final Handler handler;
 
-    private Stack<String> backStack;//记录点击的文件夹层级，便于回退到上一级目录
-    private String currentPath;//当前文件夹层级
-    private List<WebPage_Info> bookmarkList;
-
+    private Stack<String> backStack;//编辑书签时的回退栈 记录点击的文件夹层级，便于回退到上一级目录
+    private String currentPath;//编辑书签时的路径 当前文件夹层级
+    private String currentPathName;//当前路径的文件夹名称
+    private List<WebPage_Info> bookmarkFolderList;
     //DataBase
-    private BookmarkDBcontrol sBookmarkDBcontrol;
     private BookmarkfolderDBcontrol sBookmarkfolderDBcontrol;
-
     //threadpool
     private SimpleThreadPool threadPool;
 
-    public static BookmarkManagerPresenter getInstance( BaseContract.View view, Handler handler) {
-       /*if (sBookmarkManagerPresenter == null) {
-            synchronized (BookmarkManagerPresenter.class) {
-                if (sBookmarkManagerPresenter == null) {
-                    sBookmarkManagerPresenter = new BookmarkManagerPresenter( view, handler);
-                }
-            }
-        }
-        return sBookmarkManagerPresenter;*/
-        return new BookmarkManagerPresenter( view, handler);
+   public static BookmarkFolderManagerPresenter getInstance( BaseContract.View view, Handler handler) {
+        return new BookmarkFolderManagerPresenter( view, handler);
     }
-
-
-    private BookmarkManagerPresenter( BaseContract.View view, Handler handler) {
+    
+    
+    private BookmarkFolderManagerPresenter( BaseContract.View view, Handler handler) {
         super((BookmarkActivityContract) view);
         //初始化数据库控制
-        sBookmarkDBcontrol = BookmarkDBcontrol.get(Xapplication.getInstance());
         sBookmarkfolderDBcontrol = BookmarkfolderDBcontrol.get(Xapplication.getInstance());
-
         currentPath = DefaultBookmarkFolder.uuid;
-
-        backStack = new Stack<>();
+        backStack=new Stack<>();
         this.handler = handler;
         threadPool = SimpleThreadPool.getInstance();
-
-        bookmarkList = new ArrayList<>();
+        bookmarkFolderList=new ArrayList<>();
     }
 
     /**
      * 点击返回时，回退到上级文件夹层级目录
+     *
      */
     @Override
     public void clickBack() {
-        getIndex(getUpperLevel(), true);
+   getFolderIndex(getUpperLevel(), true);
+        
     }
 
     @Override
@@ -85,19 +71,14 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
     }
 
     /**
-     * @param uuid 被点击文件夹的uuid
-     *             把currentpath入栈，把传进来的uuid作为新的currentpath，然后更新目录
+     * @param uuid            被点击文件夹的uuid
+     *
      */
     @Override
     public void enterFolder(String uuid) {
-        if (backStack == null) {
-            backStack = new Stack<>();
-        }
-        backStack.push(currentPath.trim());
-        currentPath = uuid;
-        getIndex(uuid, true);
-
-
+            backStack.push(currentPath.trim());
+            currentPath = uuid;
+            getFolderIndex(uuid, true);
     }
 
     @Override
@@ -110,14 +91,12 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public String getUpperLevel() {
-        if (backStack == null || backStack.empty()) {
-            currentPath = BookmarkManagerPresenter.DefaultBookmarkFolder.uuid;
-        } else {
-            currentPath = backStack.pop();
-        }
-        return currentPath;
-
-
+            if (backStack == null || backStack.empty()) {
+                currentPath = DefaultBookmarkFolder.uuid;
+            } else {
+                currentPath = backStack.pop();
+            }
+            return currentPath;
     }
 
     /**
@@ -127,24 +106,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public void getIndex(@NotNull String uuid, boolean b) {
-        if (bookmarkList == null) {
-            bookmarkList = new ArrayList<>();
-        } else {
-            bookmarkList.clear();
-        }
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                List<WebPage_Info> result = new ArrayList<>(sBookmarkfolderDBcontrol.queryFolder(uuid, true));
-                List<WebPage_Info> result2 = sBookmarkDBcontrol.queryBookmarks(uuid);
-                bookmarkList.addAll(result);
-                bookmarkList.addAll(result2);
-                if (b) {
-                    handler.sendEmptyMessage(HandlerMsg.updateUI_bookmark_folder);
-                }
-
-            }
-        });
+        
     }
 
     /**
@@ -153,7 +115,23 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
     @Override
     public List<WebPage_Info> getFolderIndex(String uuid, boolean b) {
 
-        return null;
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                List<BookmarkFolderNode> folders = sBookmarkfolderDBcontrol.queryFolder(uuid, true);
+
+                if (bookmarkFolderList==null){
+                    bookmarkFolderList=new ArrayList<>();
+                }else{
+                    bookmarkFolderList.clear();
+                }
+                bookmarkFolderList.addAll(folders);
+                if (b) {
+                    handler.sendEmptyMessage(HandlerMsg.updateUI_folder);
+                }
+            }
+        });
+        return bookmarkFolderList;
     }
 
     /**
@@ -163,9 +141,9 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
     @Override
     public void createFolder(@NotNull String name, @NotNull String parentUUID) {
         WebPage_Info folderInfo = new BookmarkFolderNode(name, UUID.randomUUID().toString(), parentUUID);
-        bookmarkList.add(folderInfo);
-        viewContract.updateUI();
+        bookmarkFolderList.add(folderInfo);
 
+        viewContract.updateUI();
         threadPool.getExecutorService().execute(new Runnable() {
             @Override
             public void run() {
@@ -181,24 +159,21 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public void deleteFolder(@NotNull String uuid, boolean deleteBookmark) {
-        for (WebPage_Info info : bookmarkList) {
+        for (WebPage_Info info : bookmarkFolderList) {
             if (info.getUuid().equals(uuid)) {
-                bookmarkList.remove(info);
+                bookmarkFolderList.remove(info);
                 break;
             }
-        }
-        viewContract.updateUI();
+            viewContract.updateUI();
 
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                sBookmarkfolderDBcontrol.deleteFolder(uuid);
-                sBookmarkDBcontrol.delete(uuid, deleteBookmark);
-                if (!deleteBookmark) {
-                    sBookmarkDBcontrol.updateFolderUUID(uuid, DefaultBookmarkFolder.uuid);
+            threadPool.getExecutorService().execute(new Runnable() {
+                @Override
+                public void run() {
+                    sBookmarkfolderDBcontrol.deleteFolder(uuid);
                 }
-            }
-        });
+            });
+
+        }
     }
 
     /**
@@ -207,30 +182,14 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public void deleteBookmark(String uuid, boolean containBookmarks) {
-        int i = 0;
-        while (i < bookmarkList.size()) {
-            if (bookmarkList.get(i).getUuid().equals(uuid)) {
-                bookmarkList.remove(i);
-                break;
-            }
-            i++;
-        }
-        viewContract.updateUI();
-
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                sBookmarkDBcontrol.delete(uuid, false);
-            }
-        });
     }
 
     @Override
     public void changeFolderName(@NotNull String uuid, @NotNull String newName) {
         int i = 0;
         WebPage_Info info;
-        while (i < bookmarkList.size()) {
-            info = bookmarkList.get(i);
+        while (i < bookmarkFolderList.size()) {
+            info = bookmarkFolderList.get(i);
             if (info.getUuid().equals(uuid)) {
                 info.setTitle(newName);
                 break;
@@ -257,10 +216,10 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
     public void changeFolderLevel(@NotNull String uuid, @NotNull String newParentUuid) {
         int i = 0;
         WebPage_Info info;
-        while (i < bookmarkList.size()) {
-            info = bookmarkList.get(i);
+        while (i < bookmarkFolderList.size()) {
+            info = bookmarkFolderList.get(i);
             if (info.getUuid().equals(uuid)) {
-                bookmarkList.remove(info);
+                bookmarkFolderList.remove(info);
                 break;
             }
             i++;
@@ -283,7 +242,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public void insertBookmark(WebPage_Info info) {
-        sBookmarkDBcontrol.insertBookmark(info);
+       
     }
 
     /**
@@ -291,22 +250,23 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public List<WebPage_Info> getBookmarkList() {
-        boolean b=bookmarkList==null;
-        LogUtil.d(TAG,"数据源是null？ "+b);
-        for (WebPage_Info info : bookmarkList) {
-            LogUtil.d(TAG, "现有的数据 " + info.getUuid());
-        }
-        return bookmarkList;
+        return null;
     }
-
     /**
      * @return 返回已经拿到的文件夹信息，此列表只包含文件夹
      */
     @Override
     public List<WebPage_Info> getBookmarkFolderList() {
-        return null;
+        return bookmarkFolderList;
     }
 
+    public String getCurrentPathName() {
+        return currentPathName;
+    }
+
+    public void setCurrentPathName(String currentPathName) {
+        this.currentPathName = currentPathName;
+    }
 
     /**
      * @param uuid 文件夹的uuid
@@ -314,18 +274,24 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      */
     @Override
     public String queryFolderName(String uuid) {
-        return null;
+        if (bookmarkFolderList == null ||currentPath.equals(DefaultBookmarkFolder.uuid)) {
+            LogUtil.d(TAG,"查询文件夹名称"+currentPath);
+            return DefaultBookmarkFolder.folderName;
+        }
+        for (WebPage_Info info : bookmarkFolderList) {
+            if ((info.getUuid()).equals(currentPath)) {
+                return info.getTitle();
+            }
+        }
+        return "nul";
     }
 
     @Override
     public void destroy() {
-        bookmarkList=null;
-        currentPath = DefaultBookmarkFolder.uuid;
-        backStack = null;
-    }
-
-    public void setCurrentPath(String currnetPath) {
-        this.currentPath=currnetPath;
+        bookmarkFolderList = null;
+        sBookmarkfolderDBcontrol.destroy();
+        sBookmarkfolderDBcontrol = null;
+        sBookmarkManagerPresenter =null;
     }
 
     /**
@@ -334,7 +300,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
     public static class DefaultBookmarkFolder {
         public static final String folderName = "默认文件夹";
         public static final String uuid = "siefwyrwrklfhiwGFQD";
-        public static final String parentUUID = "siefwyrwrklfhiwGFQD";
+        public static final String parentUUID = null;
     }
 
     public static class HandlerMsg {
@@ -342,3 +308,4 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
         public static final int updateUI_folder = 201;
     }
 }
+

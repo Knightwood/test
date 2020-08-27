@@ -5,6 +5,7 @@ import android.view.View;
 import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.tool.LogUtil;
 
 /**
  * 创建者 kiylx
@@ -13,6 +14,8 @@ import com.example.kiylx.ti.model.WebPage_Info;
  * 描述：
  */
 public class bookmarkFolderHolder extends BaseHolder<WebPage_Info> {
+    private static final String TAG = "BookmarkFolderHolder";
+
     public bookmarkFolderHolder(View itemView) {
         super(itemView);
     }
@@ -24,6 +27,8 @@ public class bookmarkFolderHolder extends BaseHolder<WebPage_Info> {
                 .setText(R.id.itemTitle, data.getTitle())
                 .setImageResource(R.id.more_setting, R.drawable.chevronright);
         getView(R.id.itemurl).setVisibility(View.GONE);
+
+        LogUtil.d(TAG,"书签文件夹bind"+data.getUuid());
     }
 
     @Override
@@ -35,5 +40,6 @@ public class bookmarkFolderHolder extends BaseHolder<WebPage_Info> {
     @Override
     public void setOnIntemLongClickListener(View.OnLongClickListener listener) {
         super.setOnIntemLongClickListener(listener);
+        getView(R.id.itemTitle).setOnLongClickListener(listener);
     }
 }

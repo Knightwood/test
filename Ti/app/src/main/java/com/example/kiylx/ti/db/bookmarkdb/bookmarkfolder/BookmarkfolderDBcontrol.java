@@ -72,6 +72,7 @@ public class BookmarkfolderDBcontrol {
                 }
 
             }
+            return nodes;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -81,16 +82,10 @@ public class BookmarkfolderDBcontrol {
             if (tmpCursor != null) {
                 tmpCursor.close();
             }
-            //closeDB();
         }
-        return nodes;
+        return null;
     }
 
-    private void closeDB() {
-        if (mDatabase != null) {
-            mDatabase.close();
-        }
-    }
 
     /**
      * @param uuid    查询uuid，更新该uuid的bookmarkfolderinfo的显示名称
@@ -124,6 +119,5 @@ public class BookmarkfolderDBcontrol {
 
     public void destroy() {
         mDatabase.close();
-        bookmarkfolderDBcontrol=null;
     }
 }

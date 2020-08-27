@@ -24,15 +24,12 @@ import java.util.List;
  * 描述：
  */
 public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<WebPage_Info>> {
-    private static final String TAG = "BookmarkActivity2";
+    private static final String TAG = "BookmarkListAdapter";
     private View.OnClickListener listener;
     private TouchMethod touchMethod;
-
-    private BookmarkManagerActivity bookmarkManagerActivity;
-
-    public BookmarkListAdapter(BookmarkManagerActivity bookmarkManagerActivity, List<WebPage_Info> list) {
+    public BookmarkListAdapter(List<WebPage_Info> list) {
         super(list);
-        this.bookmarkManagerActivity = bookmarkManagerActivity;
+        LogUtil.d(TAG,"数量："+list.size());
     }
 
     @Override
@@ -66,7 +63,14 @@ public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<We
                     @Override
                     public void onClick(View v) {
                         touchMethod.click_folder(v, data);
-                        LogUtil.d(TAG,"点击书签文件夹被触发");
+                        LogUtil.d(TAG,"点击书签文件夹被触发"+data.getUuid());
+                    }
+                });
+                holder.setOnIntemLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        LogUtil.d(TAG,"长按书签文件夹被触发"+data.getUuid());
+                        return touchMethod.onLongClick_folder(v,data);
                     }
                 });
                 break;
@@ -77,6 +81,12 @@ public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<We
                     public void onClick(View v) {
                         touchMethod.click_bookmark(v, data);
                         LogUtil.d(TAG,"点击书签被触发"+v.getId());
+                    }
+                });
+                holder.setOnIntemLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        return touchMethod.onLongClick_bookmark(v,data);
                     }
                 });
                 break;

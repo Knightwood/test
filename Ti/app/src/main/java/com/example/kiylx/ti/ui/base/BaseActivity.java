@@ -21,6 +21,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
+import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.tool.networkpack.NetBroadcastReceiver;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -33,6 +34,7 @@ import java.util.UUID;
  * 创建时间 2020/6/12 17:28
  */
 public abstract class BaseActivity extends AppCompatActivity implements BaseContract.View {
+    private static final String TAG="BaseActivity";
     public NetBroadcastReceiver receiver;
     private BaseLifecycleObserver lifecycleObserver;
     @Nullable
@@ -44,6 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         super.onCreate(savedInstanceState);
         setContentView(layoutId());
 
+        LogUtil.d(TAG,"onCreate");
         initView(savedInstanceState);
         initActivity(lifecycleObserver,savedInstanceState);
         initViewAfter(savedInstanceState);
@@ -211,21 +214,22 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
         BookmarkDBcontrol.get(Xapplication.getInstance()).insertBookmark(info);
     }
 
+    /**
+     * @param view snackbar的显示宿主
+     * @param actionText snackbar右侧显示的文字
+     * @param text snackbar中间显示的文字
+     * @param args 要传递给点击actiontext时调用的方法的参数
+     */
     @Override
     public void showSnackbar(View view, String actionText, String text, Object... args) {
-        String msg;
-        if (args.length > 0)
-            msg = String.format(text, args);
-        else
-            msg = text;
-
-        Snackbar.make(view, msg, BaseTransientBottomBar.LENGTH_LONG).setAction(actionText, v -> chickSnackBar()).show();
+        Snackbar.make(view, text, BaseTransientBottomBar.LENGTH_LONG).setAction(actionText, v -> chickSnackBar(args)).show();
     }
 
     /**
      * 点击snackbar时被调用的行为
+     * @param object
      */
-    protected void chickSnackBar(){
+    protected void chickSnackBar(Object... object){
 
     }
 }

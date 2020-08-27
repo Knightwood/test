@@ -9,6 +9,8 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.crystal.customview.tools.LogUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +19,24 @@ import java.util.List;
  * 创建时间 2020/4/6 8:47
  */
 public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.Adapter<N> {
-    private List<T> list;//T类型的bean的list集合
+    private List<T> list = null;//T类型的bean的list集合
+    private static final String TAG = "BASEADAPTER";
 
     public BaseAdapter(List<T> list) {
         this.list = list;
     }
 
+    /**
+     * @return 返回初始化adapter时传入的数据
+     */
     public List<T> getData() {
         return list;
     }
 
+    /**
+     * 给adapter设置数据
+     * @param list
+     */
     public void setData(List<T> list) {
         this.list = list;
     }
@@ -40,6 +50,7 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
     @Override
     public N onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(getItemViewResId(viewType), parent, false);
+        LogUtil.d(TAG, "----------onCreateViewHolder  ");
         return createHolder(itemView, viewType);
     }
 
@@ -48,13 +59,17 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
     public void onBindViewHolder(@NonNull N holder, int position) {
         T data = list.get(position);
         bind(holder, data, getItemViewType(position));
+        LogUtil.d(TAG, "----------onBindViewHolder  ");
     }
 
+    /**
+     * @return 获取list的大小，若list是null，返回0
+     */
     @Override
     public int getItemCount() {
-        if (list == null) {
+        if (list == null)
             return 0;
-        } else
+        else
             return list.size();
     }
 

@@ -27,8 +27,8 @@ public class bookmarkholder extends BaseHolder<WebPage_Info> {
                 .setText(R.id.itemTitle, data.getTitle())
                 .setText(R.id.itemurl, data.getUrl())
                 .setImageResource(R.id.more_setting, R.drawable.morevert);
-       int i=R.id.more_setting;
-        LogUtil.d(TAG,"bind时的id"+i);
+
+        LogUtil.d(TAG,"书签bind"+data.getUuid());
     }
 
     @Override
@@ -41,5 +41,6 @@ public class bookmarkholder extends BaseHolder<WebPage_Info> {
     @Override
     public void setOnIntemLongClickListener(View.OnLongClickListener listener) {
         super.setOnIntemLongClickListener(listener);
+        getView(R.id.itemTitle).setOnLongClickListener(listener);
     }
 }

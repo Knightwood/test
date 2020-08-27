@@ -22,16 +22,22 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.base.BaseRecy_search_ViewActivity"/>
-        <activity
-            android:name=".ui.activitys.BookmarkManagerActivity"
-            android:theme="@style/MaterialThemes" />
-        <activity
-            android:name=".ui.activitys.ExtentActivity"
-            android:theme="@style/MaterialThemes" />
-        <activity android:name=".ui.activitys.ContentToUrlActivity" />
 
         <service android:name=".downloadpack.downloadcore.DownloadServices" />
+
+        <activity android:name=".ui.base.BaseWebviewActivity" />
+        <activity android:name=".ui.base.BaseRecy_search_ViewActivity"
+            android:theme="@style/HasActionmodeThemes"/>
+        <activity
+            android:name=".ui.activitys.MainActivity"
+            android:theme="@style/MaterialThemes">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activitys.ContentToUrlActivity" />
 
         <activity
             android:name=".ui.activitys.HistorysActivity"
@@ -45,7 +51,7 @@
         <activity
             android:name=".ui.activitys.StartPageActivity"
             android:label="@string/title_activity_start_page"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/MaterialThemes" />
         <activity
             android:name=".downloadpack.DownloadActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -57,18 +63,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/MaterialThemes" />
         <activity android:name=".trash.DoSearchActivity" />
-        <activity
-            android:name=".ui.activitys.MainActivity"
-            android:theme="@style/MaterialThemes">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.activitys.EditBookmarkActivity"
-            android:theme="@style/MaterialThemes"/>
-        <activity android:name=".ui.base.BaseWebviewActivity" />
+
+        <activity android:name=".ui.activitys.EditBookmarkActivity" android:theme="@style/MaterialThemes"/>
+        <activity android:name=".ui.activitys.BookmarkManagerActivity" android:theme="@style/HasActionmodeThemes" />
+        <activity android:name=".ui.activitys.BookmarkFolderActivity" android:theme="@style/MaterialThemes"/>
+        <activity android:name=".ui.activitys.ExtentActivity" android:theme="@style/MaterialThemes" />
     </application>
 
 </manifest>

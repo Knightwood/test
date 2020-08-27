@@ -5,18 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.DiffUtil;
+import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,65 +32,68 @@ import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
-import com.example.kiylx.ti.xapplication.Xapplication;
-import com.google.android.material.button.MaterialButton;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.DeleteBookmarkFolder_Dialog;
 
-import java.util.List;
+import java.util.Objects;
 
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod {
     private static final String TAG = "BookmarkActivity2";
     private static OpenOneWebpage mopenWeb;//用于调用mainactivity中的接口
     private BookmarkManagerPresenter sBookmarkManagerPresenter;
-    private BookmarkListAdapter adapter;
-    private RecyclerView recyclerView;
-    private static boolean containBookmarks = true;//true则显示书签和文件夹。false则是只显示文件夹，这时就是选择文件夹模式
-    private Handler handler;
+    private BookmarkListAdapter bookmarkListAdapter;
+    public Handler handler;
+    LinearLayoutManager linearLayoutManager;
 
-
-    @Override
-    protected void initView(Bundle savedInstanceState) {
-        super.initView(savedInstanceState);
-        recyclerView = findViewById(R.id.base_search_recyclerView);
-    }
 
     @Override
     protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         createHandler();
         LogUtil.d(TAG, "触发initActivity()方法");
-        sBookmarkManagerPresenter = BookmarkManagerPresenter.getInstance(Xapplication.getInstance(), this, handler);
-        setToolbarTitle("收藏夹", null);
-        if (getIntent() != null) {
-            containBookmarks = getIntent().getBooleanExtra("isShowBookmarks", true);
-            if (!containBookmarks) {
-                addButtonView();
-            }
+        sBookmarkManagerPresenter = BookmarkManagerPresenter.getInstance(this, handler);
+        if (savedInstanceState != null) {
+            String path = savedInstanceState.getString("currentPath", BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
+            sBookmarkManagerPresenter.setCurrentPath(path);
         }
+
+        setToolbarTitle("收藏夹", null);
         initRecyclerView();
+        LogUtil.d(TAG, "BookmarkManagerActivity initActivity()");
+
     }
 
     /**
      * 初始化recyclerview
      */
     private void initRecyclerView() {
-        if (containBookmarks) {
-            adapter = new BookmarkListAdapter(this, sBookmarkManagerPresenter.getBookmarkList());
+        RecyclerView recyclerViewb = findViewById(R.id.base_search_recyclerView);
+        linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerViewb.setLayoutManager(linearLayoutManager);
+        recyclerViewb.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        if (null == bookmarkListAdapter) {
+            LogUtil.d(TAG, "BookmarkManagerActivity 适配器是null");
+            bookmarkListAdapter = new BookmarkListAdapter(sBookmarkManagerPresenter.getBookmarkList());
+            bookmarkListAdapter.setTouchMethod(this);
+            recyclerViewb.setAdapter(bookmarkListAdapter);
         } else {
-            adapter = new BookmarkListAdapter(this, sBookmarkManagerPresenter.getBookmarkFolderList());
+            LogUtil.d(TAG, "BookmarkManagerActivity 适配器不是null");
+            recyclerViewb.setAdapter(bookmarkListAdapter);
+            bookmarkListAdapter.notifyDataSetChanged();
         }
-        adapter.setTouchMethod(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        recyclerView.setAdapter(adapter);
+        LogUtil.d(TAG, "BookmarkManagerActivity initRecyclerview()");
         //获取数据
-        if (containBookmarks) {
-            sBookmarkManagerPresenter.getIndex(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid, true);
-        } else {
-            sBookmarkManagerPresenter.getFolderIndex(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid, true);
-        }
+        sBookmarkManagerPresenter.getIndex(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid, true);
     }
 
     public static void setInterface(OpenOneWebpage minterface) {
         BookmarkManagerActivity.mopenWeb = minterface;
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("currentPath", sBookmarkManagerPresenter.getCurrentPath());
     }
 
     /**
@@ -99,21 +102,40 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
      */
     @Override
     public void updateUI() {
-        showToast("接收到了更新");
-        if (adapter == null) {
-            adapter = new BookmarkListAdapter(this, sBookmarkManagerPresenter.getBookmarkList());
-            recyclerView.setAdapter(adapter);
-        } else {
             /*List<WebPage_Info> newData = sBookmarkManager.getBookmarkList();
             List<WebPage_Info> oldData = adapter.getData();
             adapter.setData(newData);
             DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new BookmarkCallback(oldData, newData));
             diffResult.dispatchUpdatesTo(adapter);*/
-            //不使用差异计算时的测试
-            adapter.setData(sBookmarkManagerPresenter.getBookmarkList());
-            adapter.notifyDataSetChanged();
+        //不使用差异计算时的测试
+        bookmarkListAdapter.notifyDataSetChanged();
+        for (WebPage_Info info : sBookmarkManagerPresenter.getBookmarkList()) {
+            LogUtil.d(TAG, "开始更新界面，接收到的数据： " + info.getUuid());
         }
-        LogUtil.d(TAG, "开始更新界面，接收到的数据： ");
+    }
+
+    /**
+     * 刷新当前文件夹路径下的recyclerview
+     */
+    public void reflash() {
+        sBookmarkManagerPresenter.getIndex(sBookmarkManagerPresenter.getCurrentPath(), true);
+    }
+
+    @Override
+    protected int actionModeMenuId() {
+        return R.menu.bookmarkactionmode;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.actionModeDelete:
+                break;
+            case R.id.actionModeMove:
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -130,15 +152,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                switch (msg.what) {
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_folder:
-                        updateUI();
-                        break;
-                }
+                updateUI();
             }
         };
-
     }
 
     @Override
@@ -152,34 +168,9 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
-                sBookmarkManagerPresenter.createFolder("测试", BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
+                sBookmarkManagerPresenter.createFolder("测试", sBookmarkManagerPresenter.getCurrentPath());
                 break;
         }
-    }
-
-    /**
-     * 添加一个按钮
-     */
-    private void addButtonView() {
-        MaterialButton button = new MaterialButton(this);
-        button.setText(R.string.complete);
-
-        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.bottomToBottom = R.id.base_search_recyclerView;
-        lp.rightToRight = R.id.base_rec_root;
-        lp.setMargins(10, 10, 30, 35);
-        button.setLayoutParams(lp);
-
-        addSomeView(button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = getIntent();
-                intent.putExtra("FolderName", sBookmarkManagerPresenter.queryFolderName(sBookmarkManagerPresenter.getUpperLevel()));
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            }
-        });
     }
 
     @Override
@@ -187,13 +178,14 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ActivityCode.editBookmarkCode) {
-                //updateUI();
+                reflash();
             }
         }
     }
 
     @Override
     public void click_bookmark(View view, WebPage_Info info) {
+        //点击书签
         switch (view.getId()) {
             case R.id.itemTitle:
                 //点击item后访问网址
@@ -204,22 +196,45 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                 addPopMenu(view, info);
                 break;
         }
-        LogUtil.d(TAG, "ITEM被触发"+view.getId());
+        LogUtil.d(TAG, "ITEM被触发" + view.getId());
     }
 
     @Override
-    public void onLongClick_bookmark(View view, WebPage_Info info) {
-
+    public boolean onLongClick_bookmark(View view, WebPage_Info info) {
+        //长按
+        if (actionMode != null) {
+            return false;
+        }
+        getActionMode();
+        return true;
     }
 
     @Override
     public void click_folder(View view, WebPage_Info info) {
-
+        //点击文件夹
+        sBookmarkManagerPresenter.enterFolder(info.getUuid());
     }
 
     @Override
-    public void onLongClick_folder(View view, WebPage_Info info) {
+    public boolean onLongClick_folder(View view, WebPage_Info info) {
+        //长按文件夹
+        if (actionMode != null) {
+            return false;
+        }
+        getActionMode();
+        return true;
+    }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!sBookmarkManagerPresenter.getBackStack()) {
+                sBookmarkManagerPresenter.clickBack();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -239,7 +254,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                         startActivityForResult(i, ActivityCode.editBookmarkCode);
                         break;
                     case R.id.delete_Bookmark:
-                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid());
+                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid(), true);
                         break;
                     case R.id.openPageinNewWindow:
                         finish();
@@ -250,7 +265,22 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             }
         });
         popupMenu.show();
-        LogUtil.d(TAG,"POPMENU被触发");
+        LogUtil.d(TAG, "POPMENU被触发");
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtil.d(TAG, "onStop");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder);
+        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_folder);
+        sBookmarkManagerPresenter.destroy();
+        sBookmarkManagerPresenter = null;
     }
 }

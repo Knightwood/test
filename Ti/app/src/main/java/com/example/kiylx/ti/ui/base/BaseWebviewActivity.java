@@ -29,13 +29,11 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.conf.StateManager;
-import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
 import com.example.kiylx.ti.interfaces.ActionSelectListener;
-import com.example.kiylx.ti.interfaces.ControlWebView;
 import com.example.kiylx.ti.interfaces.HandleClickedLinks;
 import com.example.kiylx.ti.interfaces.MultiDialog_Functions;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
@@ -52,7 +50,6 @@ import com.example.kiylx.ti.tool.SomeTools;
 import com.example.kiylx.ti.tool.dateProcess.TimeProcess;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
-import com.example.kiylx.ti.trash.BookmarkPageActivity;
 import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
 import com.example.kiylx.ti.ui.activitys.HistorysActivity;
 import com.example.kiylx.ti.ui.activitys.StartPageActivity;
@@ -641,7 +638,7 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
                             break;
                         case 4:
                             //添加到书签
-                            addtobookmark(extra);
+                            addtobookmark(extra," ", true);
                             break;
 
                     }
@@ -664,9 +661,10 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
     /**
      * @param url 网址
      *            把信息添加到书签记录
+     * @param openEditView
      */
     @Override
-    public void addtobookmark(String url) {
+    public void addtobookmark(String url, String title, boolean openEditView) {
     }
 
     /**

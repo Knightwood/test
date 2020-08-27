@@ -1,9 +1,13 @@
 package com.example.kiylx.ti.ui.base;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.MenuRes;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
@@ -19,13 +23,23 @@ import com.example.kiylx.ti.R;
  * 提供了监听menuItem的方法,提供了对searchview的调整和控制监听
  * recyclerview: histories_recyclerView
  */
-public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
+public abstract class BaseRecy_search_ViewActivity extends BaseActivity implements ActionMode.Callback {
     protected ConstraintLayout layout;
     protected SearchView searchView;
+    protected ActionMode actionMode;
 
     @Override
+    @LayoutRes
     protected int layoutId() {
         return R.layout.activity_search_recyview;
+    }
+
+    /**
+     * 重写此方法提供actionmode的menu
+     */
+    @MenuRes
+    protected int actionModeMenuId() {
+        return 0;
     }
 
     @Override
@@ -77,5 +91,44 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity {
             layout = findViewById(R.id.base_rec_root);
         }
         return layout;
+    }
+
+    /**
+     * 获取actionmode
+     */
+    protected void getActionMode() {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(this);
+        }
+    }
+
+    /**
+     * 隐藏actionmode
+     */
+    protected void hideActionMode(){
+        if (actionMode!=null){
+            actionMode.finish();
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(actionModeMenuId(), menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        actionMode = null;
     }
 }

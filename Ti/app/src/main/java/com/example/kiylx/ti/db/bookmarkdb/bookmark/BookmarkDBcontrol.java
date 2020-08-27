@@ -157,10 +157,15 @@ public class BookmarkDBcontrol {
                     cursor.moveToNext();
                 }
             }
-        } finally {
-            cursor.close();
+            return mlists;
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        return mlists;
+        finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
     }
 
 
@@ -233,7 +238,6 @@ public class BookmarkDBcontrol {
 
     public void destroy() {
         mDatabase.close();
-        simpleThreadPool=null;
-        bookmarkDBcontrol=null;
+        simpleThreadPool = null;
     }
 }

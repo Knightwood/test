@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
+import com.example.kiylx.ti.mvp.presenter.BookmarkFolderManagerPresenter;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseActivity;
@@ -41,6 +43,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
     private TextView folderView;
     private String folderName;//书签所属文件夹的名称
     private Button saveButton;
+    private String fatherUUID;//当前书签所属的目录
 
 
     /**
@@ -103,8 +106,8 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
         if (beBookmarked_info.getTitle() == null) {
             beBookmarked_info.setTitle("  ");
         }
-        if (beBookmarked_info.getBookmarkFolderUUID() == null) {
-            beBookmarked_info.setBookmarkFolderUUID(BookmarkManagerPresenter.DefaultBookmarkFolder.uuid);
+        if (fatherUUID!=null){
+            beBookmarked_info.setBookmarkFolderUUID(fatherUUID);
         }
         if (beBookmarked_info.getUuid() == null) {
             beBookmarked_info.setUuid(UUID.randomUUID());
@@ -140,6 +143,9 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
             if (requestCode == ActivityCode.selectBookmarkFolder) {
                 if (data != null) {
                     this.folderName = data.getStringExtra("FolderName");
+                    this.fatherUUID = data.getStringExtra("FatherFolder");
+                    LogUtil.d(TAG, "接收到的文件夹名称" + folderName);
+                    LogUtil.d(TAG,"接收到的uuid"+fatherUUID);
                     setMassage();
                 }
             }
@@ -150,8 +156,7 @@ public class EditBookmarkActivity extends BaseActivity implements View.OnClickLi
      * 打开书签文件夹activity，选择文件夹
      */
     private void selectFolder() {
-        Intent intent = new Intent(this, BookmarkManagerActivity.class);
-        intent.putExtra("isShowBookmarks", false);
+        Intent intent = new Intent(this, BookmarkFolderActivity.class);
         startActivityForResult(intent, ActivityCode.selectBookmarkFolder);
     }
 

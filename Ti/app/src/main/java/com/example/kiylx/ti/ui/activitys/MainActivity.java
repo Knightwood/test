@@ -2,7 +2,6 @@ package com.example.kiylx.ti.ui.activitys;
 
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
@@ -30,6 +29,7 @@ import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseWebviewActivity;
+import com.example.kiylx.ti.webview32.CustomAWebView;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.preferences.DefaultPreferenceTool;
 import com.example.kiylx.ti.tool.SomeTools;
@@ -198,7 +198,8 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
                 stateManager.setDontRecordHistory(b1);
                 break;
             case R.id.addBookmark:
-                addtobookmark(mWebViewManager.getTop(current).getUrl());
+                CustomAWebView info=mWebViewManager.getTop(current);
+                addtobookmark(info.getUrl(),info.getTitle(),false );
                 break;
             case R.id.menu:
                 startSetting();
@@ -473,16 +474,21 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
     }
 
     @Override
-    protected void chickSnackBar() {
+    protected void chickSnackBar(Object... object) {
         super.chickSnackBar();
-        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder("url").title("title").build(), this, BookmarkManagerPresenter.DefaultBookmarkFolder.folderName);
+        Intent i = EditBookmarkActivity.newInstance(new WebPage_Info.Builder((String) object[0]).title((String) object[1]).build(), this, BookmarkManagerPresenter.DefaultBookmarkFolder.folderName);
         startActivity(i);
     }
 
     @Override
-    public void addtobookmark(String url) {
-        saveBookmark(new WebPage_Info.Builder(url).title("测试").build());
-        showSnackbar(findViewById(R.id.layout), "编辑", "编辑书签");
+    public void addtobookmark(String url, String title, boolean openEditView) {
+        if (openEditView){
+            chickSnackBar(url,title);
+        }else{
+            saveBookmark(new WebPage_Info.Builder(url).title(title).build());
+            showSnackbar(findViewById(R.id.layout), "编辑", "编辑书签",url,title);
+        }
+
     }
 
     @Override

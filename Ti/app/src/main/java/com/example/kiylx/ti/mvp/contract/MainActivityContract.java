@@ -19,8 +19,9 @@ public interface MainActivityContract extends BaseContract.View {
     /**
      * @param url 网址
      * 添加到书签
+     * @param openEditView
      */
-    void addtobookmark(String url);
+    void addtobookmark(String url, String title, boolean openEditView);
 
     /**
      * 重新载入当前网页

@@ -1,9 +1,6 @@
 package com.example.kiylx.ti.mvp.contract;
 
-import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.contract.base.BaseContract;
-
-import java.util.List;
 
 /**
  * 创建者 kiylx
@@ -14,8 +11,7 @@ import java.util.List;
 public interface BookmarkActivityContract extends BaseContract.View {
 
     /**
-     * 更新界面
-     * 包含有文件夹和书签的混合list
+     *
      */
     void updateUI();
 
