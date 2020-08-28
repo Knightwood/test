@@ -33,7 +33,7 @@ public interface BookmarkManagerContract {
 
     void deleteFolder(@NotNull String uuid, boolean deleteBookmark);
 
-    void deleteBookmark(String uuid, boolean containBookmarks);
+    void deleteBookmark(String uuid);
 
     void changeFolderName(@NotNull String uuid, @NotNull String newName);
 

@@ -2,13 +2,14 @@ package com.example.kiylx.ti.model;
 
 import android.os.Build;
 
+import com.crystal.customview.baseadapter1.BeanSelect;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class WebPage_Info {
+public class WebPage_Info implements BeanSelect {
     //收集网页的信息，用于展示多窗口以及记录历史记录
     private String uuid;//书签本身的uuid，标识其唯一性
     private String title;
@@ -24,6 +25,8 @@ public class WebPage_Info {
      * -2这是表示用作书签文件夹的标识，uuid是文件夹的uuid，bookmarkFolderUUID是文件夹的父文件夹uuid，title是文件夹名称，url设为“nul”
      * */
     //feature 标志，0或者-1都可以，0在不计入收藏时，-1是计入收藏时写入的，但是在收藏记录那，压根就没用过。所以，以后要删除这个标志
+
+private boolean selectFlag;//在多选或单选中，此标志位可表示相应的itemview是否被选择
 
     /**
      * @param URL
@@ -143,6 +146,24 @@ public class WebPage_Info {
     public void setProgress(int progress) {
         this.progress = progress;
     }
+
+
+    /**
+     * @return bean对应的itemview是否被选择，若被选择，返回true
+     */
+     @Override
+    public boolean isSelected(){
+    return selectFlag;
+    };
+
+    /**
+     * 设置bean对应的itemview是选择状态
+     * @param selected
+     */
+      @Override
+   public void setSelected(boolean selected){
+   selectFlag=selected;
+   };
 
     /**
      * 根据需求生成wegpage_info

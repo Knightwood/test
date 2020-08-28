@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.crystal.customview.tools.LogUtil;
 
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  * 创建时间 2020/4/6 8:47
  */
 public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.Adapter<N> {
-    private List<T> list = null;//T类型的bean的list集合
+    protected List<T> list = null;//T类型的bean的list集合
     private static final String TAG = "BASEADAPTER";
 
     public BaseAdapter(List<T> list) {
@@ -35,6 +36,7 @@ public abstract class BaseAdapter<T, N extends BaseHolder> extends RecyclerView.
 
     /**
      * 给adapter设置数据
+     *
      * @param list
      */
     public void setData(List<T> list) {

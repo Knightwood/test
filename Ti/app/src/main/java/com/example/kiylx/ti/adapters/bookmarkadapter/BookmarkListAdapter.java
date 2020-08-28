@@ -1,19 +1,12 @@
 package com.example.kiylx.ti.adapters.bookmarkadapter;
 
-import android.content.Intent;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 
-import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.crystal.customview.baseadapter1.BaseHolder;
+import com.crystal.customview.baseadapter1.MultiSelectAdapter;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.tool.LogUtil;
-import com.example.kiylx.ti.ui.activitys.BookmarkManagerActivity;
-import com.example.kiylx.ti.ui.activitys.EditBookmarkActivity;
 
 import java.util.List;
 
@@ -23,7 +16,7 @@ import java.util.List;
  * packageName：com.example.kiylx.ti.adapters.bookmarkadapter
  * 描述：
  */
-public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<WebPage_Info>> {
+public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHolder<WebPage_Info>> {
     private static final String TAG = "BookmarkListAdapter";
     private View.OnClickListener listener;
     private TouchMethod touchMethod;
@@ -62,30 +55,48 @@ public class BookmarkListAdapter extends BaseAdapter<WebPage_Info, BaseHolder<We
                 holder.setOnIntemClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        touchMethod.click_folder(v, data);
+                        if (isSelectingMode()) {
+                            setItemSelect(data);
+                        }else{
+                            touchMethod.click_folder(v, data);
+                        }
                         LogUtil.d(TAG,"点击书签文件夹被触发"+data.getUuid());
                     }
                 });
                 holder.setOnIntemLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        if (isSelectingMode()){
+                            return true;
+                        }
+                        changeSelectMode(true);
                         LogUtil.d(TAG,"长按书签文件夹被触发"+data.getUuid());
                         return touchMethod.onLongClick_folder(v,data);
                     }
                 });
                 break;
+
+
             case BookmarkKind.bookmark:
                 ((bookmarkholder) holder).bind(data);
                 holder.setOnIntemClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        touchMethod.click_bookmark(v, data);
+                        if (isSelectingMode()) {
+                            setItemSelect(data);
+                        }else{
+                            touchMethod.click_folder(v, data);
+                        }
                         LogUtil.d(TAG,"点击书签被触发"+v.getId());
                     }
                 });
                 holder.setOnIntemLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
+                        if (isSelectingMode()){
+                            return true;
+                        }
+                        changeSelectMode(true);
                         return touchMethod.onLongClick_bookmark(v,data);
                     }
                 });

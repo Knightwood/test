@@ -175,13 +175,13 @@ public class BookmarkFolderManagerPresenter extends BasePresenter<BookmarkActivi
 
         }
     }
-
     /**
      * @param uuid 待删除书签的uuid
      *             根据uuid删除数据库中的书签
      */
     @Override
-    public void deleteBookmark(String uuid, boolean containBookmarks) {
+    public void deleteBookmark(String uuid) {
+
     }
 
     @Override

@@ -23,8 +23,12 @@ public class bookmarkholder extends BaseHolder<WebPage_Info> {
 
     @Override
     public void bind(WebPage_Info data){
-       setImageResource(R.id.Bookmarkimage, R.drawable.ic_bookmark_black_24dp)
-                .setText(R.id.itemTitle, data.getTitle())
+        if (data.isSelected()){
+            setImageResource(R.id.Bookmarkimage, R.drawable.ic_check_circle_black_24dp);
+        }else {
+            setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp);
+        }
+                setText(R.id.itemTitle, data.getTitle())
                 .setText(R.id.itemurl, data.getUrl())
                 .setImageResource(R.id.more_setting, R.drawable.morevert);
 

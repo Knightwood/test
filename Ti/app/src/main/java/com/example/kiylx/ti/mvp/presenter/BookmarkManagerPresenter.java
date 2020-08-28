@@ -206,7 +206,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      *             根据uuid删除数据库中的书签
      */
     @Override
-    public void deleteBookmark(String uuid, boolean containBookmarks) {
+    public void deleteBookmark(String uuid) {
         int i = 0;
         while (i < bookmarkList.size()) {
             if (bookmarkList.get(i).getUuid().equals(uuid)) {

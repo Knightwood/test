@@ -23,12 +23,17 @@ public class bookmarkFolderHolder extends BaseHolder<WebPage_Info> {
     @Override
     public void bind(WebPage_Info data) {
         super.bind(data);
-        setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp)
-                .setText(R.id.itemTitle, data.getTitle())
+        if (data.isSelected()) {
+            setImageResource(R.id.Bookmarkimage, R.drawable.ic_check_circle_black_24dp);
+        } else {
+            setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp);
+        }
+
+        setText(R.id.itemTitle, data.getTitle())
                 .setImageResource(R.id.more_setting, R.drawable.chevronright);
         getView(R.id.itemurl).setVisibility(View.GONE);
 
-        LogUtil.d(TAG,"书签文件夹bind"+data.getUuid());
+        LogUtil.d(TAG, "书签文件夹bind" + data.getUuid());
     }
 
     @Override

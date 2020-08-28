@@ -32,9 +32,6 @@ import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
-import com.example.kiylx.ti.ui.fragments.dialogfragment.DeleteBookmarkFolder_Dialog;
-
-import java.util.Objects;
 
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod {
     private static final String TAG = "BookmarkActivity2";
@@ -131,6 +128,15 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
 
         switch (item.getItemId()) {
             case R.id.actionModeDelete:
+                for (WebPage_Info info : bookmarkListAdapter.getBeSelectItems()) {
+                    if (info.getWEB_feature() == -2) {
+                        sBookmarkManagerPresenter.deleteFolder(info.getUuid(), true);
+                    } else {
+                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid());
+                    }
+                    LogUtil.d(TAG, "adapter多选：" + info.getUuid());
+                }
+
                 break;
             case R.id.actionModeMove:
                 break;
@@ -205,6 +211,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         if (actionMode != null) {
             return false;
         }
+
         getActionMode();
         return true;
     }
@@ -213,6 +220,8 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     public void click_folder(View view, WebPage_Info info) {
         //点击文件夹
         sBookmarkManagerPresenter.enterFolder(info.getUuid());
+
+
     }
 
     @Override
@@ -225,6 +234,11 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         return true;
     }
 
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        super.onDestroyActionMode(mode);
+        bookmarkListAdapter.changeSelectMode(false);
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -254,7 +268,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                         startActivityForResult(i, ActivityCode.editBookmarkCode);
                         break;
                     case R.id.delete_Bookmark:
-                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid(), true);
+                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid());
                         break;
                     case R.id.openPageinNewWindow:
                         finish();
