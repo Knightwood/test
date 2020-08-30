@@ -26,7 +26,7 @@ public class bookmarkholder extends BaseHolder<WebPage_Info> {
         if (data.isSelected()){
             setImageResource(R.id.Bookmarkimage, R.drawable.ic_check_circle_black_24dp);
         }else {
-            setImageResource(R.id.Bookmarkimage, R.drawable.ic_folder_black_24dp);
+            setImageResource(R.id.Bookmarkimage, R.drawable.ic_star_black_24dp);
         }
                 setText(R.id.itemTitle, data.getTitle())
                 .setText(R.id.itemurl, data.getUrl())

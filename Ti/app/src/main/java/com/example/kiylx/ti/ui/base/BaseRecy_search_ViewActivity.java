@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.ui.base;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.MenuRes;
 import androidx.appcompat.view.ActionMode;
@@ -28,10 +29,29 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
     protected SearchView searchView;
     protected ActionMode actionMode;
 
+    /**
+     * @return 提供此activity的布局id
+     */
     @Override
     @LayoutRes
     protected int layoutId() {
         return R.layout.activity_search_recyview;
+    }
+
+    /**
+     * @return 提供toolbar的menu的id
+     */
+    @MenuRes
+    protected int toolbarMenu() {
+        return R.menu.only_search_tool_menu;
+    }
+
+    /**
+     * @return 提供toolbar的menu中searchview的id
+     */
+    @IdRes
+    protected int searchViewId() {
+        return R.id.only_a_searchview;
     }
 
     /**
@@ -43,17 +63,31 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
     }
 
     @Override
-    protected Toolbar setToolbar() {
+    protected Toolbar getToolbar() {
         return findViewById(R.id.only_a_searchtoolbar);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.only_search_tool_menu, menu);
+        getMenuInflater().inflate(toolbarMenu(), menu);
         addOtherMenu(menu);//可以由子类添加额外的菜单项
-        searchView = (SearchView) menu.findItem(R.id.only_a_searchview).getActionView();
-        searchControl(searchView);
+        //找到searchview
+        getSearchView(menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * @param menu 菜单
+     *             找到menu中包含的serchview
+     */
+    private void getSearchView(Menu menu) {
+
+        int searchviewid = searchViewId();
+        if (searchviewid == 0) {
+            return;
+        }
+        searchView = (SearchView) menu.findItem(searchviewid).getActionView();
+        searchControl(searchView);
     }
 
     @Override
@@ -79,7 +113,9 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
     /**
      * @param searchView 允许子activity对searchview进行调整和控制
      */
-    protected abstract void searchControl(SearchView searchView);
+    protected void searchControl(SearchView searchView){
+
+    }
 
     protected void addSomeView(View v) {
         getRootView();
@@ -105,8 +141,8 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
     /**
      * 隐藏actionmode
      */
-    protected void hideActionMode(){
-        if (actionMode!=null){
+    protected void hideActionMode() {
+        if (actionMode != null) {
             actionMode.finish();
         }
     }
@@ -130,5 +166,9 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         actionMode = null;
+    }
+
+    private void generateSearchView(){
+
     }
 }

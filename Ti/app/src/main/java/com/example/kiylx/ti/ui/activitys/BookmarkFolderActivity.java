@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -21,13 +19,12 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.adapters.bookmarkadapter.BookmarkListAdapter;
 import com.example.kiylx.ti.adapters.bookmarkadapter.TouchMethod;
 import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.mvp.presenter.BookmarkFolderPresenter;
 import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
-import com.example.kiylx.ti.mvp.presenter.BookmarkFolderManagerPresenter;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
-import com.example.kiylx.ti.xapplication.Xapplication;
 import com.google.android.material.button.MaterialButton;
 
 /**
@@ -38,7 +35,7 @@ import com.google.android.material.button.MaterialButton;
  */
 public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod {
     private static final String TAG = "BookmarkActivity2";
-    private BookmarkFolderManagerPresenter sFolderManagerPresenter;
+    private BookmarkFolderPresenter sFolderManagerPresenter;
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
     private Handler handler;
@@ -54,10 +51,21 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
     protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         createHandler();
         LogUtil.d(TAG, "触发initActivity()方法");
-        sFolderManagerPresenter = BookmarkFolderManagerPresenter.getInstance( this, handler);
-        setToolbarTitle("收藏夹", null);
+        sFolderManagerPresenter = BookmarkFolderPresenter.getInstance( this, handler);
+        setToolbarTitle("选择文件夹", null);
         addButtonView();
         initRecyclerView();
+    }
+
+    @Override
+    protected int toolbarMenu() {
+        return R.menu.bookmarkfolder_toolbar;
+    }
+
+    @Override
+    protected int searchViewId() {
+        //不提供searchview
+        return 0;
     }
 
     /**
@@ -70,7 +78,7 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
         //获取数据
-        sFolderManagerPresenter.getFolderIndex(BookmarkFolderManagerPresenter.DefaultBookmarkFolder.uuid, true);
+        sFolderManagerPresenter.getIndex(BookmarkFolderPresenter.DefaultBookmarkFolder.uuid, true);
 
     }
 
@@ -106,38 +114,19 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
-                        break;
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_folder:
-                        updateUI();
-                        break;
-                }
+                super.handleMessage(msg);updateUI();
             }
         };
 
     }
-
-    @Override
-    protected void addOtherMenu(Menu menu) {
-        super.addOtherMenu(menu);
-        menu.add(0, 1, 1, R.string.addBookmarkFolder);
-    }
-
     @Override
     protected void ListenItemClick(MenuItem item) {
         super.ListenItemClick(item);
         switch (item.getItemId()) {
-            case 1:
+            case R.id.addbookmarkfolder:
                 sFolderManagerPresenter.createFolder("测试", sFolderManagerPresenter.getCurrentPath());
                 break;
         }
-    }
-
-    @Override
-    protected void searchControl(SearchView searchView) {
-
     }
 
     /**

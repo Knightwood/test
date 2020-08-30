@@ -18,6 +18,7 @@ public abstract class MultiSelectAdapter<T extends BeanSelect, N extends BaseHol
     private List<T> beSelectItems = null;//被选择的bean
     private boolean selecting;//是否开始选择,true则adapter进入选择模式
     private int selectNum = 0;//可以选择的item的数量，等于0则无限制
+    private int selectAllNum=1;//全选时将此计数减1，避免重复调用selectAll()
 
     public MultiSelectAdapter(List<T> list) {
         super(list);
@@ -98,5 +99,45 @@ public abstract class MultiSelectAdapter<T extends BeanSelect, N extends BaseHol
 
     public void setSelectNum(int selectNum) {
         this.selectNum = selectNum;
+    }
+
+    /**
+     * @param b true是被选择，false是不选择
+     *          让所有数据被选择或是取消选择
+     */
+    public void selectAll(boolean b) {
+        if (selectAllNum>0){
+            for (T data : list) {
+                data.setSelected(b);
+            }
+            beSelectItems.clear();
+            beSelectItems.addAll(list);
+            notifyDataSetChanged();
+            selectAllNum-=1;
+        }
+
+    }
+
+    /**
+     * 反选，让被选择的数据取消选择，没被选择的数据被选择
+     */
+    public void ReverseSelect(){
+        if (!beSelectItems.isEmpty()) {
+            for (T data :beSelectItems) {
+                data.setSelected(!data.isSelected());
+            }
+            beSelectItems.clear();
+            notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * 不使用多选时复原这些变量
+     */
+    public void destroy() {
+        changeSelectMode(false);
+        beSelectItems.clear();
+        selectAllNum=1;
+        selectNum=0;
     }
 }

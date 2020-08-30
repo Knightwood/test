@@ -1,6 +1,9 @@
 package com.example.kiylx.ti.tool;
 
 import android.util.Log;
+import android.widget.Toast;
+
+import com.example.kiylx.ti.xapplication.Xapplication;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,6 +72,9 @@ public class LogUtil {
                 Log.w(tag, String.format(msg, args));
 
         }
+    }
+    public static void showToast(String message) {
+            Toast.makeText(Xapplication.getInstance(), message, Toast.LENGTH_LONG).show();
     }
 
 }

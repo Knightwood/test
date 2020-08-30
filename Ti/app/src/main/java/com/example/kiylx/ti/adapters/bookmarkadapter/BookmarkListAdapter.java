@@ -85,7 +85,7 @@ public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHo
                         if (isSelectingMode()) {
                             setItemSelect(data);
                         }else{
-                            touchMethod.click_folder(v, data);
+                            touchMethod.click_bookmark(v, data);
                         }
                         LogUtil.d(TAG,"点击书签被触发"+v.getId());
                     }

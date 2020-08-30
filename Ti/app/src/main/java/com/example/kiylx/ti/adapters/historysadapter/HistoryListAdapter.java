@@ -91,7 +91,7 @@ public class HistoryListAdapter extends PagedListAdapter<HistoryEntity, HistoryL
             if (info == null) {
                 title.setText("loading");//使用分页后，容器的数量可能会大于数据的数量，所以如果容器数量多，传入的info会是null，所以在此装饰成正在加载的样子
             } else {
-                icon.setImageResource(R.drawable.accesstime);
+                icon.setImageResource(R.drawable.ic_access_time_black_24dp);
                 this.info = info;
                 URL = info.url;
                 title.setText(info.title);

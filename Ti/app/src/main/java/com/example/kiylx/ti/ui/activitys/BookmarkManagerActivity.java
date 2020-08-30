@@ -128,17 +128,13 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
 
         switch (item.getItemId()) {
             case R.id.actionModeDelete:
-                for (WebPage_Info info : bookmarkListAdapter.getBeSelectItems()) {
-                    if (info.getWEB_feature() == -2) {
-                        sBookmarkManagerPresenter.deleteFolder(info.getUuid(), true);
-                    } else {
-                        sBookmarkManagerPresenter.deleteBookmark(info.getUuid());
-                    }
-                    LogUtil.d(TAG, "adapter多选：" + info.getUuid());
-                }
-
+                sBookmarkManagerPresenter.deleteBookmarks(bookmarkListAdapter.getBeSelectItems());
                 break;
             case R.id.actionModeMove:
+                selectFolder();
+                break;
+            case R.id.actionModeSelectAll:
+                bookmarkListAdapter.selectAll(true);
                 break;
         }
         return true;
@@ -158,7 +154,15 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                updateUI();
+                switch (msg.what) {
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
+                        updateUI();
+                        break;
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_flash:
+                        reflash();
+                        break;
+                }
+
             }
         };
     }
@@ -179,12 +183,28 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         }
     }
 
+    /**
+     * 打开书签文件夹activity，选择文件夹
+     */
+    private void selectFolder() {
+        Intent intent = new Intent(this, BookmarkFolderActivity.class);
+        startActivityForResult(intent, ActivityCode.selectBookmarkFolder);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ActivityCode.editBookmarkCode) {
+                //编辑了书签，那有可能书签的所属文件夹就不一致了，更新界面
                 reflash();
+            }
+            if (requestCode == ActivityCode.selectBookmarkFolder) {
+                if (data != null) {
+                    //批量更改层级，刷新界面
+                    LogUtil.d(TAG, "改变文件夹层到文件夹uuid" + data.getStringExtra("FatherFolder"));
+                    sBookmarkManagerPresenter.changeLevel(bookmarkListAdapter.getBeSelectItems(), data.getStringExtra("FatherFolder"));
+                }
             }
         }
     }
@@ -237,7 +257,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         super.onDestroyActionMode(mode);
-        bookmarkListAdapter.changeSelectMode(false);
+        bookmarkListAdapter.destroy();
     }
 
     @Override
@@ -293,7 +313,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     protected void onDestroy() {
         super.onDestroy();
         handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder);
-        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_folder);
+        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_flash);
         sBookmarkManagerPresenter.destroy();
         sBookmarkManagerPresenter = null;
     }

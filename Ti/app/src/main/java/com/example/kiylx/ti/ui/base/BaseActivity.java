@@ -54,7 +54,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
 
     @CallSuper
     protected void initView(Bundle savedInstanceState) {
-        toolbar = setToolbar();
+        toolbar = getToolbar();
         if (toolbar != null) {
             setSupportActionBar(toolbar);
         }
@@ -71,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseCont
     /**
      * @return 提供布局中的toolbar
      */
-    protected Toolbar setToolbar() {
+    protected Toolbar getToolbar() {
         return null;
     }
 

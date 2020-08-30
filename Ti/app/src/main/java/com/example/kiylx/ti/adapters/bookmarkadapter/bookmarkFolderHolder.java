@@ -30,7 +30,7 @@ public class bookmarkFolderHolder extends BaseHolder<WebPage_Info> {
         }
 
         setText(R.id.itemTitle, data.getTitle())
-                .setImageResource(R.id.more_setting, R.drawable.chevronright);
+                .setImageResource(R.id.more_setting, R.drawable.ic_chevron_right_black_24dp);
         getView(R.id.itemurl).setVisibility(View.GONE);
 
         LogUtil.d(TAG, "书签文件夹bind" + data.getUuid());

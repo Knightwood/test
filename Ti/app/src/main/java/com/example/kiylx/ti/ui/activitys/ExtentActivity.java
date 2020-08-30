@@ -24,7 +24,7 @@ public class ExtentActivity extends BaseActivity {
     }
 
     @Override
-    protected Toolbar setToolbar() {
+    protected Toolbar getToolbar() {
         return (Toolbar) findViewById(R.id.toolbar_jsadd);
     }
 

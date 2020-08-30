@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/actionModeSelectAll"
+        android:icon="@drawable/ic_select_all_black_24dp"
+        android:title="全选" />
+
+    <item
         android:id="@+id/actionModeDelete"
         android:icon="@drawable/ic_delete_forever_black_24dp"
         android:title="删除" />
