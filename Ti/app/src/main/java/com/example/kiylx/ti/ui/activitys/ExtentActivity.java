@@ -10,6 +10,9 @@ import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 
+/**
+ * 管理js脚本
+ */
 public class ExtentActivity extends BaseActivity {
 
     @Override

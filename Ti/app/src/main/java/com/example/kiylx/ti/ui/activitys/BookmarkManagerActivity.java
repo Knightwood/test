@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.ui.activitys;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.SearchView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.view.ActionMode;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.adapters.bookmarkadapter.BookmarkListAdapter;
 import com.example.kiylx.ti.adapters.bookmarkadapter.TouchMethod;
+import com.example.kiylx.ti.conf.ActionCode;
 import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
 import com.example.kiylx.ti.model.WebPage_Info;
@@ -32,14 +35,18 @@ import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.Edit_dialog;
+
+import java.lang.ref.WeakReference;
 
 public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod {
     private static final String TAG = "BookmarkActivity2";
     private static OpenOneWebpage mopenWeb;//用于调用mainactivity中的接口
     private BookmarkManagerPresenter sBookmarkManagerPresenter;
     private BookmarkListAdapter bookmarkListAdapter;
-    public Handler handler;
+    public MyHandler handler;
     LinearLayoutManager linearLayoutManager;
+    private int whichMenu = 1;// 2加载第二个菜单，1加载第一个
 
 
     @Override
@@ -136,6 +143,12 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             case R.id.actionModeSelectAll:
                 bookmarkListAdapter.selectAll(true);
                 break;
+            case R.id.reName:
+                LogUtil.d(TAG,"重命名");
+                Edit_dialog edit_dialog2 = Edit_dialog.getInstance(bookmarkListAdapter.getSelectOne(0).getTitle(), this, ActionCode.reName);
+                FragmentManager fm2 = getSupportFragmentManager();
+                edit_dialog2.show(fm2, "EDIT_DIALOG");
+                break;
         }
         return true;
     }
@@ -150,21 +163,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
      * 创建handler处理消息，更新界面
      */
     public void createHandler() {
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
-                        updateUI();
-                        break;
-                    case BookmarkManagerPresenter.HandlerMsg.updateUI_flash:
-                        reflash();
-                        break;
-                }
-
-            }
-        };
+        handler = new MyHandler(this);
     }
 
     @Override
@@ -178,10 +177,14 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case 1:
-                sBookmarkManagerPresenter.createFolder("测试", sBookmarkManagerPresenter.getCurrentPath());
+                LogUtil.d(TAG,"新建书签文件夹");
+                Edit_dialog edit_dialog = Edit_dialog.getInstance(null, this, ActionCode.createFolderName);
+                FragmentManager fm = getSupportFragmentManager();
+                edit_dialog.show(fm, "EDIT_DIALOG");
                 break;
         }
     }
+
 
     /**
      * 打开书签文件夹activity，选择文件夹
@@ -221,6 +224,7 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
             case R.id.more_setting:
                 addPopMenu(view, info);
                 break;
+
         }
         LogUtil.d(TAG, "ITEM被触发" + view.getId());
     }
@@ -241,7 +245,6 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         //点击文件夹
         sBookmarkManagerPresenter.enterFolder(info.getUuid());
 
-
     }
 
     @Override
@@ -252,6 +255,41 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         }
         getActionMode();
         return true;
+    }
+
+    @Override
+    public void setResult(int requestCode, String request, String result) {
+        switch (requestCode) {
+            case ActionCode.createFolderName:
+                sBookmarkManagerPresenter.createFolder(result, sBookmarkManagerPresenter.getCurrentPath());
+                break;
+            case ActionCode.reName:
+                sBookmarkManagerPresenter.changeFolderName(bookmarkListAdapter.getSelectOne(0).getUuid(), result);
+                break;
+        }
+
+    }
+
+    @Override
+    public void updateMenu(int whichMenu) {
+        //更改actionmode的menu。
+        //要加载的menu与当前的menu不同，则加载，相同则不再处理
+        if (this.whichMenu != whichMenu) {
+            this.whichMenu = whichMenu;
+            actionMode.invalidate();
+        }
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        menu.clear();
+        if (whichMenu == 1) {
+            mode.getMenuInflater().inflate(actionModeMenuId(), menu);
+            return true;
+        } else {
+            mode.getMenuInflater().inflate(R.menu.edit_name, menu);
+            return true;
+        }
     }
 
     @Override
@@ -312,9 +350,35 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder);
-        handler.removeMessages(BookmarkManagerPresenter.HandlerMsg.updateUI_flash);
+        handler.removeCallbacksAndMessages(null);
         sBookmarkManagerPresenter.destroy();
         sBookmarkManagerPresenter = null;
+    }
+
+    /**
+     * 更新界面
+     */
+    public static class MyHandler extends Handler {
+        WeakReference weakReference;
+
+        MyHandler(BookmarkManagerActivity activity) {
+            weakReference = new WeakReference(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BookmarkManagerActivity activity = (BookmarkManagerActivity) weakReference.get();
+            if (activity != null) {
+                switch (msg.what) {
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder:
+                        activity.updateUI();
+                        break;
+                    case BookmarkManagerPresenter.HandlerMsg.updateUI_flash:
+                        activity.reflash();
+                        break;
+                }
+            }
+
+        }
     }
 }

@@ -18,4 +18,7 @@ public interface TouchMethod {
     //点击和长按书签文件夹item时被回调的方法，在bookmarkmanageractivity中实现
     void click_folder(View view, WebPage_Info info);
     boolean onLongClick_folder(View view, WebPage_Info info);
+
+    void updateMenu(int whichMenu);
+
 }

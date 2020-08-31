@@ -31,7 +31,7 @@ public class BookmarkFolderNode extends WebPage_Info{
     }
 
     public void setUUID(String UUID) {
-        setUUID( UUID);
+        setuuid(UUID);
     }
 
     public String getParentUUID() {

@@ -2,6 +2,8 @@ package com.example.kiylx.ti.model;
 
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
 import com.crystal.customview.baseadapter1.BeanSelect;
 import com.example.kiylx.ti.ui.base.BaseActivity;
 
@@ -13,6 +15,7 @@ public class WebPage_Info implements BeanSelect {
     //收集网页的信息，用于展示多窗口以及记录历史记录
     private String uuid;//书签本身的uuid，标识其唯一性
     private String title;
+    @NotNull
     private String url;
     private int WEB_feature;
     private String date;
@@ -99,11 +102,12 @@ private boolean selectFlag;//在多选或单选中，此标志位可表示相应
         this.title = title;
     }
 
+    @NonNull
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(@NonNull String url) {
         this.url = url;
     }
 
@@ -138,7 +142,9 @@ private boolean selectFlag;//在多选或单选中，此标志位可表示相应
     public void setUuid(UUID uuid) {
         this.uuid = uuid.toString();
     }
-
+    public void setuuid(String uuid) {
+        this.uuid = uuid;
+    }
     public int getProgress() {
         return progress;
     }

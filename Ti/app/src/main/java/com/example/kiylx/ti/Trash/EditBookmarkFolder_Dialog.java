@@ -1,4 +1,4 @@
-package com.example.kiylx.ti.ui.fragments.dialogfragment;
+package com.example.kiylx.ti.trash;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,9 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.example.kiylx.ti.trash.AboutBookmark;
-import com.example.kiylx.ti.trash.BookMarkFolderManager;
-import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.LogUtil;
 

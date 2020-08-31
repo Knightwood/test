@@ -18,8 +18,9 @@ import java.util.List;
  */
 public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHolder<WebPage_Info>> {
     private static final String TAG = "BookmarkListAdapter";
-    private View.OnClickListener listener;
     private TouchMethod touchMethod;
+
+
     public BookmarkListAdapter(List<WebPage_Info> list) {
         super(list);
         LogUtil.d(TAG,"数量："+list.size());
@@ -57,6 +58,7 @@ public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHo
                     public void onClick(View v) {
                         if (isSelectingMode()) {
                             setItemSelect(data);
+                            changeActionModeMenu();
                         }else{
                             touchMethod.click_folder(v, data);
                         }
@@ -84,6 +86,7 @@ public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHo
                     public void onClick(View v) {
                         if (isSelectingMode()) {
                             setItemSelect(data);
+                            changeActionModeMenu();
                         }else{
                             touchMethod.click_bookmark(v, data);
                         }
@@ -103,6 +106,19 @@ public class BookmarkListAdapter extends MultiSelectAdapter<WebPage_Info, BaseHo
                 break;
         }
 
+
+    }
+
+    /**
+     * 根据点击itemview更新actionmode的menu
+     * 若是当前只有一个文件夹被选择，actionmode加载第二个menu，其余情况加载第一个menu
+     */
+    private void changeActionModeMenu(){
+        if (getSelectItemNum() == 1 && getSelectOne(0).getWEB_feature() == -2){
+            touchMethod.updateMenu(2);
+        }else {
+            touchMethod.updateMenu(1);
+        }
     }
 
     public void setTouchMethod(TouchMethod touchMethod) {

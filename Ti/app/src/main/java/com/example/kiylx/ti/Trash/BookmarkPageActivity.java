@@ -26,9 +26,7 @@ import android.widget.Toast;
 
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.fragments.dialogfragment.DeleteBookmarkFolder_Dialog;
-import com.example.kiylx.ti.ui.fragments.dialogfragment.EditBookmarkFolder_Dialog;
 import com.example.kiylx.ti.interfaces.OpenOneWebpage;
-import com.example.kiylx.ti.interfaces.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.model.WebPage_Info;
 

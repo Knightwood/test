@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+
 import com.example.kiylx.ti.conf.SomeRes;
 import com.example.kiylx.ti.db.bookmarkdb.bookmark.BookmarkDBcontrol;
 import com.example.kiylx.ti.db.bookmarkdb.bookmarkfolder.BookmarkfolderDBcontrol;
@@ -114,7 +116,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      *             从数据库读取当前文件夹的子文件夹和书签记录，放在同一个list中，并更新界面
      * @param b    true则触发更新界面，false则不做更新界面处理
      */
-    public void getIndex(@NotNull String uuid, boolean b) {
+    public void getIndex(@NonNull String uuid, boolean b) {
         if (bookmarkList == null) {
             bookmarkList = new ArrayList<>();
         } else {
@@ -139,7 +141,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      * @param name       将要创建的文件夹名称
      * @param parentUUID 文件夹所属的父级文件夹
      */
-    public void createFolder(@NotNull String name, @NotNull String parentUUID) {
+    public void createFolder(@NonNull String name, @NonNull String parentUUID) {
         WebPage_Info folderInfo = new BookmarkFolderNode(name, UUID.randomUUID().toString(), parentUUID);
         bookmarkList.add(folderInfo);
         viewContract.updateUI();
@@ -157,7 +159,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      * @param deleteBookmark 是否同时删除该文件夹下的书签,
      *                       true则删除所有该文件夹下的书签
      */
-    public void deleteFolder(@NotNull String uuid, boolean deleteBookmark) {
+    public void deleteFolder(@NonNull String uuid, boolean deleteBookmark) {
         for (WebPage_Info info : bookmarkList) {
             if (info.getUuid().equals(uuid)) {
                 bookmarkList.remove(info);
@@ -261,7 +263,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
         });
     }
 
-    public void changeFolderName(@NotNull String uuid, @NotNull String newName) {
+    public void changeFolderName(@NonNull String uuid, @NonNull String newName) {
         int i = 0;
         WebPage_Info info;
         while (i < bookmarkList.size()) {
@@ -285,7 +287,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
      * @param uuid          文件夹本身的uuid
      * @param newParentUuid 将文件夹迁移到另一个的文件夹下，这是另一个文件夹的uuid
      */
-    public void changeFolderLevel(@NotNull String uuid, @NotNull String newParentUuid) {
+    public void changeFolderLevel(@NonNull String uuid, @NonNull String newParentUuid) {
         int i = 0;
         WebPage_Info info;
         while (i < bookmarkList.size()) {

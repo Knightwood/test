@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.interfaces.Edit_dialog_interface;
 
 /**
  * 创建者 kiylx
@@ -24,7 +25,7 @@ import com.example.kiylx.ti.R;
  * 提供了监听menuItem的方法,提供了对searchview的调整和控制监听
  * recyclerview: histories_recyclerView
  */
-public abstract class BaseRecy_search_ViewActivity extends BaseActivity implements ActionMode.Callback {
+public abstract class BaseRecy_search_ViewActivity extends BaseActivity implements ActionMode.Callback, Edit_dialog_interface {
     protected ConstraintLayout layout;
     protected SearchView searchView;
     protected ActionMode actionMode;
@@ -168,7 +169,17 @@ public abstract class BaseRecy_search_ViewActivity extends BaseActivity implemen
         actionMode = null;
     }
 
+
     private void generateSearchView(){
 
     }
+    @Override
+    public void setResult(int requestCode,String request, String result) {
+    }
+
+    @Override
+    public void message() {
+
+    }
+
 }

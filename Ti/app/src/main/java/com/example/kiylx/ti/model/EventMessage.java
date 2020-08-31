@@ -1,5 +1,7 @@
 package com.example.kiylx.ti.model;
 
+import androidx.annotation.NonNull;
+
 /**
  * 创建者 kiylx
  * 创建时间 2020/3/26 15:44
@@ -17,6 +19,7 @@ public class EventMessage {
         this.message = message;
     }
 
+    @NonNull
     @Override
     public String toString() {
 

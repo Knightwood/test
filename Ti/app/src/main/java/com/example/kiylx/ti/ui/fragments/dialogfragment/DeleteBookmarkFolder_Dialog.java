@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.kiylx.ti.trash.AboutBookmark;
 import com.example.kiylx.ti.trash.BookMarkFolderManager;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.interfaces.RefreshBookMark;
+import com.example.kiylx.ti.trash.RefreshBookMark;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.tool.LogUtil;
 
@@ -27,10 +27,10 @@ public class DeleteBookmarkFolder_Dialog extends DialogFragment {
     private static RefreshBookMark refresh;
 
 
-    public static DeleteBookmarkFolder_Dialog getInstance(String tagname){
+    public static DeleteBookmarkFolder_Dialog getInstance(String folderUUID){
 
         Bundle arg=new Bundle();
-        arg.putSerializable(ARG_PARAM,tagname);//把要删除的tag拿到
+        arg.putString(ARG_PARAM,folderUUID);//把要删除的tag拿到
 
         DeleteBookmarkFolder_Dialog mdialog=new DeleteBookmarkFolder_Dialog();
         mdialog.setArguments(arg);

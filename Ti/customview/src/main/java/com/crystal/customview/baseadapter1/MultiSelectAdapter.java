@@ -93,6 +93,21 @@ public abstract class MultiSelectAdapter<T extends BeanSelect, N extends BaseHol
         return beSelectItems;
     }
 
+    /**
+     * @return 返回beSelectItems的大小
+     */
+    public int getSelectItemNum(){
+        return beSelectItems==null? 0:beSelectItems.size();
+    }
+
+    /**
+     * @param pos item在beSelectItems中的位置
+     * @return 返回该位置的item数据,比如，在根据选择的数量以及第一个被选择的行为而改变menu时比较有用
+     */
+    public T getSelectOne(int pos){
+        return beSelectItems.get(pos);
+    }
+
     public int getSelectNum() {
         return selectNum;
     }

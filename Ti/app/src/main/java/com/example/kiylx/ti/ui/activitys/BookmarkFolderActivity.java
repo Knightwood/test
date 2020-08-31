@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.adapters.bookmarkadapter.BookmarkListAdapter;
 import com.example.kiylx.ti.adapters.bookmarkadapter.TouchMethod;
+import com.example.kiylx.ti.conf.ActionCode;
+import com.example.kiylx.ti.interfaces.Edit_dialog_interface;
 import com.example.kiylx.ti.model.WebPage_Info;
 import com.example.kiylx.ti.mvp.presenter.BookmarkFolderPresenter;
 import com.example.kiylx.ti.mvp.contract.BookmarkActivityContract;
@@ -25,7 +28,10 @@ import com.example.kiylx.ti.mvp.contract.base.BaseLifecycleObserver;
 import com.example.kiylx.ti.mvp.presenter.BookmarkManagerPresenter;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.example.kiylx.ti.ui.base.BaseRecy_search_ViewActivity;
+import com.example.kiylx.ti.ui.fragments.dialogfragment.Edit_dialog;
 import com.google.android.material.button.MaterialButton;
+
+import java.lang.ref.WeakReference;
 
 /**
  * 创建者 kiylx
@@ -33,12 +39,12 @@ import com.google.android.material.button.MaterialButton;
  * packageName：com.example.kiylx.ti.ui.activitys
  * 描述：
  */
-public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod {
+public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity implements BookmarkActivityContract, TouchMethod{
     private static final String TAG = "BookmarkActivity2";
     private BookmarkFolderPresenter sFolderManagerPresenter;
     private BookmarkListAdapter adapter;
     private RecyclerView recyclerView;
-    private Handler handler;
+    private MyHandler handler;
 
 
     @Override
@@ -51,7 +57,7 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
     protected void initActivity(BaseLifecycleObserver observer, Bundle savedInstanceState) {
         createHandler();
         LogUtil.d(TAG, "触发initActivity()方法");
-        sFolderManagerPresenter = BookmarkFolderPresenter.getInstance( this, handler);
+        sFolderManagerPresenter = BookmarkFolderPresenter.getInstance(this, handler);
         setToolbarTitle("选择文件夹", null);
         addButtonView();
         initRecyclerView();
@@ -111,20 +117,17 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
      * 创建handler处理消息，更新界面
      */
     public void createHandler() {
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);updateUI();
-            }
-        };
-
+        handler = new MyHandler(this);
     }
+
     @Override
     protected void ListenItemClick(MenuItem item) {
         super.ListenItemClick(item);
         switch (item.getItemId()) {
             case R.id.addbookmarkfolder:
-                sFolderManagerPresenter.createFolder("测试", sFolderManagerPresenter.getCurrentPath());
+                Edit_dialog edit_dialog = Edit_dialog.getInstance(null, this, ActionCode.createFolderName);
+                FragmentManager fm = getSupportFragmentManager();
+                edit_dialog.show(fm, "EDIT_DIALOG");
                 break;
         }
     }
@@ -146,10 +149,10 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogUtil.d(TAG,"被选择的文件夹uuid"+sFolderManagerPresenter.getCurrentPath());
+                LogUtil.d(TAG, "被选择的文件夹uuid" + sFolderManagerPresenter.getCurrentPath());
                 Intent intent = getIntent();
                 intent.putExtra("FolderName", sFolderManagerPresenter.getCurrentPathName());
-                intent.putExtra("FatherFolder",sFolderManagerPresenter.getCurrentPath());
+                intent.putExtra("FatherFolder", sFolderManagerPresenter.getCurrentPath());
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
@@ -177,6 +180,11 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
     }
 
     @Override
+    public void updateMenu(int whichMenu) {
+
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!sFolderManagerPresenter.getBackStack()) {
@@ -184,5 +192,35 @@ public class BookmarkFolderActivity extends BaseRecy_search_ViewActivity impleme
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void setResult(int requestCode,String request, String result) {
+        sFolderManagerPresenter.createFolder(result, sFolderManagerPresenter.getCurrentPath());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    public static class MyHandler extends Handler {
+        WeakReference weakReference;
+
+        MyHandler(BookmarkFolderActivity activity) {
+            weakReference = new WeakReference(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            BookmarkFolderActivity activity = (BookmarkFolderActivity) weakReference.get();
+            if (activity != null) {
+                if (msg.what == BookmarkManagerPresenter.HandlerMsg.updateUI_bookmark_folder) {
+                    activity.updateUI();
+                }
+            }
+
+        }
     }
 }
