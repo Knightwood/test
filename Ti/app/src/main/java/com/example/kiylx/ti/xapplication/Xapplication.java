@@ -8,6 +8,7 @@ import android.content.pm.Signature;
 import android.util.Log;
 
 import com.example.kiylx.ti.conf.StateManager;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -26,6 +27,7 @@ import java.security.cert.X509Certificate;
 public class Xapplication extends Application {
     private static Context mContext;
     private StateManager stateManager;//持有一些状态标志
+    private SimpleThreadPool threadPool;
 
     private String cer = null;
     private String realCer = null;
@@ -44,6 +46,7 @@ public class Xapplication extends Application {
      */
     private void initData() {
         stateManager = StateManager.getInstance(mContext);
+        threadPool=SimpleThreadPool.getInstance();
 
     }
 
@@ -55,6 +58,10 @@ public class Xapplication extends Application {
         if (stateManager==null)
             stateManager = StateManager.getInstance(mContext);
         return stateManager;
+    }
+
+    public SimpleThreadPool getThreadPool(){
+        return threadPool;
     }
 
     String checkSign() {

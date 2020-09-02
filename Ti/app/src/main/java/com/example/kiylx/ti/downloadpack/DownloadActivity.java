@@ -3,6 +3,11 @@ package com.example.kiylx.ti.downloadpack;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.NavHostController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -32,29 +37,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Observable;
+import java.util.Observer;
 
 import static androidx.lifecycle.ViewModelProviders.of;
 
 /**
  * 下载管理界面
  */
-public class DownloadActivity extends AppCompatActivity {
+public class DownloadActivity extends AppCompatActivity implements Observer {
     private static final String TAG = "下载管理";
 
     private DownloadServices.DownloadBinder downloadBinder;
     private DownloadClickMethod controlMethod;
-    private int lastSelectPage = 0;//0,1,2表示那三个fragment，在选择底栏三个选项时，会根据它切换，以节省资源。
 
     BottomNavigationView bottomView;//底部导航栏
     private RecyclerViewBaseFragment currentFragment;
     FragmentManager manager;
-
-
-    private RecyclerViewBaseFragment fragment1;
-    private RecyclerViewBaseFragment fragment2;
-    private RecyclerViewBaseFragment fragment3;
-
-
 
     public DownloadActivity() {
         super();
@@ -68,15 +67,6 @@ public class DownloadActivity extends AppCompatActivity {
 
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
-
-        //测试开始下载任务的按钮
-        /*Button bui = findViewById(R.id.ceshianniu);
-        bui.setOnClickListener(v -> {
-            getChildrenList();
-
-        });*/
-
-
 //工具栏
         Toolbar toolbar = findViewById(R.id.downloadContoltoolbar);
         setSupportActionBar(toolbar);
@@ -96,34 +86,14 @@ public class DownloadActivity extends AppCompatActivity {
             }
             return false;
         });
-//底栏
+
         bottomView = findViewById(R.id.downloadBottomNavigation);
-        /*NavController navController= Navigation.findNavController(this,R.id.fragment);
-        AppBarConfiguration configuration=new AppBarConfiguration.Builder(bottomView.getMenu()).build();
-        NavigationUI.setupActionBarWithNavController(this,navController,configuration);
-        NavigationUI.setupWithNavController(bottomView,navController);*/
 
-        bottomView.setOnNavigationItemSelectedListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.downloadingFragment:
-                    if (lastSelectPage != 0)
-                        switchFragment(0);
-                    break;
-                case R.id.downloadFinishFragment:
-                    if (lastSelectPage != 1)
-                        switchFragment(1);
-                    break;
-                case R.id.downloadSettingFragment:
-                    if (lastSelectPage != 2)
-                        switchFragment(2);
-                    break;
-            }
-            return true;
-        });
+        NavController navController= Navigation.findNavController(DownloadActivity.this,R.id.navs_host_fragment);
+        NavigationUI.setupWithNavController(bottomView,navController);
 
-        //bottomView.getMenu().getItem(0).setChecked(true);//默认选择第一项
-        //LogUtil.d(TAG, "fragment数量：" + manager.getFragments().toString());
-
+  /*AppBarConfiguration configuration=new AppBarConfiguration.Builder(bottomView.getMenu()).build();
+        NavigationUI.setupActionBarWithNavController(this,navController,configuration);*/
     }
 
     @Override
@@ -138,7 +108,6 @@ public class DownloadActivity extends AppCompatActivity {
             downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
             //下载条目xml控制下载所调用的方法
             controlMethod = downloadBinder.getInferface();
-            addFragment();//添加一个默认fragment
         }
 
         @Override
@@ -153,70 +122,8 @@ public class DownloadActivity extends AppCompatActivity {
         unbindService(connection);
     }
 
-
-    /**
-     * 添加正在下载fragment到downloadavtivity的主界面.
-     * 底部导航栏默认就是第一项.
-     */
-    private void addFragment() {
-        currentFragment=DownloadingFragment.newInstance(controlMethod);
-        manager.beginTransaction().add(R.id.downloadfragmentcontainer,currentFragment,"downloading").commit();
-        /*FragmentTransaction beginTransaction = manager.beginTransaction();
-        if (fragment1 == null) {
-            fragment1 = DownloadingFragment.newInstance(controlMethod);
-        }
-        beginTransaction.InsertItem(R.id.downloadfragmentcontainer, fragment1).commit();*/
-
-    }
-
-    /**
-     * @param i 要显示的fragment
-     *          <p>
-     *          selectPage是选中的item的位置，0是正在下载fragment，1是下载完成fragment，2是下载设置fragment
-     */
-    private void switchFragment(int i) {
-        lastSelectPage = i;
-        FragmentManager manager = getSupportFragmentManager();
-        RecyclerViewBaseFragment fragment;
-        switch (i) {
-            case 0:
-                fragment = DownloadingFragment.newInstance(controlMethod);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
-                break;
-            case 1:
-                fragment = DownloadFinishFragment.newInstance(controlMethod);
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment).commit();
-                break;
-            case 2:
-                DownloadSettingFragment fragment2 =DownloadSettingFragment.newInstance();
-                manager.beginTransaction().replace(R.id.downloadfragmentcontainer, fragment2).commit();
-                break;
-        }
-
-    }
-
-    private void switchFr(int i, String tag){
-        lastSelectPage = i;
-        if (i!=2){
-
-        }
-
-        if (currentFragment!=null){
-            manager.beginTransaction().hide(currentFragment).commit();
-        }
-        currentFragment= (RecyclerViewBaseFragment) manager.findFragmentByTag(tag);
-        if (currentFragment==null){
-            switch (tag){
-                case "downloading":
-                    currentFragment=DownloadingFragment.newInstance(controlMethod);
-                    break;
-                case "downloadFinish":
-                    currentFragment=DownloadFinishFragment.newInstance(controlMethod);
-                    break;
-                case "downloadSetting":
-                    //currentFragment=DownloadSettingFragment.newInstance();
-            }
-        }
+    public DownloadClickMethod getInterface(){
+        return controlMethod;
     }
 
 
@@ -329,4 +236,8 @@ public class DownloadActivity extends AppCompatActivity {
         return null;
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+
+    }
 }

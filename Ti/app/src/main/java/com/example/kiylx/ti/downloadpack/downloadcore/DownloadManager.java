@@ -4,8 +4,14 @@ import android.content.Context;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
+import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.downloadpack.db.DownloadDao;
 import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.tool.SomeTools;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
 import com.example.kiylx.ti.xapplication.Xapplication;
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
@@ -26,6 +32,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,20 +43,23 @@ import java.util.TimerTask;
  * 要增加代码更新item的xml的进度条
  * 增加前台服务，不再写绑定到mainactivity等啰嗦的代码
  * 关于下载list为null的情况的处理*/
-public class DownloadManager {
+public class DownloadManager extends Observable {
     private static final String TAG = "下载管理器";
 
-    private  static volatile DownloadManager mDownloadManager;
+    private static volatile DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
     private Handler handler = new Handler();
+    private SimpleThreadPool threadPool;
+    private DownloadDao dao;
 
     private List<DownloadInfo> readyDownload;
+    private LiveData<List<DownloadInfo>> ready;
     private List<DownloadInfo> downloading;
     private List<DownloadInfo> pausedownload;
     private List<DownloadInfo> completeDownload;
 
     private int downloadNumLimit;
-    private WeakReference< Context> mContext;
+    private WeakReference<Context> mContext;
 
     public static DownloadManager getInstance() {
         if (mDownloadManager == null) {
@@ -67,13 +78,16 @@ public class DownloadManager {
      * 有了context,才能做一些数据库之类的操作
      */
     private DownloadManager() {
+        dao = DownloadInfoDatabaseUtil.getDao(Xapplication.getInstance());
+
         initDownloadManager();
-        this.mContext = new WeakReference<>(Xapplication.getInstance()) ;
+        this.mContext = new WeakReference<>(Xapplication.getInstance());
         //获取配置文件里的下载数量限制，赋值给downloadNumLimit
         downloadNumLimit = PreferenceTools.getInt(mContext.get(), WebviewConf.defaultDownloadlimit, 3);
         //从数据库拿数据
         resumeInfoFromDB();
         scheduleWrite();
+
     }
 
     private void initDownloadManager() {
@@ -84,9 +98,9 @@ public class DownloadManager {
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
-
         completeDownload = new ArrayList<>();
 
+        threadPool = SomeTools.getXapplication().getThreadPool();//初始化线程池
     }
 
     /**
@@ -130,7 +144,7 @@ public class DownloadManager {
                 //调入新的下载任务开始下载
                 if (!readyDownload.isEmpty()) {
                     try {
-                        startDownload(readyDownload.remove(0),true);
+                        startDownload(readyDownload.remove(0), true);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -199,6 +213,7 @@ public class DownloadManager {
 
     /**
      * 发送列表更新的通知
+     *
      * @param url
      */
     private void sendMes(String url) {
@@ -219,12 +234,12 @@ public class DownloadManager {
          * 说明这是暂停之后要恢复下载
          * 若恢复下载时下载列表满了，加入准备下载列表
          * */
-        if (isResume){
+        if (isResume) {
             //注：恢复下载
             if (downloading.size() != SomeRes.downloadLimit) {
                 execDownload(info);
             }
-        }else{
+        } else {
             //处理下载信息
             processInfo(info);
 
@@ -245,40 +260,6 @@ public class DownloadManager {
             //全新开始的下载任务,不论是加入准备下载列表还是加入正在下载列表,都要把info要加入数据库
             insertInfo(info);
         }
-
-        /*if (!info.isPause() && info.isWaitDownload()) {
-            //注：恢复下载
-            if (downloading.size() != SomeRes.downloadLimit) {
-                //downloading.add(info);
-                *//*int i = info.getThreadNum();
-                for (int j = 0; j < i; j++) {
-                    TaskPool.newInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
-                }*//*
-                execDownload(info);
-            }
-            //readyDownload.add(info);
-
-
-        } else {
-            //注：全新开始的下载
-            //注：限制下载，超过限制的放入readyDownload的零号位置，等当前下载任务完成再从0位置取出来下载
-            if (downloading.size() == downloadNumLimit) {
-                //加入准备下载
-                readyDownload.add(info);
-                info.setWaitDownload(true);
-            } else {
-                //注：还没到下载数量限制，这是第一次开始下载
-                //处理下载信息
-                processInfo(info);
-                //执行下载
-                execDownload(info);
-
-                //加入下载队列
-                downloading.add(info);
-            }
-            //全新开始的下载任务,不论是加入准备下载列表还是加入正在下载列表,都要把info要加入数据库
-            insertInfo(info);
-        }*/
         //执行更新线程，只要开始下载就要开始更新
         //注：<T> T[] toArray(T[] a);此toArray方法接受一个类型为T的数组，
         updateInfo(info);//不论是新添加的任务还是旧的任务,在这里更新一次
@@ -295,7 +276,7 @@ public class DownloadManager {
     private void execDownload(DownloadInfo info) {
         int i = info.getThreadNum();
         for (int j = 0; j < i; j++) {
-            TaskPool.getInstance().executeTask(new DownloadTaskRunnable(info, j, mTASK_fun));
+            threadPool.getExecutorService().execute(new DownloadTaskRunnable(info, j, mTASK_fun));
         }
     }
 
@@ -380,7 +361,7 @@ public class DownloadManager {
             info.setWaitDownload(false);
             downloading.add(info);
             try {
-                startDownload(info,true);
+                startDownload(info, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -502,14 +483,35 @@ public class DownloadManager {
      * 把获取到的信息合并进暂停下载列表
      * firstCreate: 每次创建manager时获取数据库数据.之后
      */
-    //private static boolean firstCreate=true;
     private void resumeInfoFromDB() {
-       /* if (firstCreate){
+//        Thread thread = new ReadThread();
+//        thread.start();
+        threadPool.getExecutorService().execute(new Runnable() {
+            /**
+             * 获取数据库里的所有条目,
+             * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
+             * 如果是完成下载的条目,加入completeDownload列表
+             */
+            @Override
+            public void run() {
+                List<DownloadInfo> infos = getData();//获取数据库里的数据
+                if (infos.isEmpty()) {
+                    return;
+                } else {
+                    for (DownloadInfo info : infos) {
+                        if (!info.isDownloadSuccess()) {
+                            info.setWaitDownload(false);
+                            info.setPause(true);
+                            pausedownload.add(info);
+                        } else {
+                            completeDownload.add(info);
+                        }
 
-        }
-        firstCreate=false;*/
-        Thread thread = new ReadThread();
-        thread.start();
+                    }
+                }
+                LogUtil.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
+            }
+        });
     }
 
     /**
@@ -517,13 +519,13 @@ public class DownloadManager {
      * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
      * 如果是完成下载的条目,加入completeDownload列表
      */
-    class ReadThread extends Thread {
+/*class ReadThread extends Thread {
 
         @Override
         public void run() {
             super.run();
-            List<DownloadInfo> infos = getData();
-            if (infos == null || infos.isEmpty()) {
+            List<DownloadInfo> infos = getData();//获取数据库里的数据
+            if (infos.isEmpty()) {
                 return;
             } else {
                 for (DownloadInfo info : infos) {
@@ -539,27 +541,14 @@ public class DownloadManager {
             }
             LogUtil.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
         }
-    }
-
-    /**
-     * @param info 把下载数据写入数据库
-     */
-    private void insertData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext.get()).insertAll(InfoTransformToEntitiy.transformToEntity(info));
-    }
+    }*/
 
     /**
      * @param info 更新下载数据库
      */
+    @Deprecated
     private void updateData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext.get()).update(InfoTransformToEntitiy.transformToEntity(info));
-    }
-
-    /**
-     * @param info 把数据从数据库删除
-     */
-    private void deleteData(DownloadInfo info) {
-        DownloadInfoDatabaseUtil.getDao(mContext.get()).delete(InfoTransformToEntitiy.transformToEntity(info));
+        dao.update(InfoTransformToEntitiy.transformToEntity(info));
     }
 
     /**
@@ -568,10 +557,11 @@ public class DownloadManager {
      * 从数据库获取所有条目,然后翻译成downloadInfo类型的list并返回.
      * 如果获取的数据是空的,什么也不做,返回空的arraylist
      */
+    @NonNull
     private List<DownloadInfo> getData() {
-        List<DownloadEntity> list = DownloadInfoDatabaseUtil.getDao(mContext.get()).getAll();
+        List<DownloadEntity> list = dao.getAll();
         List<DownloadInfo> result = new ArrayList<>();
-        if (list.isEmpty() || list == null) {
+        if ( list == null||list.isEmpty() ) {
 
         } else {
             for (DownloadEntity en : list) {
@@ -588,8 +578,12 @@ public class DownloadManager {
      * @param info 把下载数据写入数据库
      */
     private void insertInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, this::insertData);
-        baseThread.start();
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                dao.insertAll(InfoTransformToEntitiy.transformToEntity(info));
+            }
+        });
     }
 
     /**
@@ -598,8 +592,13 @@ public class DownloadManager {
      * @param info 把数据从数据库删除
      */
     private void deleteInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, this::deleteData);
-        baseThread.start();
+        threadPool.getExecutorService().execute(new Runnable() {
+            @Override
+            public void run() {
+                dao.delete(InfoTransformToEntitiy.transformToEntity(info));
+            }
+        });
+
     }
 
     /**
@@ -608,41 +607,15 @@ public class DownloadManager {
      * @param info 更新下载数据库
      */
     private void updateInfo(DownloadInfo info) {
-        Thread baseThread = new BaseThread(info, this::updateData);//方法引用
-        baseThread.start();
-/*new BaseThread(info, new updateItem() {
+      /*  Thread baseThread = new BaseThread(info, this::updateData);//方法引用
+        baseThread.start();*/
+        threadPool.getExecutorService().execute(new Runnable() {
             @Override
-            public void update(DownloadInfo info) {
-                deleteInfo(info);
+            public void run() {
+                dao.update(InfoTransformToEntitiy.transformToEntity(info));
             }
-        });*/
-    }
+        });
 
-    /**
-     * 用于对info进行一些数据库操作的接口
-     */
-    public interface updateItem {
-        void update(DownloadInfo info);
-    }
-
-    /**
-     * 这个线程用于执行interface方法,
-     * 这个interface是关于对info进行一些数据库操作而写的
-     */
-    class BaseThread extends Thread {
-        private final DownloadInfo info;
-        private final updateItem method;
-
-        BaseThread(DownloadInfo info, updateItem method) {
-            this.info = info;
-            this.method = method;
-        }
-
-        @Override
-        public void run() {
-            super.run();
-            method.update(info);
-        }
     }
 
 
@@ -650,9 +623,9 @@ public class DownloadManager {
      * 遍历list列表,把下载任务写入数据库以更新数据
      * 这个方法要在非主线程里使用
      */
-    public void writeDataTodb(List<DownloadInfo> list) {
+    void writeDataTodb(List<DownloadInfo> list) {
         for (DownloadInfo info : list) {
-            updateData(info);
+            updateInfo(info);
         }
     }
 
@@ -684,5 +657,4 @@ public class DownloadManager {
 
         }
     }
-
 }

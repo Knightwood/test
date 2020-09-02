@@ -63,7 +63,7 @@ public class BookmarkManagerPresenter extends BasePresenter<BookmarkActivityCont
 
         backStack = new Stack<>();
         this.handler = handler;
-        threadPool = SimpleThreadPool.getInstance();
+        threadPool = SomeTools.getXapplication().getThreadPool();
 
         bookmarkList = new ArrayList<>();
     }

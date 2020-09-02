@@ -60,6 +60,9 @@ public class HistorysViewModel extends ViewModel {
     public LiveData<PagedList<HistoryEntity>> getHistoriesLivePagedList() {
         return historiesLivePagedList;
     }
+    public void clearAllHistorys(){
+        historyDao.deleteAll();
+    }
 
 
 }

@@ -149,6 +149,8 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
                 FragmentManager fm2 = getSupportFragmentManager();
                 edit_dialog2.show(fm2, "EDIT_DIALOG");
                 break;
+            case R.id.actionDelete:
+                sBookmarkManagerPresenter.deleteFolder(bookmarkListAdapter.getSelectOne(0).getUuid(),true);
         }
         return true;
     }
@@ -303,6 +305,10 @@ public class BookmarkManagerActivity extends BaseRecy_search_ViewActivity implem
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (!sBookmarkManagerPresenter.getBackStack()) {
                 sBookmarkManagerPresenter.clickBack();
+                return true;
+            }
+            if (actionMode!=null){
+                hideActionMode();
                 return true;
             }
         }

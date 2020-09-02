@@ -2,6 +2,7 @@ package com.example.kiylx.ti.downloadpack.fragments;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,7 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.example.kiylx.ti.R;
+import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
@@ -28,24 +32,13 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     private static DownloadClickMethod controlInterface;
 
 
-
-    public static DownloadFinishFragment newInstance(DownloadClickMethod method){
-        controlInterface=method;
-        return new DownloadFinishFragment();
-    }
-
-    @Override
-    public int getItemResId() {
-        return R.layout.history_item;
-    }
-
     /**
      * @return 提供list数据
      */
     @Override
     public List<DownloadInfo> downloadInfoList() {
         if (completeList==null){
-            completeList=controlInterface.getAllComplete();
+            completeList=getDownloadInfoList();
             LogUtil.d(TAG, "下载完成列表: "+completeList.size());
         }
 
@@ -68,28 +61,24 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
 
     public DownloadFinishFragment(){
         super();
-    }
 
-    @Override
-    public void bindItemView(View v, DownloadInfo info) {
-        TextView title=v.findViewById(R.id.itemTitle);
-        TextView url=v.findViewById(R.id.itemurl);
-        ImageView optionView=v.findViewById(R.id.more_setting);
-
-        title.setText(info.getFileName());
-        url.setText(info.getUrl());
-        optionView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemPopMenu(v,info);
-            }
-        });
     }
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DownloadActivity activity = (DownloadActivity) requireActivity();
+        controlInterface = activity.getInterface();
     }
+
+    private List<DownloadInfo> getDownloadInfoList(){
+        if (controlInterface==null){
+            return new ArrayList<>();
+
+        }else {
+            return getDownloadInfoList();
+        }
+    }
+
    void itemPopMenu(View v,DownloadInfo info){
        PopupMenu menu=new PopupMenu(getContext(),v);
        MenuInflater inflater=menu.getMenuInflater();

@@ -8,14 +8,25 @@
     <fragment
         android:id="@+id/downloadingFragment"
         android:name="com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment"
-        android:label="DownloadingFragment" />
+        android:label="DownloadingFragment"
+        tools:layout="@layout/downloadbasefragments"/>
     <fragment
         android:id="@+id/downloadFinishFragment"
         android:name="com.example.kiylx.ti.downloadpack.fragments.DownloadFinishFragment"
-        android:label="DownloadFinishFragment" />
+        android:label="DownloadFinishFragment"
+        tools:layout="@layout/downloadbasefragments">
+        <action
+            android:id="@+id/action_downloadFinishFragment_to_downloadingFragment"
+            app:destination="@id/downloadingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/downloadSettingFragment"
         android:name="com.example.kiylx.ti.downloadpack.fragments.DownloadSettingFragment"
         android:label="download_setting_fragment"
-        tools:layout="@layout/download_setting_fragment" />
+        tools:layout="@layout/download_setting_fragment" >
+        <action
+            android:id="@+id/action_downloadSettingFragment_to_downloadFinishFragment"
+            app:destination="@id/downloadFinishFragment" />
+    </fragment>
+
 </navigation>

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 下载服务
+ * 下载服务,作为downloadManager的代理，以及保持下载管理器不会被杀死
  */
 public class DownloadServices extends Service {
     private DownloadBinder mDownloadBinder;
@@ -73,13 +73,11 @@ public class DownloadServices extends Service {
          * @param filePath 修改的文件存储路径
          * @return 被修改后的文件信息
          */
-
         public DownloadInfo setInfo(DownloadInfo info, String fileName, String filePath) {
             info.setFileName(fileName);
             info.setPath(filePath);
             return info;
         }
-
 
         public void startDownload(DownloadInfo info) {
             if (mDownloadManager == null) {
@@ -91,7 +89,6 @@ public class DownloadServices extends Service {
                 e.printStackTrace();
             }
         }
-
 
         /**
          * @return 返回控制下载任务的接口

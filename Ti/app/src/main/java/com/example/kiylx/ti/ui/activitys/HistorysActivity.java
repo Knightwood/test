@@ -1,5 +1,6 @@
 package com.example.kiylx.ti.ui.activitys;
 
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.SearchView;
 
 import com.example.kiylx.ti.R;
@@ -89,6 +92,21 @@ public class HistorysActivity extends BaseRecy_search_ViewActivity {
         });
     }
 
+    @Override
+    protected void addOtherMenu(Menu menu) {
+        super.addOtherMenu(menu);
+        menu.add(0,2,1,"清空");
+    }
+
+    @Override
+    protected void ListenItemClick(MenuItem item) {
+        super.ListenItemClick(item);
+        switch (item.getItemId()) {
+            case 2:
+
+        break;
+        }
+    }
 
     private class ClickMethod implements HistoryListAdapter.AfterClick {
 

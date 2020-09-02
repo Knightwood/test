@@ -2,6 +2,7 @@ package com.example.kiylx.ti.downloadpack.downloadcore;
 
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DOWNLOAD_TASK_FUN;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,6 @@ public class DownloadTaskRunnable implements Runnable {
 
     private int blockid;
     private DownloadInfo mDownloadInfo;
-    //private OkhttpManager mOkhttpManager;
     private DOWNLOAD_TASK_FUN mTASK_fun;
 
 
@@ -30,7 +30,6 @@ public class DownloadTaskRunnable implements Runnable {
     public DownloadTaskRunnable(DownloadInfo info, int blockid, DOWNLOAD_TASK_FUN Interface) {
         this.mDownloadInfo = info;
         this.blockid = blockid;
-        //mOkhttpManager = OkhttpManager.newInstance();
         mTASK_fun = Interface;
 
     }
@@ -41,7 +40,7 @@ public class DownloadTaskRunnable implements Runnable {
     private void initFile() {
         try {
             response = OkhttpManager.getInstance().getResponse(mDownloadInfo, blockid);
-            System.out.println("fileName=" + mDownloadInfo.getFileName() + " 每个线程负责下载文件大小contentLength=" + response.body().contentLength()
+            LogUtil.d(TAG,"fileName=" + mDownloadInfo.getFileName() + " 每个线程负责下载文件大小contentLength=" + response.body().contentLength()
                     + " 开始位置start=" + mDownloadInfo.splitStart[blockid] + "结束位置end=" + mDownloadInfo.splitEnd[blockid] + " threadId=" + blockid);
 
             file = new File(mDownloadInfo.getPath() + mDownloadInfo.getFileName());
