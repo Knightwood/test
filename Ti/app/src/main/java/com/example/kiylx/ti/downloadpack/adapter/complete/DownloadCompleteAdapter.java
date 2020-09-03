@@ -6,6 +6,7 @@ import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
  * 描述：
  */
 public class DownloadCompleteAdapter extends BaseAdapter<DownloadInfo, BaseHolder<DownloadInfo>> {
+
+    private DownloadClickMethod controlInterface;
 
     public DownloadCompleteAdapter(List<DownloadInfo> list) {
         super(list);
@@ -50,5 +53,8 @@ public class DownloadCompleteAdapter extends BaseAdapter<DownloadInfo, BaseHolde
                 }
             }
         });
+    }
+    public void setInterface(DownloadClickMethod controlInterface){
+        this.controlInterface=controlInterface;
     }
 }

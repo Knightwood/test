@@ -25,4 +25,8 @@ public interface DownloadClickMethod {
     float getPercent(DownloadInfo info);
     List<DownloadInfo> getAllDownload();
     List<DownloadInfo> getAllComplete();
+
+    void getAllDownload(List<DownloadInfo> list);
+    void getAllComplete(List<DownloadInfo> list);
+    boolean isNotWork();
 }

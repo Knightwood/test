@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.adapter.downloading.DownloadHolder;
-import com.example.kiylx.ti.downloadpack.adapter.downloading.DownloadListAdapter;
+import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 import com.example.kiylx.ti.tool.LogUtil;
 
 
@@ -25,16 +25,13 @@ import java.util.List;
 
 public abstract class RecyclerViewBaseFragment extends Fragment {
     private static final String TAG = "正在下载fragment";
-    private View mRootView;
-    private RecyclerView viewContainer;
-    private List<DownloadInfo> mDownloadInfoArrayList;
-    protected DownloadListAdapter mAdapter;
-
+    protected View mRootView;
+    protected RecyclerView viewContainer;
+    protected BaseAdapter mAdapter;
+    protected DownloadClickMethod controlMethod;
 
     public RecyclerViewBaseFragment() {
         super();
-        this.mDownloadInfoArrayList = downloadInfoList();
-        LogUtil.d(TAG, "无参构造");
     }
 
     /**
@@ -45,46 +42,26 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         return R.layout.downloadbasefragments;
     }
 
-    public abstract List<DownloadInfo> downloadInfoList();
+    /**
+     * @return 返回ecyclerview所需要的数据
+     */
+    public abstract List<DownloadInfo> getDataList();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //return super.onCreateView(inflater, container, savedInstanceState);
         mRootView = inflater.inflate(fragmentResId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
-        viewContainer.setLayoutManager(new LinearLayoutManager(getContext()));
-        updateUI();
+        viewContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
+        initRecyclerview();
         return mRootView;
     }
 
-
-    public void updateUI() {
-        LogUtil.d(TAG, "updateUI: ");
-        if (mDownloadInfoArrayList == null) {
-            LogUtil.d(TAG, "下载信息列表不存在 ");
-            return;
-        }
-        if (mAdapter == null) {
-            mAdapter = new DownloadListAdapter(mDownloadInfoArrayList);
-            viewContainer.setAdapter(mAdapter);
-            LogUtil.d(TAG, "适配器创建");
-        } else {
-            mAdapter.setData(mDownloadInfoArrayList);
-            mAdapter.notifyDataSetChanged();
-            LogUtil.d(TAG, "更新数据");
-        }
-
+    protected void initRecyclerview() {
     }
 
-    /**
-     * @param list 存储下载信息的列表
-     *             传入新的数据，更新界面
-     */
-    public void updateUI(List<DownloadInfo> list) {
-        this.mDownloadInfoArrayList.clear();
-        this.mDownloadInfoArrayList = list;
-        updateUI();
+    public void setControlMethod(DownloadClickMethod controlMethod) {
+        this.controlMethod = controlMethod;
+        initRecyclerview();
     }
-
 }

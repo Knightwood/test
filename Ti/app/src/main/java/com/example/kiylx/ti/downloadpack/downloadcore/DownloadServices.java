@@ -29,9 +29,8 @@ public class DownloadServices extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        this.mDownloadBinder = new DownloadBinder();
         mDownloadManager = DownloadManager.getInstance();
-
+        this.mDownloadBinder = new DownloadBinder();
     }
 
     @Override
@@ -134,8 +133,8 @@ public class DownloadServices extends Service {
                             downloadInfoList.addAll(mDownloadManager.getDownloading());
                             downloadInfoList.addAll(mDownloadManager.getPausedownload());
                             downloadInfoList.addAll(mDownloadManager.getReadyDownload());
-                        }else{
-                            downloadInfoList=null;
+                        } else {
+                            downloadInfoList = null;
                             getAllDownload();
                         }
                         LogUtil.d("下载服务：", "暂停下载：" + mDownloadManager.getPausedownload().size() + "\n"
@@ -147,16 +146,38 @@ public class DownloadServices extends Service {
 
                     }
 
+
                     @Override
                     public List<DownloadInfo> getAllComplete() {
                         if (completeInfoList == null) {
                             completeInfoList = new ArrayList<>();
                             completeInfoList.addAll(mDownloadManager.getCompleteDownload());
-                        }else{
-                            completeInfoList=null;
+                        } else {
+                            completeInfoList = null;
                             getAllComplete();
                         }
                         return completeInfoList;
+                    }
+
+                    @Override
+                    public void getAllDownload(List<DownloadInfo> list) {
+                        list.clear();
+                        list.addAll(mDownloadManager.getDownloading());
+                        list.addAll(mDownloadManager.getPausedownload());
+                        list.addAll(mDownloadManager.getReadyDownload());
+                    }
+
+                    @Override
+                    public void getAllComplete(List<DownloadInfo> list) {
+                        list.clear();
+                        list.addAll(mDownloadManager.getCompleteDownload());
+                    }
+
+                    @Override
+                    public boolean isNotWork() {
+                        if (mDownloadManager.getDownloading().isEmpty())
+                            return true;
+                        return false;
                     }
                 };
 

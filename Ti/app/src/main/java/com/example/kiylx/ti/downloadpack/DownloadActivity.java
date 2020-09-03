@@ -1,12 +1,13 @@
 package com.example.kiylx.ti.downloadpack;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.content.ComponentName;
@@ -15,19 +16,17 @@ import android.content.ServiceConnection;
 
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Menu;
 
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.fragments.DownloadSettingFragment;
-import com.example.kiylx.ti.downloadpack.fragments.DownloadFinishFragment;
-import com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment;
 import com.example.kiylx.ti.downloadpack.bean.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoViewModel;
 import com.example.kiylx.ti.downloadpack.db.InfoTransformToEntitiy;
+import com.example.kiylx.ti.downloadpack.fragments.DownloadFinishFragment;
+import com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment;
 import com.example.kiylx.ti.downloadpack.fragments.RecyclerViewBaseFragment;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
 import com.example.kiylx.ti.tool.LogUtil;
@@ -37,37 +36,50 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
 
 import static androidx.lifecycle.ViewModelProviders.of;
 
 /**
  * 下载管理界面
  */
-public class DownloadActivity extends AppCompatActivity implements Observer {
+public class DownloadActivity extends AppCompatActivity {
     private static final String TAG = "下载管理";
 
+
     private DownloadServices.DownloadBinder downloadBinder;
-    private DownloadClickMethod controlMethod;
+    protected DownloadClickMethod controlMethod;
+    //与service通信的中间件
+    private ServiceConnection connection;
 
     BottomNavigationView bottomView;//底部导航栏
-    private RecyclerViewBaseFragment currentFragment;
-    FragmentManager manager;
 
-    public DownloadActivity() {
-        super();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
-        manager = getSupportFragmentManager();
 
+        connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
+
+                boolean b = (downloadBinder == null);
+                LogUtil.d(TAG, "binder是不是null：" + b);
+                //下载条目xml控制下载所调用的方法
+                 controlMethod = downloadBinder.getInferface();
+                setControlMethodtoFragment();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                controlMethod = null;
+            }
+        };
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
-//工具栏
+
+        //工具栏
         Toolbar toolbar = findViewById(R.id.downloadContoltoolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
@@ -89,32 +101,33 @@ public class DownloadActivity extends AppCompatActivity implements Observer {
 
         bottomView = findViewById(R.id.downloadBottomNavigation);
 
-        NavController navController= Navigation.findNavController(DownloadActivity.this,R.id.navs_host_fragment);
-        NavigationUI.setupWithNavController(bottomView,navController);
+        NavController navController = Navigation.findNavController(DownloadActivity.this, R.id.navs_host_fragment);
+        NavigationUI.setupWithNavController(bottomView, navController);
+
 
   /*AppBarConfiguration configuration=new AppBarConfiguration.Builder(bottomView.getMenu()).build();
         NavigationUI.setupActionBarWithNavController(this,navController,configuration);*/
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+    private void setControlMethodtoFragment() {
+        Fragment mNavFragment = getSupportFragmentManager().findFragmentById(R.id.navs_host_fragment);
+        Fragment fragment = mNavFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (fragment instanceof DownloadingFragment) {
+            DownloadingFragment fragment1 = (DownloadingFragment) fragment;
+            fragment1.setControlMethod(controlMethod);
+        }
+        if (fragment instanceof DownloadFinishFragment) {
+            DownloadFinishFragment fragment2 = (DownloadFinishFragment) fragment;
+            fragment2.setControlMethod(controlMethod);
+
+        }
     }
 
-    //与service通信的中间件
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
-            //下载条目xml控制下载所调用的方法
-            controlMethod = downloadBinder.getInferface();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            controlMethod = null;
-        }
-    };
+    @Override
+    public void onAttachFragment(@NonNull Fragment fragment) {
+        LogUtil.d(TAG, "onAttachFragment");
+        super.onAttachFragment(fragment);
+    }
 
     @Override
     protected void onDestroy() {
@@ -122,51 +135,11 @@ public class DownloadActivity extends AppCompatActivity implements Observer {
         unbindService(connection);
     }
 
-    public DownloadClickMethod getInterface(){
+    public DownloadClickMethod getAInterface() {
+        LogUtil.d(TAG, "传递给fragment接口");
+        controlMethod = this.downloadBinder.getInferface();
         return controlMethod;
     }
-
-
-    /**
-     * 测试方法
-     */
-    private void getList() {
-        /*LiveData<List<DownloadEntity>> listLiveData = ViewModelProviders.of(this).get(DownloadInfoViewModel.class).getiLiveData();
-        List<DownloadEntity> list = listLiveData.getValue();
-        for (int i = 0; i < list.size(); i++) {
-            LogUtil.d("下载管理",
-                    "当前大小" + list.get(i).currentLength
-                            + "总大小" + list.get(i).contentLength
-                            + "文件名称" + list.get(i).filename);
-        }*/
-
-        new Thread(new Runnable() {
-            private List<DownloadEntity> list;
-
-            @Override
-            public void run() {
-                this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
-                if (list == null) {
-                    LogUtil.d(TAG, "getChildrenList: 数据库出错");
-                } else if (list.isEmpty()) {
-                    LogUtil.d(TAG, "下载activity：数据库里是空的");
-                } else {
-                    for (int i = 0; i < list.size(); i++) {
-                        LogUtil.d(TAG, "文件名称" + list.get(i).filename
-                                + "暂停:" + list.get(i).pause
-                                + "等待:" + list.get(i).waitDownload
-                                + "完成:" + list.get(i).downloadSuccess
-                                + "总大小" + list.get(i).contentLength
-                                + "当前大小" + list.get(i).currentLength);
-                    }
-                }
-
-            }
-        }).start();
-
-
-    }
-
 
     /**
      * 创建菜单
@@ -175,27 +148,6 @@ public class DownloadActivity extends AppCompatActivity implements Observer {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.control_download_toolbat_menu, menu);
         return true;
-    }
-
-
-    /*
-   系统调用onCreateOptionsMenu方法后，将保留创建的Menu实例。
-除非菜单由于某些原因而失效，否则不会再次调用onCreateOptionsMenu。
-因此，我们只应该使用onCreateOptionsMenu来创建初始菜单状态，而不应使用它在Activity生命周期中对菜单执行任何更改。
-   如果需要根据在Activity生命周期中发生的某些事件修改选项菜单，则应该通过onPrepareOptionsMenu方法实现。
-这个方法的参数中有一个Menu对象（即旧的Menu对象），我们可以使用它对菜单执行修改，如添加、移除、启用或禁用菜单项。
-（Fragment同样提供onPrepareOptionsMenu方法，只是不需要提供返回值）
-   需要注意，在Android 3.0及更高版本中，当菜单项显示在应用栏中时，选项菜单被视为始终处于打开状态。
-发生事件时，如果要执行菜单更新，则必须调用 invalidateOptionsMenu来请求系统调用onPrepareOptionsMenu方法。
-*/
-
-    /**
-     * @param menu
-     * @return 改变toolbar中按钮的状态
-     */
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        return super.onPrepareOptionsMenu(menu);
     }
 
     /**
@@ -236,8 +188,32 @@ public class DownloadActivity extends AppCompatActivity implements Observer {
         return null;
     }
 
-    @Override
-    public void update(Observable o, Object arg) {
+    /**
+     * 测试方法
+     */
+    private void getList() {
+        new Thread(new Runnable() {
+            private List<DownloadEntity> list;
 
+            @Override
+            public void run() {
+                this.list = DownloadInfoDatabaseUtil.getDao(getApplicationContext()).getAll();
+                if (list == null) {
+                    LogUtil.d(TAG, "getChildrenList: 数据库出错");
+                } else if (list.isEmpty()) {
+                    LogUtil.d(TAG, "下载activity：数据库里是空的");
+                } else {
+                    for (int i = 0; i < list.size(); i++) {
+                        LogUtil.d(TAG, "文件名称" + list.get(i).filename
+                                + "暂停:" + list.get(i).pause
+                                + "等待:" + list.get(i).waitDownload
+                                + "完成:" + list.get(i).downloadSuccess
+                                + "总大小" + list.get(i).contentLength
+                                + "当前大小" + list.get(i).currentLength);
+                    }
+                }
+
+            }
+        }).start();
     }
 }
