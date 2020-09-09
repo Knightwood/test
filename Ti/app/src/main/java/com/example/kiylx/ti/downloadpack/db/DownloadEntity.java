@@ -26,13 +26,14 @@ public class DownloadEntity {
      * @param currentLength    已下载的文件大小
      * @param blockSize        分块大小
      * @param downloadSuccess  下载成功的标志
+     * @param uuid uuid
      */
     public DownloadEntity(@NonNull String url, String filename, String path,
                           int blockCompleteNum, int blockPauseNum, String pause,
                           String cancel, String waitDownload,
                           int threadNum, String splitStart, String splitEnd,
                           long contentLength, long currentLength,
-                          long blockSize, String downloadSuccess) {
+                          long blockSize, String downloadSuccess, @NonNull String uuid) {
         this.url = url;
         this.filename = filename;
         this.path = path;
@@ -48,21 +49,23 @@ public class DownloadEntity {
         this.currentLength = currentLength;
         this.blockSize = blockSize;
         this.downloadSuccess = downloadSuccess;
-
-
+        this.uuid=uuid;
     }
 
-    public DownloadEntity(String name, String path, int threadNum) {
+   /* public DownloadEntity(String name, String path, int threadNum) {
         this.filename = name;
         this.path = path;
         this.threadNum = -2;
         this.downloadSuccess="true";
-    }
+    }*/
 
     /*@PrimaryKey(autoGenerate = true)
     public int _id;*/
 
     @PrimaryKey
+    @NonNull
+    public String uuid;//uuid
+
     @NonNull
     public String url;//下载地址
 

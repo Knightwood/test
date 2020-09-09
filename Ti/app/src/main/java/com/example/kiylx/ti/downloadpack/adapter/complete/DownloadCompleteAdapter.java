@@ -1,12 +1,15 @@
 package com.example.kiylx.ti.downloadpack.adapter.complete;
 
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.ItemControl;
 
 import java.util.List;
 
@@ -18,7 +21,8 @@ import java.util.List;
  */
 public class DownloadCompleteAdapter extends BaseAdapter<DownloadInfo, BaseHolder<DownloadInfo>> {
 
-    private DownloadClickMethod controlInterface;
+    private ItemControl controlInterface;
+    private ClickListener clickListener;
 
     public DownloadCompleteAdapter(List<DownloadInfo> list) {
         super(list);
@@ -47,14 +51,18 @@ public class DownloadCompleteAdapter extends BaseAdapter<DownloadInfo, BaseHolde
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.more_setting:
-                        //itempopmenu()
+                         clickListener.popMenu(v,data);
                         break;
 
                 }
             }
         });
     }
-    public void setInterface(DownloadClickMethod controlInterface){
+    public void setInterface(ItemControl controlInterface){
         this.controlInterface=controlInterface;
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 }

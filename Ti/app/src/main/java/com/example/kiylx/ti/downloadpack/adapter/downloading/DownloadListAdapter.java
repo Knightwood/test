@@ -5,9 +5,8 @@ import android.view.View;
 import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
-import com.example.kiylx.ti.model.WebPage_Info;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.ItemControl;
 
 import java.util.List;
 
@@ -19,7 +18,7 @@ import java.util.List;
  */
 public class DownloadListAdapter extends BaseAdapter<DownloadInfo, BaseHolder<DownloadInfo>> {
 
-    private DownloadClickMethod controlInterface;
+    private ItemControl controlInterface;
 
     public DownloadListAdapter(List<DownloadInfo> list) {
         super(list);
@@ -49,7 +48,7 @@ public class DownloadListAdapter extends BaseAdapter<DownloadInfo, BaseHolder<Do
                 switch (v.getId()) {
                     case R.id.resumeDownload:
                         if (data.isPause()) {
-                            controlInterface.reasume(data);
+                            controlInterface.resume(data);
                             holder.setImageResource(R.id.resumeDownload, ((DownloadHolder) holder).setPlay_Arrow(false));
                         } else {
                             controlInterface.pause(data);
@@ -66,7 +65,7 @@ public class DownloadListAdapter extends BaseAdapter<DownloadInfo, BaseHolder<Do
         });
     }
 
-    public void setInterface(DownloadClickMethod controlInterface){
+    public void setInterface(ItemControl controlInterface){
         this.controlInterface=controlInterface;
     }
 }

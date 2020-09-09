@@ -1,6 +1,5 @@
 package com.example.kiylx.ti.downloadpack.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,24 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.crystal.customview.baseadapter1.BaseAdapter;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.DownloadActivity;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
-import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.ItemControl;
 
 
 import java.util.List;
 
 public abstract class RecyclerViewBaseFragment extends Fragment {
-    private static final String TAG = "正在下载fragment";
+    private static final String TAG = "BaseDownloadFragment";
     protected View mRootView;
     protected RecyclerView viewContainer;
     protected BaseAdapter mAdapter;
-    protected DownloadClickMethod controlMethod;
+    protected ItemControl control;
 
     public RecyclerViewBaseFragment() {
         super();
     }
+    protected void initViewModel(){}
 
     /**
      * @return 让子类重写此方法，提供不同的fragment的视图。
@@ -42,10 +40,14 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         return R.layout.downloadbasefragments;
     }
 
-    /**
-     * @return 返回ecyclerview所需要的数据
-     */
-    public abstract List<DownloadInfo> getDataList();
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    public void setControl(ItemControl control) {
+        this.control = control;
+    }
 
     @Nullable
     @Override
@@ -53,15 +55,13 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
         mRootView = inflater.inflate(fragmentResId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
         viewContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
-        initRecyclerview();
+        initViewModel();
         return mRootView;
     }
 
     protected void initRecyclerview() {
     }
 
-    public void setControlMethod(DownloadClickMethod controlMethod) {
-        this.controlMethod = controlMethod;
-        initRecyclerview();
-    }
+
+    public abstract void updateList(List<DownloadInfo> list);
 }

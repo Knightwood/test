@@ -61,6 +61,7 @@ public class MainActivity extends BaseWebviewActivity implements View.OnClickLis
     @Override
     protected void initView(Bundle savedInstanceState) {
         super.initView(savedInstanceState);
+        firstInstall();
         mTextView = findViewById(R.id.search_edittext);
         multButton = findViewById(R.id.mult_button);
         menuButton = findViewById(R.id.menu_button);

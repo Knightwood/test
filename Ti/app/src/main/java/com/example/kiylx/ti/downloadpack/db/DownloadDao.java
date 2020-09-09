@@ -14,13 +14,16 @@ import java.util.List;
 public interface DownloadDao {
 
     @Query("SELECT * FROM downloadInfo_tab")
-    List<DownloadEntity>  getAll();
+    List<DownloadEntity> getAll();
 
     /*@Query("select file_name,url,pause_flag,wait_download,cancel_download from downloadInfo_tab")
     LiveData<List<SimpleDownloadInfo>> getSimpleDataList();*/
 
     @Query("SELECT * FROM downloadInfo_tab WHERE url =:URL")
     List<DownloadEntity> getOne(String URL);
+
+    @Query("SELECT * FROM downloadInfo_tab WHERE uuid=:uuid")
+    DownloadEntity getInfo(String uuid);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(DownloadEntity... infos);

@@ -1,6 +1,6 @@
-package com.example.kiylx.ti.downloadpack.dinterface;
+package com.example.kiylx.ti.downloadpack.core;
 
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
 
 /**
  * downloadmanager实现了这些接口，在下载的线程中可以调用这些方法来控制。

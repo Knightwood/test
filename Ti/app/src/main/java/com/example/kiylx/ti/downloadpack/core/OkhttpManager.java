@@ -1,6 +1,4 @@
-package com.example.kiylx.ti.downloadpack.downloadcore;
-
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+package com.example.kiylx.ti.downloadpack.core;
 
 import java.io.IOException;
 

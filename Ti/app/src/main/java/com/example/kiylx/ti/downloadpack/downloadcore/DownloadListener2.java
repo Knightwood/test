@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.kiylx.ti.tool.preferences.PreferenceTools;
 import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
 
 /**

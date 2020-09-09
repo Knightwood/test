@@ -1,6 +1,6 @@
 package com.example.kiylx.ti.downloadpack.db;
 
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.bean.SimpleDownloadInfo;
 
 /**
@@ -27,7 +27,8 @@ public class InfoTransformToEntitiy {
                 info.getContentLength(),
                 info.getCurrentLength(),
                 info.getBlockSize(),
-                BooleanToString(info.isDownloadSuccess()));
+                BooleanToString(info.isDownloadSuccess()),
+                info.getUuid());
     }
 
     /**
@@ -50,7 +51,8 @@ public class InfoTransformToEntitiy {
                 entity.contentLength,
                 entity.currentLength,
                 entity.blockSize,
-                StringTobollean(entity.downloadSuccess));
+                StringTobollean(entity.downloadSuccess),
+                entity.uuid);
     }
 
     /**

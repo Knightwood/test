@@ -1,6 +1,7 @@
 package com.example.kiylx.ti.downloadpack.downloadcore;
 
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadManager;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -4,13 +4,14 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
-import com.example.kiylx.ti.tool.LogUtil;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.ControlDownloadMethod;
+import com.example.kiylx.ti.downloadpack.dinterface.SendData;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
+import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool2;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,15 +22,12 @@ import java.util.List;
  */
 public class DownloadServices extends Service {
     private DownloadBinder mDownloadBinder;
-    private DownloadManager mDownloadManager;
-    private DownloadClickMethod controlMethod;
-    private List<DownloadInfo> downloadInfoList;
-    private List<DownloadInfo> completeInfoList;
+    private SimpleDownlaodManager mDownloadManager;
+    private ControlDownloadMethod controlMethod;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mDownloadManager = DownloadManager.getInstance();
         this.mDownloadBinder = new DownloadBinder();
     }
 
@@ -51,6 +49,24 @@ public class DownloadServices extends Service {
     }
 
     public class DownloadBinder extends Binder {
+
+        public void newDownloadManager(SendData mInterface) {
+            mDownloadManager = SimpleDownlaodManager.newInstance(
+                    null,
+                    SimpleThreadPool.getInstance().getExecutorService(),
+                    SimpleThreadPool2.getInstance().getExecutorService(),
+                    3,
+                    mInterface
+            );
+        }
+
+        public void setGetDataInterface(SendData dataInterface) {
+            if (mDownloadManager != null) {
+                mDownloadManager.setSendDataInterface(dataInterface);
+            } else {
+                newDownloadManager(dataInterface);
+            }
+        }
 
         /**
          * @return 返回正在下载的个数
@@ -78,9 +94,9 @@ public class DownloadServices extends Service {
             return info;
         }
 
-        public void startDownload(DownloadInfo info) {
+        public void startDownload(DownloadInfo info) throws Exception {
             if (mDownloadManager == null) {
-                mDownloadManager = DownloadManager.getInstance();
+                throw new Exception("未调用newDownloadManager(SendData mInterface)生成downloadmanager");
             }
             try {
                 mDownloadManager.startDownload(info, false);
@@ -94,11 +110,11 @@ public class DownloadServices extends Service {
          * <p>
          * 下载任务条目会使用这些接口控制下载过程，而这些接口调用的是downloadmanager中的方法
          */
-        public DownloadClickMethod getInferface() {
+        public ControlDownloadMethod getInferface() {
             if (controlMethod == null) {
-                controlMethod = new DownloadClickMethod() {
+                controlMethod = new ControlDownloadMethod() {
                     @Override
-                    public void download(DownloadInfo info) {
+                    public void download(DownloadInfo info) throws Exception {
                         startDownload(info);
                     }
 
@@ -122,41 +138,20 @@ public class DownloadServices extends Service {
                         return mDownloadManager.getPercentage(info);
                     }
 
-                    /**
-                     * @return 获取下载条目list，若downloadInfoList不为null，那就置downloadInfoList为null，然后重新获取下载条目list
-                     */
                     @Override
                     public List<DownloadInfo> getAllDownload() {
-                        if (downloadInfoList == null) {
-                            downloadInfoList = new ArrayList<>();
-
-                            downloadInfoList.addAll(mDownloadManager.getDownloading());
-                            downloadInfoList.addAll(mDownloadManager.getPausedownload());
-                            downloadInfoList.addAll(mDownloadManager.getReadyDownload());
-                        } else {
-                            downloadInfoList = null;
-                            getAllDownload();
-                        }
-                        LogUtil.d("下载服务：", "暂停下载：" + mDownloadManager.getPausedownload().size() + "\n"
-                                + "正在下载：" + mDownloadManager.getDownloading().size() + "\n"
-                                + "准备下载：" + mDownloadManager.getReadyDownload().size() + "\n"
-                        );
-
-                        return downloadInfoList;
-
+                        List<DownloadInfo> list = new ArrayList<>();
+                        list.addAll(mDownloadManager.getDownloading());
+                        list.addAll(mDownloadManager.getPausedownload());
+                        list.addAll(mDownloadManager.getReadyDownload());
+                        return list;
                     }
-
 
                     @Override
                     public List<DownloadInfo> getAllComplete() {
-                        if (completeInfoList == null) {
-                            completeInfoList = new ArrayList<>();
-                            completeInfoList.addAll(mDownloadManager.getCompleteDownload());
-                        } else {
-                            completeInfoList = null;
-                            getAllComplete();
-                        }
-                        return completeInfoList;
+                        List<DownloadInfo> list = new ArrayList<>();
+                        list.addAll(mDownloadManager.getCompleteDownload());
+                        return list;
                     }
 
                     @Override

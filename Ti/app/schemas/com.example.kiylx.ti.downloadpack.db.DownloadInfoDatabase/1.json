@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "208ed1f42c19850ed622ef78c702f5fe",
+    "identityHash": "0bd029745cd8cad9c8e2319d20081a41",
     "entities": [
       {
         "tableName": "downloadInfo_tab",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `file_name` TEXT, `file_path` TEXT, `blockComplete_num` INTEGER NOT NULL, `blockPause_num` INTEGER NOT NULL, `pause_flag` TEXT DEFAULT false, `cancel_download` TEXT DEFAULT false, `wait_download` TEXT DEFAULT false, `thread_num` INTEGER NOT NULL, `split_start` TEXT, `split_end` TEXT, `content_len` INTEGER NOT NULL, `current_Length` INTEGER NOT NULL, `block_size` INTEGER NOT NULL, `download_success` TEXT, PRIMARY KEY(`url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `url` TEXT NOT NULL, `file_name` TEXT, `file_path` TEXT, `blockComplete_num` INTEGER NOT NULL, `blockPause_num` INTEGER NOT NULL, `pause_flag` TEXT DEFAULT false, `cancel_download` TEXT DEFAULT false, `wait_download` TEXT DEFAULT false, `thread_num` INTEGER NOT NULL, `split_start` TEXT, `split_end` TEXT, `content_len` INTEGER NOT NULL, `current_Length` INTEGER NOT NULL, `block_size` INTEGER NOT NULL, `download_success` TEXT, PRIMARY KEY(`uuid`))",
         "fields": [
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "url",
             "columnName": "url",
@@ -104,7 +110,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "url"
+            "uuid"
           ],
           "autoGenerate": false
         },
@@ -124,7 +130,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '208ed1f42c19850ed622ef78c702f5fe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0bd029745cd8cad9c8e2319d20081a41')"
     ]
   }
 }

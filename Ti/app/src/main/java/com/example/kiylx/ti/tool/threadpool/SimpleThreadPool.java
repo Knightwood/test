@@ -1,7 +1,5 @@
 package com.example.kiylx.ti.tool.threadpool;
 
-import com.example.kiylx.ti.downloadpack.downloadcore.TaskPool;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 
@@ -24,7 +22,7 @@ public class SimpleThreadPool {
 
     public static SimpleThreadPool getInstance() {
         if (sTaskPool == null) {
-            synchronized (TaskPool.class) {
+            synchronized (SimpleThreadPool2.class) {
                 if (sTaskPool == null) {
                     sTaskPool = new SimpleThreadPool();
                 }

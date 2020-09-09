@@ -3,96 +3,78 @@ package com.example.kiylx.ti.downloadpack.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.DownloadActivity;
 import com.example.kiylx.ti.downloadpack.adapter.complete.DownloadCompleteAdapter;
-import com.example.kiylx.ti.downloadpack.adapter.downloading.DownloadListAdapter;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
-import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
-import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
-import com.example.kiylx.ti.model.EventMessage;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.viewmodels.DownloadActivityViewModel;
 import com.example.kiylx.ti.tool.LogUtil;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DownloadFinishFragment extends RecyclerViewBaseFragment {
-    private static final String TAG = "下载完成fragment";
-    protected static List<DownloadInfo> completeList;
+    private static final String TAG = "DownlaodFinishfragment";
+    protected List<DownloadInfo> infos = null;
+    private DownloadActivityViewModel viewModel;
 
     public DownloadFinishFragment() {
         super();
     }
 
+
+    @Override
+    protected void initViewModel() {
+        viewModel = new ViewModelProvider(requireActivity()).get(DownloadActivityViewModel.class);
+        //infos=viewModel.getDownloadingList().getValue();
+        viewModel.getDownloadcompleteList().observe(this, new Observer<List<DownloadInfo>>() {
+            @Override
+            public void onChanged(List<DownloadInfo> downloadInfos) {
+                if (infos == null) {
+                    infos = downloadInfos;
+                    initRecyclerview();//初始化recyclerview
+                } else {
+                    infos.clear();
+                    infos.addAll(downloadInfos);
+                }
+                updateList(downloadInfos);
+            }
+        });
+    }
+
     @Override
     protected void initRecyclerview() {
-
         super.initRecyclerview();
-        mAdapter = new DownloadCompleteAdapter(getDataList());
-        ((DownloadCompleteAdapter) mAdapter).setInterface(controlMethod);
+        if (mAdapter == null) {
+            mAdapter = new DownloadCompleteAdapter(infos);
+            ((DownloadCompleteAdapter) mAdapter).setClickListener(this::popMenu);
+        } else
+            mAdapter.setData(infos);
+
+        ((DownloadCompleteAdapter) mAdapter).setInterface(control);
         viewContainer.setAdapter(mAdapter);
+
+        LogUtil.d(TAG, "初始化recyclerview");
     }
 
-    /**
-     * @return 提供list数据
-     */
     @Override
-    public List<DownloadInfo> getDataList() {
-        if (completeList == null) {
-            completeList = new ArrayList<>();
-        }
-        if (controlMethod != null)
-            controlMethod.getAllComplete(completeList);
-        LogUtil.d(TAG, "下载完成列表: " + completeList.size());
-        return completeList;
-
-   /*     new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<DownloadEntity> list=new ArrayList<>();
-                list=DownloadInfoDatabaseUtil.getDao(getActivity()).getAll();
-                for (DownloadEntity e:list
-                ) {
-                    LogUtil.d(TAG, "getDataList: 数量"+e.filename);
-                }
-            }
-        }).start();
-*/
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onReceiveMsg(EventMessage message) {
-        if (message.getType() == 1) {
-            LogUtil.d(TAG, "eventbus接受到了事件，正在更新视图");
-            update();
-        }
-    }
-
-    /**
-     * 更新recyclerview
-     */
-    private void update() {
-        controlMethod.getAllComplete(completeList);
+    public void updateList(List<DownloadInfo> list) {
+        LogUtil.d(TAG, "下载完成更新recyclerview，数据空的？" + list.isEmpty());
         mAdapter.notifyDataSetChanged();
     }
 
-    void itemPopMenu(View v, DownloadInfo info) {
+
+    public void popMenu(View v, DownloadInfo info) {
         PopupMenu menu = new PopupMenu(getContext(), v);
         MenuInflater inflater = menu.getMenuInflater();
         inflater.inflate(R.menu.open_download_file, menu.getMenu());

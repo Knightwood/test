@@ -1,41 +1,18 @@
-package com.example.kiylx.ti.downloadpack.downloadcore;
-
-import android.content.Context;
-import android.os.Handler;
+package com.example.kiylx.ti.downloadpack.core;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.db.DownloadDao;
 import com.example.kiylx.ti.tool.LogUtil;
-import com.example.kiylx.ti.tool.SomeTools;
-import com.example.kiylx.ti.tool.threadpool.SimpleThreadPool;
-import com.example.kiylx.ti.xapplication.Xapplication;
-import com.example.kiylx.ti.tool.preferences.PreferenceTools;
-import com.example.kiylx.ti.conf.WebviewConf;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
 import com.example.kiylx.ti.conf.SomeRes;
-import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
-import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
-import com.example.kiylx.ti.downloadpack.db.InfoTransformToEntitiy;
-import com.example.kiylx.ti.model.EventMessage;
-import com.example.kiylx.ti.downloadpack.dinterface.DOWNLOAD_TASK_FUN;
+import com.example.kiylx.ti.tool.observable.Observable;
 
-import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Vector;
+import java.util.concurrent.ExecutorService;
 
 /*
  * 暂停写下载信息数据库，用“//-”先注释，完善以下功能在继续写数据库。
@@ -46,61 +23,46 @@ import java.util.TimerTask;
 public class DownloadManager extends Observable {
     private static final String TAG = "下载管理器";
 
-    private static volatile DownloadManager mDownloadManager;
     private OkhttpManager mOkhttpManager;
-    private Handler handler = new Handler();
-    private SimpleThreadPool threadPool;
-    private DownloadDao dao;
 
-    private List<DownloadInfo> readyDownload;
-    private LiveData<List<DownloadInfo>> ready;
-    private List<DownloadInfo> downloading;
-    private List<DownloadInfo> pausedownload;
-    private List<DownloadInfo> completeDownload;
+    private ExecutorService downloadTaskThreadPool;//下载任务所需要的线程池
+    protected ExecutorService threadPool2;//记录下载信息之类的线程池
+
+    protected List<DownloadInfo> readyDownload;
+    protected List<DownloadInfo> downloading;
+    protected List<DownloadInfo> pausedownload;
+    protected List<DownloadInfo> completeDownload;
 
     private int downloadNumLimit;
-    private WeakReference<Context> mContext;
 
-    public static DownloadManager getInstance() {
-        if (mDownloadManager == null) {
-            synchronized (DownloadManager.class) {
-                if (mDownloadManager == null) {
-                    mDownloadManager = new DownloadManager();
-                }
-            }
+    public DownloadManager(OkhttpManager mOkhttpManager,@NonNull ExecutorService downloadTaskThreadPool,@NonNull ExecutorService threadPool2, int downloadNumLimit) {
+        if (mOkhttpManager==null) {
+            this.mOkhttpManager = mOkhttpManager;}
+        else{
+            this.mOkhttpManager=OkhttpManager.getInstance();
         }
-        return mDownloadManager;
-    }
-
-
-    /**
-     * pplicationContext
-     * 有了context,才能做一些数据库之类的操作
-     */
-    private DownloadManager() {
-        dao = DownloadInfoDatabaseUtil.getDao(Xapplication.getInstance());
-
+        this.downloadTaskThreadPool = downloadTaskThreadPool;
+        this.threadPool2 = threadPool2;
+        this.downloadNumLimit = downloadNumLimit;
         initDownloadManager();
-        this.mContext = new WeakReference<>(Xapplication.getInstance());
-        //获取配置文件里的下载数量限制，赋值给downloadNumLimit
-        downloadNumLimit = PreferenceTools.getInt(mContext.get(), WebviewConf.defaultDownloadlimit, 3);
-        //从数据库拿数据
-        resumeInfoFromDB();
-        scheduleWrite();
-
     }
 
     private void initDownloadManager() {
-        downloading = new ArrayList<>();//正在下载列表
-        pausedownload = new ArrayList<>();//暂停下载列表
-        readyDownload = new LinkedList<>();//准备下载列表
+        downloading = new Vector<>();//正在下载列表
+        pausedownload = new Vector<>();//暂停下载列表
+        readyDownload = new Vector<>();//准备下载列表
 
         //获取流的管理器
         mOkhttpManager = OkhttpManager.getInstance();
         //存入数据库和通知更新进度的线程
-        completeDownload = new ArrayList<>();
+        completeDownload = new Vector<>();
+    }
 
-        threadPool = SomeTools.getXapplication().getThreadPool();//初始化线程池
+    /**
+     * 子类可实现此方法，在此类实例化时将数据库数据添加到合适的list
+     */
+    protected void resumeInfoFromDB(){
+
     }
 
     /**
@@ -178,10 +140,9 @@ public class DownloadManager extends Observable {
             threadNum = info.setThreadNum(1);
         }
 
-        //更改下载到的文件夹
-        String downloadFolder = PreferenceTools.getString(mContext.get(), WebviewConf.defaultDownloadPath, null);
-        if (downloadFolder != null) {
-            info.setPath(downloadFolder);
+        //校验下载到文件夹的路径是否存在，若不存在，给予一个默认值
+        if (info.getPath()==null){
+            info.setPath(getDownloadPath());
         }
 
         long blocksize = info.getContentLength() / threadNum;
@@ -201,6 +162,17 @@ public class DownloadManager extends Observable {
     }
 
     /**
+     * @return 提供下载文件到此文件夹。
+     * 在不同设备系统上都不一致，因此此方法必须要实现
+     */
+    @NonNull
+    protected String getDownloadPath() {
+        //默认路径
+        //例如： return "C:\\Users\\Kiylx\\Desktop\\新建文件夹";
+        return null;
+    }
+
+    /**
      * 下载完成，把任务从正在下载列表移除，放进下载完成列表，并更新数据库数据。
      */
     private void afterDownloadComplete(DownloadInfo info) {
@@ -208,22 +180,18 @@ public class DownloadManager extends Observable {
         downloading.remove(info);
         updateInfo(info);//更新数据库数据
 
-        sendMes(info.getUrl());//通知别的类，这里的列表发生了改变
+        notifytTaskChanged(info.getUuid(),notifyAction.complete);//通知别的类，这里的列表发生了改变
     }
 
     /**
-     * 发送列表更新的通知
      *
-     * @param url
+     * @param uuid 发生改状态变的downloadinfo的uuid
+     * @param notifyAction 发生的行为变化的信息
+     *                     通知订阅者数据更新变化
      */
-    private void sendMes(String url) {
-        EventMessage msg = new EventMessage(1, "更新下载列表");
-        EventBus.getDefault().post(msg);
-
-        LogUtil.d(TAG, "下载数：" + downloading.size() + "暂停数：" + pausedownload.size());
-
+    protected void notifytTaskChanged(String uuid, notifyAction notifyAction) {
+        notifyObservers(uuid,notifyAction);
     }
-
     /**
      * @param info 文件下载信息
      * @throws IOException 抛出异常
@@ -276,8 +244,9 @@ public class DownloadManager extends Observable {
     private void execDownload(DownloadInfo info) {
         int i = info.getThreadNum();
         for (int j = 0; j < i; j++) {
-            threadPool.getExecutorService().execute(new DownloadTaskRunnable(info, j, mTASK_fun));
+            downloadTaskThreadPool.execute(new DownloadTaskRunnable(info, j, mTASK_fun));
         }
+        notifytTaskChanged(info.getUuid(),notifyAction.startDwonload);
     }
 
     /**
@@ -296,6 +265,8 @@ public class DownloadManager extends Observable {
         downloading.remove(info);
         pausedownload.add(info);
 
+        notifytTaskChanged(info.getUuid(),notifyAction.paused);
+
         LogUtil.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
                 + "正在下载：" + downloading.size() + "\n"
                 + "准备下载：" + readyDownload.size() + "\n"
@@ -312,6 +283,8 @@ public class DownloadManager extends Observable {
             info.setPause(true);
             info.setWaitDownload(false);
             pausedownload.add(info);
+
+            notifytTaskChanged(info.getUuid(),notifyAction.paused);
             updateInfo(info);
         }
         readyDownload.clear();
@@ -368,6 +341,7 @@ public class DownloadManager extends Observable {
 
         }
 
+        notifytTaskChanged(info.getUuid(),notifyAction.resume);
         updateInfo(info);
 
         LogUtil.d(TAG, "暂停下载：" + pausedownload.size() + "\n"
@@ -396,7 +370,8 @@ public class DownloadManager extends Observable {
         info.setCancel(true);
         pausedownload.remove(info);
         deleteFile(info);
-        sendMes(info.getUrl());//通知别的类，这里的列表发生了改变
+
+        notifytTaskChanged(info.getUuid(),notifyAction.cancel);//通知别的类，这里的列表发生了改变
     }
 
     /**
@@ -406,12 +381,14 @@ public class DownloadManager extends Observable {
         //暂停全部任务。
         pauseAll();
         //删除文件
+        DownloadInfo info;
         for (int i = 0; i < pausedownload.size(); i++) {
-            deleteFile(pausedownload.get(i));
+            info=pausedownload.get(i);
+            notifytTaskChanged(info.getUuid(),notifyAction.cancel);
+            deleteFile(info);
         }
         //清除暂停下载列表
         pausedownload.clear();
-
     }
 
     /**
@@ -423,6 +400,7 @@ public class DownloadManager extends Observable {
         if (file.exists() && file.isFile()) {
             file.delete();
         }
+        notifytTaskChanged(info.getUuid(),notifyAction.delete);
         deleteInfo(info);
     }
 
@@ -478,78 +456,6 @@ public class DownloadManager extends Observable {
 
     //-----------------------数据库操作---------------------//
 
-    /**
-     * 在创建manager时,获取数据库里的信息.
-     * 把获取到的信息合并进暂停下载列表
-     * firstCreate: 每次创建manager时获取数据库数据.之后
-     */
-    private void resumeInfoFromDB() {
-//        Thread thread = new ReadThread();
-//        thread.start();
-        threadPool.getExecutorService().execute(new Runnable() {
-            /**
-             * 获取数据库里的所有条目,
-             * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
-             * 如果是完成下载的条目,加入completeDownload列表
-             */
-            @Override
-            public void run() {
-                List<DownloadInfo> infos = getData();//获取数据库里的数据
-                if (infos.isEmpty()) {
-                    return;
-                } else {
-                    for (DownloadInfo info : infos) {
-                        if (!info.isDownloadSuccess()) {
-                            info.setWaitDownload(false);
-                            info.setPause(true);
-                            pausedownload.add(info);
-                        } else {
-                            completeDownload.add(info);
-                        }
-
-                    }
-                }
-                LogUtil.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
-            }
-        });
-    }
-
-    /**
-     * 获取数据库里的所有条目,
-     * 把每个未完成下载条目配置为paused状态,并加入暂停列表.
-     * 如果是完成下载的条目,加入completeDownload列表
-     */
-/*class ReadThread extends Thread {
-
-        @Override
-        public void run() {
-            super.run();
-            List<DownloadInfo> infos = getData();//获取数据库里的数据
-            if (infos.isEmpty()) {
-                return;
-            } else {
-                for (DownloadInfo info : infos) {
-                    if (!info.isDownloadSuccess()) {
-                        info.setWaitDownload(false);
-                        info.setPause(true);
-                        pausedownload.add(info);
-                    } else {
-                        completeDownload.add(info);
-                    }
-
-                }
-            }
-            LogUtil.d(TAG, "从数据库读取数据 " + pausedownload.size() + "/" + downloading.size() + "/" + readyDownload.size());
-        }
-    }*/
-
-    /**
-     * @param info 更新下载数据库
-     */
-    @Deprecated
-    private void updateData(DownloadInfo info) {
-        dao.update(InfoTransformToEntitiy.transformToEntity(info));
-    }
 
     /**
      * @return 返回downloadInfo类型的list
@@ -558,18 +464,8 @@ public class DownloadManager extends Observable {
      * 如果获取的数据是空的,什么也不做,返回空的arraylist
      */
     @NonNull
-    private List<DownloadInfo> getData() {
-        List<DownloadEntity> list = dao.getAll();
-        List<DownloadInfo> result = new ArrayList<>();
-        if ( list == null||list.isEmpty() ) {
-
-        } else {
-            for (DownloadEntity en : list) {
-                result.add(InfoTransformToEntitiy.transformToInfo(en));
-            }
-        }
-
-        return result;
+    protected List<DownloadInfo> getData() {
+        return null;
     }
 
     /**
@@ -577,13 +473,7 @@ public class DownloadManager extends Observable {
      *
      * @param info 把下载数据写入数据库
      */
-    private void insertInfo(DownloadInfo info) {
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                dao.insertAll(InfoTransformToEntitiy.transformToEntity(info));
-            }
-        });
+    protected void insertInfo(DownloadInfo info) {
     }
 
     /**
@@ -591,14 +481,7 @@ public class DownloadManager extends Observable {
      *
      * @param info 把数据从数据库删除
      */
-    private void deleteInfo(DownloadInfo info) {
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                dao.delete(InfoTransformToEntitiy.transformToEntity(info));
-            }
-        });
-
+    protected void deleteInfo(DownloadInfo info) {
     }
 
     /**
@@ -606,16 +489,7 @@ public class DownloadManager extends Observable {
      *
      * @param info 更新下载数据库
      */
-    private void updateInfo(DownloadInfo info) {
-      /*  Thread baseThread = new BaseThread(info, this::updateData);//方法引用
-        baseThread.start();*/
-        threadPool.getExecutorService().execute(new Runnable() {
-            @Override
-            public void run() {
-                dao.update(InfoTransformToEntitiy.transformToEntity(info));
-            }
-        });
-
+    protected void updateInfo(DownloadInfo info) {
     }
 
 
@@ -623,38 +497,15 @@ public class DownloadManager extends Observable {
      * 遍历list列表,把下载任务写入数据库以更新数据
      * 这个方法要在非主线程里使用
      */
-    void writeDataTodb(List<DownloadInfo> list) {
-        for (DownloadInfo info : list) {
-            updateInfo(info);
-        }
+    protected void writeDataTodb(List<DownloadInfo> list) {
     }
 
     /**
      * 遍历list列表,把下载任务写入数据库以更新数据
      * 这个方法要在非主线程里使用
      */
-    private void writeData() {
+    protected void writeData() {
         this.writeDataTodb(downloading);
     }
 
-    /**
-     * 以500毫秒的间隔不停地把正在下载的数据写入数据库更新数据
-     * 正在下载列表最大也就5个任务
-     */
-    private void scheduleWrite() {
-        Timer timer = new Timer();
-        UpdateTask updateTask = new UpdateTask();
-        timer.schedule(updateTask, 500L, 500L);
-    }
-
-    class UpdateTask extends TimerTask {
-
-        @Override
-        public void run() {
-            if (!downloading.isEmpty()) {
-                writeData();
-            }
-
-        }
-    }
 }

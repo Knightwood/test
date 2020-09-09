@@ -1,12 +1,10 @@
 package com.example.kiylx.ti.downloadpack;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
-import androidx.navigation.NavHostController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
@@ -18,22 +16,26 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
 
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.dinterface.ItemControl;
+import com.example.kiylx.ti.downloadpack.dinterface.SendData;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.bean.SimpleDownloadInfo;
 import com.example.kiylx.ti.downloadpack.db.DownloadEntity;
 import com.example.kiylx.ti.downloadpack.db.DownloadInfoDatabaseUtil;
-import com.example.kiylx.ti.downloadpack.db.DownloadInfoViewModel;
-import com.example.kiylx.ti.downloadpack.db.InfoTransformToEntitiy;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadFinishFragment;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment;
-import com.example.kiylx.ti.downloadpack.fragments.RecyclerViewBaseFragment;
-import com.example.kiylx.ti.downloadpack.dinterface.DownloadClickMethod;
+import com.example.kiylx.ti.downloadpack.dinterface.ControlDownloadMethod;
+import com.example.kiylx.ti.downloadpack.viewmodels.DownloadActivityViewModel;
+import com.example.kiylx.ti.model.EventMessage;
 import com.example.kiylx.ti.tool.LogUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
-import java.util.ArrayList;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -42,15 +44,13 @@ import static androidx.lifecycle.ViewModelProviders.of;
 /**
  * 下载管理界面
  */
-public class DownloadActivity extends AppCompatActivity {
-    private static final String TAG = "下载管理";
-
-
+public class DownloadActivity extends AppCompatActivity implements ItemControl, SendData {
+    private static final String TAG = "DownloadActivity";
+    private DownloadActivityViewModel viewModel;
     private DownloadServices.DownloadBinder downloadBinder;
-    protected DownloadClickMethod controlMethod;
+    protected ControlDownloadMethod controlMethod;
     //与service通信的中间件
     private ServiceConnection connection;
-
     BottomNavigationView bottomView;//底部导航栏
 
 
@@ -58,16 +58,15 @@ public class DownloadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
-
+        //viewmodel
+        viewModel = new ViewModelProvider(this).get(DownloadActivityViewModel.class);
         connection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
-
-                boolean b = (downloadBinder == null);
-                LogUtil.d(TAG, "binder是不是null：" + b);
+                downloadBinder.newDownloadManager(DownloadActivity.this);
                 //下载条目xml控制下载所调用的方法
-                 controlMethod = downloadBinder.getInferface();
+                controlMethod = downloadBinder.getInferface();
                 setControlMethodtoFragment();
             }
 
@@ -78,6 +77,7 @@ public class DownloadActivity extends AppCompatActivity {
         };
         //绑定服务.下载服务由mainActivity在点击下载窗口中的“开始”的时候开启并绑定到mainActivity，当DownloadActivity被打开始的时候，就只需要绑定下载服务。
         boundDownloadService();
+
 
         //工具栏
         Toolbar toolbar = findViewById(R.id.downloadContoltoolbar);
@@ -101,44 +101,49 @@ public class DownloadActivity extends AppCompatActivity {
 
         bottomView = findViewById(R.id.downloadBottomNavigation);
 
+        //导航
         NavController navController = Navigation.findNavController(DownloadActivity.this, R.id.navs_host_fragment);
         NavigationUI.setupWithNavController(bottomView, navController);
-
-
-  /*AppBarConfiguration configuration=new AppBarConfiguration.Builder(bottomView.getMenu()).build();
-        NavigationUI.setupActionBarWithNavController(this,navController,configuration);*/
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //注册eventbus，用于downloadManager中数据发生改变时，在这里重新获取数据更新界面
+        EventBus.getDefault().register(this);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiveMsg(EventMessage message) {
+        if (message.getType() == 1) {
+            LogUtil.d(TAG, "eventbus接受到了事件，正在更新视图");
+            viewModel.setDownloadingList(controlMethod.getAllDownload());
+            viewModel.setDownloadcompleteList(controlMethod.getAllComplete());
+        }
+    }
+
+    /**
+     * 将itemcontrol接口实现传递给fragment
+     */
     private void setControlMethodtoFragment() {
         Fragment mNavFragment = getSupportFragmentManager().findFragmentById(R.id.navs_host_fragment);
         Fragment fragment = mNavFragment.getChildFragmentManager().getPrimaryNavigationFragment();
         if (fragment instanceof DownloadingFragment) {
             DownloadingFragment fragment1 = (DownloadingFragment) fragment;
-            fragment1.setControlMethod(controlMethod);
+            fragment1.setControl(this);
         }
         if (fragment instanceof DownloadFinishFragment) {
             DownloadFinishFragment fragment2 = (DownloadFinishFragment) fragment;
-            fragment2.setControlMethod(controlMethod);
+            fragment2.setControl(this);
 
         }
-    }
-
-    @Override
-    public void onAttachFragment(@NonNull Fragment fragment) {
-        LogUtil.d(TAG, "onAttachFragment");
-        super.onAttachFragment(fragment);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbindService(connection);
-    }
-
-    public DownloadClickMethod getAInterface() {
-        LogUtil.d(TAG, "传递给fragment接口");
-        controlMethod = this.downloadBinder.getInferface();
-        return controlMethod;
     }
 
     /**
@@ -168,24 +173,10 @@ public class DownloadActivity extends AppCompatActivity {
         bindService(intent, connection, BIND_AUTO_CREATE);
     }
 
-
-    List<SimpleDownloadInfo> downloadInfoList = new ArrayList<>();
-
-    /**
-     * @return downloadinfo列表
-     * 数据库room，使用了livedata，这里观察数据的更新。
-     */
-    public List<SimpleDownloadInfo> getDownloadList() {
-        DownloadInfoViewModel model = of(this).get(DownloadInfoViewModel.class);
-        model.getiLiveData().observe(this, downloadEntities -> {
-            downloadInfoList.clear();
-            for (DownloadEntity entity : downloadEntities) {
-                downloadInfoList.add(InfoTransformToEntitiy.transformToSimple(entity));
-                LogUtil.d("下载管理", "getDownloadList: " + entity.currentLength / entity.contentLength);
-            }
-        });
-
-        return null;
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -215,5 +206,61 @@ public class DownloadActivity extends AppCompatActivity {
 
             }
         }).start();
+    }
+
+    @Override
+    public void download(DownloadInfo info) throws Exception {
+        controlMethod.download(info);
+    }
+
+    @Override
+    public void pause(DownloadInfo info) {
+        controlMethod.pause(info);
+    }
+
+    @Override
+    public void cancel(DownloadInfo info) {
+        controlMethod.cancel(info);
+    }
+
+    @Override
+    public void resume(DownloadInfo info) {
+        controlMethod.reasume(info);
+    }
+
+    @Override
+    public float getPercent(DownloadInfo info) {
+        return 0;
+    }
+
+    @Override
+    public void allDownloading(List<DownloadInfo> downloading) {
+        viewModel.setDownloadingList(downloading);
+
+    }
+
+    @Override
+    public void readyDownload(List<DownloadInfo> ready) {
+
+    }
+
+    @Override
+    public void downloading(List<DownloadInfo> downloading) {
+
+    }
+
+    @Override
+    public void pausedownload(List<DownloadInfo> paused) {
+
+    }
+
+    @Override
+    public void completeDownload(List<DownloadInfo> complete) {
+        viewModel.setDownloadcompleteList(complete);
+    }
+
+    @Override
+    public void notifyUpdate() {
+
     }
 }

@@ -29,7 +29,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.conf.ActivityCode;
 import com.example.kiylx.ti.conf.StateManager;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
 import com.example.kiylx.ti.downloadpack.dinterface.DownloadInterfaceImpl;
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadServices;
 import com.example.kiylx.ti.downloadpack.fragments.DownloadDialog;
@@ -544,7 +544,12 @@ public class BaseWebviewActivity extends BaseActivity implements MultiDialog_Fun
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             mDownloadBinder = (DownloadServices.DownloadBinder) service;
-            mDownloadBinder.startDownload(downloadInfo);//绑定服务，开始下载
+            mDownloadBinder.newDownloadManager(null);
+            try {
+                mDownloadBinder.startDownload(downloadInfo);//绑定服务，开始下载
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

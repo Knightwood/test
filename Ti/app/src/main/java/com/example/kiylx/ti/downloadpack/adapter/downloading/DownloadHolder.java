@@ -3,12 +3,10 @@ package com.example.kiylx.ti.downloadpack.adapter.downloading;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.crystal.customview.baseadapter1.BaseHolder;
 import com.example.kiylx.ti.R;
-import com.example.kiylx.ti.downloadpack.bean.DownloadInfo;
-import com.example.kiylx.ti.downloadpack.fragments.DownloadingFragment;
+import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
 import com.example.kiylx.ti.tool.LogUtil;
 
 /**

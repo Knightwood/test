@@ -1,10 +1,12 @@
-package com.example.kiylx.ti.downloadpack.bean;
+package com.example.kiylx.ti.downloadpack.core;
 
 import android.os.Environment;
 
 import androidx.annotation.NonNull;
 
 import com.example.kiylx.ti.conf.SomeRes;
+
+import java.util.UUID;
 
 /**
  * pause 暂停标志
@@ -20,6 +22,7 @@ import com.example.kiylx.ti.conf.SomeRes;
  * 正在下载：暂停下载为假，准备下载为假
  */
 public class DownloadInfo {
+    private String uuid;//标识唯一信息
     private String url;
     private String fileName;
     private String path;
@@ -28,12 +31,12 @@ public class DownloadInfo {
      * completeNum等于threadNum，则，下载完成。这里所用来判断的threadNum是downloadinfo中的，为防止
      * 在设置中更改下载线程数量而导致出错
      */
-    private int blockCompleteNum = 0;
+    private volatile int blockCompleteNum = 0;
     /**
      * 这个变量用于下载暂停时统计线程数量，
      * 达到下载文件分配的线程数量（threadNum）就意味着这个文件的下载线程就都暂停了，可以进行其他的操作。
      */
-    private int blockPauseNum;
+    private volatile int blockPauseNum;
 
     /**
      * 当前文件下载是否已暂停
@@ -41,7 +44,7 @@ public class DownloadInfo {
      * pause和resume这两个互斥，暂停时不会是恢复状态，恢复时不会是暂停状态。
      * 不设resume标志，用" !pause "表示resume标志
      */
-    private boolean pause = false;
+    private volatile boolean pause = false;
     /**
      * 当前文件下载是否已取消
      */
@@ -80,7 +83,7 @@ public class DownloadInfo {
     /**
      * 是否下载完成的标记
      */
-    private boolean downloadSuccess;
+    private volatile boolean downloadSuccess;
 
 
     /**
@@ -96,26 +99,45 @@ public class DownloadInfo {
         if (fileName == null) {
             this.fileName = url.substring(url.lastIndexOf("/"));//斜杠不能丢，因为是路径加文件名，如果文件名不包含“/”，那路径会不正确会出错
         }
-        if (this.path == null) {
-            //默认路径
-            this.path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-        }else{
-            this.path=path;
-        }
+        this.path = path;
+
         this.contentLength = contentLength;
 
         this.threadNum = threadNum;
         //初始化暂停,等待，和取消的标志
         this.pause = false;
         this.cancel = false;
-        this.waitDownload=false;
+        this.waitDownload = false;
+        if (this.uuid == null) {
+            uuid = UUID.randomUUID().toString();
+        }
     }
-    public DownloadInfo (@NonNull String url, String filename, String path,
-                         int blockCompleteNum, int blockPauseNum, boolean pause,
-                         boolean cancel, boolean waitDownload,
-                         int threadNum, long[] splitStart, long[] splitEnd,
-                         long contentLength, long currentLength,
-                         long blockSize, boolean downloadSuccess) {
+
+    /**
+     * 数据库entity转换成downloadinfo
+     * @param url
+     * @param filename
+     * @param path
+     * @param blockCompleteNum
+     * @param blockPauseNum
+     * @param pause
+     * @param cancel
+     * @param waitDownload
+     * @param threadNum
+     * @param splitStart
+     * @param splitEnd
+     * @param contentLength
+     * @param currentLength
+     * @param blockSize
+     * @param downloadSuccess
+     * @param uuid
+     */
+    public DownloadInfo(@NonNull String url, String filename, String path,
+                        int blockCompleteNum, int blockPauseNum, boolean pause,
+                        boolean cancel, boolean waitDownload,
+                        int threadNum, long[] splitStart, long[] splitEnd,
+                        long contentLength, long currentLength,
+                        long blockSize, boolean downloadSuccess, @NonNull String uuid) {
         this.url = url;
         this.fileName = filename;
         this.path = path;
@@ -130,7 +152,9 @@ public class DownloadInfo {
         this.contentLength = contentLength;
         this.currentLength = currentLength;
         this.blockSize = blockSize;
-        this.downloadSuccess = downloadSuccess;}
+        this.downloadSuccess = downloadSuccess;
+        this.uuid = uuid;
+    }
 
     /**
      * 只有一个下载地址的构造函数
@@ -146,12 +170,13 @@ public class DownloadInfo {
     public DownloadInfo(String url, long contentLength) {
         this(url, null, null, SomeRes.downloadThreadNum, contentLength);
     }
+
     /**
      * @param url           下载地址
      * @param contentLength 下载文件的文件长度
-     * @param threadNum 下载线程数
+     * @param threadNum     下载线程数
      */
-    public DownloadInfo(String url, long contentLength,int threadNum) {
+    public DownloadInfo(String url, long contentLength, int threadNum) {
         this(url, null, null, threadNum, contentLength);
     }
 
@@ -222,7 +247,6 @@ public class DownloadInfo {
     /*public String getPauseFlags() {
         return isPause() ? "true" : "false";
     }*/
-
     public void setPause(boolean pause) {
         this.pause = pause;
     }
@@ -309,10 +333,17 @@ public class DownloadInfo {
      */
     public float getPercent() {
         //返回已下载百分比
-        return ((float)this.getCurrentLength() / (float) this.getContentLength());
-    }
-    public int getIntPercent(){
-       return (int) (((float)this.getCurrentLength() / (float) this.getContentLength())*100);
+        return ((float) this.getCurrentLength() / (float) this.getContentLength());
     }
 
+    public int getIntPercent() {
+        return (int) (((float) this.getCurrentLength() / (float) this.getContentLength()) * 100);
+    }
+
+    public String getUuid() {
+        if (this.uuid==null){
+           this.uuid=UUID.randomUUID().toString();
+        }
+            return this.uuid;
+    }
 }
