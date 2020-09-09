@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.kiylx.ti.R;
 import com.example.kiylx.ti.downloadpack.adapter.complete.DownloadCompleteAdapter;
@@ -25,7 +26,6 @@ import java.util.List;
 
 public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     private static final String TAG = "DownlaodFinishfragment";
-    protected List<DownloadInfo> infos = null;
     private DownloadActivityViewModel viewModel;
 
     public DownloadFinishFragment() {
@@ -36,39 +36,37 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
     @Override
     protected void initViewModel() {
         viewModel = new ViewModelProvider(requireActivity()).get(DownloadActivityViewModel.class);
-        //infos=viewModel.getDownloadingList().getValue();
+        updateList(viewModel.getDownloadcompleteList().getValue());
         viewModel.getDownloadcompleteList().observe(this, new Observer<List<DownloadInfo>>() {
             @Override
             public void onChanged(List<DownloadInfo> downloadInfos) {
-                if (infos == null) {
-                    infos = downloadInfos;
-                    initRecyclerview();//初始化recyclerview
-                } else {
-                    infos.clear();
-                    infos.addAll(downloadInfos);
-                }
                 updateList(downloadInfos);
             }
         });
     }
 
     @Override
-    protected void initRecyclerview() {
-        super.initRecyclerview();
-        if (mAdapter == null) {
-            mAdapter = new DownloadCompleteAdapter(infos);
-            ((DownloadCompleteAdapter) mAdapter).setClickListener(this::popMenu);
-        } else
-            mAdapter.setData(infos);
-
+    protected void initRecyclerview(List<DownloadInfo> downloadInfos) {
+        super.initRecyclerview(downloadInfos);
+        viewContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new DownloadCompleteAdapter(downloadInfos);
+        ((DownloadCompleteAdapter) mAdapter).setClickListener(this::popMenu);
         ((DownloadCompleteAdapter) mAdapter).setInterface(control);
         viewContainer.setAdapter(mAdapter);
-
-        LogUtil.d(TAG, "初始化recyclerview");
+        if (downloadInfos != null) {
+            LogUtil.d(TAG, "初始化recyclerview   数据空的？" + downloadInfos.isEmpty());
+        } else{
+            LogUtil.d(TAG, "初始化recyclerview   数据是null");
+        }
     }
 
     @Override
     public void updateList(List<DownloadInfo> list) {
+        if (mAdapter == null) {
+            LogUtil.d(TAG, "下载完成更新recyclerview中的adapter是null");
+            initRecyclerview(list);
+            return;
+        }
         LogUtil.d(TAG, "下载完成更新recyclerview，数据空的？" + list.isEmpty());
         mAdapter.notifyDataSetChanged();
     }

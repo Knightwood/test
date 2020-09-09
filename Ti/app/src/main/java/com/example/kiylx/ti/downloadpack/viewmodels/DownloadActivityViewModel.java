@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.kiylx.ti.downloadpack.core.DownloadInfo;
+import com.example.kiylx.ti.tool.LogUtil;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * 描述：
  */
 public class DownloadActivityViewModel extends ViewModel {
+    private static final String TAG = "DownloadingViewModel";
     private MutableLiveData<List<DownloadInfo>> downloadingList;
     private MutableLiveData<List<DownloadInfo>> downloadcompleteList;
 
@@ -34,6 +36,8 @@ public class DownloadActivityViewModel extends ViewModel {
 
     public void setDownloadingList(List<DownloadInfo> downloadingList) {
         this.downloadingList.postValue(downloadingList);
+        boolean b=downloadingList==null;
+        LogUtil.d(TAG, "设置viewmodel数据,数据是null？"+b);
     }
 
     public LiveData<List<DownloadInfo>> getDownloadcompleteList() {
@@ -45,6 +49,8 @@ public class DownloadActivityViewModel extends ViewModel {
 
     public void setDownloadcompleteList(List<DownloadInfo> downloadcompleteList) {
         this.downloadcompleteList.postValue(downloadcompleteList);
+        boolean b=downloadcompleteList==null;
+        LogUtil.d(TAG, "设置viewmodel数据,数据是null？"+b);
     }
 
     //工厂类

@@ -54,14 +54,18 @@ public abstract class RecyclerViewBaseFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(fragmentResId(), null);
         viewContainer = mRootView.findViewById(R.id.diListContainer);//recyclerview
-        viewContainer.setLayoutManager(new LinearLayoutManager(getActivity()));
         initViewModel();
         return mRootView;
     }
 
-    protected void initRecyclerview() {
+    protected void initRecyclerview(List<DownloadInfo> downloadInfos) {
     }
 
 
     public abstract void updateList(List<DownloadInfo> list);
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

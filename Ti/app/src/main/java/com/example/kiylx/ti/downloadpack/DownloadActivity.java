@@ -64,9 +64,9 @@ public class DownloadActivity extends AppCompatActivity implements ItemControl, 
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 downloadBinder = (DownloadServices.DownloadBinder) service;//向下转型
-                downloadBinder.newDownloadManager(DownloadActivity.this);
                 //下载条目xml控制下载所调用的方法
                 controlMethod = downloadBinder.getInferface();
+                downloadBinder.newDownloadManager(DownloadActivity.this);
                 setControlMethodtoFragment();
             }
 
@@ -179,6 +179,7 @@ public class DownloadActivity extends AppCompatActivity implements ItemControl, 
         EventBus.getDefault().unregister(this);
     }
 
+
     /**
      * 测试方法
      */
@@ -261,6 +262,8 @@ public class DownloadActivity extends AppCompatActivity implements ItemControl, 
 
     @Override
     public void notifyUpdate() {
+        viewModel.setDownloadingList(controlMethod.getAllDownload());
+        viewModel.setDownloadcompleteList(controlMethod.getAllComplete());
 
     }
 }

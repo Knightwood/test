@@ -58,6 +58,8 @@ public class DownloadServices extends Service {
                     3,
                     mInterface
             );
+            if (mInterface != null)
+                mInterface.notifyUpdate();//实例存在，像持有者推送数据
         }
 
         public void setGetDataInterface(SendData dataInterface) {

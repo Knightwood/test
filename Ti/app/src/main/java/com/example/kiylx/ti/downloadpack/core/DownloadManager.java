@@ -28,10 +28,10 @@ public class DownloadManager extends Observable {
     private ExecutorService downloadTaskThreadPool;//下载任务所需要的线程池
     protected ExecutorService threadPool2;//记录下载信息之类的线程池
 
-    protected List<DownloadInfo> readyDownload;
-    protected List<DownloadInfo> downloading;
-    protected List<DownloadInfo> pausedownload;
-    protected List<DownloadInfo> completeDownload;
+    protected static List<DownloadInfo> readyDownload;
+    protected static List<DownloadInfo> downloading;
+    protected static List<DownloadInfo> pausedownload;
+    protected static List<DownloadInfo> completeDownload;
 
     private int downloadNumLimit;
 
@@ -420,6 +420,7 @@ public class DownloadManager extends Observable {
     }
 
     public List<DownloadInfo> getPausedownload() {
+
         return pausedownload;
     }
 

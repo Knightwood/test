@@ -132,6 +132,8 @@ public class SimpleDownlaodManager extends DownloadManager {
                     all.addAll(readyDownload);
                     mInterface.allDownloading(all);
                     mInterface.completeDownload(completeDownload);
+                }else{
+                    LogUtil.d(TAG, "SendData接口是null");
                 }
             }
         });
