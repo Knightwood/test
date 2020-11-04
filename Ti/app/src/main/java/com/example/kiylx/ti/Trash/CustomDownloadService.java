@@ -15,7 +15,6 @@ import androidx.core.app.NotificationCompat;
 
 import com.example.kiylx.ti.downloadpack.downloadcore.DownloadMethodListener;
 import com.example.kiylx.ti.ui.notification.CustomNotificationChannel;
-import com.example.kiylx.ti.ui.activitys.BookmarkPageActivity;
 import com.example.kiylx.ti.ui.activitys.MainActivity;
 import com.example.kiylx.ti.R;
 

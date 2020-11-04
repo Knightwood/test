@@ -78,7 +78,7 @@ public class trash {
                 folder.mkdir();
 
             }
-            Log.d(TAG, "保存图片: " + path + fileName);
+            LogUtil.d(TAG, "保存图片: " + path + fileName);
             File file = new File(folder, fileName);
 
             FileOutputStream op = new FileOutputStream(file);

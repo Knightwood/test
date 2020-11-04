@@ -26,7 +26,7 @@ public class DownloadingFragment extends RecyclerViewBaseFragment {
     @Override
     protected void initViewModel() {
         viewModel = new ViewModelProvider(requireActivity()).get(DownloadActivityViewModel.class);
-        updateList(viewModel.getDownloadcompleteList().getValue());
+        updateList(viewModel.getDownloadingList.getValue());
         viewModel.getDownloadingList().observe(this, new Observer<List<DownloadInfo>>() {
             @Override
             public void onChanged(List<DownloadInfo> downloadInfos) {

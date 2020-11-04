@@ -67,6 +67,7 @@ public class DownloadFinishFragment extends RecyclerViewBaseFragment {
             initRecyclerview(list);
             return;
         }
+        if (list != null)
         LogUtil.d(TAG, "下载完成更新recyclerview，数据空的？" + list.isEmpty());
         mAdapter.notifyDataSetChanged();
     }

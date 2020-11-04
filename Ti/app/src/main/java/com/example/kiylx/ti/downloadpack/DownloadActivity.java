@@ -260,6 +260,9 @@ public class DownloadActivity extends AppCompatActivity implements ItemControl, 
         viewModel.setDownloadcompleteList(complete);
     }
 
+    /**
+     * 更新viewmodel中的数据
+     */
     @Override
     public void notifyUpdate() {
         viewModel.setDownloadingList(controlMethod.getAllDownload());
